@@ -1,0 +1,15 @@
+{
+  "originHash" : "8b4717d69c3c0a1058658c3c04690a1faf19691e5be2c99fb41c1b248b9487e4",
+  "pins" : [
+    {
+      "identity" : "search-bar-swiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KDTechniques/search-bar-swiftui",
+      "state" : {
+        "revision" : "a67c65a2334b039c388220ba46a39f52f6a26af4",
+        "version" : "1.1.1"
+      }
+    }
+  ],
+  "version" : 3
+}

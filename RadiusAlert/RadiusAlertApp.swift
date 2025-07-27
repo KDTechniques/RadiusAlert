@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct RadiusAlertApp: App {
+    
+    @State private var locationManager: LocationManager = .init()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(locationManager)
         }
     }
 }
