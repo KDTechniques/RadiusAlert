@@ -7,14 +7,14 @@
 
 import Foundation
 import CoreLocation
-import _MapKit_SwiftUI
+import SwiftUI
+import MapKit
 
-@Observable
-final class LocationManager: NSObject, CLLocationManagerDelegate {
+final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     let manager: CLLocationManager = .init()
     
-    var shouldStopLocationUpdates: Bool = false
+    @Published var shouldStopLocationUpdates: Bool = false
     
     override init() {
         super.init()

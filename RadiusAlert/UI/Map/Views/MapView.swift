@@ -10,15 +10,13 @@ import MapKit
 
 struct MapView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(ContentViewModel.self) private var contentVM
-    @Environment(LocationManager.self) private var locationManager
+    @EnvironmentObject private var contentVM: ContentViewModel
     
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace
     
     // MARK: - BODY
     var body: some View {
-        @Bindable var contentVM: ContentViewModel = contentVM
         Map(position: $contentVM.position) {
             UserAnnotation()
             
@@ -39,7 +37,7 @@ struct MapView: View {
             contentVM.centerCoordinate = $0.region.center
             
             // Check whether the user has still given permission to only when in use and ask them to change it to always ui get triggered here...
-            let status: CLAuthorizationStatus = locationManager.manager.authorizationStatus
+            let status: CLAuthorizationStatus = contentVM.locationManager.manager.authorizationStatus
             if status == .authorizedWhenInUse {
                 print("Show a UI to direct user to system settings here...")
             }

@@ -9,21 +9,18 @@ import CoreLocation
 import SwiftUI
 import MapKit
 
-@Observable
-final class ContentViewModel {
+final class ContentViewModel: ObservableObject {
     // MARK: - INJECTED PROPERTIES
-    let locationManager: LocationManager
+    let locationManager: LocationManager = .init()
     
     // MARK: - ASSIGNED PROPERTIES
-    var searchText: String = ""
-    var position: MapCameraPosition = .automatic
-    var centerCoordinate: CLLocationCoordinate2D?
-    var radius: CLLocationDistance = 500
+    @Published var searchText: String = ""
+    @Published var position: MapCameraPosition = .automatic
+    @Published var centerCoordinate: CLLocationCoordinate2D?
+    @Published var radius: CLLocationDistance = 500
     
     // MARK: - INITIALIZER
-    init(locationManager: LocationManager) {
-        self.locationManager = locationManager
-    }
+    init() { }
     
     // MARK: - FUNCTIONS
     func positionToInitialUserLocation() {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CircularRadiusTextView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(ContentViewModel.self) private var contentVM
+    @EnvironmentObject private var contentVM: ContentViewModel
     
     // MARK: - BODY
     var body: some View {
