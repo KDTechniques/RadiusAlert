@@ -10,7 +10,7 @@ import SearchBarSwiftUI
 
 struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
-    @EnvironmentObject private var contentVM: ContentViewModel
+    @Environment(ContentViewModel.self) private var contentVM
     
     // MARK: - BODY
     var body: some View {
@@ -30,8 +30,10 @@ struct TopSafeAreaView: View {
 
 // MARK: - PREVIEWS
 #Preview("Top Safe Area Views") {
-    TopSafeAreaView()
-        .previewModifier()
+    NavigationStack {
+        TopSafeAreaView()
+    }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
@@ -54,6 +56,7 @@ extension TopSafeAreaView {
     
     @ViewBuilder
     private var searchBar: some View {
+        @Bindable var contentVM: ContentViewModel = contentVM
         SearchBarView(searchBarText: $contentVM.searchText, placeholder: "Search", context: .navigation, customColors: nil) { _ in }
             .padding(.vertical)
     }

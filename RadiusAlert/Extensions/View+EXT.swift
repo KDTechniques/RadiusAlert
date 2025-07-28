@@ -10,7 +10,7 @@ import SwiftUI
 extension View {
     func previewModifier() ->  some View {
         self
-            .environmentObject(LocationManager())
-            .environmentObject(ContentViewModel())
+            .environment(LocationManager())
+            .environment(ContentViewModel(locationManager: .init()))
     }
 }

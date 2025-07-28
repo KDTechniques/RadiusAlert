@@ -10,17 +10,19 @@ import CoreLocation
 import SwiftUI
 import MapKit
 
-final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
-    
+@Observable
+final class LocationManager: NSObject, CLLocationManagerDelegate {
+    // MARK: - ASSIGNED PROPERTIES
     let manager: CLLocationManager = .init()
+    var shouldStopLocationUpdates: Bool = false
     
-    @Published var shouldStopLocationUpdates: Bool = false
-    
+    // MARK: - INITIALIZER
     override init() {
         super.init()
         manager.delegate = self
     }
     
+    // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         // First, request permission for `WhenInUseAuthorization` when: .notDetermined
         // Secondly, request permission for `AlwaysAuthorization` when: .authorizedWhenInUse

@@ -66,6 +66,7 @@ extension SearchResultsListView {
         ForEach(0...20, id: \.self) { number in
             Button {
                 // Action goes here...
+                print(number.description)
             } label: {
                 listRow
             }

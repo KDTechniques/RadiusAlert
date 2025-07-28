@@ -9,11 +9,12 @@ import SwiftUI
 
 struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
-    @EnvironmentObject private var contentVM: ContentViewModel
+    @Environment(ContentViewModel.self) private var contentVM
     
     // MARK: - BODY
     var body: some View {
-        Slider(value: $contentVM.radius, in: 300...1000, step: 100)
+        @Bindable var contentVM: ContentViewModel = contentVM
+        Slider(value: $contentVM.radius, in: 500...2000, step: 100)
             .frame(width: 200)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .padding(.trailing)

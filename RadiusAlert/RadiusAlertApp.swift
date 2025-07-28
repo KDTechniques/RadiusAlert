@@ -10,13 +10,22 @@ import SwiftUI
 @main
 struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
-    @StateObject private var contentVM: ContentViewModel = .init()
+    @State private var contentVM: ContentViewModel
+    let locationManager: LocationManager
+    
+    init() {
+        let locationManagerInstance: LocationManager = .init()
+        locationManager = locationManagerInstance
+        
+        contentVM = .init(locationManager: locationManagerInstance)
+    }
+    
     
     // MARK: - BODY
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(contentVM)
+                .environment(contentVM)
         }
     }
 }

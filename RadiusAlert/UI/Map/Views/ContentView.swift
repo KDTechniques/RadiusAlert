@@ -11,7 +11,7 @@ import MapKit
 
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
-    @EnvironmentObject private var contentVM: ContentViewModel
+    @Environment(ContentViewModel.self) private var contentVM
     
     // MARK: - BODY
     var body: some View {
