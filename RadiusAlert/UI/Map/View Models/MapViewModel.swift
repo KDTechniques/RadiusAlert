@@ -1,8 +1,8 @@
 //
-//  ContentViewModel.swift
+//  MapViewModel.swift
 //  RadiusAlert
 //
-//  Created by Mr. Kavinda Dilshan on 2025-07-27.
+//  Created by Mr. Kavinda Dilshan on 2025-07-31.
 //
 
 import CoreLocation
@@ -10,12 +10,11 @@ import SwiftUI
 import MapKit
 
 @Observable
-final class ContentViewModel {
+final class MapViewModel {
     // MARK: - INJECTED PROPERTIES
     let locationManager: LocationManager
     
     // MARK: - ASSIGNED PROPERTIES
-    var searchText: String = ""
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
     var radius: CLLocationDistance = 700
@@ -25,7 +24,6 @@ final class ContentViewModel {
         self.locationManager = locationManager
     }
     
-    // MARK: - FUNCTIONS
     func positionToInitialUserLocation() {
         guard let position: MapCameraPosition = locationManager.getInitialUserCurrentLocation() else { return }
         self.position = position
@@ -36,7 +34,7 @@ final class ContentViewModel {
     }
     
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
-//        centerCoordinate = context.camera.centerCoordinate
+        //        centerCoordinate = context.camera.centerCoordinate
         
         // Check whether the user has still given permission to only when in use and ask them to change it to always ui get triggered here...
         let status: CLAuthorizationStatus = locationManager.manager.authorizationStatus

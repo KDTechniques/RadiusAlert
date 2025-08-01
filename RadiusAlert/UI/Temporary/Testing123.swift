@@ -11,11 +11,31 @@ struct Testing123: View {
     var body: some View {
         VStack {
             Button("Play") {
-                DefaultToneManager.shared.playDefaultTone()
+                ToneManager.shared.playDefaultTone()
             }
             
             Button("Stop") {
-                DefaultToneManager.shared.stopDefaultTone()
+                ToneManager.shared.stopDefaultTone()
+            }
+            
+            Button("Request permission for notifications") {
+                NotificationManager.shared.requestAuthorizationIfNeeded()
+            }
+            
+            Button("trigger local push notification") {
+                NotificationManager.shared.scheduleNotification()
+            }
+            
+            Button("Open app settings") {
+                openAppSettings()
+            }
+            
+            Button("Play Haptic") {
+                HapticManager.shared.playSOSPattern()
+            }
+            
+            Button("Stop haptics") {
+                HapticManager.shared.stopSOSPattern()
             }
         }
     }

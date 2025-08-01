@@ -63,4 +63,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         
         return .region(region)
     }
+    
+    func getDistance(from location1: CLLocation, to location2: CLLocation) -> CLLocationDistance {
+        return location1.distance(from: location2)
+    }
 }

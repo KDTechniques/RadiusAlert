@@ -15,11 +15,7 @@ struct TopSafeAreaView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
-                navigationTitle
-                navigationToSettingsLink
-            }
-            
+            navigationTitle
             searchBar
             
             Divider()
@@ -41,17 +37,6 @@ extension TopSafeAreaView {
     private var navigationTitle: some View {
         Text("Radius Alert")
             .fontWeight(.semibold)
-    }
-    
-    private var navigationToSettingsLink: some View  {
-        NavigationLink {
-            // Settings View goes here...
-        } label: {
-            Image(systemName: "gear")
-                .font(.title2)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.horizontal)
-        }
     }
     
     @ViewBuilder

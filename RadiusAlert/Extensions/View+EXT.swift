@@ -12,5 +12,6 @@ extension View {
         self
             .environment(LocationManager())
             .environment(ContentViewModel(locationManager: .init()))
+            .environment(MapViewModel(locationManager: .init()))
     }
 }
