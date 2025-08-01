@@ -19,6 +19,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				UI/ContentView.swift,
 			);
 			target = 825297802E36048900074199 /* RadiusAlert */;
 		};

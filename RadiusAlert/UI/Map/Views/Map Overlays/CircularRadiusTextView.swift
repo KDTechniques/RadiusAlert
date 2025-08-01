@@ -9,16 +9,16 @@ import SwiftUI
 
 struct CircularRadiusTextView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(ContentViewModel.self) private var contentVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
-        Text("Alert Radius\n\(contentVM.radiusTextHandler())")
+        Text("Alert Radius\n\(mapVM.radiusTextHandler())")
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)
             .offset(y: 30)
-            .opacity(contentVM.centerCoordinate == nil ? 0 : 1)
+            .opacity(mapVM.centerCoordinate == nil ? 0 : 1)
     }
 }
 
