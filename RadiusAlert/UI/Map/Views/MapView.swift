@@ -37,12 +37,13 @@ struct MapView: View {
             MapUserLocationButton(scope: mapSpace)
             MapPitchToggle(scope: mapSpace)
             MapCompass(scope: mapSpace)
+            MapScaleView(scope: mapSpace)
         }
         .onMapCameraChange(frequency: .continuous) {
-            mapVM.onContinuousMapCameraChange($0)
+//            mapVM.onContinuousMapCameraChange($0)
         }
         .onMapCameraChange(frequency: .onEnd) {
-            mapVM.onMapCameraChangeEnd($0)
+//            mapVM.onMapCameraChangeEnd($0)
         }
     }
 }

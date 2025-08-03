@@ -33,7 +33,7 @@ final class ToneManager {
         
         do {
             player = try AVAudioPlayer(contentsOf: url)
-            player?.numberOfLoops = -1   // Loop infinitely
+             -1   // Loop infinitely
             player?.prepareToPlay()
             player?.play()
         } catch {

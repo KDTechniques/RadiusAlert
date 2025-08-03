@@ -14,6 +14,12 @@ final class MapViewModel {
     // MARK: - INJECTED PROPERTIES
     let locationManager: LocationManager
     
+    // MARK: - INITIALIZER
+    init(locationManager: LocationManager) {
+        self.locationManager = locationManager
+        radius = mapValues.minimumRadius
+    }
+    
     // MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     var position: MapCameraPosition = .automatic
@@ -26,12 +32,6 @@ final class MapViewModel {
     }
     var markerCoordinate: CLLocationCoordinate2D? {
         didSet { setRadiusCircleVisibilityOnMarkerCoordinate() }
-    }
-    
-    // MARK: - INITIALIZER
-    init(locationManager: LocationManager) {
-        self.locationManager = locationManager
-        radius = mapValues.minimumRadius
     }
     
     func positionToInitialUserLocation() {
