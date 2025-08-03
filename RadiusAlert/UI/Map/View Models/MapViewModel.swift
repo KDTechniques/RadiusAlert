@@ -24,16 +24,20 @@ final class MapViewModel {
     let mapValues: MapValues.Type = MapValues.self
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
-    var selectedRadius: CLLocationDistance
+    var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
     var showRadiusCircle: Bool = false {
         didSet {
             print("💜💜💜💜💜: \(showRadiusCircle)")
         }
     }
     var markerCoordinate: CLLocationCoordinate2D? {
-        didSet { setRadiusCircleVisibilityOnMarkerCoordinate() }
+        didSet {
+            locationManager.markerCoordinate = markerCoordinate
+            setRadiusCircleVisibilityOnMarkerCoordinate()
+        }
     }
     var selectedMapStyle: MapStyleTypes = .standard
+    var route: MKRoute?
     
     // MARK: - FUNCTIONS
     func positionToInitialUserLocation() {
@@ -63,28 +67,16 @@ final class MapViewModel {
     }
     
     func isBeyondMinimumDistance() -> Bool {
-        guard let currentLocation = locationManager.currentLocation,
+        guard let currentLocation = locationManager.currentUserLocation,
               let centerCoordinate else { return false }
         
         let distance: CLLocationDistance = locationManager.getDistance(from: centerCoordinate, to: currentLocation)
         return distance > mapValues.minimumDistance
     }
     
-    private func setCenterRegionCoordinate(_ center: CLLocationCoordinate2D) {
-        centerCoordinate = center
-    }
-    
-    private func radiusCircleVisibilityHandler(_ boolean: Bool? = nil) {
-        if let boolean {
-            showRadiusCircle = boolean
-        } else {
-            showRadiusCircle = isBeyondMinimumDistance()
-        }
-    }
-    
     func setMarkerCoordinate() {
         guard
-            let currentLocation = locationManager.currentLocation,
+            let currentLocation = locationManager.currentUserLocation,
             let centerCoordinate = centerCoordinate else { return }
         
         markerCoordinate = centerCoordinate
@@ -112,5 +104,32 @@ final class MapViewModel {
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
         selectedMapStyle = mapStylesArray[nextIndex]
+    }
+    
+    func getDirections() {
+        Task {
+            route = await locationManager.getDirections()
+        }
+    }
+    
+    func resetDirections() {
+        route = nil
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    private func setCenterRegionCoordinate(_ center: CLLocationCoordinate2D) {
+        centerCoordinate = center
+    }
+    
+    private func radiusCircleVisibilityHandler(_ boolean: Bool? = nil) {
+        if let boolean {
+            showRadiusCircle = boolean
+        } else {
+            showRadiusCircle = isBeyondMinimumDistance()
+        }
+    }
+    
+    private func onRadiusChange() {
+        print(selectedRadius)
     }
 }

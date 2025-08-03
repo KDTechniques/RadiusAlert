@@ -24,6 +24,14 @@ struct TopSafeAreaView: View {
                 Button("Testing") {
                     mapVM.setMarkerCoordinate()
                 }
+                
+                Button("Get directions") {
+                    mapVM.getDirections()
+                }
+                
+                Button("Reset route") {
+                    mapVM.resetDirections()
+                }
             }
             
             Divider()

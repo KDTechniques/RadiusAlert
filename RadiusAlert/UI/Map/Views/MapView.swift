@@ -25,12 +25,16 @@ struct MapView: View {
             if let centerCoordinate = mapVM.centerCoordinate,
                mapVM.showRadiusCircle {
                 MapCircle(center: centerCoordinate, radius: mapVM.selectedRadius)
-                    .foregroundStyle(.pink.opacity(0.5))
-                    .stroke(.secondary, style: .init(lineWidth: 2))
+                    .foregroundStyle(.pink.gradient.opacity(0.5))
             }
             
             if let markerCoordinate = mapVM.markerCoordinate {
                 Marker("Stop", coordinate: markerCoordinate)
+            }
+            
+            if let route = mapVM.route {
+                MapPolyline(route)
+                    .stroke(Color.pink.gradient, lineWidth: 3)
             }
         }
         .mapStyle(mapVM.selectedMapStyle.mapStyle)
@@ -41,10 +45,10 @@ struct MapView: View {
             MapScaleView(scope: mapSpace)
         }
         .onMapCameraChange(frequency: .continuous) {
-//            mapVM.onContinuousMapCameraChange($0)
+            mapVM.onContinuousMapCameraChange($0)
         }
         .onMapCameraChange(frequency: .onEnd) {
-//            mapVM.onMapCameraChangeEnd($0)
+            mapVM.onMapCameraChangeEnd($0)
         }
     }
 }
