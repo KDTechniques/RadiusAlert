@@ -22,19 +22,18 @@ struct RadiusSliderView: View {
         @Bindable var mapVM: MapViewModel = mapVM
         Slider(
             value: $mapVM.radius,
-            in: mapValues.minimumRadius...mapValues.maximumRadius,
-            step: 100) { } minimumValueLabel: {
+            in: mapValues.minimumRadius...mapValues.maximumRadius) { } minimumValueLabel: {
                 Text(mapValues.minimumRadiusString)
-                    .foregroundStyle(sliderLabelForegroundColor)
+                    .radiusSliderViewModifier
             } maximumValueLabel: {
                 Text(mapValues.maximumRadiusString)
-                    .foregroundStyle(sliderLabelForegroundColor)
+                    .radiusSliderViewModifier
             } onEditingChanged: { boolean in
                 print(boolean)
             }
             .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing)
+            .padding(.trailing, 10)
         
         
         
@@ -45,4 +44,13 @@ struct RadiusSliderView: View {
 #Preview("Radius Slider View") {
     RadiusSliderView()
         .previewModifier()
+}
+
+extension View {
+    var radiusSliderViewModifier: some View {
+        self
+            .foregroundStyle(Color(uiColor: .darkGray))
+            .font(.caption)
+            .fontWeight(.semibold)
+    }
 }

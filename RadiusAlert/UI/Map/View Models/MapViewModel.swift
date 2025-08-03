@@ -33,7 +33,9 @@ final class MapViewModel {
     var markerCoordinate: CLLocationCoordinate2D? {
         didSet { setRadiusCircleVisibilityOnMarkerCoordinate() }
     }
+    var selectedMapStyle: MapStyleTypes = .standard
     
+    // MARK: - FUNCTIONS
     func positionToInitialUserLocation() {
         guard let position: MapCameraPosition = locationManager.getInitialMapCameraPosition() else { return }
         self.position = position
@@ -96,11 +98,19 @@ final class MapViewModel {
     func isMarkerCoordinateNil() -> Bool {
         return markerCoordinate == nil
     }
-
+    
     func setRadiusCircleVisibilityOnMarkerCoordinate() {
-//        radiusCircleVisibilityHandler(markerCoordinate != nil)
+        //        radiusCircleVisibilityHandler(markerCoordinate != nil)
         let isNil: Bool = markerCoordinate == nil
         
         showRadiusCircle = !isNil
+    }
+    
+    func nextMapStyle() {
+        let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
+        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else { return }
+        
+        let nextIndex: Int = mapStylesArray.nextIndex(after: index)
+        selectedMapStyle = mapStylesArray[nextIndex]
     }
 }

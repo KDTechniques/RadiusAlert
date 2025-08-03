@@ -23,7 +23,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - ASSIGNED PROPERTIES
-    let locationManagerValues: LocationManagerValues.Type = LocationManagerValues.self
+    let mapValues: MapValues.Type = MapValues.self
     var currentLocation: CLLocationCoordinate2D?
     
     // MARK: - DELEGATE FUNCTIONS
@@ -71,7 +71,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return nil
         }
         
-        let regionBoundMeters: CLLocationDistance = locationManagerValues.initialUserLocationBoundsMeters
+        let regionBoundMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
         let region: MKCoordinateRegion = .init(
             center: coordinate,
             latitudinalMeters: regionBoundMeters,

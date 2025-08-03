@@ -33,6 +33,7 @@ struct MapView: View {
                 Marker("Stop", coordinate: markerCoordinate)
             }
         }
+        .mapStyle(mapVM.selectedMapStyle.mapStyle)
         .mapControls {
             MapUserLocationButton(scope: mapSpace)
             MapPitchToggle(scope: mapSpace)
