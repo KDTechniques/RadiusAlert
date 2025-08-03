@@ -7,26 +7,16 @@
 
 import CoreHaptics
 
-class HapticManager {
+final class HapticManager {
     //  MARK: - ASSIGNED PROPERTIES
     static let shared = HapticManager()
     private var hapticEngine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
     
-    // MARK: - FUNCTIONS
-    private func setupHaptics() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        do {
-            hapticEngine = try CHHapticEngine()
-            try hapticEngine?.start()
-            hapticEngine?.resetHandler = { [weak self] in
-                try? self?.hapticEngine?.start()
-            }
-        } catch {
-            print("Error starting haptic engine: \(error.localizedDescription)")
-        }
-    }
+    // MARK: - INITIALIZER
+    init() { }
     
+    // MARK: - PUBLIC FUNCTIONS
     func playSOSPattern() {
         guard let engine = hapticEngine else {
             setupHaptics()
@@ -94,6 +84,20 @@ class HapticManager {
             try player?.stop(atTime: 0)
         } catch {
             print("Failed to stop haptic: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    private func setupHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        do {
+            hapticEngine = try CHHapticEngine()
+            try hapticEngine?.start()
+            hapticEngine?.resetHandler = { [weak self] in
+                try? self?.hapticEngine?.start()
+            }
+        } catch {
+            print("Error starting haptic engine: \(error.localizedDescription)")
         }
     }
 }

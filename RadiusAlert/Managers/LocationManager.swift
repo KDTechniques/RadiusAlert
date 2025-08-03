@@ -23,9 +23,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
+    private let mapValues: MapValues.Type = MapValues.self
+    private let regionIdentifier: String = "radiusAlert"
     var currentUserLocation: CLLocationCoordinate2D?
     var markerCoordinate: CLLocationCoordinate2D?
+    private var monitoredRegion: CLCircularRegion?
+    var onRegionEntry: (() -> Void)?
     
     // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -62,6 +65,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         setLocationAccuracy()
     }
     
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        guard region.identifier == monitoredRegion?.identifier else { return }
+        print("✅ Entered region: \(region.identifier)")
+        onRegionEntry?() // Trigger your function here
+    }
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print(error.localizedDescription)
     }
@@ -92,10 +101,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func getDirections() async -> MKRoute? {
         guard
             let currentUserLocation,
-            let markerCoordinate else {
-            print("Unable to get directions: Current User Location is: \(String(describing: self.currentUserLocation)), Marker Coordinate: \(String(describing: self.markerCoordinate)).")
-            return nil
-        }
+            let markerCoordinate else { return nil }
         
         let request: MKDirections.Request = .init()
         request.source = .init(placemark: .init(coordinate: currentUserLocation))
@@ -112,14 +118,38 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    func startMonitoringRegion(radius: Double) -> Bool {
+        // Stop monitoring old region if any
+        if let oldRegion = monitoredRegion {
+            manager.stopMonitoring(for: oldRegion)
+        }
+        
+        guard let markerCoordinate else {
+            print("here")
+            return false
+        }
+        
+        let region = CLCircularRegion(center: markerCoordinate, radius: radius, identifier: regionIdentifier)
+        region.notifyOnEntry = true
+        region.notifyOnExit = false
+        
+        monitoredRegion = region
+        manager.startMonitoring(for: region)
+        return true
+    }
+    
+    func stopMonitoringRegion() {
+        guard let monitoredRegion else { return }
+        
+        manager.stopMonitoring(for: monitoredRegion)
+        self.monitoredRegion = nil
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func setLocationAccuracy() {
         guard
             let currentUserLocation,
-            let markerCoordinate else {
-            print("Unable to set location accuracy: Current User Location is: \(String(describing: self.currentUserLocation)), Marker Coordinate: \(String(describing: self.markerCoordinate)).")
-            return
-        }
+            let markerCoordinate else { return }
         
         let distance: CLLocationDistance = getDistance(from: currentUserLocation, to: markerCoordinate)
         

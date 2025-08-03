@@ -10,9 +10,9 @@ import Foundation
 final class AlertManager {
     // MARK: - ASSIGNED PROPERTIES
     static let shared: AlertManager = .init()
-    let toneManager: ToneManager = .shared
-    let hapticManager: HapticManager = .shared
-    let notificationsManager: NotificationManager = .shared
+    private let toneManager: ToneManager = .shared
+    private let hapticManager: HapticManager = .shared
+    private let notificationsManager: NotificationManager = .shared
     
     //  MARK: -  INITIALIZER
     private  init() { }
@@ -24,10 +24,6 @@ final class AlertManager {
     // MARK: - FUNCTIONS
     
     // Local Push Notifications Related
-    func requestNotificationPermission() {
-        notificationsManager.requestAuthorizationIfNeeded()
-    }
-    
     func sendNotification() {
         notificationsManager.scheduleNotification()
     }

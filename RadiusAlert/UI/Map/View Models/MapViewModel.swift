@@ -21,6 +21,7 @@ final class MapViewModel {
     }
     
     // MARK: - ASSIGNED PROPERTIES
+    let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
@@ -128,6 +129,10 @@ final class MapViewModel {
         return markerCoordinate == nil
     }
     
+    func removeMarkerCoordinate() {
+        markerCoordinate = nil
+    }
+    
     // MARK: - Directions Related
     func getDirections() {
         Task {
@@ -135,8 +140,22 @@ final class MapViewModel {
         }
     }
     
-    func resetDirections() {
+    func removeDirections() {
         route = nil
+    }
+    
+    // MARK: - CTA Button Related
+    func getCTAButtonForegroundColor() -> Color {
+        isMarkerCoordinateNil() ? .green : .red
+    }
+    
+    func getCTAButtonBackgroundColor() ->  Color {
+        let opacity: CGFloat = 0.2
+        return isMarkerCoordinateNil() ? Color.green.opacity(opacity) : Color.red.opacity(opacity)
+    }
+    
+    func triggerCTAButtonAction() {
+        isMarkerCoordinateNil() ? startAlert() : stopAlert()
     }
     
     // MARK: - Other
@@ -151,6 +170,12 @@ final class MapViewModel {
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
         selectedMapStyle = mapStylesArray[nextIndex]
+    }
+    
+    func resetMapToCurrentUserLocation() {
+        removeMarkerCoordinate()
+        removeDirections()
+        withAnimation { positionToInitialUserLocation() }
     }
     
     // MARK: - PRIVATE FUNCTIONS
@@ -183,5 +208,36 @@ final class MapViewModel {
             latitudinalMeters: meters,
             longitudinalMeters: meters
         ))
+    }
+    
+    // MARK: - CTA Button Related
+    private func startAlert() {
+        guard isBeyondMinimumDistance() else {
+            // show an alert here...
+            return
+        }
+        
+        setMarkerCoordinate()
+        getDirections()
+        
+        guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
+            stopAlert()
+            return
+        }
+        
+        locationManager.onRegionEntry = { [weak self] in
+            guard let self else { return }
+            
+            alertManager.sendNotification()
+            alertManager.playHaptic()
+            alertManager.playTone()
+        }
+    }
+    
+    private func stopAlert() {
+        locationManager.stopMonitoringRegion()
+        alertManager.stopHaptic()
+        alertManager.stopTone()
+        resetMapToCurrentUserLocation()
     }
 }

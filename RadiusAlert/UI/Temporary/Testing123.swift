@@ -18,10 +18,6 @@ struct Testing123: View {
                 ToneManager.shared.stopDefaultTone()
             }
             
-            Button("Request permission for notifications") {
-                NotificationManager.shared.requestAuthorizationIfNeeded()
-            }
-            
             Button("trigger local push notification") {
                 NotificationManager.shared.scheduleNotification()
             }

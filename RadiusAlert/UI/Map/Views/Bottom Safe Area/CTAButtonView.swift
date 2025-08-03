@@ -14,23 +14,20 @@ struct CTAButtonView: View {
     // MARK: - BODY
     var body: some View {
         Button {
-            // action goes here...
-            mapVM.isMarkerCoordinateNil() ? () : ()
+            mapVM.triggerCTAButtonAction()
         } label: {
-            Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop")
+            Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop Alert")
                 .fontWeight(.semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(mapVM.getCTAButtonForegroundColor())
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                .background(
-                    mapVM.isMarkerCoordinateNil() ? .green : .red,
-                    in: .rect(cornerRadius: 12)
-                )
+                .background(mapVM.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
                 .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(.top, 20)
+        .padding(.horizontal, 45)
+        .background(.regularMaterial)
     }
 }
 

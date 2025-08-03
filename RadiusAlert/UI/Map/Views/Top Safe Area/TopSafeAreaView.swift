@@ -17,43 +17,59 @@ struct TopSafeAreaView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
+            navigationTitleButton
             searchBar
-            
-            // debug
-            HStack {
-                Button("Testing") {
-                    mapVM.setMarkerCoordinate()
-                }
-                
-                Button("Get directions") {
-                    mapVM.getDirections()
-                }
-                
-                Button("Reset route") {
-                    mapVM.resetDirections()
-                }
-            }
-            
             Divider()
         }
-        .background(.ultraThinMaterial)
+        .padding(.top, 40)
+        .background(.regularMaterial)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Top Safe Area Views") {
     NavigationStack {
-        TopSafeAreaView()
+        VStack {
+            TopSafeAreaView()
+            Spacer()
+        }
     }
     .previewModifier()
 }
 
 // MARK: - EXTENSIONS
 extension TopSafeAreaView {
+    private var navigationTitleButton: some View {
+        HStack(spacing: 5) {
+            Text("Radius Alert")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            Image(.logo)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 50)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.leading)
+    }
+    
     @ViewBuilder
     private var searchBar: some View {
         @Bindable var contentVM: ContentViewModel = contentVM
-        SearchBarView(searchBarText: $contentVM.searchText, placeholder: "Search", context: .navigation, customColors: nil) { _ in }
-            .padding(.vertical)
+        SearchBarView(
+            searchBarText: $contentVM.searchText,
+            placeholder: "Search",
+            context: .custom,
+            customColors: .init(
+                backgroundColor: .searchBarBackground,
+                searchIconTextColor: .searchBarForeground,
+                placeholderTextColor: .searchBarForeground,
+                textColor: .primary
+            )
+        ) { _ in }
+            .padding(.bottom, 14)
+            .padding(.top, 8)
     }
 }
