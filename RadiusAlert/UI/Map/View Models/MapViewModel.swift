@@ -75,8 +75,25 @@ final class MapViewModel {
     }
     
     func showRadiusCircle() -> Bool {
+        let condition1: Bool = isMarkerCoordinateNil() ? isBeyondMinimumDistance() : true
+        
+        let condition2: Bool = isRadiusSliderActive
+        ? true
+        : isMarkerCoordinateNil() ? !isCameraDragging : true
+        
+        return condition1 && condition2
+    }
+    
+    func showMapPin() -> Bool {
         let condition1: Bool = isBeyondMinimumDistance()
-        let condition2: Bool = isRadiusSliderActive ? true : !isCameraDragging
+        let condition2: Bool = isMarkerCoordinateNil()
+        
+        return condition1 && condition2
+    }
+    
+    func showRadiusSlider() -> Bool {
+        let condition1: Bool = isMarkerCoordinateNil()
+        let condition2: Bool = isBeyondMinimumDistance()
         
         return condition1 && condition2
     }

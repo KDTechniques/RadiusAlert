@@ -13,12 +13,11 @@ struct MapPinView: View {
     
     // MARK: - BODY
     var body: some View {
-        let showMapPin: Bool = mapVM.isBeyondMinimumDistance()
         Image(systemName: "mappin")
             .font(.largeTitle)
-            .foregroundStyle(.red)
-            .opacity(showMapPin ? 1 : 0)
-            .animation(.smooth(duration: 0.3), value: showMapPin)
+            .foregroundStyle(.red.gradient)
+            .opacity(mapVM.showMapPin() ? 1 : 0)
+            .animation(.default, value: mapVM.showMapPin())
     }
 }
 

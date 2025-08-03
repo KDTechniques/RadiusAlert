@@ -20,9 +20,12 @@ struct MapView: View {
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
+        
         Map(position: $mapVM.position) {
+            // User's Current Location
             UserAnnotation()
             
+            // Radius Circle
             if let centerCoordinate = mapVM.centerCoordinate, mapVM.showRadiusCircle() {
                 MapCircle(
                     center: mapVM.setRadiusCircleCoordinate(centerCoordinate),
@@ -31,10 +34,12 @@ struct MapView: View {
                 .foregroundStyle((colorScheme == .dark ? Color.white : Color.black).opacity(0.3))
             }
             
+            // Marker
             if let markerCoordinate = mapVM.markerCoordinate {
-                Marker("Stop", coordinate: markerCoordinate)
+                Marker("Your Destination", coordinate: markerCoordinate)
             }
             
+            // Route
             if let route = mapVM.route {
                 MapPolyline(route)
                     .stroke(Color.pink.gradient, lineWidth: 3)
@@ -47,12 +52,8 @@ struct MapView: View {
             MapCompass(scope: mapSpace)
             MapScaleView(scope: mapSpace)
         }
-        .onMapCameraChange(frequency: .continuous) {
-            mapVM.onContinuousMapCameraChange($0)
-        }
-        .onMapCameraChange(frequency: .onEnd) {
-            mapVM.onMapCameraChangeEnd($0)
-        }
+        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
+        .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
     }
 }
 
