@@ -36,7 +36,7 @@ struct MapView: View {
             
             // Marker
             if let markerCoordinate = mapVM.markerCoordinate {
-                Marker("Your Destination", coordinate: markerCoordinate)
+                Marker(mapVM.getRadiusTextString(), coordinate: markerCoordinate)
             }
             
             // Route

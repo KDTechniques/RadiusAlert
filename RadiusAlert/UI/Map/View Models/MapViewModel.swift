@@ -98,6 +98,13 @@ final class MapViewModel {
         return condition1 && condition2
     }
     
+    func showFloatingAlertRadiusText() -> Bool {
+        let condition1: Bool = showRadiusCircle()
+        let condition2: Bool = isMarkerCoordinateNil()
+        
+        return condition1 && condition2
+    }
+    
     // MARK: - Radius Related
     func setRadiusCircleCoordinate(_ center: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         return isMarkerCoordinateNil() ? center : markerCoordinate!
@@ -135,7 +142,7 @@ final class MapViewModel {
     // MARK: - Other
     func getRadiusTextString() -> String {
         let intNumber: Int = .init(selectedRadius)
-        return intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m"
+        return "Alert Radius\n" + (intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m")
     }
     
     func nextMapStyle() {
