@@ -59,7 +59,7 @@ extension SearchResultsListView {
             
             Divider()
         }
-        .background(.red.opacity(0.001))
+        .background(.pink.opacity(0.001))
     }
     
     private var list: some View {

@@ -9,34 +9,29 @@ import SwiftUI
 
 struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     //  MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     let screenWidth: CGFloat = UIScreen.main.bounds.size.width
     
-    let sliderLabelForegroundColor: Color = .init(uiColor: .darkGray)
-    
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
         Slider(
-            value: $mapVM.radius,
-            in: mapValues.minimumRadius...mapValues.maximumRadius) { } minimumValueLabel: {
-                Text(mapValues.minimumRadiusString)
-                    .radiusSliderViewModifier
-            } maximumValueLabel: {
-                Text(mapValues.maximumRadiusString)
-                    .radiusSliderViewModifier
-            } onEditingChanged: { boolean in
-                print(boolean)
-            }
-            .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing, 10)
-        
-        
-        
+            value: $mapVM.selectedRadius,
+            in: mapValues.minimumRadius...mapValues.maximumRadius) { }
+        minimumValueLabel: {
+            Text(mapValues.minimumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        } maximumValueLabel: {
+            Text(mapValues.maximumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        }
+        .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .padding(.trailing, 10)
     }
 }
 
@@ -46,10 +41,11 @@ struct RadiusSliderView: View {
         .previewModifier()
 }
 
+// MARK: - EXTENSIONS
 extension View {
-    var radiusSliderViewModifier: some View {
+    func radiusSliderViewModifier(_ colorScheme: ColorScheme) -> some View {
         self
-            .foregroundStyle(Color(uiColor: .darkGray))
+            .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
             .font(.caption)
             .fontWeight(.semibold)
     }

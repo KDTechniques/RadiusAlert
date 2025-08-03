@@ -17,14 +17,14 @@ final class MapViewModel {
     // MARK: - INITIALIZER
     init(locationManager: LocationManager) {
         self.locationManager = locationManager
-        radius = mapValues.minimumRadius
+        selectedRadius = mapValues.minimumRadius
     }
     
     // MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
-    var radius: CLLocationDistance
+    var selectedRadius: CLLocationDistance
     var showRadiusCircle: Bool = false {
         didSet {
             print("💜💜💜💜💜: \(showRadiusCircle)")
@@ -58,8 +58,8 @@ final class MapViewModel {
     }
     
     func radiusTextHandler() -> String {
-        let intNumber: Int = .init(radius)
-        return intNumber >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(intNumber)m"
+        let intNumber: Int = .init(selectedRadius)
+        return intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m"
     }
     
     func isBeyondMinimumDistance() -> Bool {

@@ -18,5 +18,5 @@ struct MapValues {
     static let maximumRadius:  CLLocationDistance = 3000
     static var maximumRadiusString: String { "\(Int(self.maximumRadius/1000))km" }
     
-    static let radiusSliderWidthFactor: CGFloat = 1.7
+    static let radiusSliderWidthFactor: CGFloat = 2
 }

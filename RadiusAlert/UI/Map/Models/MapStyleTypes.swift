@@ -14,11 +14,11 @@ enum MapStyleTypes: CaseIterable {
     var mapStyle: MapStyle {
         switch self {
         case .standard:
-            return .standard
+            return .standard(elevation: .realistic)
         case .imagery:
-            return .imagery
+            return .imagery(elevation: .realistic)
         case .hybrid:
-            return .hybrid
+            return .hybrid(elevation: .realistic)
         }
     }
     

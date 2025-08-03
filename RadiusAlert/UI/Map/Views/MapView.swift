@@ -24,8 +24,8 @@ struct MapView: View {
             
             if let centerCoordinate = mapVM.centerCoordinate,
                mapVM.showRadiusCircle {
-                MapCircle(center: centerCoordinate, radius: mapVM.radius)
-                    .foregroundStyle(.red.opacity(0.5))
+                MapCircle(center: centerCoordinate, radius: mapVM.selectedRadius)
+                    .foregroundStyle(.pink.opacity(0.5))
                     .stroke(.secondary, style: .init(lineWidth: 2))
             }
             
