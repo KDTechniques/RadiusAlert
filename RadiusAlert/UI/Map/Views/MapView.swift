@@ -10,6 +10,7 @@ import MapKit
 
 struct MapView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     @Environment(ContentViewModel.self) private var contentVM
     
@@ -22,10 +23,12 @@ struct MapView: View {
         Map(position: $mapVM.position) {
             UserAnnotation()
             
-            if let centerCoordinate = mapVM.centerCoordinate,
-               mapVM.showRadiusCircle {
-                MapCircle(center: centerCoordinate, radius: mapVM.selectedRadius)
-                    .foregroundStyle(.pink.gradient.opacity(0.5))
+            if let centerCoordinate = mapVM.centerCoordinate, mapVM.showRadiusCircle() {
+                MapCircle(
+                    center: mapVM.setRadiusCircleCoordinate(centerCoordinate),
+                    radius: mapVM.selectedRadius
+                )
+                .foregroundStyle((colorScheme == .dark ? Color.white : Color.black).opacity(0.3))
             }
             
             if let markerCoordinate = mapVM.markerCoordinate {

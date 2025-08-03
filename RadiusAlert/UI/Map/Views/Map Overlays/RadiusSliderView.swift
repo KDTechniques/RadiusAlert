@@ -19,19 +19,24 @@ struct RadiusSliderView: View {
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        Slider(
-            value: $mapVM.selectedRadius,
-            in: mapValues.minimumRadius...mapValues.maximumRadius) { }
-        minimumValueLabel: {
-            Text(mapValues.minimumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
-        } maximumValueLabel: {
-            Text(mapValues.maximumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
+        if mapVM.isMarkerCoordinateNil() {
+            Slider(
+                value: $mapVM.selectedRadius.animation(),
+                in: mapValues.minimumRadius...mapValues.maximumRadius,
+                step: mapValues.radiusStep) { }
+            minimumValueLabel: {
+                Text(mapValues.minimumRadiusString)
+                    .radiusSliderViewModifier(colorScheme)
+            } maximumValueLabel: {
+                Text(mapValues.maximumRadiusString)
+                    .radiusSliderViewModifier(colorScheme)
+            } onEditingChanged: {
+                mapVM.isRadiusSliderActive = $0
+            }
+            .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .padding(.trailing, 10)
         }
-        .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-        .padding(.trailing, 10)
     }
 }
 

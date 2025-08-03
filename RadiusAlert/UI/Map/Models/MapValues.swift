@@ -12,11 +12,12 @@ struct MapValues {
     static let regionBoundsFactor: CLLocationDistance = 1.8
     static let minimumDistance: CLLocationDistance = 1000
     
+    // Radius Related
+    static let radiusStep: Double = 100
     static let minimumRadius: CLLocationDistance = 700
     static var minimumRadiusString: String { "\(Int(self.minimumRadius))m" }
-    
     static let maximumRadius:  CLLocationDistance = 3000
     static var maximumRadiusString: String { "\(Int(self.maximumRadius/1000))km" }
-    
     static let radiusSliderWidthFactor: CGFloat = 2
+    static let radiusToRegionBoundsMetersFactor: Double = 5
 }

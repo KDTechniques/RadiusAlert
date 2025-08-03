@@ -25,35 +25,48 @@ final class MapViewModel {
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
     var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
-    var showRadiusCircle: Bool = false {
-        didSet {
-            print("💜💜💜💜💜: \(showRadiusCircle)")
-        }
-    }
     var markerCoordinate: CLLocationCoordinate2D? {
         didSet {
             locationManager.markerCoordinate = markerCoordinate
-            setRadiusCircleVisibilityOnMarkerCoordinate()
         }
     }
     var selectedMapStyle: MapStyleTypes = .standard
     var route: MKRoute?
+    var isCameraDragging: Bool = false
+    var isRadiusSliderActive: Bool = false
     
     // MARK: - FUNCTIONS
+    
+    // MARK: - Camera Related
     func positionToInitialUserLocation() {
         guard let position: MapCameraPosition = locationManager.getInitialMapCameraPosition() else { return }
         self.position = position
     }
     
     func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
-        setCenterRegionCoordinate(context.region.center)
-        radiusCircleVisibilityHandler(false)
+        setCameraDragging(true)
+        setCenterCoordinate(context.region.center)
     }
     
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
-        setCenterRegionCoordinate(context.region.center)
-        radiusCircleVisibilityHandler()
+        setCameraDragging(false)
+        setCenterCoordinate(context.region.center)
+    }
+    
+    // MARK: - Validation Related
+    func isBeyondMinimumDistance() -> Bool {
+        guard let currentLocation = locationManager.currentUserLocation,
+              let centerCoordinate else { return false }
         
+        let distance: CLLocationDistance = locationManager.getDistance(
+            from: centerCoordinate,
+            to: currentLocation
+        )
+        
+        return distance > mapValues.minimumDistance
+    }
+    
+    func checkLocationPermissionOnCA() {
         // Check whether the user has still given permission to only when in use and ask them to change it to always ui get triggered here...
         let status: CLAuthorizationStatus = locationManager.manager.authorizationStatus
         if status == .authorizedWhenInUse {
@@ -61,19 +74,19 @@ final class MapViewModel {
         }
     }
     
-    func radiusTextHandler() -> String {
-        let intNumber: Int = .init(selectedRadius)
-        return intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m"
-    }
-    
-    func isBeyondMinimumDistance() -> Bool {
-        guard let currentLocation = locationManager.currentUserLocation,
-              let centerCoordinate else { return false }
+    func showRadiusCircle() -> Bool {
+        let condition1: Bool = isBeyondMinimumDistance()
+        let condition2: Bool = isRadiusSliderActive ? true : !isCameraDragging
         
-        let distance: CLLocationDistance = locationManager.getDistance(from: centerCoordinate, to: currentLocation)
-        return distance > mapValues.minimumDistance
+        return condition1 && condition2
     }
     
+    // MARK: - Radius Related
+    func setRadiusCircleCoordinate(_ center: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+        return isMarkerCoordinateNil() ? center : markerCoordinate!
+    }
+    
+    // MARK: - Marker Related
     func setMarkerCoordinate() {
         guard
             let currentLocation = locationManager.currentUserLocation,
@@ -91,21 +104,7 @@ final class MapViewModel {
         return markerCoordinate == nil
     }
     
-    func setRadiusCircleVisibilityOnMarkerCoordinate() {
-        //        radiusCircleVisibilityHandler(markerCoordinate != nil)
-        let isNil: Bool = markerCoordinate == nil
-        
-        showRadiusCircle = !isNil
-    }
-    
-    func nextMapStyle() {
-        let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
-        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else { return }
-        
-        let nextIndex: Int = mapStylesArray.nextIndex(after: index)
-        selectedMapStyle = mapStylesArray[nextIndex]
-    }
-    
+    // MARK: - Directions Related
     func getDirections() {
         Task {
             route = await locationManager.getDirections()
@@ -116,20 +115,49 @@ final class MapViewModel {
         route = nil
     }
     
+    // MARK: - Other
+    func getRadiusTextString() -> String {
+        let intNumber: Int = .init(selectedRadius)
+        return intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m"
+    }
+    
+    func nextMapStyle() {
+        let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
+        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else { return }
+        
+        let nextIndex: Int = mapStylesArray.nextIndex(after: index)
+        selectedMapStyle = mapStylesArray[nextIndex]
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
-    private func setCenterRegionCoordinate(_ center: CLLocationCoordinate2D) {
+    
+    // MARK: - Camera Related
+    private func setCameraDragging(_ boolean: Bool) {
+        isCameraDragging = boolean
+    }
+    
+    // MARK: - Radius Related
+    private func setCenterCoordinate(_ center: CLLocationCoordinate2D) {
         centerCoordinate = center
     }
     
-    private func radiusCircleVisibilityHandler(_ boolean: Bool? = nil) {
-        if let boolean {
-            showRadiusCircle = boolean
-        } else {
-            showRadiusCircle = isBeyondMinimumDistance()
-        }
+    private func onRadiusChange() {
+        setRegionBoundsOnRadius()
     }
     
-    private func onRadiusChange() {
-        print(selectedRadius)
+    private func setRegionBoundsOnRadius() {
+        guard let centerCoordinate else { return }
+        
+        let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor
+        setRegionBoundMeters(center: centerCoordinate, meters: regionBoundMeters)
+    }
+    
+    // MARK: - Region Bounds Related
+    private func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
+        position = .region(.init(
+            center: center,
+            latitudinalMeters: meters,
+            longitudinalMeters: meters
+        ))
     }
 }

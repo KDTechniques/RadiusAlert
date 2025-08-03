@@ -13,12 +13,11 @@ struct CircularRadiusTextView: View {
     
     // MARK: - BODY
     var body: some View {
-        Text("Alert Radius\n\(mapVM.radiusTextHandler())")
+        Text("Alert Radius\n\(mapVM.getRadiusTextString())")
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)
             .offset(y: 40)
-            .opacity(mapVM.showRadiusCircle ? 1 : 0)
     }
 }
 
