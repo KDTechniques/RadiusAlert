@@ -17,9 +17,9 @@ struct TopSafeAreaView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
-            navigationTitle
             searchBar
             
+            // debug
             HStack {
                 Button("Testing") {
                     mapVM.setMarkerCoordinate()
@@ -42,11 +42,6 @@ struct TopSafeAreaView: View {
 
 // MARK: - EXTENSIONS
 extension TopSafeAreaView {
-    private var navigationTitle: some View {
-        Text("Radius Alert")
-            .fontWeight(.semibold)
-    }
-    
     @ViewBuilder
     private var searchBar: some View {
         @Bindable var contentVM: ContentViewModel = contentVM

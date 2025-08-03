@@ -22,6 +22,14 @@ struct ContentView: View {
                         MapPinView()
                         CircularRadiusTextView()
                         RadiusSliderView()
+                        
+                        Image(.logo) //make this an SVG icon for trasparency
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 44)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .topTrailing)
+                            .padding(.top, 30)
+                            .padding(.horizontal, 5)
                     }
             }
             .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
