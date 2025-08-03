@@ -17,7 +17,7 @@ final class NotificationManager {
     }
     
     // MARK: - PUBLIC FUNCTIONS
-    func scheduleNotification(after seconds: TimeInterval = 0) {
+    func scheduleNotification(after seconds: TimeInterval = 0.5) {
         let content = UNMutableNotificationContent()
         content.title = "You're Here 🎉"
         content.body = "You've arrived at your destination. Tap to continue."
