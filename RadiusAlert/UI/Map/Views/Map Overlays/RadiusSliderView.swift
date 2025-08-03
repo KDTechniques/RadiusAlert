@@ -11,13 +11,21 @@ struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
     
+    //  MARK: - ASSIGNED PROPERTIES
+    let mapValues: MapValues.Type = MapValues.self
+    let screenWidth: CGFloat = UIScreen.main.bounds.size.width
+    
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        Slider(value: $mapVM.radius, in: 500...2000, step: 100)
-            .frame(width: 200)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing)
+        Slider(
+            value: $mapVM.radius,
+            in: mapValues.minimumRadius...mapValues.maximumRadius,
+            step: 100
+        )
+        .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .padding(.trailing)
     }
 }
 

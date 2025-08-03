@@ -10,13 +10,21 @@ import SearchBarSwiftUI
 
 struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
+    @Environment(LocationManager.self) private var locationManager
     @Environment(ContentViewModel.self) private var contentVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
             navigationTitle
             searchBar
+            
+            HStack {
+                Button("Testing") {
+                    mapVM.setMarkerCoordinate()
+                }
+            }
             
             Divider()
         }

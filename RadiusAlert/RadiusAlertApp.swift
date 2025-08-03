@@ -29,6 +29,7 @@ struct RadiusAlertApp: App {
             ContentView()
                 .environment(mapVM)
                 .environment(contentVM)
+                .environment(locationManager)
         }
     }
 }

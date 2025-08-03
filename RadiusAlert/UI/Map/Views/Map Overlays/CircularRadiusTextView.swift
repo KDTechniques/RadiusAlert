@@ -17,8 +17,8 @@ struct CircularRadiusTextView: View {
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)
-            .offset(y: 30)
-            .opacity(mapVM.centerCoordinate == nil ? 0 : 1)
+            .offset(y: 40)
+            .opacity(mapVM.showRadiusCircle ? 1 : 0)
     }
 }
 

@@ -5,7 +5,6 @@
 //  Created by Kavinda Dilshan on 2025-07-27.
 //
 
-import Foundation
 import CoreLocation
 import SwiftUI
 import MapKit
@@ -14,13 +13,18 @@ import MapKit
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
     let manager: CLLocationManager = .init()
-    var shouldStopLocationUpdates: Bool = false
     
     // MARK: - INITIALIZER
     override init() {
         super.init()
         manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        manager.startUpdatingLocation()
     }
+    
+    // MARK: - ASSIGNED PROPERTIES
+    let locationManagerValues: LocationManagerValues.Type = LocationManagerValues.self
+    var currentLocation: CLLocationCoordinate2D?
     
     // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -52,19 +56,36 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func getInitialUserCurrentLocation() -> MapCameraPosition? {
-        guard let coordinate: CLLocationCoordinate2D = manager.location?.coordinate else {
-            print("Error getting initial user's current location!")
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations.first?.coordinate
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        print(error.localizedDescription)
+    }
+    
+    // MARK: - DEFINED FUNCTIONS
+    func getInitialMapCameraPosition() -> MapCameraPosition? {
+        guard let coordinate: CLLocationCoordinate2D =  currentLocation else {
+            print("Error getting initial current location of the user!")
             return nil
         }
         
-        let distance: CLLocationDistance = 1000
-        let region: MKCoordinateRegion = .init(center: coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+        let regionBoundMeters: CLLocationDistance = locationManagerValues.initialUserLocationBoundsMeters
+        let region: MKCoordinateRegion = .init(
+            center: coordinate,
+            latitudinalMeters: regionBoundMeters,
+            longitudinalMeters: regionBoundMeters
+        )
         
         return .region(region)
     }
     
-    func getDistance(from location1: CLLocation, to location2: CLLocation) -> CLLocationDistance {
+    func getDistance(from location1: CLLocationCoordinate2D, to location2: CLLocationCoordinate2D) -> CLLocationDistance {
+        let location1: CLLocation = .init(latitude: location1.latitude, longitude: location1.longitude)
+        let location2: CLLocation = .init(latitude: location2.latitude, longitude: location2.longitude)
         return location1.distance(from: location2)
     }
+    
+    
 }

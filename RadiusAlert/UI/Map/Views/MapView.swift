@@ -19,21 +19,27 @@ struct MapView: View {
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        Map(position: .constant(.automatic)) {
+        Map(position: $mapVM.position) {
             UserAnnotation()
             
-            if let centerCoordinate = mapVM.centerCoordinate {
+            if let centerCoordinate = mapVM.centerCoordinate,
+               mapVM.showRadiusCircle {
                 MapCircle(center: centerCoordinate, radius: mapVM.radius)
                     .foregroundStyle(.red.opacity(0.5))
                     .stroke(.secondary, style: .init(lineWidth: 2))
+            }
+            
+            if let markerCoordinate = mapVM.markerCoordinate {
+                Marker("Stop", coordinate: markerCoordinate)
             }
         }
         .mapControls {
             MapUserLocationButton(scope: mapSpace)
             MapPitchToggle(scope: mapSpace)
+            MapCompass(scope: mapSpace)
         }
         .onMapCameraChange(frequency: .continuous) {
-            mapVM.onContinuousMapCameraChange()
+            mapVM.onContinuousMapCameraChange($0)
         }
         .onMapCameraChange(frequency: .onEnd) {
             mapVM.onMapCameraChangeEnd($0)
