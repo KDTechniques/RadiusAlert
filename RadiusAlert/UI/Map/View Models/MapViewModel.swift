@@ -11,32 +11,25 @@ import MapKit
 
 @Observable
 final class MapViewModel {
-    // MARK: - INJECTED PROPERTIES
-    let locationManager: LocationManager
-    
     // MARK: - INITIALIZER
-    init(locationManager: LocationManager) {
-        self.locationManager = locationManager
+    init() {
         selectedRadius = mapValues.minimumRadius
     }
     
     // MARK: - ASSIGNED PROPERTIES
+    let locationManager: LocationManager = .shared
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
     var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
-    var markerCoordinate: CLLocationCoordinate2D? {
-        didSet {
-            locationManager.markerCoordinate = markerCoordinate
-        }
-    }
+    var markerCoordinate: CLLocationCoordinate2D? { didSet { locationManager.markerCoordinate = markerCoordinate } }
     var selectedMapStyle: MapStyleTypes = .standard
     var route: MKRoute?
-    var isCameraDragging: Bool = false
-    var isRadiusSliderActive: Bool = false
+    @ObservationIgnored var isCameraDragging: Bool = false
+    @ObservationIgnored var isRadiusSliderActive: Bool = false
     
-    // MARK: - FUNCTIONS
+    // MARK: - PUBLIC FUNCTIONS
     
     // MARK: - Camera Related
     func positionToInitialUserLocation() {
@@ -46,12 +39,13 @@ final class MapViewModel {
     
     func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
         setCameraDragging(true)
-        setCenterCoordinate(context.region.center)
+        setCenterCoordinate(context.camera.centerCoordinate)
     }
     
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
         setCameraDragging(false)
-        setCenterCoordinate(context.region.center)
+        setCenterCoordinate(context.camera.centerCoordinate)
+        centerRegionBounds()
     }
     
     // MARK: - Validation Related
@@ -121,8 +115,9 @@ final class MapViewModel {
         
         let distance: CLLocationDistance = locationManager.getDistance(from: centerCoordinate, to: currentLocation)
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
+        let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: centerCoordinate, and: currentLocation)
         
-        position = .region(.init(center: centerCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+        position = .region(.init(center: midCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
     }
     
     func isMarkerCoordinateNil() -> Bool {
@@ -185,6 +180,18 @@ final class MapViewModel {
         isCameraDragging = boolean
     }
     
+    private func centerRegionBounds() {
+        guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else { return }
+        
+        let distance: CLLocationDistance = locationManager.getDistance(from: markerCoordinate, to: currentUserLocation)
+        let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
+        let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: markerCoordinate, and: currentUserLocation)
+        
+        withAnimation {
+            position = .region(.init(center: midCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+        }
+    }
+    
     // MARK: - Radius Related
     private func setCenterCoordinate(_ center: CLLocationCoordinate2D) {
         centerCoordinate = center
@@ -219,6 +226,7 @@ final class MapViewModel {
         
         setMarkerCoordinate()
         getDirections()
+        centerRegionBounds()
         
         guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
             stopAlert()
@@ -239,5 +247,13 @@ final class MapViewModel {
         alertManager.stopHaptic()
         alertManager.stopTone()
         resetMapToCurrentUserLocation()
+    }
+    
+    // MARK: - Other
+    private func calculateMidCoordinate(from coord1: CLLocationCoordinate2D, and coord2: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+        let midLatitude = (coord1.latitude + coord2.latitude) / 2
+        let midLongitude = (coord1.longitude + coord2.longitude) / 2
+        
+        return .init(latitude: midLatitude, longitude: midLongitude)
     }
 }

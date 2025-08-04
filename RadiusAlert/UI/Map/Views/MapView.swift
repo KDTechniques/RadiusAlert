@@ -12,7 +12,6 @@ struct MapView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
-    @Environment(ContentViewModel.self) private var contentVM
     
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace
@@ -20,7 +19,7 @@ struct MapView: View {
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        
+        let _ = Self._printChanges()
         Map(position: $mapVM.position) {
             // User's Current Location
             UserAnnotation()
@@ -31,7 +30,7 @@ struct MapView: View {
                     center: mapVM.setRadiusCircleCoordinate(centerCoordinate),
                     radius: mapVM.selectedRadius
                 )
-                .foregroundStyle((colorScheme == .dark ? Color.white : Color.black).opacity(0.3))
+                .foregroundStyle(Color.getNotPrimary(colorScheme: colorScheme).opacity(0.3))
             }
             
             // Marker

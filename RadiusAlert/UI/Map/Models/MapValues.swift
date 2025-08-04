@@ -11,6 +11,7 @@ struct MapValues {
     static let initialUserLocationBoundsMeters: CLLocationDistance = 2000
     static let regionBoundsFactor: CLLocationDistance = 1.8
     static let minimumDistance: CLLocationDistance = 1000
+    static let regionBoundsCenterDelayDuration: Double = 2.0
     
     // Radius Related
     static let radiusStep: Double = 100

@@ -10,18 +10,10 @@ import SwiftUI
 @main
 struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
-    @State private var mapVM: MapViewModel
-    @State private var contentVM: ContentViewModel
-    let locationManager: LocationManager
+    @State private var mapVM: MapViewModel = .init()
+    @State private var contentVM: ContentViewModel = .init()
     
-    init() {
-        let locationManagerInstance: LocationManager = .init()
-        locationManager = locationManagerInstance
-        
-        mapVM = .init(locationManager: locationManagerInstance)
-        contentVM = .init(locationManager: locationManagerInstance)
-    }
-    
+    init() { }
     
     // MARK: - BODY
     var body: some Scene {
@@ -29,7 +21,6 @@ struct RadiusAlertApp: App {
             ContentView()
                 .environment(mapVM)
                 .environment(contentVM)
-                .environment(locationManager)
         }
     }
 }

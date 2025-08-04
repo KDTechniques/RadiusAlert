@@ -9,13 +9,13 @@ import CoreLocation
 import SwiftUI
 import MapKit
 
-@Observable
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
     let manager: CLLocationManager = .init()
+    static let shared: LocationManager = .init()
     
     // MARK: - INITIALIZER
-    override init() {
+    private override init() {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
@@ -23,12 +23,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - ASSIGNED PROPERTIES
-    private let mapValues: MapValues.Type = MapValues.self
-    private let regionIdentifier: String = "radiusAlert"
     var currentUserLocation: CLLocationCoordinate2D?
     var markerCoordinate: CLLocationCoordinate2D?
+    var onRegionEntry: (() -> Void) = { }
+    
+    private let mapValues: MapValues.Type = MapValues.self
+    private let regionIdentifier: String = "radiusAlert"
     private var monitoredRegion: CLCircularRegion?
-    var onRegionEntry: (() -> Void)?
     
     // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -68,7 +69,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard region.identifier == monitoredRegion?.identifier else { return }
         print("✅ Entered region: \(region.identifier)")
-        onRegionEntry?() // Trigger your function here
+        onRegionEntry()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
@@ -149,7 +150,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private func setLocationAccuracy() {
         guard
             let currentUserLocation,
-            let markerCoordinate else { return }
+            let markerCoordinate else {
+            manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            return
+        }
         
         let distance: CLLocationDistance = getDistance(from: currentUserLocation, to: markerCoordinate)
         

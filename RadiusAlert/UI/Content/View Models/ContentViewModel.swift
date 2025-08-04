@@ -11,16 +11,12 @@ import MapKit
 
 @Observable
 final class ContentViewModel {
-    // MARK: - INJECTED PROPERTIES
-    let locationManager: LocationManager
-    
     // MARK: - ASSIGNED PROPERTIES
+    let locationManager: LocationManager = .shared
     var searchText: String = ""
     
     // MARK: - INITIALIZER
-    init(locationManager: LocationManager) {
-        self.locationManager = locationManager
-    }
+    init() { }
     
     // MARK: -  FUNCTIONS
 }
