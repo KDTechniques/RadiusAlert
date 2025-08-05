@@ -11,7 +11,6 @@ import SearchBarSwiftUI
 struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
     @Environment(ContentViewModel.self) private var contentVM
-    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {

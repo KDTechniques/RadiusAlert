@@ -13,21 +13,23 @@ struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
     
+    // MARK: - ASSIGNED PROPERTIES
+    @State private var alertManager: AlertManager = .shared
+    
     // MARK: - BODY
     var body: some View {
         NavigationStack {
-            ZStack {
-                MapView()
-                    .overlay {
-                        MapPinView()
-                        CircularRadiusTextView()
-                        MapStyleButtonView()
-                        RadiusSliderView()
-                    }
-            }
-            .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
-            .safeAreaInset(edge: .bottom, spacing: 0) { BottomSafeAreaView() }
-            .toolbarVisibility(.hidden, for: .navigationBar)
+            MapView()
+                .overlay {
+                    MapPinView()
+                    CircularRadiusTextView()
+                    MapStyleButtonView()
+                    RadiusSliderView()
+                }
+                .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
+                .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
+                .toolbarVisibility(.hidden, for: .navigationBar)
+                .alertViewModifier(item: $alertManager.alertItem)
         }
         .onAppear { mapVM.positionToInitialUserLocation() }
     }

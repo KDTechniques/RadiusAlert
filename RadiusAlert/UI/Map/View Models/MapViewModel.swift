@@ -224,6 +224,20 @@ final class MapViewModel {
             return
         }
         
+        guard
+            let centerCoordinate,
+            let currentUserLocation = locationManager.currentUserLocation else { return }
+        
+        let distance: CLLocationDistance = locationManager.getDistance(
+            from: centerCoordinate,
+            to: currentUserLocation
+        )
+        
+        guard selectedRadius < distance else {
+            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius
+            return
+        }
+        
         setMarkerCoordinate()
         getDirections()
         centerRegionBounds()
