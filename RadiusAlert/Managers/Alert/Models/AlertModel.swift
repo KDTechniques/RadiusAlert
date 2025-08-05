@@ -36,8 +36,6 @@ func showAlert(_ alertType: AlertModel) {
 }
 
 enum AlertTypes {
-    // MARK: - Reusable
-    
     // MARK: - noConnection
     static let noConnection: AlertModel = .init(
         title: "No Internet Connection",
@@ -53,5 +51,10 @@ enum AlertTypes {
         primaryAction: .default(Text("OK"))
     )
     
-    
+    static let radiusNotBeyondMinimumDistance: AlertModel = .init(
+        title: "Too Close to Set Alert",
+        message: "The alert radius must be set at least 1km ahead of your current location.",
+        hapticType: .warning,
+        primaryAction: .default(Text("OK"))
+    )
 }

@@ -220,7 +220,7 @@ final class MapViewModel {
     // MARK: - CTA Button Related
     private func startAlert() {
         guard isBeyondMinimumDistance() else {
-            // show an alert here...
+            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance
             return
         }
         
