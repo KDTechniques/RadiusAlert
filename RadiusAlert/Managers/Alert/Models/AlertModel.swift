@@ -57,4 +57,14 @@ enum AlertTypes {
         hapticType: .warning,
         primaryAction: .default(Text("OK"))
     )
+    
+    static func stopAlertHereConfirmation(_ action: @escaping () -> Void) -> AlertModel {
+        .init(
+            title: "Are you sure?",
+            message: "This will stop the alert immediately.",
+            hapticType: .warning,
+            primaryAction: .destructive(Text("OK")) { action() },
+            secondaryAction: .cancel()
+        )
+    }
 }

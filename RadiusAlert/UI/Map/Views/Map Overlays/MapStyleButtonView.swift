@@ -18,9 +18,10 @@ struct MapStyleButtonView: View {
         } label: {
             Image(systemName: mapVM.selectedMapStyle.mapStyleSystemImageName)
                 .foregroundStyle(Color.accentColor)
+                .padding(11.5)
+                .buttonBackground
         }
-        .padding(11.5)
-        .background(.mapControlButtonBackground, in: .rect(cornerRadius: 7))
+        .buttonBackground
         .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
         .padding(.trailing, 5)
         .padding(.bottom, 30)
@@ -32,4 +33,12 @@ struct MapStyleButtonView: View {
 #Preview("Map Style Button View") {
     MapStyleButtonView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+fileprivate extension View {
+    var buttonBackground: some View {
+        self
+            .background(.mapControlButtonBackground, in: .rect(cornerRadius: 7))
+    }
 }

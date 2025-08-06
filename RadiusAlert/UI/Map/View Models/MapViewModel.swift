@@ -150,7 +150,7 @@ final class MapViewModel {
     }
     
     func triggerCTAButtonAction() {
-        isMarkerCoordinateNil() ? startAlert() : stopAlert()
+        isMarkerCoordinateNil() ? startAlert() : stopAlertConfirmation()
     }
     
     // MARK: - Other
@@ -261,6 +261,12 @@ final class MapViewModel {
         alertManager.stopHaptic()
         alertManager.stopTone()
         resetMapToCurrentUserLocation()
+    }
+    
+    private func stopAlertConfirmation() {
+        alertManager.alertItem = AlertTypes.stopAlertHereConfirmation { [weak self] in
+            self?.stopAlert()
+        }
     }
     
     // MARK: - Other

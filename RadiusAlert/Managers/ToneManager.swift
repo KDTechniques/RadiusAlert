@@ -44,7 +44,7 @@ final class ToneManager {
     private func activateAudioSession() {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
-            try AVAudioSession.sharedInstance().setActive(true)
+            try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
         } catch {
             print("Failed to activate audio session: \(error)")
         }
@@ -52,7 +52,7 @@ final class ToneManager {
     
     private func deactivateAudioSession() {
         do  {
-            try AVAudioSession.sharedInstance().setActive(true)
+            try AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
         } catch {
             print("Failed to deactivate audio session: \(error)")
         }
