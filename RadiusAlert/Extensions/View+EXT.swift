@@ -10,7 +10,6 @@ import SwiftUI
 extension View {
     func previewModifier() ->  some View {
         self
-            .environment(ContentViewModel())
             .environment(MapViewModel())
     }
     

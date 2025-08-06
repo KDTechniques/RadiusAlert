@@ -60,10 +60,20 @@ enum AlertTypes {
     
     static func stopAlertHereConfirmation(_ action: @escaping () -> Void) -> AlertModel {
         .init(
-            title: "Are you sure?",
+            title: "Are You Sure?",
             message: "This will stop the alert immediately.",
             hapticType: .warning,
             primaryAction: .destructive(Text("OK")) { action() },
+            secondaryAction: .cancel()
+        )
+    }
+    
+    static func stopAlertOnSubmit(_ action: @escaping (Bool) -> Void) -> AlertModel {
+        .init(
+            title: "Stop Existing Radius Alert?",
+            message: "You already have a radius alert set. Do you want to stop it to set a new radius alert?",
+            hapticType: .warning,
+            primaryAction: .destructive(Text("Yes")) { action(true) },
             secondaryAction: .cancel()
         )
     }

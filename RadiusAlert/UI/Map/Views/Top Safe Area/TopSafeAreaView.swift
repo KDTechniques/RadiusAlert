@@ -10,7 +10,7 @@ import SearchBarSwiftUI
 
 struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
-    @Environment(ContentViewModel.self) private var contentVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
@@ -55,9 +55,9 @@ extension TopSafeAreaView {
     
     @ViewBuilder
     private var searchBar: some View {
-        @Bindable var contentVM: ContentViewModel = contentVM
+        @Bindable var mapVM: MapViewModel = mapVM
         SearchBarView(
-            searchBarText: $contentVM.searchText,
+            searchBarText: $mapVM.searchText,
             placeholder: "Search",
             context: .custom,
             customColors: .init(
@@ -66,7 +66,8 @@ extension TopSafeAreaView {
                 placeholderTextColor: .searchBarForeground,
                 textColor: .primary
             )
-        ) { _ in }
+        ) { mapVM.isSearchFieldFocused = $0 }
+            .onSubmit { mapVM.searchLocation() }
             .padding(.bottom, 14)
             .padding(.top, 8)
     }

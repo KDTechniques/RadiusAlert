@@ -11,7 +11,6 @@ import SwiftUI
 struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
     @State private var mapVM: MapViewModel = .init()
-    @State private var contentVM: ContentViewModel = .init()
     
     init() { }
     
@@ -20,7 +19,6 @@ struct RadiusAlertApp: App {
         WindowGroup {
             ContentView()
                 .environment(mapVM)
-                .environment(contentVM)
         }
     }
 }

@@ -20,12 +20,18 @@ final class MapViewModel {
     let locationManager: LocationManager = .shared
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
+    
     var position: MapCameraPosition = .automatic
     var centerCoordinate: CLLocationCoordinate2D?
     var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
     var markerCoordinate: CLLocationCoordinate2D? { didSet { locationManager.markerCoordinate = markerCoordinate } }
     var selectedMapStyle: MapStyleTypes = .standard
     var route: MKRoute?
+    var searchText: String = "" { didSet { onSearchTextChange() } }
+    var searchResults: [MKMapItem]?
+    var isSearching: Bool = false
+    var isSearchFieldFocused: Bool = false
+    
     @ObservationIgnored var isCameraDragging: Bool = false
     @ObservationIgnored var isRadiusSliderActive: Bool = false
     
@@ -100,6 +106,33 @@ final class MapViewModel {
         return condition1 && condition2
     }
     
+    func showNoSearchResultsText() -> Bool {
+        guard let searchResults else { return false }
+        
+        let condition1: Bool = searchText.isEmpty
+        let condition2: Bool = isSearching
+        let condition3: Bool = searchResults.isEmpty
+        
+        return !condition1 && !condition2 && condition3
+    }
+    
+    func showSearchingCircularProgress() -> Bool {
+        let condition1: Bool = searchText.isEmpty
+        let condition2: Bool = isSearching
+        let condition3: Bool = searchResults == nil
+        
+        return !condition1 && condition2 && condition3
+    }
+    
+    func showSearchResults() -> Bool {
+        guard let searchResults else { return false }
+        let condition1: Bool = searchText.isEmpty
+        let condition2: Bool = isSearching
+        let condition3: Bool = searchResults.isEmpty
+        
+        return !condition1 && !condition2 && !condition3
+    }
+    
     // MARK: - Radius Related
     func setRadiusCircleCoordinate(_ center: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         return isMarkerCoordinateNil() ? center : markerCoordinate!
@@ -151,6 +184,35 @@ final class MapViewModel {
     
     func triggerCTAButtonAction() {
         isMarkerCoordinateNil() ? startAlert() : stopAlertConfirmation()
+    }
+    
+    // // MARK: - Location Search Related
+    func searchLocation() {
+        resetSearchResults()
+        setIsSearching(true)
+        
+        Task { @MainActor in
+            guard let region = position.region else { return }
+            let request = MKLocalSearch.Request()
+            request.region = region
+            request.naturalLanguageQuery = searchText
+            
+            guard let response = try? await MKLocalSearch(request: request).start() else {
+                setSearchResults([])
+                setIsSearching(false)
+                return
+            }
+            
+            setIsSearching(false)
+            let results: [MKMapItem] = response.mapItems.compactMap({ $0 })
+            setSearchResults(results)
+        }
+    }
+    
+    func onSearchResultsListRowTap(_ item: MKMapItem) {
+        isMarkerCoordinateNil()
+        ? setSelectedSearchResultCoordinate(item)
+        : stopAlertOnSearchResultListRowTapConfirmation(item)
     }
     
     // MARK: - Other
@@ -266,6 +328,50 @@ final class MapViewModel {
     private func stopAlertConfirmation() {
         alertManager.alertItem = AlertTypes.stopAlertHereConfirmation { [weak self] in
             self?.stopAlert()
+        }
+    }
+    
+    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKMapItem) {
+        alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
+            guard let self, boolean else { return }
+            stopAlert()
+            setSelectedSearchResultCoordinate(item)
+        }
+    }
+    
+    // MARK: - Location Search Related
+    private func setIsSearching(_ boolean: Bool)  {
+        isSearching = boolean
+    }
+    
+    private func onSearchTextChange() {
+        guard searchText.isEmpty else { return }
+        resetSearchResults()
+    }
+    
+    private func resetSearchText() {
+        searchText = ""
+    }
+    
+    private func setSearchResults(_ value: [MKMapItem]?) {
+        searchResults = value
+    }
+    
+    private func resetSearchResults() {
+        setSearchResults(nil)
+        setIsSearching(false)
+    }
+    
+    private func setSelectedSearchResultCoordinate(_ item: MKMapItem) {
+        resetSearchResults()
+        resetSearchText()
+        
+        Task {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+            withAnimation {
+                position = .region(.init(center: item.placemark.coordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+            }
         }
     }
     
