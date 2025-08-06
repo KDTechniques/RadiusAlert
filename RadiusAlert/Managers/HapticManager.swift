@@ -5,28 +5,24 @@
 //  Created by Mr. Kavinda Dilshan on 2025-07-31.
 //
 
+import UIKit
 import CoreHaptics
 
-class HapticManager {
+enum HapticTypes: String, CaseIterable {
+    case success, error, warning
+    case light, medium, soft, rigid, heavy
+}
+
+actor HapticManager {
     //  MARK: - ASSIGNED PROPERTIES
     static let shared = HapticManager()
     private var hapticEngine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
     
-    // MARK: - FUNCTIONS
-    private func setupHaptics() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        do {
-            hapticEngine = try CHHapticEngine()
-            try hapticEngine?.start()
-            hapticEngine?.resetHandler = { [weak self] in
-                try? self?.hapticEngine?.start()
-            }
-        } catch {
-            print("Error starting haptic engine: \(error.localizedDescription)")
-        }
-    }
+    // MARK: - INITIALIZER
+    init() { }
     
+    // MARK: - PUBLIC FUNCTIONS
     func playSOSPattern() {
         guard let engine = hapticEngine else {
             setupHaptics()
@@ -95,5 +91,56 @@ class HapticManager {
         } catch {
             print("Failed to stop haptic: \(error.localizedDescription)")
         }
+    }
+    
+    func vibrate(type: HapticTypes) {
+        switch type {
+        case .success:
+            hapticFeedbackGeneratorWrapper.notificationOccurred(.success)
+        case .error:
+            hapticFeedbackGeneratorWrapper.notificationOccurred(.error)
+        case .warning:
+            hapticFeedbackGeneratorWrapper.notificationOccurred(.warning)
+        case .light:
+            hapticFeedbackGeneratorWrapper.impactOccurred(style: .light)
+        case .soft:
+            hapticFeedbackGeneratorWrapper.impactOccurred(style: .soft)
+        case .medium:
+            hapticFeedbackGeneratorWrapper.impactOccurred(style: .medium)
+        case .rigid:
+            hapticFeedbackGeneratorWrapper.impactOccurred(style: .rigid)
+        case .heavy:
+            hapticFeedbackGeneratorWrapper.impactOccurred(style: .heavy)
+        }
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    private func setupHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        do {
+            hapticEngine = try CHHapticEngine()
+            try hapticEngine?.start()
+            hapticEngine?.resetHandler = {
+                Task { [weak self] in
+                    try? await self?.hapticEngine?.start()
+                }
+            }
+        } catch {
+            print("Error starting haptic engine: \(error.localizedDescription)")
+        }
+    }
+    
+    private let hapticFeedbackGeneratorWrapper = HapticFeedbackGeneratorWrapper()
+}
+
+fileprivate struct HapticFeedbackGeneratorWrapper {
+    private let generator = UINotificationFeedbackGenerator()
+    
+    func notificationOccurred(_ type: UINotificationFeedbackGenerator.FeedbackType) {
+        generator.notificationOccurred(type)
+    }
+    
+    func impactOccurred(style: UIImpactFeedbackGenerator.FeedbackStyle) {
+        UIImpactFeedbackGenerator(style: style).impactOccurred()
     }
 }

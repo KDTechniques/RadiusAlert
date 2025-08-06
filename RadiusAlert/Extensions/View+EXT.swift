@@ -10,8 +10,30 @@ import SwiftUI
 extension View {
     func previewModifier() ->  some View {
         self
-            .environment(LocationManager())
-            .environment(ContentViewModel(locationManager: .init()))
-            .environment(MapViewModel(locationManager: .init()))
+            .environment(MapViewModel())
+    }
+    
+    func alertViewModifier(item: Binding<AlertModel?>) -> some View {
+        self
+            .alert(item: item) { alertItem in
+                Task {
+                    await HapticManager.shared.vibrate(type: alertItem.hapticType)
+                }
+                
+                if let secondaryAction: Alert.Button = alertItem.secondaryAction {
+                    return Alert(
+                        title: Text(alertItem.title),
+                        message: Text(alertItem.message),
+                        primaryButton: alertItem.primaryAction,
+                        secondaryButton: secondaryAction
+                    )
+                } else {
+                    return Alert(
+                        title: Text(alertItem.title),
+                        message: Text(alertItem.message),
+                        dismissButton: alertItem.primaryAction
+                    )
+                }
+            }
     }
 }

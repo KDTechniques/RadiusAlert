@@ -8,22 +8,26 @@
 import SwiftUI
 
 struct CTAButtonView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    
     // MARK: - BODY
     var body: some View {
         Button {
-            // action goes here...
+            mapVM.triggerCTAButtonAction()
         } label: {
-            Text("Alert Me Here")
+            Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop Alert")
                 .fontWeight(.semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(mapVM.getCTAButtonForegroundColor())
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                .background(.green, in: .rect(cornerRadius: 12))
+                .background(mapVM.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
                 .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(.top, 20)
+        .padding(.horizontal, 45)
+        .background(.regularMaterial)
     }
 }
 

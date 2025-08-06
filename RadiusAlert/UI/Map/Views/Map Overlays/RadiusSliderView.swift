@@ -9,15 +9,36 @@ import SwiftUI
 
 struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    
+    //  MARK: - ASSIGNED PROPERTIES
+    let mapValues: MapValues.Type = MapValues.self
+    let screenWidth: CGFloat = UIScreen.main.bounds.size.width
     
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        Slider(value: $mapVM.radius, in: 500...2000, step: 100)
-            .frame(width: 200)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing)
+        
+        Slider(
+            value: $mapVM.selectedRadius.animation(),
+            in: mapValues.minimumRadius...mapValues.maximumRadius,
+            step: mapValues.radiusStep) { }
+        minimumValueLabel: {
+            Text(mapValues.minimumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        } maximumValueLabel: {
+            Text(mapValues.maximumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        } onEditingChanged: {
+            mapVM.isRadiusSliderActive = $0
+        }
+        .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .padding(.trailing, 10)
+        .opacity(mapVM.showRadiusSlider() ? 1 : 0)
+        .disabled(!mapVM.showRadiusSlider())
+        .animation(.default, value: mapVM.showRadiusSlider())
     }
 }
 
@@ -25,4 +46,14 @@ struct RadiusSliderView: View {
 #Preview("Radius Slider View") {
     RadiusSliderView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension View {
+    func radiusSliderViewModifier(_ colorScheme: ColorScheme) -> some View {
+        self
+            .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
+            .font(.caption)
+            .fontWeight(.semibold)
+    }
 }

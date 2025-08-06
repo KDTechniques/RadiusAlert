@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct MapPinView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    
     // MARK: - BODY
     var body: some View {
         Image(systemName: "mappin")
-            .font(.title)
-            .foregroundStyle(.red)
+            .font(.largeTitle)
+            .foregroundStyle(.red.gradient)
+            .opacity(mapVM.showMapPin() ? 1 : 0)
+            .animation(.default, value: mapVM.showMapPin())
     }
 }
 

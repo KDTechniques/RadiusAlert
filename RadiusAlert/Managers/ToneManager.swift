@@ -13,19 +13,12 @@ final class ToneManager {
     private var player: AVAudioPlayer?
     
     // MARK: - INITIALIZER
-    private init() { HandleAudioInBackground() }
+    private init() { activateAudioSession() }
     
-    // MARK: - FUNCTIONS
-    private func HandleAudioInBackground() {
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            print("Failed to set audio session: \(error)")
-        }
-    }
-    
+    // MARK: - PUBLIC FUNCTIONS
     func playDefaultTone() {
+        activateAudioSession()
+        
         guard let url = Bundle.main.url(forResource: "tone", withExtension: "mp3") else {
             print("tone.mp3 file not found in the bundle!")
             return
@@ -42,7 +35,26 @@ final class ToneManager {
     }
     
     func stopDefaultTone() {
+        deactivateAudioSession()
         player?.stop()
         player = nil
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    private func activateAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
+            try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
+        } catch {
+            print("Failed to activate audio session: \(error)")
+        }
+    }
+    
+    private func deactivateAudioSession() {
+        do  {
+            try AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
+        } catch {
+            print("Failed to deactivate audio session: \(error)")
+        }
     }
 }

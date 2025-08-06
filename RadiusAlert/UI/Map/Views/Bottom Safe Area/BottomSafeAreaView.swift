@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct BottomSafeAreaView: View {
+    @Environment(MapViewModel.self) private var mapVM
     // MARK: - BODY
     var body: some View {
-        if true {
-            CTAButtonView()
+        if mapVM.showSearchResults() || mapVM.showNoSearchResultsText() || mapVM.showSearchingCircularProgress() {
+            SearchListView()
         } else {
-            SearchResultsListView()
+            CTAButtonView()
         }
     }
 }

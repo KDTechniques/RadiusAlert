@@ -12,24 +12,12 @@ final class NotificationManager {
     static let shared = NotificationManager()
     
     // MARK: - INITIALIZER
-    private init() {}
-    
-    // MARK: - FUNCTIONS
-    func requestAuthorizationIfNeeded() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            guard settings.authorizationStatus != .authorized else { return }
-            
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-                if let error = error {
-                    print("Notification authorization error:", error)
-                } else {
-                    print("Notification permission granted:", granted)
-                }
-            }
-        }
+    private init() {
+        requestAuthorizationIfNeeded()
     }
     
-    func scheduleNotification(after seconds: TimeInterval = 0) {
+    // MARK: - PUBLIC FUNCTIONS
+    func scheduleNotification(after seconds: TimeInterval = 0.5) {
         let content = UNMutableNotificationContent()
         content.title = "You're Here 🎉"
         content.body = "You've arrived at your destination. Tap to continue."
@@ -43,6 +31,21 @@ final class NotificationManager {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Failed to schedule notification:", error)
+            }
+        }
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    private func requestAuthorizationIfNeeded() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus != .authorized else { return }
+            
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+                if let error = error {
+                    print("Notification authorization error:", error)
+                } else {
+                    print("Notification permission granted:", granted)
+                }
             }
         }
     }
