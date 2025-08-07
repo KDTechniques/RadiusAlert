@@ -11,9 +11,7 @@ struct BottomSafeAreaView: View {
     @Environment(MapViewModel.self) private var mapVM
     // MARK: - BODY
     var body: some View {
-        if mapVM.showSearchResults() || mapVM.showNoSearchResultsText() || mapVM.showSearchingCircularProgress() {
-            SearchListView()
-        } else {
+        if mapVM.showCTAButton() {
             CTAButtonView()
         }
     }

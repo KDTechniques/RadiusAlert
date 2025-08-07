@@ -23,12 +23,12 @@ struct SearchListView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.background)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Search List View") {
     SearchListView()
+        .background(.regularMaterial)
         .previewModifier()
 }

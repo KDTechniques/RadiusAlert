@@ -186,6 +186,18 @@ final class MapViewModel {
         isMarkerCoordinateNil() ? startAlert() : stopAlertConfirmation()
     }
     
+    func showCTAButton() -> Bool {
+        let condition1: Bool = !(
+            showSearchResults() ||
+            showNoSearchResultsText() ||
+            showSearchingCircularProgress()
+        )
+        
+        let condition2: Bool = isSearchFieldFocused
+        
+        return condition1 && !condition2
+    }
+    
     // // MARK: - Location Search Related
     func searchLocation() {
         resetSearchResults()
@@ -213,6 +225,14 @@ final class MapViewModel {
         isMarkerCoordinateNil()
         ? setSelectedSearchResultCoordinate(item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
+    }
+    
+    func showSearchResultsList() -> Bool {
+        let condition1: Bool = showSearchResults()
+        let condition2: Bool = showNoSearchResultsText()
+        let condition3: Bool = showSearchingCircularProgress()
+        
+        return condition1 || condition2 || condition3
     }
     
     // MARK: - Other

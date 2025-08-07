@@ -11,11 +11,13 @@ struct SearchResultListRowView: View {
     // MARK: - INJECTED PROPERTIES
     let name: String
     let title: String
+    let showSeparator: Bool
     
     //  MARK: - INTIALIZER
-    init(name: String, title: String) {
+    init(name: String, title: String, showSeparator: Bool = true) {
         self.name = name
         self.title = title
+        self.showSeparator = showSeparator
     }
     
     // MARK: - BODY
@@ -30,6 +32,7 @@ struct SearchResultListRowView: View {
             .padding(.top, 10)
             
             Divider()
+                .opacity(showSeparator ? 1 : 0)
         }
         .background(.red.opacity(0.001))
     }

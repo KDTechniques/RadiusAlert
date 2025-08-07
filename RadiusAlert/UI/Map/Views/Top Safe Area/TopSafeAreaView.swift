@@ -18,6 +18,7 @@ struct TopSafeAreaView: View {
             navigationTitleButton
             searchBar
             Divider()
+            searchList
         }
         .padding(.top, 40)
         .background(.regularMaterial)
@@ -70,5 +71,10 @@ extension TopSafeAreaView {
             .onSubmit { mapVM.searchLocation() }
             .padding(.bottom, 14)
             .padding(.top, 8)
+    }
+    
+    @ViewBuilder
+    private var searchList: some View {
+        if mapVM.showSearchResultsList() { SearchListView() }
     }
 }

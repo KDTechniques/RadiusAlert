@@ -14,21 +14,12 @@ struct SearchResultsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        if let searchResults: [MKMapItem] = mapVM.searchResults {
+        if let searchResults: [MKMapItem] = mapVM.searchResults,
+           let lastItem: MKMapItem = searchResults.last {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    ForEach(searchResults, id: \.self) { item in
-                        if let name: String = item.name {
-                            let placeMark: MKPlacemark = item.placemark
-                            let title: String = placeMark.title ?? placeMark.subtitle ?? ""
-                            
-                            Button {
-                                mapVM.onSearchResultsListRowTap(item)
-                            } label: {
-                                SearchResultListRowView(name: name, title: title)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                    ForEach(searchResults, id: \.self) {
+                        foreachItem(item: $0, lastItem: lastItem)
                     }
                 }
             }
@@ -40,4 +31,25 @@ struct SearchResultsListView: View {
 #Preview("Searc Results List View") {
     SearchResultsListView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension SearchResultsListView {
+    @ViewBuilder
+    private func foreachItem(item: MKMapItem, lastItem: MKMapItem) ->  some View {
+        if let name: String = item.name {
+            let placeMark: MKPlacemark = item.placemark
+            let title: String = placeMark.title ?? placeMark.subtitle ?? ""
+            Button {
+                mapVM.onSearchResultsListRowTap(item)
+            } label: {
+                SearchResultListRowView(
+                    name: name,
+                    title: title,
+                    showSeparator: lastItem != item
+                )
+            }
+            .buttonStyle(.plain)
+        }
+    }
 }
