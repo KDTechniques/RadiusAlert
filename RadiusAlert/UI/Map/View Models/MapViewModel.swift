@@ -33,6 +33,7 @@ final class MapViewModel {
     var isSearching: Bool = false
     var isSearchFieldFocused: Bool = false
     
+    @ObservationIgnored var searchQueryTask: Task<Void, Never>?
     @ObservationIgnored var isCameraDragging: Bool = false
     @ObservationIgnored var isRadiusSliderActive: Bool = false
     
@@ -201,10 +202,11 @@ final class MapViewModel {
     
     // MARK: - Location Search Related
     func searchLocation() {
+        cancelSearchQueryTask()
         resetSearchResults()
         setIsSearching(true)
         
-        Task { @MainActor in
+        searchQueryTask = Task { @MainActor in
             guard let region = position.region else { return }
             let request = MKLocalSearch.Request()
             request.region = region
@@ -219,6 +221,7 @@ final class MapViewModel {
             setIsSearching(false)
             let results: [MKMapItem] = response.mapItems.compactMap({ $0 })
             setSearchResults(results)
+            cancelSearchQueryTask()
         }
     }
     
@@ -371,9 +374,15 @@ final class MapViewModel {
         isSearching = boolean
     }
     
+    private func cancelSearchQueryTask() {
+        searchQueryTask?.cancel()
+        searchQueryTask = nil
+    }
+    
     private func onSearchTextChange() {
         guard searchText.isEmpty else { return }
         resetSearchResults()
+        cancelSearchQueryTask()
     }
     
     private func resetSearchText() {

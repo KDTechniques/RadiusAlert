@@ -20,6 +20,7 @@ struct MapView: View {
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
         let _ = Self._printChanges()
+        
         Map(position: $mapVM.position, interactionModes: mapVM.interactionModes) {
             // User's Current Location
             UserAnnotation()

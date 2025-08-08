@@ -27,6 +27,7 @@ struct SearchBarSwiftUIView: View {
                 textColor: .primary
             )
         ) { mapVM.isSearchFieldFocused = $0 }
+            .submitLabel(.search)
             .onSubmit { mapVM.searchLocation() }
             .padding(.bottom, 14)
             .padding(.top, 8)

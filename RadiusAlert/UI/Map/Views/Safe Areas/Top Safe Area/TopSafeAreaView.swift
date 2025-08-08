@@ -28,12 +28,10 @@ struct TopSafeAreaView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Top Safe Area Views") {
-    NavigationStack {
-        VStack {
-            TopSafeAreaView()
-            Spacer()
-        }
+#Preview("Top Safe Area Content") {
+    VStack {
+        TopSafeAreaView()
+        Spacer()
     }
     .previewModifier()
 }
@@ -42,6 +40,8 @@ struct TopSafeAreaView: View {
 extension TopSafeAreaView {
     @ViewBuilder
     private var searchList: some View {
-        if mapVM.showSearchResultsList() { SearchListView() }
+        if mapVM.showSearchResultsList() {
+            SearchListView()
+        }
     }
 }

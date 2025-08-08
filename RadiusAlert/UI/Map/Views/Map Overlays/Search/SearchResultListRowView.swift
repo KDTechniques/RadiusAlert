@@ -40,8 +40,11 @@ struct SearchResultListRowView: View {
 
 // MARK: - PREVIEWS
 #Preview("Search Result List Row View") {
-    SearchResultListRowView(name: "Name", title: "Title")
-        .previewModifier()
+    SearchResultListRowView(
+        name: "Name: 1234567890 1234567890 ",
+        title: "Title: 1234567890 1234567890 1234567890 12345678"
+    )
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
@@ -49,12 +52,14 @@ extension SearchResultListRowView {
     private var nameText: some View {
         Text(name)
             .fontWeight(.medium)
+            .padding(.trailing, 100)
     }
     
     private var titleText: some View {
         Text(title)
             .font(.caption)
             .foregroundStyle(.secondary)
+            .padding(.trailing, 50)
     }
 }
 
