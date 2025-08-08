@@ -20,7 +20,7 @@ struct MapView: View {
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
         let _ = Self._printChanges()
-        Map(position: $mapVM.position) {
+        Map(position: $mapVM.position, interactionModes: mapVM.interactionModes) {
             // User's Current Location
             UserAnnotation()
             
@@ -46,10 +46,12 @@ struct MapView: View {
         }
         .mapStyle(mapVM.selectedMapStyle.mapStyle)
         .mapControls {
-            MapUserLocationButton(scope: mapSpace)
-            MapPitchToggle(scope: mapSpace)
-            MapCompass(scope: mapSpace)
-            MapScaleView(scope: mapSpace)
+            if mapVM.isMarkerCoordinateNil() {
+                MapUserLocationButton(scope: mapSpace)
+                MapPitchToggle(scope: mapSpace)
+                MapCompass(scope: mapSpace)
+                MapScaleView(scope: mapSpace)
+            }
         }
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
         .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }

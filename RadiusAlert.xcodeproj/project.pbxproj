@@ -280,8 +280,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiusAlert/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Radius Alert";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "The app needs your location to alert you when you reach your set radius, even while you're asleep or your iPhone is locked.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs your location to show where you are on the map and work properly.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app needs your location to alert you when you reach your set radius, even while you're asleep or your iPhone is locked.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to show where you are on the map and work properly.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -320,8 +320,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RadiusAlert/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Radius Alert";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "The app needs your location to alert you when you reach your set radius, even while you're asleep or your iPhone is locked.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "The app needs your location to show where you are on the map and work properly.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app needs your location to alert you when you reach your set radius, even while you're asleep or your iPhone is locked.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to show where you are on the map and work properly.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

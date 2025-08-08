@@ -22,6 +22,7 @@ final class MapViewModel {
     let mapValues: MapValues.Type = MapValues.self
     
     var position: MapCameraPosition = .automatic
+    var interactionModes: MapInteractionModes = [.all]
     var centerCoordinate: CLLocationCoordinate2D?
     var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
     var markerCoordinate: CLLocationCoordinate2D? { didSet { locationManager.markerCoordinate = markerCoordinate } }
@@ -198,7 +199,7 @@ final class MapViewModel {
         return condition1 && !condition2
     }
     
-    // // MARK: - Location Search Related
+    // MARK: - Location Search Related
     func searchLocation() {
         resetSearchResults()
         setIsSearching(true)
@@ -255,7 +256,7 @@ final class MapViewModel {
         withAnimation { positionToInitialUserLocation() }
     }
     
-    // MARK: - PRIVATE FUNCTIONS
+    // MARK: PRIVATE FUNCTIONS
     
     // MARK: - Camera Related
     private func setCameraDragging(_ boolean: Bool) {
@@ -272,6 +273,10 @@ final class MapViewModel {
         withAnimation {
             position = .region(.init(center: midCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
         }
+    }
+    
+    private func setInteractionModes(_ modes: MapInteractionModes) {
+        interactionModes = modes
     }
     
     // MARK: - Radius Related
@@ -320,6 +325,7 @@ final class MapViewModel {
             return
         }
         
+        setInteractionModes([])
         setMarkerCoordinate()
         getDirections()
         centerRegionBounds()
@@ -339,6 +345,7 @@ final class MapViewModel {
     }
     
     private func stopAlert() {
+        setInteractionModes([.all])
         locationManager.stopMonitoringRegion()
         alertManager.stopHaptic()
         alertManager.stopTone()
