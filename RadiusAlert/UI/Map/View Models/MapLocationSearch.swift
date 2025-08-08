@@ -21,15 +21,13 @@ extension MapViewModel {
             request.region = region
             request.naturalLanguageQuery = searchText
             
-            guard let response = try? await MKLocalSearch(request: request).start() else {
-                setSearchResults([])
+            do {
+                let response = try await MKLocalSearch(request: request).start()
                 setIsSearching(false)
-                return
-            }
+                let results: [MKMapItem] = response.mapItems.compactMap({ $0 })
+                setSearchResults(results)
+            } catch { handleLocationSearchFailure() }
             
-            setIsSearching(false)
-            let results: [MKMapItem] = response.mapItems.compactMap({ $0 })
-            setSearchResults(results)
             cancelSearchQueryTask()
         }
     }
@@ -87,6 +85,12 @@ extension MapViewModel {
     
     private func resetSearchResults() {
         setSearchResults(nil)
+        setIsSearching(false)
+    }
+    
+    private func handleLocationSearchFailure() {
+        cancelSearchQueryTask()
+        setSearchResults([])
         setIsSearching(false)
     }
 }
