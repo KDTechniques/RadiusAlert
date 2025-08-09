@@ -53,6 +53,7 @@ extension MapViewModel {
     }
     
     func setSelectedSearchResultCoordinate(_ item: MKMapItem) {
+        setSelectedMapItem(item)
         resetSearchResults()
         resetSearchText()
         
@@ -92,5 +93,9 @@ extension MapViewModel {
         cancelSearchQueryTask()
         setSearchResults([])
         setIsSearching(false)
+    }
+    
+    private func setSelectedMapItem(_ item: MKMapItem?) {
+        selectedSearchResult = item
     }
 }

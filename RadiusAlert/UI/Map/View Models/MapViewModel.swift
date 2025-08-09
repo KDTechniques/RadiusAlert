@@ -31,7 +31,10 @@ final class MapViewModel {
     var searchResults: [MKMapItem]?
     var isSearching: Bool = false
     var isSearchFieldFocused: Bool = false
+    var popupCardItem: PopupCardModel?
     
+    @ObservationIgnored var selectedSearchResult: MKMapItem?
+    @ObservationIgnored private(set) var radiusAlertItem:RadiusAlertModel?
     @ObservationIgnored var searchQueryTask: Task<Void, Never>?
     @ObservationIgnored var isCameraDragging: Bool = false
     @ObservationIgnored var isRadiusSliderActive: Bool = false
@@ -42,5 +45,9 @@ final class MapViewModel {
         let midLongitude = (coord1.longitude + coord2.longitude) / 2
         
         return .init(latitude: midLatitude, longitude: midLongitude)
+    }
+    
+    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
+        radiusAlertItem = item
     }
 }

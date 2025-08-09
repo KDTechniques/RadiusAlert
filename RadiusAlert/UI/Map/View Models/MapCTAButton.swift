@@ -43,6 +43,16 @@ extension MapViewModel {
         }
     }
     
+    func stopAlert() {
+        setInteractionModes([.all])
+        locationManager.stopMonitoringRegion()
+        alertManager.stopHaptic()
+        alertManager.stopTone()
+        resetMapToCurrentUserLocation()
+        clearPopupCardItem()
+        setRadiusAlertItem(nil)
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func startAlert() {
         guard isBeyondMinimumDistance() else {
@@ -69,6 +79,17 @@ extension MapViewModel {
         getDirections()
         centerRegionBounds()
         
+        if let markerCoordinate {
+            let radiusAlertItem: RadiusAlertModel = .init(
+                locationTitle: selectedSearchResult?.name,
+                firstUserLocation: currentUserLocation,
+                markerCoordinate: markerCoordinate,
+                setRadius: selectedRadius
+            )
+            
+            setRadiusAlertItem(radiusAlertItem)
+        }
+        
         guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
             stopAlert()
             return
@@ -80,15 +101,8 @@ extension MapViewModel {
             alertManager.sendNotification()
             alertManager.playHaptic()
             alertManager.playTone()
+            generateNSetPopupCardItem()
         }
-    }
-    
-    private func stopAlert() {
-        setInteractionModes([.all])
-        locationManager.stopMonitoringRegion()
-        alertManager.stopHaptic()
-        alertManager.stopTone()
-        resetMapToCurrentUserLocation()
     }
     
     private func stopAlertConfirmation() {

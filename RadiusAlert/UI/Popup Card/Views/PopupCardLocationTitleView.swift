@@ -9,10 +9,10 @@ import SwiftUI
 
 struct PopupCardLocationTitleView: View {
     // MARK: INJECTED PROEPRTIES
-    let title: String
+    let title: String?
     
     // MARK: - INITIALIZER
-    init(title: String) {
+    init(title: String?) {
         self.title = title
     }
     
@@ -41,11 +41,14 @@ extension PopupCardLocationTitleView {
             .frame(width: 50)
     }
     
+    @ViewBuilder
     private var locationTitle: some View {
-        Text(title)
-            .lineLimit(2)
-            .multilineTextAlignment(.center)
-            .font(.title3)
-            .bold()
+        if let title {
+            Text(title)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .font(.title3)
+                .bold()
+        }
     }
 }

@@ -126,7 +126,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
         
         guard let markerCoordinate else {
-            print("here")
             return false
         }
         

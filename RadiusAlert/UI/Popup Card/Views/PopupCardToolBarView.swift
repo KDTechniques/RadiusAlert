@@ -8,13 +8,22 @@
 import SwiftUI
 
 struct PopupCardToolBarView: View {
+    @State private var isSaved: Bool = false
+    
     // MARK: - BODY
     var body: some View {
-        HStack {
-            saveButton
-            Spacer()
-            dismissButton
+        Button {
+            // save action goes here...
+            isSaved.toggle()
+        } label: {
+            Image(systemName: isSaved ? "checkmark.circle.fill" : "pin.fill")
+                .font(.title3)
+                .foregroundStyle(isSaved ? Color.green.gradient : Color.gray.gradient)
+                .contentTransition(.symbolEffect(.replace))
         }
+        .buttonStyle(.plain)
+        .frame(height: 25)
+        .frame(maxWidth: .infinity, alignment: .trailing)
     }
 }
 
@@ -23,27 +32,4 @@ struct PopupCardToolBarView: View {
     PopupCardToolBarView()
         .padding(.horizontal)
         .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension PopupCardToolBarView {
-    private var saveButton: some View {
-        Button("Save") {
-            // save action goes here...
-        }
-    }
-    
-    private var dismissButton: some View {
-        Button {
-            // dismiss action goes here...
-        } label: {
-            Image(systemName: "xmark")
-                .font(.footnote)
-                .fontWeight(.heavy)
-                .foregroundStyle(.secondary)
-                .padding(7)
-                .background(.regularMaterial, in: .circle)
-        }
-        .buttonStyle(.plain)
-    }
 }

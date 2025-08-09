@@ -9,13 +9,11 @@ import SwiftUI
 
 struct PopupCardView: View {
     // MARK: - INJECTED PROPERTIES
-    let valuesArray: [PopupCardModel]
-    let lastItemID: PopupCardDetailTypes?
+    let item: PopupCardModel
     
     // MARK: - INITIALIZER
-    init(valuesArray: [PopupCardModel]) {
-        self.valuesArray = valuesArray
-        lastItemID = valuesArray.last?.id
+    init(item: PopupCardModel) {
+        self.item = item
     }
     
     //MARK: - BODY
@@ -23,46 +21,26 @@ struct PopupCardView: View {
         VStack {
             PopupCardToolBarView()
             PopupCardTitlesView()
-            PopupCardLocationTitleView(title: "Debug")
+            PopupCardLocationTitleView(title: item.locationTitle)
+            
             Divider().padding(.vertical, 10)
             
-            // Details
-            HStack(spacing: 10) {
-                ForEach(valuesArray) {
-                    PopupCardDetailSectionView(
-                        title: $0.type.rawValue,
-                        systemImageName: $0.type.systemImageName,
-                        value: $0.value,
-                        foregroundColor: $0.type.foregroundColor
-                    )
-                    
-                    if let lastItemID, lastItemID != $0.id {
-                        verticalSeparator
-                    }
-                }
-            }
-            
+            PopupCardDetailsView(item: item)
             PopupCardCTAButtonView()
         }
         .padding()
         .background(.white, in: .rect(cornerRadius: 20))
         .padding(.horizontal, 50)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.ultraThinMaterial)
+        .ignoresSafeArea()
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Popup Card") {
-    PopupCardView(valuesArray: PopupCardModel.mockValues)
+    PopupCardView(item: .mockValues)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.regularMaterial)
         .ignoresSafeArea()
-}
-
-// MARK: - EXTENSIONS
-extension PopupCardView {
-    private var verticalSeparator: some View {
-        Rectangle()
-            .fill(Color(uiColor: .separator))
-            .frame(width: 1,  height: 30)
-    }
 }

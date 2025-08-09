@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct PopupCardCTAButtonView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    
     // MARK: - BODY
     var body: some View {
         Button {
-            // action goes here...
+            mapVM.stopAlert()
         } label: {
             Text("OK")
                 .foregroundStyle(.black)

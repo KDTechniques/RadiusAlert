@@ -5,17 +5,15 @@
 //  Created by Mr. Kavinda Dilshan on 2025-08-09.
 //
 
-import Foundation
+import CoreLocation
 
 struct PopupCardModel: Identifiable {
-    var id: PopupCardDetailTypes { self.type }
-    let type: PopupCardDetailTypes
-    let value: String
+    let id: String = UUID().uuidString
+    let typeNValue: [(type: PopupCardDetailTypes, value: String)]
+    let locationTitle: String?
     
-    static let mockValues: [Self] = [
-        .init(type: .radius, value: "700m"),
-        .init(type: .duration, value: "43 min."),
-        .init(type: .distance, value: "34km")
-    ]
+    static let mockValues: Self = .init(
+        typeNValue: [(.radius, "700m"), (.duration, "43 min."), (.distance, "34km")],
+        locationTitle: "Pettah Floating Market"
+    )
 }
-

@@ -9,9 +9,11 @@ import CoreLocation
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
-    func getRadiusTextString() -> String {
-        let intNumber: Int = .init(selectedRadius)
-        return "Alert Radius\n" + (intNumber >= 1000 ? String(format: "%.1fkm", selectedRadius/1000) : "\(intNumber)m")
+    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool = true) -> String {
+        let intNumber: Int = .init(radius)
+        let numberText: String = intNumber >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(intNumber)m"
+        
+        return withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
     }
     
     func setCenterCoordinate(_ center: CLLocationCoordinate2D) {

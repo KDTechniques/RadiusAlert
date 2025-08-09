@@ -22,7 +22,7 @@ struct PopupCardTitlesView: View {
                 .font(.callout)
                 .multilineTextAlignment(.center)
         }
-        .padding(.vertical)
+        .padding(.bottom)
     }
 }
 
