@@ -30,8 +30,8 @@ struct AlertModel: Identifiable {
 /// This function simplifies the process of displaying an alert item, eliminating the need to use `isPresented` for each alert we create.
 func showAlert(_ alertType: AlertModel) {
     Task  {
-        AlertManager.shared.alertItem = alertType
         await HapticManager.shared.vibrate(type: alertType.hapticType)
+        AlertManager.shared.alertItem = alertType
     }
 }
 

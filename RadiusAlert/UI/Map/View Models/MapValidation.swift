@@ -69,10 +69,10 @@ extension MapViewModel {
     }
     
     func showCTAButton() -> Bool {
-        let condition1: Bool = locationSearchManager.results.isEmpty || !showNoSearchResultsText()
+        let condition1: Bool = !locationSearchManager.results.isEmpty || showNoSearchResultsText()
         let condition2: Bool = isSearchFieldFocused
         
-        return condition1 && !condition2
+        return !condition1 && !condition2
     }
     
     func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {

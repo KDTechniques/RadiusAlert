@@ -79,6 +79,7 @@ extension MapViewModel {
         startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
         guard startAlert_StartMonitoringRegion() else { return }
         startAlert_OnRegionEntry()
+        Task { await HapticManager.shared.vibrate(type: .rigid) }
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.
@@ -157,8 +158,8 @@ extension MapViewModel {
             }
             
             alertManager.sendNotification()
-            alertManager.playHaptic()
             alertManager.playTone()
+            alertManager.playHaptic()
             generateNSetPopupCardItem()
         }
     }
