@@ -15,7 +15,7 @@ extension MapViewModel {
             let currentLocation = locationManager.currentUserLocation,
             let centerCoordinate = centerCoordinate else { return }
         
-        markerCoordinate = centerCoordinate
+        setMarkerCoordinate(centerCoordinate)
         positionRegionBoundsToMidCoordinate(coordinate1: centerCoordinate, coordinate2: currentLocation, animate: false)
     }
     
@@ -24,7 +24,7 @@ extension MapViewModel {
     }
     
     func removeMarkerCoordinate() {
-        markerCoordinate = nil
+        setMarkerCoordinate(nil)
     }
 }
 

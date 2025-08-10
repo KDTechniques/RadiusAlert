@@ -25,6 +25,53 @@ extension MapViewModel {
         setPosition(region: region, animate: true)
     }
     
+    /// Positions the map region so that both coordinates are visible, centered at their midpoint.
+    /// - Parameters:
+    ///   - coordinate1: The first location coordinate.
+    ///   - coordinate2: The second location coordinate.
+    ///   - animate: Whether the map camera movement should be animated.
+    func positionRegionBoundsToMidCoordinate(
+        coordinate1: CLLocationCoordinate2D,
+        coordinate2: CLLocationCoordinate2D,
+        animate: Bool
+    ) {
+        // Calculate the distance between the two coordinates.
+        let distance: CLLocationDistance = Utilities.getDistance(from: coordinate1, to: coordinate2)
+        
+        // Find the midpoint between the two coordinates.
+        let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: coordinate1, and: coordinate2)
+        
+        // Determine the bounds size so both annotations are visible.
+        let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
+        
+        // Create a region centered at the midpoint with the calculated bounds.
+        let region: MKCoordinateRegion = .init(
+            center: midCoordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        // Update the map position with optional animation.
+        setPosition(region: region, animate: animate)
+    }
+    
+    /// Returns a binding to the current map camera position.
+    /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
+    func positionBinding() -> Binding<MapCameraPosition> {
+        Binding<MapCameraPosition>(
+            get: { [weak self] in
+                self?.position ?? .automatic
+            },
+            set: { [weak self] newValue in
+                guard
+                    let self,
+                    let region = newValue.region
+                else { return }
+                self.setPosition(region: region, animate: false)
+            }
+        )
+    }
+    
     /// Resets the map to the initial region bounds, removing markers and routes.
     /// The map animates smoothly back to the initial view.
     func resetMapToCurrentUserLocation() {
@@ -62,7 +109,7 @@ extension MapViewModel {
         }
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
-        selectedMapStyle = mapStylesArray[nextIndex]
+        setSelectedMapStyle(mapStylesArray[nextIndex])
     }
     
     // Sets the map region bounds to a given center and distance.

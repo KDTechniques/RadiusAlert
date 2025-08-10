@@ -21,7 +21,7 @@ struct RadiusSliderView: View {
         @Bindable var mapVM: MapViewModel = mapVM
         
         Slider(
-            value: $mapVM.selectedRadius.animation(),
+            value: mapVM.selectedRadiusBinding(),
             in: mapValues.minimumRadius...mapValues.maximumRadius,
             step: mapValues.radiusStep) { }
         minimumValueLabel: {
@@ -31,7 +31,7 @@ struct RadiusSliderView: View {
             Text(mapValues.maximumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
         } onEditingChanged: {
-            mapVM.isRadiusSliderActive = $0
+            mapVM.setRadiusSliderActiveState($0)
         }
         .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)

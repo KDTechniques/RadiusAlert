@@ -93,7 +93,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return .region(region)
     }
     
-    func getDirections() async -> MKRoute? {
+    func getRoute() async -> MKRoute? {
         guard
             let currentUserLocation,
             let markerCoordinate else { return nil }

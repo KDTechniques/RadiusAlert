@@ -17,7 +17,7 @@ struct SearchListBackgroundView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.isSearchFieldFocused {
-            mapValues.safeAreaBackgroundColor
+            Color.red
                 .ignoresSafeArea()
         }
     }

@@ -70,7 +70,7 @@ extension MapViewModel {
         
         // Set the marker coordinate and attempt to retrieve directions.
         setMarkerCoordinate()
-        getDirections()
+        getRoute()
         
         // Adjust the camera to show both the marker and user location for better UX.
         centerRegionBoundsForMarkerNUserLocation()

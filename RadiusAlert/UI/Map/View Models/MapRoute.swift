@@ -5,17 +5,18 @@
 //  Created by Mr. Kavinda Dilshan on 2025-08-08.
 //
 
-import Foundation
+import MapKit
 
 extension MapViewModel {
     // MARK: -  PUBLIC FUNCTIONS
-    func getDirections() {
+    func getRoute() {
         Task {
-            route = await locationManager.getDirections()
+            let route: MKRoute? = await locationManager.getRoute()
+            setRoute(route)
         }
     }
     
     func removeDirections() {
-        route = nil
+        setRoute(nil)
     }
 }

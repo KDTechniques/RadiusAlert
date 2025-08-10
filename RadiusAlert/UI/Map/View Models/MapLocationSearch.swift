@@ -10,9 +10,17 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
+    func searchTextBinding() -> Binding<String> {
+        Binding { [weak self] in
+            self?.searchText ?? ""
+        } set: { [weak self] in
+            self?.setSearchText($0)
+        }
+    }
+    
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         isMarkerCoordinateNil()
-        ? setSelectedSearchResultCoordinate(item)
+        ? onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
     }
     
@@ -28,7 +36,7 @@ extension MapViewModel {
     }
     
     func onEmptySearchText() {
-        locationSearchManager.clearResults()
+        resetSearchResults()
     }
     
     func setSelectedSearchResultCoordinate(_ item: MKLocalSearchCompletion) {
@@ -53,8 +61,13 @@ extension MapViewModel {
     }
     
     // MARK: - PRIVATE FUNCTIONS
+    private func onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: MKLocalSearchCompletion) {
+        setSelectedSearchResultCoordinate(item)
+        setSearchFieldFocused(false)
+    }
+    
     private func resetSearchText() {
-        searchText = ""
+        setSearchText("")
     }
     
     private func resetSearchResults() {
@@ -69,12 +82,13 @@ extension MapViewModel {
         Task {
             do {
                 guard let mapItem: MKMapItem = try await locationSearchManager.getMKMapItem(for: item) else {
-                    selectedSearchResult = nil
+                    setSelectedSearchResult(nil)
                     return
                 }
-                selectedSearchResult =  mapItem
+                
+                setSelectedSearchResult(mapItem)
             } catch {
-                selectedSearchResult = nil
+                setSelectedSearchResult(nil)
             }
             
         }

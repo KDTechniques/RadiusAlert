@@ -10,7 +10,7 @@ import CoreLocation
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func clearPopupCardItem() {
-        popupCardItem = nil
+        setPopupCardItem(nil)
     }
     
     func generateNSetPopupCardItem() {
@@ -32,7 +32,7 @@ extension MapViewModel {
         let actualDistance: CLLocationDistance = coordinate1.distance(from: coordinate2) - item.setRadius
         let distanceText: String = getRadiusTextString(actualDistance, withAlertRadiusText: false)
         
-        popupCardItem = .init(
+        let popupCardItem: PopupCardModel = .init(
             typeNValue: [
                 (.radius, radiusText),
                 (.duration, duration),
@@ -40,6 +40,8 @@ extension MapViewModel {
             ],
             locationTitle: item.locationTitle
         )
+        
+        setPopupCardItem(popupCardItem)
     }
     
     private func generateDurationText(_ date: Date) -> String {

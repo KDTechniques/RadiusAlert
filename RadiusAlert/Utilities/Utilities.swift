@@ -9,6 +9,7 @@
 //
 
 import CoreLocation
+import UIKit
 
 struct Utilities {
     /// Logs debug info with file name, line number, and calling function.
@@ -49,4 +50,16 @@ struct Utilities {
         
         return location1.distance(from: location2)
     }
+    
+    /// Opens the app's settings page in the system Settings app.
+    /// Safely checks if the URL can be opened before attempting to open it.
+    static func openAppSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(url) else {
+            return
+        }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+    
 }
