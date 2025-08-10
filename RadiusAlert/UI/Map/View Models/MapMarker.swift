@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import MapKit
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
@@ -15,12 +16,7 @@ extension MapViewModel {
             let centerCoordinate = centerCoordinate else { return }
         
         markerCoordinate = centerCoordinate
-        
-        let distance: CLLocationDistance = getDistance(from: centerCoordinate, to: currentLocation)
-        let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
-        let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: centerCoordinate, and: currentLocation)
-        
-        position = .region(.init(center: midCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+        positionRegionBoundsToMidCoordinate(coordinate1: centerCoordinate, coordinate2: currentLocation, animate: false)
     }
     
     func isMarkerCoordinateNil() -> Bool {
@@ -31,3 +27,10 @@ extension MapViewModel {
         markerCoordinate = nil
     }
 }
+
+
+
+
+
+
+

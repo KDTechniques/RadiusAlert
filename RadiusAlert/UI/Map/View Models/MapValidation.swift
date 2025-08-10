@@ -13,7 +13,7 @@ extension MapViewModel {
         guard let currentLocation = locationManager.currentUserLocation,
               let centerCoordinate else { return false }
         
-        let distance: CLLocationDistance = getDistance(
+        let distance: CLLocationDistance = Utilities.getDistance(
             from: centerCoordinate,
             to: currentLocation
         )

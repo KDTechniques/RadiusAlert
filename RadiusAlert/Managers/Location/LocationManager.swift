@@ -148,7 +148,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         
-        let distance: CLLocationDistance = getDistance(from: currentUserLocation, to: markerCoordinate)
+        let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
         
         switch distance {
         case ..<1_000:

@@ -11,62 +11,76 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
+    
+    /// Sets the initial position on the map focusing on the user's location.
+    /// This is typically called when the user opens the app for the first time.
     func positionToInitialUserLocation() {
-        guard let position: MapCameraPosition = locationManager.getInitialMapCameraPosition() else { return }
-        self.position = position
+        guard
+            let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
+            let region: MKCoordinateRegion = position.region else {
+            MapCameraErrorModel.failToGetInitialMapCameraPosition.errorDescription.debugLog()
+            return
+        }
+        
+        setPosition(region: region, animate: false)
     }
     
+    /// Resets the map to the initial region bounds, removing markers and routes.
+    /// The map animates smoothly back to the initial view.
     func resetMapToCurrentUserLocation() {
+        // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
         removeMarkerCoordinate()
+        
+        // Then, remove route paths from the map if available.
         removeDirections()
+        
+        // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
         withAnimation { positionToInitialUserLocation() }
     }
     
+    /// Handles logic when the map camera changes continuously.
+    /// - Parameter context: The camera update context containing the latest camera state.
     func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
         setCameraDragging(true)
         setCenterCoordinate(context.camera.centerCoordinate)
     }
     
+    /// Handles logic when the map camera stops moving.
+    /// - Parameter context: The camera update context containing the final camera state.
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
         setCameraDragging(false)
         setCenterCoordinate(context.camera.centerCoordinate)
-        centerRegionBounds()
+        centerRegionBoundsForMarkerNUserLocation()
     }
     
-    func nextMapStyle() {
+    /// Cycles through available map styles and sets the next one.
+    func setNextMapStyle() {
         let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
-        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else { return }
+        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else {
+            MapCameraErrorModel.failedToSetNextMapStyle.errorDescription.debugLog()
+            return
+        }
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
         selectedMapStyle = mapStylesArray[nextIndex]
     }
     
+    // Sets the map region bounds to a given center and distance.
+    /// - Parameters:
+    ///   - center: The center coordinate for the new region.
+    ///   - meters: The distance in meters for both latitude and longitude bounds.
     func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
-        position = .region(.init(
-            center: center,
-            latitudinalMeters: meters,
-            longitudinalMeters: meters
-        ))
+        let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
+        setPosition(region: region, animate: false)
     }
     
-    func centerRegionBounds() {
-        guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else { return }
-        
-        let distance: CLLocationDistance = getDistance(from: markerCoordinate, to: currentUserLocation)
-        let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
-        let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: markerCoordinate, and: currentUserLocation)
-        
-        withAnimation {
-            position = .region(.init(center: midCoordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+    /// Centers the map region to fit both the marker and the user's location.
+    /// If either is unavailable, logs an error instead.
+    func centerRegionBoundsForMarkerNUserLocation() {
+        guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else {
+            MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription.debugLog()
+            return
         }
-    }
-    
-    func setInteractionModes(_ modes: MapInteractionModes) {
-        interactionModes = modes
-    }
-    
-    // MARK: - PRIVATE FUNCTIONS
-    private func setCameraDragging(_ boolean: Bool) {
-        isCameraDragging = boolean
+        positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
     }
 }

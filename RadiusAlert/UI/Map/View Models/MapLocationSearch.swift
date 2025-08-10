@@ -42,9 +42,13 @@ extension MapViewModel {
             
             guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
             
-            withAnimation {
-                position = .region(.init(center: mapItem.placemark.coordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
-            }
+            let region: MKCoordinateRegion = .init(
+                center: mapItem.placemark.coordinate,
+                latitudinalMeters: boundsMeters,
+                longitudinalMeters: boundsMeters
+            )
+            
+            setPosition(region: region, animate: true)
         }
     }
     

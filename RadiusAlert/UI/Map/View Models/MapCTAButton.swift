@@ -59,7 +59,7 @@ extension MapViewModel {
             let centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation else { return }
         
-        let distance: CLLocationDistance = getDistance(
+        let distance: CLLocationDistance = Utilities.getDistance(
             from: centerCoordinate,
             to: currentUserLocation
         )
@@ -72,7 +72,7 @@ extension MapViewModel {
         setInteractionModes([])
         setMarkerCoordinate()
         getDirections()
-        centerRegionBounds()
+        centerRegionBoundsForMarkerNUserLocation()
         
         if let markerCoordinate {
             let radiusAlertItem: RadiusAlertModel = .init(
