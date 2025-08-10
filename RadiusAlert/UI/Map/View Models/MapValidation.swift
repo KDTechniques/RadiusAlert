@@ -13,7 +13,7 @@ extension MapViewModel {
         guard let currentLocation = locationManager.currentUserLocation,
               let centerCoordinate else { return false }
         
-        let distance: CLLocationDistance = locationManager.getDistance(
+        let distance: CLLocationDistance = getDistance(
             from: centerCoordinate,
             to: currentLocation
         )
@@ -61,29 +61,16 @@ extension MapViewModel {
     }
     
     func showNoSearchResultsText() -> Bool {
-        guard let searchResults else { return false }
-        
         let condition1: Bool = searchText.isEmpty
-        let condition2: Bool = isSearching
-        let condition3: Bool = searchResults.isEmpty
+        let condition2: Bool = locationSearchManager.results.isEmpty
         
-        return !condition1 && !condition2 && condition3
-    }
-    
-    func showSearchingCircularProgress() -> Bool {
-        let condition1: Bool = searchText.isEmpty
-        let condition2: Bool = isSearching
-        let condition3: Bool = searchResults == nil
-        
-        return !condition1 && condition2 && condition3
+        return !condition1 && condition2
     }
     
     func showSearchResults() -> Bool {
-        guard let searchResults else { return false }
         let condition1: Bool = searchText.isEmpty
-        let condition2: Bool = isSearching
-        let condition3: Bool = searchResults.isEmpty
+        let condition2: Bool = locationSearchManager.results.isEmpty
         
-        return !condition1 && !condition2 && !condition3
+        return !condition1 && !condition2
     }
 }

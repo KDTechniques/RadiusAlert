@@ -9,14 +9,14 @@ import SwiftUI
 
 struct SearchResultListRowView: View {
     // MARK: - INJECTED PROPERTIES
-    let name: String
     let title: String
+    let subTitle: String
     let showSeparator: Bool
     
     //  MARK: - INTIALIZER
-    init(name: String, title: String, showSeparator: Bool = true) {
-        self.name = name
+    init(title: String, subTitle: String, showSeparator: Bool = true) {
         self.title = title
+        self.subTitle = subTitle
         self.showSeparator = showSeparator
     }
     
@@ -24,8 +24,8 @@ struct SearchResultListRowView: View {
     var body: some View {
         VStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 5) {
-                nameText
                 titleText
+                subTitleText
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
@@ -41,22 +41,22 @@ struct SearchResultListRowView: View {
 // MARK: - PREVIEWS
 #Preview("Search Result List Row View") {
     SearchResultListRowView(
-        name: "Name: 1234567890 1234567890 ",
-        title: "Title: 1234567890 1234567890 1234567890 12345678"
+        title: "Name: 1234567890 1234567890 ",
+        subTitle: "Title: 1234567890 1234567890 1234567890 12345678"
     )
     .previewModifier()
 }
 
 // MARK: - EXTENSIONS
 extension SearchResultListRowView {
-    private var nameText: some View {
-        Text(name)
+    private var titleText: some View {
+        Text(title)
             .fontWeight(.medium)
             .padding(.trailing, 100)
     }
     
-    private var titleText: some View {
-        Text(title)
+    private var subTitleText: some View {
+        Text(subTitle)
             .font(.caption)
             .foregroundStyle(.secondary)
             .padding(.trailing, 50)

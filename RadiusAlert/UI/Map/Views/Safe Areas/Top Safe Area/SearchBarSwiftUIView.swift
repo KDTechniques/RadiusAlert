@@ -11,6 +11,7 @@ import SearchBarSwiftUI
 struct SearchBarSwiftUIView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @FocusState private var isFocused: Bool
     
     // MARK: - BODY
     var body: some View {
@@ -27,8 +28,9 @@ struct SearchBarSwiftUIView: View {
                 textColor: .primary
             )
         ) { mapVM.isSearchFieldFocused = $0 }
+            .focused($isFocused)
             .submitLabel(.search)
-            .onSubmit { mapVM.searchLocation() }
+            .onSubmit { isFocused = false }
             .padding(.bottom, 14)
             .padding(.top, 8)
     }

@@ -24,18 +24,13 @@ extension MapViewModel {
     }
     
     func showCTAButton() -> Bool {
-        let condition1: Bool = !(
-            showSearchResults() ||
-            showNoSearchResultsText() ||
-            showSearchingCircularProgress()
-        )
-        
+        let condition1: Bool = !(showSearchResults() || showNoSearchResultsText())
         let condition2: Bool = isSearchFieldFocused
         
         return condition1 && !condition2
     }
     
-    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKMapItem) {
+    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
             guard let self, boolean else { return }
             stopAlert()
@@ -64,7 +59,7 @@ extension MapViewModel {
             let centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation else { return }
         
-        let distance: CLLocationDistance = locationManager.getDistance(
+        let distance: CLLocationDistance = getDistance(
             from: centerCoordinate,
             to: currentUserLocation
         )

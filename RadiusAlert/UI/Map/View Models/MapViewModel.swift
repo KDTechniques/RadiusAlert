@@ -17,6 +17,7 @@ final class MapViewModel {
     
     // MARK: - ASSIGNED PROPERTIES
     let locationManager: LocationManager = .shared
+    var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
     
@@ -27,26 +28,16 @@ final class MapViewModel {
     var markerCoordinate: CLLocationCoordinate2D? { didSet { locationManager.markerCoordinate = markerCoordinate } }
     var selectedMapStyle: MapStyleTypes = .standard
     var route: MKRoute?
-    var searchText: String = "" { didSet { onSearchTextChange() } }
-    var searchResults: [MKMapItem]?
-    var isSearching: Bool = false
+    var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     var isSearchFieldFocused: Bool = false
     var popupCardItem: PopupCardModel?
     
     @ObservationIgnored var selectedSearchResult: MKMapItem?
     @ObservationIgnored private(set) var radiusAlertItem:RadiusAlertModel?
-    @ObservationIgnored var searchQueryTask: Task<Void, Never>?
     @ObservationIgnored var isCameraDragging: Bool = false
     @ObservationIgnored var isRadiusSliderActive: Bool = false
     
     // MARK: - PUBLIC FUNCTIONS
-    func calculateMidCoordinate(from coord1: CLLocationCoordinate2D, and coord2: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        let midLatitude = (coord1.latitude + coord2.latitude) / 2
-        let midLongitude = (coord1.longitude + coord2.longitude) / 2
-        
-        return .init(latitude: midLatitude, longitude: midLongitude)
-    }
-    
     func setRadiusAlertItem(_ item: RadiusAlertModel?) {
         radiusAlertItem = item
     }

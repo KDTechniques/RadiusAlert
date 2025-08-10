@@ -16,7 +16,7 @@ extension MapViewModel {
         
         markerCoordinate = centerCoordinate
         
-        let distance: CLLocationDistance = locationManager.getDistance(from: centerCoordinate, to: currentLocation)
+        let distance: CLLocationDistance = getDistance(from: centerCoordinate, to: currentLocation)
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
         let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: centerCoordinate, and: currentLocation)
         

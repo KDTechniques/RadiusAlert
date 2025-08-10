@@ -10,7 +10,9 @@ import Foundation
 extension MapViewModel {
     // MARK: -  PUBLIC FUNCTIONS
     func getDirections() {
-        Task { route = await locationManager.getDirections() }
+        Task {
+            route = await locationManager.getDirections()
+        }
     }
     
     func removeDirections() {

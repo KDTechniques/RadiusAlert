@@ -52,7 +52,7 @@ extension MapViewModel {
     func centerRegionBounds() {
         guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else { return }
         
-        let distance: CLLocationDistance = locationManager.getDistance(from: markerCoordinate, to: currentUserLocation)
+        let distance: CLLocationDistance = getDistance(from: markerCoordinate, to: currentUserLocation)
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
         let midCoordinate: CLLocationCoordinate2D = calculateMidCoordinate(from: markerCoordinate, and: currentUserLocation)
         

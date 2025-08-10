@@ -93,12 +93,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return .region(region)
     }
     
-    func getDistance(from location1: CLLocationCoordinate2D, to location2: CLLocationCoordinate2D) -> CLLocationDistance {
-        let location1: CLLocation = .init(latitude: location1.latitude, longitude: location1.longitude)
-        let location2: CLLocation = .init(latitude: location2.latitude, longitude: location2.longitude)
-        return location1.distance(from: location2)
-    }
-    
     func getDirections() async -> MKRoute? {
         guard
             let currentUserLocation,

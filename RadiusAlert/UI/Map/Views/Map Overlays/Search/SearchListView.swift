@@ -14,12 +14,10 @@ struct SearchListView: View {
     // MARK: - BODY
     var body: some View {
         Group {
-            if mapVM.showSearchResults() {
+            if !mapVM.locationSearchManager.results.isEmpty {
                 SearchResultsListView()
             } else if mapVM.showNoSearchResultsText() {
                 NoSearchResultsView()
-            }  else if mapVM.showSearchingCircularProgress() {
-                ProgressView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

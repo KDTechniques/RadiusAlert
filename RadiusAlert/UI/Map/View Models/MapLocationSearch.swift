@@ -10,29 +10,7 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
-    func searchLocation() {
-        cancelSearchQueryTask()
-        resetSearchResults()
-        setIsSearching(true)
-        
-        searchQueryTask = Task { @MainActor in
-            guard let region = position.region else { return }
-            let request = MKLocalSearch.Request()
-            request.region = region
-            request.naturalLanguageQuery = searchText
-            
-            do {
-                let response = try await MKLocalSearch(request: request).start()
-                setIsSearching(false)
-                let results: [MKMapItem] = response.mapItems.compactMap({ $0 })
-                setSearchResults(results)
-            } catch { handleLocationSearchFailure() }
-            
-            cancelSearchQueryTask()
-        }
-    }
-    
-    func onSearchResultsListRowTap(_ item: MKMapItem) {
+    func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         isMarkerCoordinateNil()
         ? setSelectedSearchResultCoordinate(item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
@@ -41,18 +19,19 @@ extension MapViewModel {
     func showSearchResultsList() -> Bool {
         let condition1: Bool = showSearchResults()
         let condition2: Bool = showNoSearchResultsText()
-        let condition3: Bool = showSearchingCircularProgress()
         
-        return condition1 || condition2 || condition3
+        return condition1 || condition2
     }
     
-    func onSearchTextChange() {
-        guard searchText.isEmpty else { return }
-        resetSearchResults()
-        cancelSearchQueryTask()
+    func onSearchTextChange(_ text: String) {
+        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.update(searchText: text)
     }
     
-    func setSelectedSearchResultCoordinate(_ item: MKMapItem) {
+    func onEmptySearchText() {
+        locationSearchManager.clearResults()
+    }
+    
+    func setSelectedSearchResultCoordinate(_ item: MKLocalSearchCompletion) {
         setSelectedMapItem(item)
         resetSearchResults()
         resetSearchText()
@@ -60,42 +39,40 @@ extension MapViewModel {
         Task {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+            
+            guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
+            
             withAnimation {
-                position = .region(.init(center: item.placemark.coordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
+                position = .region(.init(center: mapItem.placemark.coordinate, latitudinalMeters: boundsMeters, longitudinalMeters: boundsMeters))
             }
         }
     }
     
     // MARK: - PRIVATE FUNCTIONS
-    private func setIsSearching(_ boolean: Bool)  {
-        isSearching = boolean
-    }
-    
-    private func cancelSearchQueryTask() {
-        searchQueryTask?.cancel()
-        searchQueryTask = nil
-    }
-    
     private func resetSearchText() {
         searchText = ""
     }
     
-    private func setSearchResults(_ value: [MKMapItem]?) {
-        searchResults = value
-    }
-    
     private func resetSearchResults() {
-        setSearchResults(nil)
-        setIsSearching(false)
+        locationSearchManager.clearResults()
     }
     
     private func handleLocationSearchFailure() {
-        cancelSearchQueryTask()
-        setSearchResults([])
-        setIsSearching(false)
+        locationSearchManager.clearResults()
     }
     
-    private func setSelectedMapItem(_ item: MKMapItem?) {
-        selectedSearchResult = item
+    private func setSelectedMapItem(_ item: MKLocalSearchCompletion) {
+        Task {
+            do {
+                guard let mapItem: MKMapItem = try await locationSearchManager.getMKMapItem(for: item) else {
+                    selectedSearchResult = nil
+                    return
+                }
+                selectedSearchResult =  mapItem
+            } catch {
+                selectedSearchResult = nil
+            }
+            
+        }
     }
 }
