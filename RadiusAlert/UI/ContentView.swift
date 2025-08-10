@@ -26,9 +26,13 @@ struct ContentView: View {
                     MapStyleButtonView()
                     RadiusSliderView()
                 }
-                .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
+                .overlay { SearchListBackgroundView() }
+                .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
+                .overlay { KeyboardPreLoaderView() }
+                .popupCardViewModifier(vm: mapVM)
                 .toolbarVisibility(.hidden, for: .navigationBar)
+                .ignoresSafeArea(.keyboard)
                 .alertViewModifier(item: $alertManager.alertItem)
         }
         .onAppear { mapVM.positionToInitialUserLocation() }
@@ -39,4 +43,16 @@ struct ContentView: View {
 #Preview("Content View") {
     ContentView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+fileprivate extension View  {
+    func popupCardViewModifier(vm: MapViewModel) -> some View {
+        self
+            .overlay {
+                if let popupCardItem: PopupCardModel = vm.popupCardItem {
+                    PopupCardView(item: popupCardItem)
+                }
+            }
+    }
 }

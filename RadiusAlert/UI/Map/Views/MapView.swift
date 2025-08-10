@@ -20,7 +20,8 @@ struct MapView: View {
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
         let _ = Self._printChanges()
-        Map(position: $mapVM.position) {
+        
+        Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location
             UserAnnotation()
             
@@ -35,7 +36,7 @@ struct MapView: View {
             
             // Marker
             if let markerCoordinate = mapVM.markerCoordinate {
-                Marker(mapVM.getRadiusTextString(), coordinate: markerCoordinate)
+                Marker(mapVM.getRadiusTextString(mapVM.selectedRadius), coordinate: markerCoordinate)
             }
             
             // Route
@@ -45,19 +46,26 @@ struct MapView: View {
             }
         }
         .mapStyle(mapVM.selectedMapStyle.mapStyle)
-        .mapControls {
-            MapUserLocationButton(scope: mapSpace)
-            MapPitchToggle(scope: mapSpace)
-            MapCompass(scope: mapSpace)
-            MapScaleView(scope: mapSpace)
-        }
+        .mapControls { mapControls }
+        .mapControlVisibility(mapVM.isMarkerCoordinateNil() ? .visible : .hidden)
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
         .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Map View") {
-    MapView()
+#Preview("Map") {
+    ContentView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension MapView {
+    @ViewBuilder
+    private var mapControls: some View {
+        MapUserLocationButton(scope: mapSpace)
+        MapPitchToggle(scope: mapSpace)
+        MapCompass(scope: mapSpace)
+        MapScaleView(scope: mapSpace)
+    }
 }

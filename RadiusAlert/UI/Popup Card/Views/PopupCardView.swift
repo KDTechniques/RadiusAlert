@@ -1,0 +1,47 @@
+//
+//  PopupCardView.swift
+//  RadiusAlert
+//
+//  Created by Mr. Kavinda Dilshan on 2025-08-08.
+//
+
+import SwiftUI
+
+struct PopupCardView: View {
+    // MARK: - INJECTED PROPERTIES
+    let item: PopupCardModel
+    
+    // MARK: - INITIALIZER
+    init(item: PopupCardModel) {
+        self.item = item
+    }
+    
+    //MARK: - BODY
+    var body: some View {
+        VStack {
+            PopupCardToolBarView()
+            PopupCardTitlesView()
+            PopupCardLocationTitleView(title: item.locationTitle)
+            
+            Divider().padding(.vertical, 10)
+            
+            PopupCardDetailsView(item: item)
+            PopupCardCTAButtonView()
+        }
+        .padding()
+        .background(.white, in: .rect(cornerRadius: 20))
+        .padding(.horizontal, 50)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.ultraThinMaterial)
+        .ignoresSafeArea()
+    }
+}
+
+// MARK: - PREVIEWS
+#Preview("Popup Card") {
+    PopupCardView(item: .mockValues)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.regularMaterial)
+        .ignoresSafeArea()
+        .previewModifier()
+}

@@ -6,14 +6,16 @@
 //
 
 import CoreLocation
+import SwiftUICore
 
 struct MapValues {
+    // MARK: - Map Related
     static let initialUserLocationBoundsMeters: CLLocationDistance = 2000
     static let regionBoundsFactor: CLLocationDistance = 1.8
     static let minimumDistance: CLLocationDistance = 1000
     static let regionBoundsCenterDelayDuration: Double = 2.0
     
-    // Radius Related
+    // MARK: - Radius Related
     static let radiusStep: Double = 100
     static let minimumRadius: CLLocationDistance = 700
     static var minimumRadiusString: String { "\(Int(self.minimumRadius))m" }
@@ -21,4 +23,7 @@ struct MapValues {
     static var maximumRadiusString: String { "\(Int(self.maximumRadius/1000))km" }
     static let radiusSliderWidthFactor: CGFloat = 2
     static let radiusToRegionBoundsMetersFactor: Double = 5
+    
+    // MARK: - Safe Area Related
+    static let safeAreaBackgroundColor: Color = .white
 }

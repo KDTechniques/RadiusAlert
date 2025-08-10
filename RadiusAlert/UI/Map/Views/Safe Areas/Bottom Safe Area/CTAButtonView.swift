@@ -27,7 +27,6 @@ struct CTAButtonView: View {
         .frame(maxWidth: .infinity)
         .padding(.top, 20)
         .padding(.horizontal, 45)
-        .background(.regularMaterial)
     }
 }
 

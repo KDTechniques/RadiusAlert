@@ -14,21 +14,11 @@ struct SearchResultsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        if let searchResults: [MKMapItem] = mapVM.searchResults {
+        if let lastItem: MKLocalSearchCompletion = mapVM.locationSearchManager.results.last {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    ForEach(searchResults, id: \.self) { item in
-                        if let name: String = item.name {
-                            let placeMark: MKPlacemark = item.placemark
-                            let title: String = placeMark.title ?? placeMark.subtitle ?? ""
-                            
-                            Button {
-                                mapVM.onSearchResultsListRowTap(item)
-                            } label: {
-                                SearchResultListRowView(name: name, title: title)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                    ForEach(mapVM.locationSearchManager.results, id: \.self) {
+                        foreachItem(item: $0, lastItem: lastItem)
                     }
                 }
             }
@@ -40,4 +30,21 @@ struct SearchResultsListView: View {
 #Preview("Searc Results List View") {
     SearchResultsListView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension SearchResultsListView {
+    @ViewBuilder
+    private func foreachItem(item: MKLocalSearchCompletion, lastItem: MKLocalSearchCompletion) ->  some View {
+        Button {
+            mapVM.onSearchResultsListRowTap(item)
+        } label: {
+            SearchResultListRowView(
+                title: item.title,
+                subTitle: item.subtitle,
+                showSeparator: lastItem != item
+            )
+        }
+        .buttonStyle(.plain)
+    }
 }

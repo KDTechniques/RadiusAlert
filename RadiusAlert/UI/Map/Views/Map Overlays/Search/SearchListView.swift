@@ -8,27 +8,19 @@
 import SwiftUI
 
 struct SearchListView: View {
-    // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
-    
     // MARK: - BODY
     var body: some View {
         Group {
-            if mapVM.showSearchResults() {
-                SearchResultsListView()
-            } else if mapVM.showNoSearchResultsText() {
-                NoSearchResultsView()
-            }  else if mapVM.showSearchingCircularProgress() {
-                ProgressView()
-            }
+            SearchResultsListView()
+            NoSearchResultsView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.background)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Search List View") {
     SearchListView()
+        .background(.regularMaterial)
         .previewModifier()
 }

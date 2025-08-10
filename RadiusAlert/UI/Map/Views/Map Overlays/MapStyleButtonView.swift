@@ -14,7 +14,7 @@ struct MapStyleButtonView: View {
     // MARK: - BODY
     var body: some View {
         Button {
-            mapVM.nextMapStyle()
+            mapVM.setNextMapStyle()
         } label: {
             Image(systemName: mapVM.selectedMapStyle.mapStyleSystemImageName)
                 .foregroundStyle(Color.accentColor)
