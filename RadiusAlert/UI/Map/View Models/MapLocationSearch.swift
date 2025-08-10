@@ -18,17 +18,14 @@ extension MapViewModel {
         }
     }
     
+    func onSearchTextSubmit() {
+        locationSearchManager.results.isEmpty ? setSearchText("") : ()
+    }
+    
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         isMarkerCoordinateNil()
         ? onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
-    }
-    
-    func showSearchResultsList() -> Bool {
-        let condition1: Bool = showSearchResults()
-        let condition2: Bool = showNoSearchResultsText()
-        
-        return condition1 || condition2
     }
     
     func onSearchTextChange(_ text: String) {

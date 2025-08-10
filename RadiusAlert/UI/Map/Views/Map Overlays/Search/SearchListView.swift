@@ -8,17 +8,11 @@
 import SwiftUI
 
 struct SearchListView: View {
-    // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
-    
     // MARK: - BODY
     var body: some View {
         Group {
-            if !mapVM.locationSearchManager.results.isEmpty {
-                SearchResultsListView()
-            } else if mapVM.showNoSearchResultsText() {
-                NoSearchResultsView()
-            }
+            SearchResultsListView()
+            NoSearchResultsView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

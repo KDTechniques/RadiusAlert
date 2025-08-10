@@ -12,6 +12,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     // MARK: - ASSIGNED PROPERTIES
     private let completer = MKLocalSearchCompleter()
     private(set) var results: [MKLocalSearchCompletion] = []
+    private(set) var isSearching: Bool = false
     
     // MARK: - INITIALIZER
     override init() {
@@ -22,6 +23,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     
     // MARK: - PUBLIC FUNCTIONS
     func update(searchText query: String) {
+        isSearching = true
         completer.queryFragment = query
     }
     
@@ -39,6 +41,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     // MARK: - DELEGATE  FUNCTIONS
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         results = completer.results
+        isSearching = false
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {

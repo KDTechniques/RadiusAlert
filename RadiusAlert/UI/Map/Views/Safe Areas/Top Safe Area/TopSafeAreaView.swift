@@ -20,7 +20,7 @@ struct TopSafeAreaView: View {
             NavigationTitleButtonView()
             SearchBarSwiftUIView()
             Divider()
-            searchList
+            SearchListView()
         }
         .padding(.top, 40)
         .background(mapValues.safeAreaBackgroundColor)
@@ -34,14 +34,4 @@ struct TopSafeAreaView: View {
         Spacer()
     }
     .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension TopSafeAreaView {
-    @ViewBuilder
-    private var searchList: some View {
-        if mapVM.showSearchResultsList() {
-            SearchListView()
-        }
-    }
 }
