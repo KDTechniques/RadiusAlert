@@ -38,6 +38,7 @@ extension MapViewModel {
         alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
             guard let self, boolean else { return }
             stopAlert()
+            setSearchFieldFocused(false)
             setSelectedSearchResultCoordinate(item)
         }
     }

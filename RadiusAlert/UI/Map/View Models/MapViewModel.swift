@@ -25,11 +25,7 @@ final class MapViewModel {
     private(set) var interactionModes: MapInteractionModes = [.all]
     private(set) var centerCoordinate: CLLocationCoordinate2D?
     private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
-    private(set) var markerCoordinate: CLLocationCoordinate2D? {
-        didSet {
-            locationManager.markerCoordinate = markerCoordinate
-        }
-    }
+    private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
     private(set) var selectedMapStyle: MapStyleTypes = .standard
     private(set) var route: MKRoute?
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -58,6 +54,10 @@ final class MapViewModel {
         withAnimation(animate ? .default : .none) {
             position = .region(region)
         }
+    }
+    
+    func setPosition(_ position: MapCameraPosition) {
+        self.position = position
     }
     
     func setSearchFieldFocused(_ boolean: Bool) {

@@ -63,11 +63,7 @@ extension MapViewModel {
                 self?.position ?? .automatic
             },
             set: { [weak self] newValue in
-                guard
-                    let self,
-                    let region = newValue.region
-                else { return }
-                self.setPosition(region: region, animate: false)
+                self?.setPosition(newValue)
             }
         )
     }

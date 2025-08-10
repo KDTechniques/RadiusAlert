@@ -43,4 +43,5 @@ struct PopupCardView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.regularMaterial)
         .ignoresSafeArea()
+        .previewModifier()
 }
