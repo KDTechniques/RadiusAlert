@@ -73,4 +73,20 @@ extension MapViewModel {
         
         return !condition1 && !condition2
     }
+    
+    func showCTAButton() -> Bool {
+        let condition1: Bool = !(showSearchResults() || showNoSearchResultsText())
+        let condition2: Bool = isSearchFieldFocused
+        
+        return condition1 && !condition2
+    }
+    
+    func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
+        guard selectedRadius < distance else {
+            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius
+            return false
+        }
+        
+        return true
+    }
 }

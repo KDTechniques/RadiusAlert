@@ -89,4 +89,21 @@ final class MapViewModel {
         // Update the map position with optional animation.
         setPosition(region: region, animate: animate)
     }
+    
+    /// Returns a binding to the current map camera position.
+    /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
+    func positionBinding() -> Binding<MapCameraPosition> {
+        Binding<MapCameraPosition>(
+            get: { [weak self] in
+                self?.position ?? .automatic
+            },
+            set: { [weak self] newValue in
+                guard
+                    let self,
+                    let region = newValue.region
+                else { return }
+                self.setPosition(region: region, animate: false)
+            }
+        )
+    }
 }

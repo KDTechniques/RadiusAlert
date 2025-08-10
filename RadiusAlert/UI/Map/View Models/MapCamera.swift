@@ -22,7 +22,7 @@ extension MapViewModel {
             return
         }
         
-        setPosition(region: region, animate: false)
+        setPosition(region: region, animate: true)
     }
     
     /// Resets the map to the initial region bounds, removing markers and routes.
@@ -71,7 +71,7 @@ extension MapViewModel {
     ///   - meters: The distance in meters for both latitude and longitude bounds.
     func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
         let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
-        setPosition(region: region, animate: false)
+        setPosition(region: region, animate: true)
     }
     
     /// Centers the map region to fit both the marker and the user's location.
@@ -81,6 +81,7 @@ extension MapViewModel {
             MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription.debugLog()
             return
         }
+        
         positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
     }
 }

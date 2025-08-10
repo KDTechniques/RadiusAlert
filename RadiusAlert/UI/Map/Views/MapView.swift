@@ -21,12 +21,7 @@ struct MapView: View {
         @Bindable var mapVM: MapViewModel = mapVM
         let _ = Self._printChanges()
         
-        Map(position: Binding(get: {
-            mapVM.position
-        }, set: {
-            guard let region = $0.region else { return }
-            mapVM.setPosition(region: region, animate: false)
-        }), interactionModes: mapVM.interactionModes) {
+        Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location
             UserAnnotation()
             
