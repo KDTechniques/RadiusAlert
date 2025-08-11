@@ -123,16 +123,29 @@ extension MapViewModel {
         return true
     }
     
-    /// Prepare the popup card item to display when the user reaches the alert radius.
-    /// - Parameter currentUserLocation: The current user location coordinate.
+    /// Prepares and sets up the radius alert card data when the user enters the alert radius.
+    /// This method determines the display title and other details for the popup card.
+    /// - Parameter currentUserLocation: The user’s current geographic coordinates.
     private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D) {
         if let markerCoordinate {
+            
+            // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
+            var coordinateCheck: Bool =  false
+            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate {
+                coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
+            }
+            
+            // Create the RadiusAlertModel:
+            // - If coordinates match, use the search result's name for the title
+            // - Always store the user's first location, the marker coordinate, and the chosen radius
             let radiusAlertItem = RadiusAlertModel(
-                locationTitle: selectedSearchResult?.name,
+                locationTitle: coordinateCheck ? selectedSearchResult?.name : nil,
                 firstUserLocation: currentUserLocation,
                 markerCoordinate: markerCoordinate,
                 setRadius: selectedRadius
             )
+            
+            // Save this alert item so it can be displayed when the alert triggers
             setRadiusAlertItem(radiusAlertItem)
         }
     }

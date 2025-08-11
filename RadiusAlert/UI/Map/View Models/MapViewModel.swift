@@ -33,15 +33,11 @@ final class MapViewModel {
     private(set) var popupCardItem: PopupCardModel?
     
     @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
-    @ObservationIgnored private(set) var radiusAlertItem:RadiusAlertModel?
+    @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     private(set) var isCameraDragging: Bool = false
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     
     // MARK: - SETTERS
-    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
-        radiusAlertItem = item
-    }
-    
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
     }
@@ -89,7 +85,11 @@ final class MapViewModel {
     }
     
     func setPopupCardItem(_ item: PopupCardModel?) {
-        popupCardItem =  item
+        popupCardItem = item
+    }
+    
+    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
+        radiusAlertItem = item
     }
     
     func setSelectedSearchResult(_ item: MKMapItem?) {
