@@ -128,18 +128,21 @@ extension MapViewModel {
     /// - Parameter currentUserLocation: The user’s current geographic coordinates.
     private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D) {
         if let markerCoordinate {
-            
             // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
             var coordinateCheck: Bool =  false
+            var locationTitle: String?
+            
             if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate {
                 coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
+                locationTitle = coordinateCheck ? selectedSearchResult?.name : nil
+                setSelectedSearchResult(nil)
             }
             
             // Create the RadiusAlertModel:
             // - If coordinates match, use the search result's name for the title
             // - Always store the user's first location, the marker coordinate, and the chosen radius
             let radiusAlertItem = RadiusAlertModel(
-                locationTitle: coordinateCheck ? selectedSearchResult?.name : nil,
+                locationTitle: locationTitle,
                 firstUserLocation: currentUserLocation,
                 markerCoordinate: markerCoordinate,
                 setRadius: selectedRadius
