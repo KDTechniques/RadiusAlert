@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct NavigationTitleButtonView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    
     // MARK: - BODY
     var body: some View {
         HStack(spacing: 5) {
@@ -19,6 +22,7 @@ struct NavigationTitleButtonView: View {
                 .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
+                .foregroundStyle(mapVM.getNavigationTitleIconColor())
                 .frame(height: 50)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

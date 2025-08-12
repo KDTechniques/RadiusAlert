@@ -17,6 +17,7 @@ final class MapViewModel {
     
     // MARK: - ASSIGNED PROPERTIES
     let locationManager: LocationManager = .shared
+    let networkManager: NetworkManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
@@ -98,5 +99,12 @@ final class MapViewModel {
     
     func setRadiusSliderActiveState(_ boolean: Bool) {
         isRadiusSliderActive = boolean
+    }
+    
+    // MARK: - PUBLIC FUNCTIONS
+    func getNavigationTitleIconColor() -> Color {
+        networkManager.connectionState == .connected
+        ? .black
+        : .init(uiColor: .systemGray5)
     }
 }
