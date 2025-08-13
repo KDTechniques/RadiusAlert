@@ -13,25 +13,33 @@ struct NavigationTitleButtonView: View {
     
     // MARK: - BODY
     var body: some View {
-        HStack(spacing: 5) {
-            Text("Radius Alert")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            Image(.logo)
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(mapVM.getNavigationTitleIconColor())
-                .frame(height: 50)
+        NavigationLink {
+            AboutView()
+        } label: {
+            HStack(spacing: 5) {
+                Text("Radius Alert")
+                    .foregroundStyle(.black)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Image(.logo)
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(mapVM.getNavigationTitleIconColor())
+                    .frame(height: 50)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading)
+        
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Navigation Title Button") {
-    NavigationTitleButtonView()
-        .previewModifier()
+    NavigationStack {
+        NavigationTitleButtonView()
+    }
+    .previewModifier()
 }
