@@ -7,12 +7,14 @@
 
 import SwiftUI
 import MapKit
+import Combine
 
 @Observable
 final class MapViewModel {
     // MARK: - INITIALIZER
     init() {
         selectedRadius = mapValues.minimumRadius
+        authorizationStatusPublisher()
     }
     
     // MARK: - ASSIGNED PROPERTIES
@@ -32,11 +34,28 @@ final class MapViewModel {
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
+    private(set) var isCameraDragging: Bool = false
     
+    @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
     @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
-    private(set) var isCameraDragging: Bool = false
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
+    
+    // MARK: - PUBLISHERS
+    func authorizationStatusPublisher() {
+        locationManager.$authorizationStatus$
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] in
+                guard let self else { return }
+                isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
+                
+                guard isAuthorizedToGetMapCameraUpdate else { return }
+                positionToInitialUserLocation()
+            }
+            .store(in: &cancellables)
+    }
     
     // MARK: - SETTERS
     func setInteractionModes(_ modes: MapInteractionModes) {

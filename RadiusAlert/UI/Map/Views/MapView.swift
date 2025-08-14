@@ -26,9 +26,10 @@ struct MapView: View {
             UserAnnotation()
             
             // Radius Circle
-            if let centerCoordinate = mapVM.centerCoordinate, mapVM.showRadiusCircle() {
+            if let centerCoordinate: CLLocationCoordinate2D = mapVM.getRadiusCircleCoordinate(),
+               mapVM.showRadiusCircle() {
                 MapCircle(
-                    center: mapVM.setRadiusCircleCoordinate(centerCoordinate),
+                    center: centerCoordinate,
                     radius: mapVM.selectedRadius
                 )
                 .foregroundStyle(Color.getNotPrimary(colorScheme: colorScheme).opacity(0.3))

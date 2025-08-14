@@ -66,6 +66,10 @@ extension MapViewModel {
             let (distance, currentUserLocation): (CLLocationDistance, CLLocationCoordinate2D) = startAlert_GetDistanceNUserLocation(),
             startAlert_ValidateRadius(distance: distance)  else { return }
         
+        // Request local push notification permission if needed
+        /// We don't request notification permission at the time of requesting location permission to provide better user experience.
+        alertManager.requestNotificationPermission()
+        
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
@@ -78,8 +82,12 @@ extension MapViewModel {
         
         startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
         guard startAlert_StartMonitoringRegion() else { return }
+        
         startAlert_OnRegionEntry()
-        Task { await HapticManager.shared.vibrate(type: .rigid) }
+        Task {
+            await HapticManager.shared.vibrate(type: .rigid)
+            await startAlert_ClearMemory()
+        }
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.
@@ -177,6 +185,14 @@ extension MapViewModel {
             alertManager.playTone()
             alertManager.playHaptic()
             generateNSetPopupCardItem()
+        }
+    }
+    
+    /// Clears cashed map tiles and improve memory management
+    private func startAlert_ClearMemory() async {
+        for _ in 1...3 {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            setNextMapStyle()
         }
     }
     

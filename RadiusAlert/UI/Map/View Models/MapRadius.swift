@@ -28,16 +28,16 @@ extension MapViewModel {
         return withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
     }
     
-    func setRadiusCircleCoordinate(_ center: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        return isMarkerCoordinateNil() ? center : markerCoordinate!
+    func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
+        guard let centerCoordinate else { return nil }
+        return isMarkerCoordinateNil() ? centerCoordinate : markerCoordinate!
     }
     
     func onRadiusChange() {
         setRegionBoundsOnRadius()
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    private func setRegionBoundsOnRadius() {
+    func setRegionBoundsOnRadius() {
         guard let centerCoordinate else { return }
         
         let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor

@@ -23,7 +23,10 @@ final class AlertManager {
     // 2 - Tone
     // 3 - Haptic Feedback
     
-    // MARK: - FUNCTIONS
+    // MARK: - PUBLIC FUNCTIONS
+    func requestNotificationPermission() {
+        notificationsManager.requestAuthorizationIfNeeded()
+    }
     
     // Local Push Notifications Related
     func sendNotification() {

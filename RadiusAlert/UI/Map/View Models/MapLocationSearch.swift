@@ -69,7 +69,14 @@ extension MapViewModel {
                 longitudinalMeters: boundsMeters
             )
             
+            // Set the marker coordinate position
             setPosition(region: region, animate: true)
+            
+            // Wait for the default animation on setting marker position
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            
+            // Once the position animation is over, set the region bound for better  user experience
+            setRegionBoundsOnRadius()
         }
     }
     

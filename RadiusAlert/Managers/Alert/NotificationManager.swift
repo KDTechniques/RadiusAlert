@@ -12,9 +12,7 @@ final class NotificationManager {
     static let shared = NotificationManager()
     
     // MARK: - INITIALIZER
-    private init() {
-        requestAuthorizationIfNeeded()
-    }
+    private init() { }
     
     // MARK: - PUBLIC FUNCTIONS
     func scheduleNotification(after seconds: TimeInterval = 0.5) {
@@ -35,8 +33,7 @@ final class NotificationManager {
         }
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    private func requestAuthorizationIfNeeded() {
+    func requestAuthorizationIfNeeded() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             guard settings.authorizationStatus != .authorized else { return }
             
