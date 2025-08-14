@@ -84,10 +84,7 @@ extension MapViewModel {
         guard startAlert_StartMonitoringRegion() else { return }
         
         startAlert_OnRegionEntry()
-        Task {
-            await HapticManager.shared.vibrate(type: .rigid)
-            await startAlert_ClearMemory()
-        }
+        Task { await HapticManager.shared.vibrate(type: .rigid) }
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.
@@ -185,14 +182,6 @@ extension MapViewModel {
             alertManager.playTone()
             alertManager.playHaptic()
             generateNSetPopupCardItem()
-        }
-    }
-    
-    /// Clears cashed map tiles and improve memory management
-    private func startAlert_ClearMemory() async {
-        for _ in 1...3 {
-            try? await Task.sleep(nanoseconds: 100_000_000)
-            setNextMapStyle()
         }
     }
     
