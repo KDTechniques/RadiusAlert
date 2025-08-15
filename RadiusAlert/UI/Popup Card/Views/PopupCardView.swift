@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PopupCardView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
     let item: PopupCardModel
     
     // MARK: - INITIALIZER
@@ -34,6 +35,8 @@ struct PopupCardView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
         .ignoresSafeArea()
+        .onAppear { mapVM.alertManager.playHaptic() }
+        .onDisappear { mapVM.alertManager.stopHaptic() }
     }
 }
 

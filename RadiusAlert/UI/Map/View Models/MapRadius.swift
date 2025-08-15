@@ -25,7 +25,12 @@ extension MapViewModel {
         let intNumber: Int = .init(radius)
         let numberText: String = intNumber >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(intNumber)m"
         
-        return withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
+        let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
+        
+        guard let name: String = selectedSearchResult?.name else { return text }
+        let textWithName: String = "(\(name))\n\(text)"
+        
+        return textWithName
     }
     
     func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
