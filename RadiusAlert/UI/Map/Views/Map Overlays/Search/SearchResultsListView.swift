@@ -22,6 +22,7 @@ struct SearchResultsListView: View {
                     }
                 }
             }
+            .onScrollPhaseChange { handleScrollPhase($1) }
         }
     }
 }
@@ -46,5 +47,10 @@ extension SearchResultsListView {
             )
         }
         .buttonStyle(.plain)
+    }
+    
+    private func handleScrollPhase(_ phase: ScrollPhase) {
+        guard phase.isScrolling else { return }
+        mapVM.setSearchFieldFocused(false)
     }
 }

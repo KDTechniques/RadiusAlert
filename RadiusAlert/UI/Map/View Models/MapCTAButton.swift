@@ -140,7 +140,6 @@ extension MapViewModel {
             if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate {
                 coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
                 locationTitle = coordinateCheck ? selectedSearchResult?.name : nil
-                setSelectedSearchResult(nil)
             }
             
             // Create the RadiusAlertModel:

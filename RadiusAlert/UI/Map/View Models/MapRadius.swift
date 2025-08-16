@@ -22,8 +22,7 @@ extension MapViewModel {
     }
     
     func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool = true) -> String {
-        let intNumber: Int = .init(radius)
-        let numberText: String = intNumber >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(intNumber)m"
+        let numberText: String = radius >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(Int(radius))m"
         
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
