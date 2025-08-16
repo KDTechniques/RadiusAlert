@@ -12,6 +12,7 @@ import MapKit
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(\.scenePhase) private var scenePhase
     
     // MARK: - ASSIGNED PROPERTIES
     @State private var alertManager: AlertManager = .shared
@@ -36,6 +37,7 @@ struct ContentView: View {
                 .alertViewModifier(item: $alertManager.alertItem)
         }
         .onAppear { mapVM.positionToInitialUserLocation() }
+        .onChange(of: scenePhase) { mapVM.playHapticsInForeground(by: $1) }
     }
 }
 

@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
@@ -42,6 +43,15 @@ extension MapViewModel {
         )
         
         setPopupCardItem(popupCardItem)
+    }
+    
+    func playHapticsInForeground(by scenePhase: ScenePhase)  {
+        guard scenePhase == .active else { return }
+        
+        Task {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            alertManager.playHaptic()
+        }
     }
     
     private func generateDurationText(_ date: Date) -> String {

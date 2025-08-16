@@ -35,8 +35,6 @@ struct PopupCardView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
         .ignoresSafeArea()
-        .onAppear { mapVM.alertManager.playHaptic() }
-        .onDisappear { mapVM.alertManager.stopHaptic() }
     }
 }
 
