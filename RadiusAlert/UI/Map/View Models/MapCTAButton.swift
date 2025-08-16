@@ -53,6 +53,7 @@ extension MapViewModel {
         resetMapToCurrentUserLocation()
         clearPopupCardItem()
         setRadiusAlertItem(nil)
+        setSelectedSearchResult(nil)
     }
     
     // MARK: - PRIVATE FUNCTIONS
