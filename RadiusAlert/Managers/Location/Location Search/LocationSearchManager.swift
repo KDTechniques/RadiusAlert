@@ -42,15 +42,8 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     
     // MARK: - DELEGATE  FUNCTIONS
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        var tempArray: [LocationSearchModel] = []
-        
-        for item in completer.results {
-            tempArray.append(.init(result: item))
-        }
-        
-        withAnimation(.smooth(duration: resultListingAnimationDuration)) {
-            results.sync(with: tempArray)
-        }
+        let tempArray: [LocationSearchModel] = completer.results.compactMap({ LocationSearchModel(result: $0) })
+        withAnimation(.smooth(duration: resultListingAnimationDuration)) { results = tempArray }
         
         Task {
             try? await Task.sleep(nanoseconds: UInt64(resultListingAnimationDuration))
