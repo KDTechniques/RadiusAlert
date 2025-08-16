@@ -6,12 +6,14 @@
 //
 
 import MapKit
+import SwiftUI
 
 @Observable
 final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     // MARK: - ASSIGNED PROPERTIES
     private let completer = MKLocalSearchCompleter()
-    private(set) var results: [MKLocalSearchCompletion] = []
+    private let resultListingAnimationDuration: Double = 0.3
+    private(set) var results: [LocationSearchModel] = []
     private(set) var isSearching: Bool = false
     
     // MARK: - INITIALIZER
@@ -40,12 +42,36 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     
     // MARK: - DELEGATE  FUNCTIONS
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        results = completer.results
-        isSearching = false
+        var tempArray: [LocationSearchModel] = []
+        
+        for item in completer.results {
+            tempArray.append(.init(result: item))
+        }
+        
+        withAnimation(.smooth(duration: resultListingAnimationDuration)) {
+            results.sync(with: tempArray)
+        }
+        
+        Task {
+            try? await Task.sleep(nanoseconds: UInt64(resultListingAnimationDuration))
+            isSearching = false
+        }
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         // we can show an alert here, if needed...
         print("Completer error:", error.localizedDescription)
+    }
+}
+
+extension Array where Element: Equatable {
+    mutating func sync(with other: [Element]) {
+        // 1. Remove items that are not in `other`
+        self.removeAll { !other.contains($0) }
+        
+        // 2. Add items that are missing from `self`
+        for item in other where !self.contains(item) {
+            self.append(item)
+        }
     }
 }

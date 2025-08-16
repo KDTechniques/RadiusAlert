@@ -41,7 +41,7 @@ final class MapViewModel {
     @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
-    
+   
     // MARK: - PUBLISHERS
     func authorizationStatusPublisher() {
         locationManager.$authorizationStatus$

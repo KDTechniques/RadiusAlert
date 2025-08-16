@@ -14,11 +14,11 @@ struct SearchResultsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        if let lastItem: MKLocalSearchCompletion = mapVM.locationSearchManager.results.last {
+        if let lastItemID: String = mapVM.locationSearchManager.results.last?.id {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    ForEach(mapVM.locationSearchManager.results, id: \.self) {
-                        foreachItem(item: $0, lastItem: lastItem)
+                    ForEach(mapVM.locationSearchManager.results) {
+                        foreachItem(item: $0, lastItemID: lastItemID)
                     }
                 }
             }
@@ -35,14 +35,14 @@ struct SearchResultsListView: View {
 // MARK: - EXTENSIONS
 extension SearchResultsListView {
     @ViewBuilder
-    private func foreachItem(item: MKLocalSearchCompletion, lastItem: MKLocalSearchCompletion) ->  some View {
+    private func foreachItem(item: LocationSearchModel, lastItemID: String) ->  some View {
         Button {
-            mapVM.onSearchResultsListRowTap(item)
+            mapVM.onSearchResultsListRowTap(item.result)
         } label: {
             SearchResultListRowView(
-                title: item.title,
-                subTitle: item.subtitle,
-                showSeparator: lastItem != item
+                title: item.result.title,
+                subTitle: item.result.subtitle,
+                showSeparator: lastItemID != item.id
             )
         }
         .buttonStyle(.plain)
