@@ -22,7 +22,9 @@ struct SearchResultsListView: View {
                 searchResultList
             }
         case .noConnection:
-            UnavailableView("No Internet Connection")
+            if mapVM.showNoInternetConnectionText() {
+                UnavailableView("No Internet Connection")
+            }
         }
     }
 }

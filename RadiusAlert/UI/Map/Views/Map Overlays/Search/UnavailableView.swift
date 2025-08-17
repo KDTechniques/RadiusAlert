@@ -9,7 +9,6 @@ import SwiftUI
 
 struct UnavailableView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
     let text: String
     
     // MARK: - INITIALIZER
@@ -19,13 +18,11 @@ struct UnavailableView: View {
     
     // MARK: - BODY
     var body: some View {
-        if mapVM.showNoInternetConnectionText() {
-            Text(text)
-                .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .padding(.top, 50)
-        }
+        Text(text)
+            .fontWeight(.semibold)
+            .foregroundStyle(.secondary)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 50)
     }
 }
 
