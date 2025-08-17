@@ -14,15 +14,15 @@ struct SearchResultsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        if let lastItemID: String = mapVM.locationSearchManager.results.last?.id {
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    ForEach(mapVM.locationSearchManager.results) {
-                        foreachItem(item: $0, lastItemID: lastItemID)
-                    }
-                }
+        switch mapVM.networkManager.connectionState {
+        case .connected:
+            if mapVM.showNoSearchResultsText() {
+                UnavailableView("No Results")
+            } else {
+                searchResultList
             }
-            .onScrollPhaseChange { handleScrollPhase($1) }
+        case .noConnection:
+            UnavailableView("No Internet Connection")
         }
     }
 }
@@ -52,5 +52,19 @@ extension SearchResultsListView {
     private func handleScrollPhase(_ phase: ScrollPhase) {
         guard phase.isScrolling else { return }
         mapVM.setSearchFieldFocused(false)
+    }
+    
+    @ViewBuilder
+    private var searchResultList: some View {
+        if let lastItemID: String = mapVM.locationSearchManager.results.last?.id {
+            ScrollView(.vertical) {
+                VStack(spacing: 0) {
+                    ForEach(mapVM.locationSearchManager.results) {
+                        foreachItem(item: $0, lastItemID: lastItemID)
+                    }
+                }
+            }
+            .onScrollPhaseChange { handleScrollPhase($1) }
+        }
     }
 }

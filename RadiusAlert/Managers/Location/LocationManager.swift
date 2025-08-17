@@ -148,7 +148,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard
             let currentUserLocation,
             let markerCoordinate else {
-            manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             return
         }
         
