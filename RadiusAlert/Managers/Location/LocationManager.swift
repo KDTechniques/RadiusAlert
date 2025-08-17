@@ -9,6 +9,7 @@ import CoreLocation
 import SwiftUI
 import MapKit
 
+@Observable
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
     let manager: CLLocationManager = .init()
@@ -24,12 +25,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     // MARK: - ASSIGNED PROPERTIES
     var currentUserLocation: CLLocationCoordinate2D?
-    var markerCoordinate: CLLocationCoordinate2D?
-    var onRegionEntry: (() -> Void) = { }
+    var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
+    @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
+    @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
+    @ObservationIgnored var onRegionEntry: (() -> Void) = { }
     
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
-    private var monitoredRegion: CLCircularRegion?
+    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
     
     // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -37,6 +40,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         // Secondly, request permission for `AlwaysAuthorization` when: .authorizedWhenInUse
         // Update location when: .authorizedAlways, .authorizedWhenInUse
         // Direct user to iPhone Settings when: .restricted, .denied
+        authorizationStatus = manager.authorizationStatus
         
         switch manager.authorizationStatus {
         case .notDetermined:
@@ -144,7 +148,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard
             let currentUserLocation,
             let markerCoordinate else {
-            manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             return
         }
         

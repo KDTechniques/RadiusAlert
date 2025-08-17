@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS

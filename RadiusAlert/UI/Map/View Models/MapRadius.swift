@@ -22,22 +22,26 @@ extension MapViewModel {
     }
     
     func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool = true) -> String {
-        let intNumber: Int = .init(radius)
-        let numberText: String = intNumber >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(intNumber)m"
+        let numberText: String = radius >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(Int(radius))m"
         
-        return withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
+        let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
+        
+        guard let name: String = selectedSearchResult?.name else { return text }
+        let textWithName: String = "(\(name))\n\(text)"
+        
+        return textWithName
     }
     
-    func setRadiusCircleCoordinate(_ center: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        return isMarkerCoordinateNil() ? center : markerCoordinate!
+    func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
+        guard let centerCoordinate else { return nil }
+        return isMarkerCoordinateNil() ? centerCoordinate : markerCoordinate!
     }
     
     func onRadiusChange() {
         setRegionBoundsOnRadius()
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    private func setRegionBoundsOnRadius() {
+    func setRegionBoundsOnRadius() {
         guard let centerCoordinate else { return }
         
         let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor

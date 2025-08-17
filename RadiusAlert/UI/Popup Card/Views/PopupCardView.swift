@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PopupCardView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
     let item: PopupCardModel
     
     // MARK: - INITIALIZER

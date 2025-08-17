@@ -7,16 +7,19 @@
 
 import SwiftUI
 import MapKit
+import Combine
 
 @Observable
 final class MapViewModel {
     // MARK: - INITIALIZER
     init() {
         selectedRadius = mapValues.minimumRadius
+        authorizationStatusPublisher()
     }
     
     // MARK: - ASSIGNED PROPERTIES
     let locationManager: LocationManager = .shared
+    let networkManager: NetworkManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
@@ -31,17 +34,30 @@ final class MapViewModel {
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
-    
-    @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
-    @ObservationIgnored private(set) var radiusAlertItem:RadiusAlertModel?
     private(set) var isCameraDragging: Bool = false
-    @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     
-    // MARK: - SETTERS
-    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
-        radiusAlertItem = item
+    @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
+    @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
+    @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
+   
+    // MARK: - PUBLISHERS
+    func authorizationStatusPublisher() {
+        locationManager.$authorizationStatus$
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] in
+                guard let self else { return }
+                isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
+                
+                guard isAuthorizedToGetMapCameraUpdate else { return }
+                positionToInitialUserLocation()
+            }
+            .store(in: &cancellables)
     }
     
+    // MARK: - SETTERS
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
     }
@@ -89,7 +105,11 @@ final class MapViewModel {
     }
     
     func setPopupCardItem(_ item: PopupCardModel?) {
-        popupCardItem =  item
+        popupCardItem = item
+    }
+    
+    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
+        radiusAlertItem = item
     }
     
     func setSelectedSearchResult(_ item: MKMapItem?) {
@@ -98,5 +118,12 @@ final class MapViewModel {
     
     func setRadiusSliderActiveState(_ boolean: Bool) {
         isRadiusSliderActive = boolean
+    }
+    
+    // MARK: - PUBLIC FUNCTIONS
+    func getNavigationTitleIconColor() -> Color {
+        networkManager.connectionState == .connected
+        ? .black
+        : .init(uiColor: .systemGray5)
     }
 }

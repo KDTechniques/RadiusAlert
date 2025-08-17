@@ -10,11 +10,8 @@ import SwiftUI
 struct SearchListView: View {
     // MARK: - BODY
     var body: some View {
-        Group {
-            SearchResultsListView()
-            NoSearchResultsView()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        SearchResultsListView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

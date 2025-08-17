@@ -29,9 +29,11 @@ struct TopSafeAreaView: View {
 
 // MARK: - PREVIEWS
 #Preview("Top Safe Area Content") {
-    VStack {
-        TopSafeAreaView()
-        Spacer()
+    NavigationStack {
+        VStack {
+            TopSafeAreaView()
+            Spacer()
+        }
     }
     .previewModifier()
 }

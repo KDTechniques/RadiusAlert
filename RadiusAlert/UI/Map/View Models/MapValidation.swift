@@ -83,4 +83,12 @@ extension MapViewModel {
         
         return true
     }
+    
+    func showNoInternetConnectionText()  -> Bool {
+        let condition1: Bool = networkManager.connectionState == .noConnection
+        let condition2: Bool = searchText.isEmpty
+        let condition3: Bool = isSearchFieldFocused
+        
+        return condition1 && (!condition2 || condition3)
+    }
 }

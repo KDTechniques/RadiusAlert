@@ -84,6 +84,7 @@ extension MapViewModel {
     /// Handles logic when the map camera changes continuously.
     /// - Parameter context: The camera update context containing the latest camera state.
     func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
+        guard isAuthorizedToGetMapCameraUpdate else { return }
         setCameraDragging(true)
         setCenterCoordinate(context.camera.centerCoordinate)
     }
@@ -91,6 +92,7 @@ extension MapViewModel {
     /// Handles logic when the map camera stops moving.
     /// - Parameter context: The camera update context containing the final camera state.
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
+        guard isAuthorizedToGetMapCameraUpdate else { return }
         setCameraDragging(false)
         setCenterCoordinate(context.camera.centerCoordinate)
         centerRegionBoundsForMarkerNUserLocation()
