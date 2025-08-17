@@ -105,7 +105,7 @@ extension MapViewModel {
             let centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation
         else {
-            MapCTAButtonErrorModel.failedToGetDistance.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
             return nil
         }
         
@@ -122,7 +122,7 @@ extension MapViewModel {
     /// - Returns: True if the selected radius is less than the distance; otherwise false.
     private func startAlert_ValidateRadius(distance: CLLocationDistance) -> Bool {
         guard isSelectedRadiusLessThanDistance(distance: distance) else {
-            MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription)
             return false
         }
         
@@ -163,7 +163,7 @@ extension MapViewModel {
     private func startAlert_StartMonitoringRegion() -> Bool {
         guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
             stopAlert()
-            MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
         
@@ -174,7 +174,7 @@ extension MapViewModel {
     private func startAlert_OnRegionEntry() {
         locationManager.onRegionEntry = { [weak self] in
             guard let self else {
-                MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription.debugLog()
+                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription)
                 return
             }
             

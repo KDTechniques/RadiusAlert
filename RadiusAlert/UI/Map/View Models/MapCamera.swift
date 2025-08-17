@@ -18,7 +18,7 @@ extension MapViewModel {
         guard
             let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
             let region: MKCoordinateRegion = position.region else {
-            MapCameraErrorModel.failToGetInitialMapCameraPosition.errorDescription.debugLog()
+            Utilities.log(MapCameraErrorModel.failToGetInitialMapCameraPosition.errorDescription)
             return
         }
         
@@ -102,7 +102,7 @@ extension MapViewModel {
     func setNextMapStyle() {
         let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
         guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else {
-            MapCameraErrorModel.failedToSetNextMapStyle.errorDescription.debugLog()
+            Utilities.log(MapCameraErrorModel.failedToSetNextMapStyle.errorDescription)
             return
         }
         
@@ -123,7 +123,7 @@ extension MapViewModel {
     /// If either is unavailable, logs an error instead.
     func centerRegionBoundsForMarkerNUserLocation() {
         guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else {
-            MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription.debugLog()
+            Utilities.log(MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription)
             return
         }
         

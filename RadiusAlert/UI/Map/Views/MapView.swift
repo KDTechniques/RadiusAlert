@@ -19,7 +19,7 @@ struct MapView: View {
     // MARK: - BODY
     var body: some View {
         @Bindable var mapVM: MapViewModel = mapVM
-        let _ = Self._printChanges()
+//        let _ = Self._printChanges()
         
         Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location

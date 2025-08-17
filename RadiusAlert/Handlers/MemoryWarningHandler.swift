@@ -61,7 +61,7 @@ final class MemoryWarningHandler {
     /// Iterates through all registered cleanup actions and executes them
     /// to reduce memory pressure.
     @objc private func memoryWarningReceived() {
-        print("Memory warning received! Executing cleanup actions…")
+        print("⚠️: Memory warning received! Executing cleanup actions…")
         cleanupActions.forEach { $0() }
     }
 }
