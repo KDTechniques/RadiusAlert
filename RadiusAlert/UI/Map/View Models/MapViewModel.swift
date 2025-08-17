@@ -15,11 +15,13 @@ final class MapViewModel {
     init() {
         selectedRadius = mapValues.minimumRadius
         authorizationStatusPublisher()
+        clearMemoryByMapStyles()
     }
     
     // MARK: - ASSIGNED PROPERTIES
     let locationManager: LocationManager = .shared
     let networkManager: NetworkManager = .shared
+    let memoryWarningsHandler: MemoryWarningHandler = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
@@ -41,7 +43,7 @@ final class MapViewModel {
     @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
-   
+    
     // MARK: - PUBLISHERS
     func authorizationStatusPublisher() {
         locationManager.$authorizationStatus$

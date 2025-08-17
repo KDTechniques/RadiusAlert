@@ -129,4 +129,15 @@ extension MapViewModel {
         
         positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
     }
+    
+    func clearMemoryByMapStyles() {
+        memoryWarningsHandler.registerCleanupAction {
+            Task { @MainActor [weak self] in
+                for _ in 1...3 {
+                    self?.setNextMapStyle()
+                    try? await Task.sleep(nanoseconds: 100_000_000)
+                }
+            }
+        }
+    }
 }
