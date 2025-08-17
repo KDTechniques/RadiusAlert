@@ -36,7 +36,6 @@ func showAlert(_ alertType: AlertModel) {
 }
 
 enum AlertTypes {
-    // MARK: - noConnection
     static let noConnection: AlertModel = .init(
         title: "No Internet Connection",
         message: "Please check your internet connection and try again.",
