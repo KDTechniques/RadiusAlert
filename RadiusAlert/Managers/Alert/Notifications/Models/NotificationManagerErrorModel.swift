@@ -14,10 +14,10 @@ enum NotificationManagerErrorModel {
     var errorDescription: String {
         switch self {
         case .failedToScheduleNotification(let error):
-            return "❌: Failed to schedule local push notifications. \(error.localizedDescription)"
+            return "❌: Failed to schedule local push notifications.: \(error.localizedDescription)"
             
         case .failedToAuthorizeNotification(let error):
-            return "❌: Failed to authorize notification. \(error.localizedDescription)"
+            return "❌: Failed to authorize notification.: \(error.localizedDescription)"
         }
     }
 }

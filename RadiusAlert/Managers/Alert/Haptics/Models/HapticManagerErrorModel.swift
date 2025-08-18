@@ -15,13 +15,13 @@ enum HapticManagerErrorModel {
     var errorDescription: String {
         switch self {
         case .failedToPlaySOSPattern(let error):
-            return "❌: Failed to play SOS pattern. \(error.localizedDescription)"
+            return "❌: Failed to play SOS pattern.: \(error.localizedDescription)"
             
         case .failedToStopHaptics(let error):
-            return "❌: Failed to stop haptic. \(error.localizedDescription)"
+            return "❌: Failed to stop haptic.: \(error.localizedDescription)"
             
         case .failedToStartHapticEngine(let error):
-            return "❌: Failed to start haptic engine. \(error.localizedDescription)"
+            return "❌: Failed to start haptic engine.: \(error.localizedDescription)"
         }
     }
 }
