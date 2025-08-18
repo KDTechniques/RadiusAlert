@@ -21,12 +21,12 @@ extension MapViewModel {
         }
     }
     
-    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool = true) -> String {
+    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
         let numberText: String = radius >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(Int(radius))m"
         
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
-        guard let name: String = selectedSearchResult?.name else { return text }
+        guard withAlertRadiusText, let name: String = selectedSearchResult?.name else { return text }
         let textWithName: String = "(\(name))\n\(text)"
         
         return textWithName

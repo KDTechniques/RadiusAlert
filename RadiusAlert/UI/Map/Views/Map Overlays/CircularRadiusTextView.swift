@@ -14,7 +14,7 @@ struct CircularRadiusTextView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.showFloatingAlertRadiusText() {
-            Text(mapVM.getRadiusTextString(mapVM.selectedRadius))
+            Text(mapVM.getRadiusTextString(mapVM.selectedRadius, withAlertRadiusText: true))
                 .multilineTextAlignment(.center)
                 .font(.caption)
                 .fontWeight(.medium)

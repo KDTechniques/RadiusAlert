@@ -37,7 +37,13 @@ struct MapView: View {
             
             // Marker
             if let markerCoordinate = mapVM.markerCoordinate {
-                Marker(mapVM.getRadiusTextString(mapVM.selectedRadius), coordinate: markerCoordinate)
+                Marker(
+                    mapVM.getRadiusTextString(
+                        mapVM.selectedRadius,
+                        withAlertRadiusText: true
+                    ),
+                    coordinate: markerCoordinate
+                )
             }
             
             // Route
