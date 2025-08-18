@@ -10,6 +10,7 @@ import UserNotifications
 final class NotificationManager {
     // MARK: - ASSIGNED PROPERTIES
     static let shared = NotificationManager()
+    private let errorModel: NotificationManagerErrorModel.Type = NotificationManagerErrorModel.self
     
     // MARK: - INITIALIZER
     private init() { }
@@ -36,9 +37,9 @@ final class NotificationManager {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["arrivalNotification"])
         
         // 5. Add the new notification request to the notification center
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error {
-                print("Failed to schedule notification:", error)
+        UNUserNotificationCenter.current().add(request) { [weak self] error in
+            if let self, let error {
+                Utilities.log(errorModel.failedToScheduleNotification(error).errorDescription)
             }
         }
     }
@@ -53,13 +54,13 @@ final class NotificationManager {
             guard settings.authorizationStatus != .authorized else { return }
             
             // 3. Request authorization for alerts and sounds
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
-                if let error {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { [weak self] granted, error in
+                if let self, let error {
                     // Log any errors that occur during the authorization request
-                    print("Notification authorization error:", error)
+                    Utilities.log(errorModel.failedToAuthorizeNotification(error).errorDescription)
                 } else {
                     // Log the result of the authorization request
-                    print("Notification permission granted:", granted)
+                    print("✅: Notification Permission Granted:", granted)
                 }
             }
         }

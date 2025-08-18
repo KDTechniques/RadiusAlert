@@ -95,7 +95,6 @@ extension MapViewModel {
         guard isAuthorizedToGetMapCameraUpdate else { return }
         setCameraDragging(false)
         setCenterCoordinate(context.camera.centerCoordinate)
-        centerRegionBoundsForMarkerNUserLocation()
     }
     
     /// Cycles through available map styles and sets the next one.
