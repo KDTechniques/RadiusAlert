@@ -15,8 +15,7 @@ struct AboutView: View {
             AboutAppImprovementsView()
             AboutSomethingBoringView()
         }
-        .navigationTitle(Text("About"))
-        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { settingsNavigationLink }
     }
 }
 
@@ -26,4 +25,22 @@ struct AboutView: View {
         AboutView()
     }
     .previewModifier()
+}
+
+#Preview("Content") {
+    ContentView()
+        .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension AboutView {
+    private var settingsNavigationLink: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            NavigationLink {
+                SettingsView()
+            } label: {
+                Image(systemName: "gear")
+            }
+        }
+    }
 }

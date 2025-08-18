@@ -14,7 +14,7 @@ struct LocationSearchModel: Identifiable,Equatable {
     let subtitle: String
     
     init(result: MKLocalSearchCompletion) {
-        self.id = result.title + result.subtitle
+        self.id = result.title + (result.subtitle.isEmpty ? UUID().uuidString : result.subtitle)
         self.result = result
         title = result.title
         subtitle = result.subtitle

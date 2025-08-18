@@ -38,6 +38,20 @@ struct SearchResultsListView: View {
 // MARK: - EXTENSIONS
 extension SearchResultsListView {
     @ViewBuilder
+    private var searchResultList: some View {
+        if let lastItemID: String = mapVM.locationSearchManager.results.last?.id {
+            ScrollView(.vertical) {
+                VStack(spacing: 0) {
+                    ForEach(mapVM.locationSearchManager.results) {
+                        foreachItem(item: $0, lastItemID: lastItemID)
+                    }
+                }
+            }
+            .onScrollPhaseChange { handleScrollPhase($1) }
+        }
+    }
+    
+    @ViewBuilder
     private func foreachItem(item: LocationSearchModel, lastItemID: String) ->  some View {
         Button {
             mapVM.onSearchResultsListRowTap(item.result)
@@ -54,19 +68,5 @@ extension SearchResultsListView {
     private func handleScrollPhase(_ phase: ScrollPhase) {
         guard phase.isScrolling else { return }
         mapVM.setSearchFieldFocused(false)
-    }
-    
-    @ViewBuilder
-    private var searchResultList: some View {
-        if let lastItemID: String = mapVM.locationSearchManager.results.last?.id {
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    ForEach(mapVM.locationSearchManager.results) {
-                        foreachItem(item: $0, lastItemID: lastItemID)
-                    }
-                }
-            }
-            .onScrollPhaseChange { handleScrollPhase($1) }
-        }
     }
 }
