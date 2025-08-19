@@ -34,12 +34,12 @@ final class AlertManager {
     }
     
     // Tone Related
-    func playTone() {
-        toneManager.playDefaultTone()
+    func playTone(_ fileName: String, loopCount: Int = -1) {
+        toneManager.playTone(fileName, loopCount: loopCount)
     }
     
     func stopTone() {
-        toneManager.stopDefaultTone()
+        toneManager.stopTone()
     }
     
     // Haptics Related

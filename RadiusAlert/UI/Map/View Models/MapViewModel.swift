@@ -11,8 +11,12 @@ import Combine
 
 @Observable
 final class MapViewModel {
+    // MARK: - INJKECTED PROPERTIES
+    let settingsVM: SettingsViewModel
+    
     // MARK: - INITIALIZER
-    init() {
+    init(settingsVM: SettingsViewModel) {
+        self.settingsVM = settingsVM
         selectedRadius = mapValues.minimumRadius
         authorizationStatusPublisher()
         clearMemoryByMapStyles()

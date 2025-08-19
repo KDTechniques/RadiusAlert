@@ -179,7 +179,7 @@ extension MapViewModel {
             }
             
             alertManager.sendNotification()
-            alertManager.playTone()
+            alertManager.playTone(settingsVM.selectedTone.fileName)
             alertManager.playHaptic()
             generateNSetPopupCardItem()
         }

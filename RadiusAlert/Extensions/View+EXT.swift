@@ -15,7 +15,8 @@ extension View {
     func previewModifier() ->  some View {
         self
             .preferredColorScheme(.light)
-            .environment(MapViewModel())
+            .environment(MapViewModel(settingsVM: .init()))
+            .environment(SettingsViewModel())
     }
     
     /// Attaches an alert that displays based on a bound `AlertModel?`.

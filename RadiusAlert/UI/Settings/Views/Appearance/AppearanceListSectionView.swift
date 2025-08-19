@@ -24,13 +24,17 @@ struct AppearanceListSectionView: View {
                 Text("Dark Mode")
             }
         }
+        .navigationTitle(Text("Appearance"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Appearance List Section") {
-    AppearanceListSectionView()
-        .previewModifier()
+    NavigationStack {
+        AppearanceListSectionView()
+    }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS

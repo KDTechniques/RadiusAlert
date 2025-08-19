@@ -18,18 +18,26 @@ final class ToneManager {
     
     // MARK: - PUBLIC FUNCTIONS
     
-    /// Plays the default bundled tone (`tone.mp3`) in an infinite loop.
-    func playDefaultTone() {
+    /// Plays a custom tone from the app bundle.
+    ///
+    /// - Parameters:
+    ///   - fileName: The name of the audio file (without extension) located in the app bundle.
+    ///   - loopCount: The number of times to loop playback.
+    ///                Use `-1` for infinite looping.
+    ///
+    /// - Notes:
+    ///   - Activates the audio session to ensure sounds play even if the device is in silent mode or the screen is locked.
+    func playTone(_ fileName: String, loopCount: Int) {
         activateAudioSession()
         
-        guard let url = Bundle.main.url(forResource: "tone", withExtension: "mp3") else {
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "mp3") else {
             Utilities.log(errorModel.failedToFindAudioFile.errorDescription)
             return
         }
         
         do {
             player = try AVAudioPlayer(contentsOf: url)
-            player?.numberOfLoops = -1 // Infinite loop
+            player?.numberOfLoops = loopCount // Infinite loop
             player?.prepareToPlay()
             player?.play()
         } catch {
@@ -38,10 +46,10 @@ final class ToneManager {
     }
     
     /// Stops playback and deactivates the audio session.
-    func stopDefaultTone() {
-        deactivateAudioSession()
+    func stopTone() {
         player?.stop()
         player = nil
+        deactivateAudioSession()
     }
     
     // MARK: - PRIVATE FUNCTIONS
