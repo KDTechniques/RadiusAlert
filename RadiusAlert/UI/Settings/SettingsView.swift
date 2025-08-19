@@ -8,15 +8,26 @@
 import SwiftUI
 
 struct SettingsView: View {
+    // MARK: - BODY
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List {
+            NavigationLink {
+                AppearanceListSectionView()
+            } label: {
+                Text("Appearance")
+            }
+        }
+        .navigationTitle(Text("Settings"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Settings") {
-    SettingsView()
-        .previewModifier()
+    NavigationStack {
+        SettingsView()
+    }
+    .previewModifier()
 }
 
 #Preview("About") {
