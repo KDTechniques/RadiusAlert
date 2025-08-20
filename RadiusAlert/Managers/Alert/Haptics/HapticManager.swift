@@ -17,17 +17,14 @@ actor HapticManager {
     private var player: CHHapticAdvancedPatternPlayer?
     
     // MARK: - INITIALIZER
-    init() { }
+    init() { Task { await setupHaptics() } }
     
     // MARK: - PUBLIC FUNCTIONS
     
     /// Plays a continuous SOS pattern using haptics (dot-dot-dot, dash-dash-dash, dot-dot-dot).
     /// Loops indefinitely until `stopSOSPattern()` is called.
-    func playSOSPattern() {
-        guard let engine = hapticEngine else {
-            setupHaptics() // Lazily initialize the haptic engine if needed
-            return
-        }
+    func playSOSPattern() async {
+        stopSOSPattern()
         
         var events = [CHHapticEvent]()
         let shortDuration: TimeInterval = 0.1
@@ -75,7 +72,11 @@ actor HapticManager {
         // Attempt to create and start a looping advanced player
         do {
             let pattern = try CHHapticPattern(events: events, parameters: [])
-            player = try engine.makeAdvancedPlayer(with: pattern)
+            
+            // Lazily initialize the haptic engine if needed
+            hapticEngine == nil ? await setupHaptics() : ()
+            
+            player = try hapticEngine?.makeAdvancedPlayer(with: pattern)
             player?.loopEnabled = true
             try player?.start(atTime: 0)
         } catch {
@@ -86,7 +87,8 @@ actor HapticManager {
     /// Stops the currently playing SOS haptic pattern.
     func stopSOSPattern() {
         do {
-            try player?.stop(atTime: 1)
+            try player?.stop(atTime: 0)
+            player = nil
         } catch {
             Utilities.log(errorModel.failedToStopHaptics(error).errorDescription)
         }
@@ -117,12 +119,12 @@ actor HapticManager {
     // MARK: - PRIVATE FUNCTIONS
     
     /// Initializes the haptic engine and configures the reset handler.
-    private func setupHaptics() {
+    private func setupHaptics() async {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
         
         do {
             hapticEngine = try CHHapticEngine()
-            try hapticEngine?.start()
+            try await hapticEngine?.start()
             
             // Automatically restart engine if it stops
             hapticEngine?.resetHandler = {
