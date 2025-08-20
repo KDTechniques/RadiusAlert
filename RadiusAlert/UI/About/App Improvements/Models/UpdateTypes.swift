@@ -26,7 +26,7 @@ struct UpdateTypes: Identifiable {
         .init(emoji: "📖", description: "Past activity history view"),
         .init(emoji: "📊", description: "SwiftUI Charts to track daily routines and trips"),
         .init(emoji: "🤖", description: "Automate Today button for auto trip tracking and smart notifications"),
-        .init(emoji: "👨‍👩‍👧‍👦", description: "Real-time location tracking for loved ones (up to 4 people)"),
+        .init(emoji: "👨‍👩‍👧‍👦", description: "Real-time location tracking for loved ones"),
         .init(emoji: "✍️", description: "Quick feedback editor for easy suggestions"),
         .init(emoji: "🎵", description: "Option to pick from pre-packaged tones"),
         .init(emoji: "📳", description: "Custom haptic feedback creation"),

@@ -129,7 +129,7 @@ final class MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func getNavigationTitleIconColor() -> Color {
         networkManager.connectionState == .connected
-        ? .black
+        ? .primary
         : .init(uiColor: .systemGray5)
     }
 }

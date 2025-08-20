@@ -37,7 +37,7 @@ enum PopupCardDetailTypes: String {
         case .radius:
             return .red
         default:
-            return .black
+            return .primary
         }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SearchListBackgroundView: View {
     // MARK: -  INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - ASSIGNED PROPERTIES
@@ -17,7 +18,8 @@ struct SearchListBackgroundView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.isSearchFieldFocused {
-            mapValues.safeAreaBackgroundColor
+            Color.clear
+                .background(mapValues.safeAreaBackgroundColor(colorScheme))
                 .ignoresSafeArea()
         }
     }

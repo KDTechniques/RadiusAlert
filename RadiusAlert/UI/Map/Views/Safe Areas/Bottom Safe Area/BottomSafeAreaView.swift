@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BottomSafeAreaView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - ASSIGNED PROPERTIES
@@ -21,7 +22,7 @@ struct BottomSafeAreaView: View {
                 CTAButtonView()
             }
         }
-        .background(mapValues.safeAreaBackgroundColor)
+        .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
 }
 

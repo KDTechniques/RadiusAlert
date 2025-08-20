@@ -15,7 +15,7 @@ struct PopupCardDetailSectionView: View {
     let foregroundColor: Color
     
     // MARK: - INITIALIZER
-    init(title: String, systemImageName: String, value: String, foregroundColor: Color = .black) {
+    init(title: String, systemImageName: String, value: String, foregroundColor: Color = .primary) {
         self.title = title
         self.systemImageName = systemImageName
         self.value = value

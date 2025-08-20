@@ -18,7 +18,7 @@ struct NavigationTitleButtonView: View {
         } label: {
             HStack(spacing: 5) {
                 Text("Radius Alert")
-                    .foregroundStyle(.black)
+                    .tint(.primary)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
