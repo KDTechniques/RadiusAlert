@@ -77,7 +77,7 @@ actor HapticManager {
             let pattern = try CHHapticPattern(events: events, parameters: [])
             player = try engine.makeAdvancedPlayer(with: pattern)
             player?.loopEnabled = true
-            try player?.start(atTime: 1)
+            try player?.start(atTime: 0)
         } catch {
             Utilities.log(errorModel.failedToPlaySOSPattern(error).errorDescription)
         }
