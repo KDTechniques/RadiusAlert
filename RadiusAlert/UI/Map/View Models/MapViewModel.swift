@@ -58,7 +58,11 @@ final class MapViewModel {
                 isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
                 
                 guard isAuthorizedToGetMapCameraUpdate else { return }
-                positionToInitialUserLocation()
+                
+                Task { @MainActor  [weak self] in
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    self?.positionToInitialUserLocation()
+                }
             }
             .store(in: &cancellables)
     }

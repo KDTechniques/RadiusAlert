@@ -54,4 +54,9 @@ struct Utilities {
     static func getCountryCode() -> String? {
         return Locale.current.region?.identifier // e.g. "US", "LK"
     }
+    
+    static func isCountryCodeSriLanka() -> Bool {
+        let countryCode = Locale.current.region?.identifier
+        return countryCode == "LK"
+    }
 }
