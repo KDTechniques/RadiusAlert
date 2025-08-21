@@ -33,6 +33,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
     @ObservationIgnored private var monitoredRegion: CLCircularRegion?
+    @ObservationIgnored private var currentMode: LocationDistanceModes?
     
     // MARK: - DELEGATE FUNCTIONS
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -148,23 +149,58 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard
             let currentUserLocation,
             let markerCoordinate else {
-            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             return
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
         
+        let newMode: LocationDistanceModes
+        
         switch distance {
         case ..<1_000:
-            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        case 1_000..<2_000:
-            manager.desiredAccuracy = kCLLocationAccuracyBest
-        case 2_000..<3_000:
-            manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            newMode = .close
+        case 1_000..<3_000:
+            newMode = .medium
         case 3_000..<10_000:
-            manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            newMode = .far
         default:
+            newMode = .veryFar
+        }
+        
+        // Only apply if mode actually changed
+        guard newMode != currentMode else { return }
+        currentMode = newMode
+        
+        switch newMode {
+        case .close:
+            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            manager.distanceFilter = 50
+            
+        case .medium:
+            manager.desiredAccuracy = kCLLocationAccuracyBest
+            manager.distanceFilter = 100
+            stopSignificantUpdatesNStartLocationUpdates()
+            
+        case .far:
+            manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            manager.distanceFilter = 500
+            stopSignificantUpdatesNStartLocationUpdates()
+            
+        case .veryFar:
             manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            manager.stopUpdatingLocation()
+            manager.startMonitoringSignificantLocationChanges()
         }
     }
+    
+    private func stopSignificantUpdatesNStartLocationUpdates() {
+        manager.stopMonitoringSignificantLocationChanges()
+        manager.startUpdatingLocation()
+    }
+
 }
+
+
+
+
+
