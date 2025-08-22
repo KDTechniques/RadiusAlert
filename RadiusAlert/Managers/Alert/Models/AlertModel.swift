@@ -43,6 +43,13 @@ enum AlertTypes {
         primaryAction: .default(Text("OK"))
     )
     
+    static let locationPermissionDenied: AlertModel = .init(
+        title: "Location Permission Required",
+        message: "This app cannot work correctly without location access set to 'Always Allow'. Please enable it in Settings to continue.",
+        hapticType: .warning,
+        primaryAction: .default(Text("Go to Settings")) { OpenURLTypes.settings.openURL() }
+    )
+    
     static let alreadyInRadius: AlertModel = .init(
         title: "Already Within Radius",
         message: "Please reduce the radius to set a meaningful alert.",

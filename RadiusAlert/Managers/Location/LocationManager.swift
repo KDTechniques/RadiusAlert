@@ -36,6 +36,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private var currentMode: LocationDistanceModes?
     
     // MARK: - DELEGATE FUNCTIONS
+    
+    /// Called whenever the app’s location authorization changes.
+    /// Handles prompting the user for appropriate permissions.
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         // First, request permission for `WhenInUseAuthorization` when: .notDetermined
         // Secondly, request permission for `AlwaysAuthorization` when: .authorizedWhenInUse
@@ -50,7 +53,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             break
         case .restricted, .denied:
             print("Location service permission is not granted! 😒")
-            // Show an UI to direct user to system settings here...
+            AlertManager.shared.alertItem = AlertTypes.locationPermissionDenied
             break
         case .authorizedWhenInUse:
             print("Location service permission is granted for `When In Use`. 😉")
@@ -62,26 +65,32 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             break
         default:
             print("Unhandled location service permission context is found! 🤔")
+            AlertManager.shared.alertItem = AlertTypes.locationPermissionDenied
             break
         }
     }
     
+    /// Called whenever the device gets updated location(s).
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentUserLocation = locations.first?.coordinate
         setLocationAccuracy()
     }
     
+    /// Triggered when user enters a monitored circular region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard region.identifier == monitoredRegion?.identifier else { return }
         print("✅ Entered region: \(region.identifier)")
         onRegionEntry()
     }
     
+    /// Called when CoreLocation fails with an error
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print(error.localizedDescription)
     }
     
     // MARK: - PUBLIC FUNCTIONS
+    
+    /// Returns the initial camera position for the map centered on the user’s location
     func getInitialMapCameraPosition() -> MapCameraPosition? {
         guard let coordinate: CLLocationCoordinate2D =  currentUserLocation else {
             print("Error getting initial current location of the user!")
@@ -98,6 +107,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return .region(region)
     }
     
+    /// Fetches driving route from user’s location to the marker destination
     func getRoute() async -> MKRoute? {
         guard
             let currentUserLocation,
@@ -118,6 +128,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Starts monitoring a circular region around the marker coordinate.
+    /// Returns `false` if marker coordinate is not set.
     func startMonitoringRegion(radius: Double) -> Bool {
         // Stop monitoring old region if any
         if let oldRegion = monitoredRegion {
@@ -137,6 +149,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return true
     }
     
+    /// Stops monitoring the currently active circular region.
     func stopMonitoringRegion() {
         guard let monitoredRegion else { return }
         
@@ -145,6 +158,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - PRIVATE FUNCTIONS
+    
+    /// Dynamically adjusts location accuracy and update frequency
+    /// based on distance from the marker coordinate.
     private func setLocationAccuracy() {
         guard
             let currentUserLocation,
@@ -174,7 +190,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         switch newMode {
         case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            manager.distanceFilter = 50
             
         case .medium:
             manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -193,11 +208,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Helper function to stop significant-change updates
+    /// and restart normal location updates.
     private func stopSignificantUpdatesNStartLocationUpdates() {
         manager.stopMonitoringSignificantLocationChanges()
         manager.startUpdatingLocation()
     }
-
+    
 }
 
 

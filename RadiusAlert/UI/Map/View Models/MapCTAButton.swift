@@ -65,7 +65,8 @@ extension MapViewModel {
         guard
             startAlert_ValidateDistance(),
             let (distance, currentUserLocation): (CLLocationDistance, CLLocationCoordinate2D) = startAlert_GetDistanceNUserLocation(),
-            startAlert_ValidateRadius(distance: distance)  else { return }
+            startAlert_ValidateRadius(distance: distance),
+            startAlert_CheckAlwaysAllowPermission() else { return }
         
         // Request local push notification permission if needed
         /// We don't request notification permission at the time of requesting location permission to provide better user experience.
@@ -86,6 +87,17 @@ extension MapViewModel {
         
         startAlert_OnRegionEntry()
         Task { await HapticManager.shared.vibrate(type: .rigid) }
+    }
+    
+    /// Checks whether the app has `Always Allow` location permission.
+    /// - Returns: `true` if permission is granted as `.authorizedAlways`, otherwise `false`.
+    private func startAlert_CheckAlwaysAllowPermission() -> Bool {
+        guard locationManager.authorizationStatus == .authorizedAlways else {
+            alertManager.alertItem = AlertTypes.locationPermissionDenied
+            return false
+        }
+        
+        return true
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.

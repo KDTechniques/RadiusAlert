@@ -40,7 +40,7 @@ extension MapViewModel {
     /// - If the text is empty, reset results.
     /// - Otherwise, update results with the `MKLocalSearchCompleter`.
     func onSearchTextChange(_ text: String) {
-        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.update(searchText: text)
+        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.setQueryText(searchText: text)
     }
     
     /// Clears the current search results.
