@@ -13,6 +13,7 @@ struct AboutView: View {
         List {
             AboutBasicInfoView()
             AboutAppImprovementsView()
+            AboutAppStoreRateView()
             AboutSomethingBoringView()
         }
         .toolbar { settingsNavigationLink }

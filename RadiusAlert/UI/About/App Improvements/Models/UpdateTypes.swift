@@ -31,6 +31,8 @@ struct UpdateTypes: Identifiable {
         .init(emoji: "🎵", description: "Option to pick from pre-packaged tones"),
         .init(emoji: "📳", description: "Custom haptic feedback creation"),
         .init(emoji: "✨", description: "Smooth animations for Search Bar transitions"),
-        .init(emoji: "🧠", description: "AI-powered journey insights and smart route suggestions")
+        .init(emoji: "🧠", description: "AI-powered journey insights and smart route suggestions"),
+        .init(emoji: "⏱️", description: "Trip waiting time tracking with history and map highlights"),
+        .init(emoji: "📜", description: "Detailed Activity History with basic details.")
     ]
 }
