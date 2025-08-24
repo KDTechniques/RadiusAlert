@@ -15,6 +15,7 @@ struct ContentView: View {
     
     // MARK: - ASSIGNED PROPERTIES
     @State private var alertManager: AlertManager = .shared
+    @State private var showSplashScreen: Bool = true
     
     // MARK: - BODY
     var body: some View {
@@ -29,12 +30,12 @@ struct ContentView: View {
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
                 .overlay { SearchListBackgroundView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
-                .overlay { KeyboardPreLoaderView() }
                 .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
                 .alertViewModifier(item: $alertManager.alertItem)
         }
         .popupCardViewModifier(vm: mapVM)
+        .overlay(splashScreen)
         .onAppear { mapVM.positionToInitialUserLocation() }
     }
 }
@@ -46,6 +47,20 @@ struct ContentView: View {
 }
 
 // MARK: - EXTENSIONS
+extension ContentView {
+    @ViewBuilder
+    private var splashScreen: some View {
+        if showSplashScreen {
+            LaunchScreen()
+                .background {
+                    KeyboardPreLoaderView {
+                        showSplashScreen = false
+                    }
+                }
+        }
+    }
+}
+
 fileprivate extension View  {
     func popupCardViewModifier(vm: MapViewModel) -> some View {
         self

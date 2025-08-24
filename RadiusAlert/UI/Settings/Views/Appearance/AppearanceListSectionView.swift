@@ -69,3 +69,5 @@ extension AppearanceListSectionView {
         .background(Color.getNotPrimary(colorScheme: colorScheme).opacity(0.001))
     }
 }
+
+// create an apperance list row view
