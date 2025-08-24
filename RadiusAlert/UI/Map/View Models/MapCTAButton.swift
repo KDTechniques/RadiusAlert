@@ -54,7 +54,17 @@ extension MapViewModel {
         resetMapToCurrentUserLocation()
         clearPopupCardItem()
         setRadiusAlertItem(nil)
+        setPopupCardItem(nil)
         setSelectedSearchResult(nil)
+    }
+    
+    func onRegionEntry() {
+        locationManager.onRegionEntryFailure = { }
+        locationManager.onRegionEntry = { }
+        alertManager.sendNotification()
+        alertManager.playTone(settingsVM.selectedTone.fileName)
+        alertManager.playHaptic()
+        generateNSetPopupCardItem()
     }
     
     // MARK: - PRIVATE FUNCTIONS
@@ -88,6 +98,7 @@ extension MapViewModel {
         guard startAlert_StartMonitoringRegion() else { return }
         
         startAlert_OnRegionEntry()
+        startAlert_OnRegionEntryFailure()
         locationManager.setLocationAccuracy()
         Task { await HapticManager.shared.vibrate(type: .rigid) }
     }
@@ -193,10 +204,18 @@ extension MapViewModel {
                 return
             }
             
-            alertManager.sendNotification()
-            alertManager.playTone(settingsVM.selectedTone.fileName)
-            alertManager.playHaptic()
-            generateNSetPopupCardItem()
+            onRegionEntry()
+        }
+    }
+    
+    private func startAlert_OnRegionEntryFailure() {
+        locationManager.onRegionEntryFailure = { [weak self] in
+            guard let self else {
+                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntryFailure.errorDescription)
+                return
+            }
+            
+            handleOnRegionEntryAlertFailure()
         }
     }
     

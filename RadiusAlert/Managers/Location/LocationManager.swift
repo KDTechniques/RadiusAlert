@@ -32,10 +32,11 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
     @ObservationIgnored var onRegionEntry: (() -> Void) = { }
     @ObservationIgnored private var monitoredRegion: CLCircularRegion?
+    @ObservationIgnored var onRegionEntryFailure: (() -> Void) = { }
     
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
-    private(set) var currentMode: LocationDistanceModes = .close
+    private(set) var currentDistanceMode: LocationDistanceModes?
     
     // MARK: - DELEGATE FUNCTIONS
     
@@ -74,6 +75,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentUserLocation = locations.first?.coordinate
         setLocationAccuracy()
+        onRegionEntryFailure()
     }
     
     /// Triggered when user enters a monitored circular region
@@ -170,8 +172,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distance)
         
         // Only apply if mode actually changed
-        guard newMode != currentMode else { return }
-        currentMode = newMode
+        guard newMode != currentDistanceMode else { return }
+        currentDistanceMode = newMode
         
         switch newMode {
         case .close:

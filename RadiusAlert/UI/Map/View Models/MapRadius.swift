@@ -47,4 +47,19 @@ extension MapViewModel {
         let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor
         setRegionBoundMeters(center: centerCoordinate, meters: regionBoundMeters)
     }
+    
+    func handleOnRegionEntryAlertFailure() {
+        guard
+            locationManager.currentDistanceMode == .close,
+            let markerCoordinate,
+            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        let distance: CLLocationDistance = Utilities.getDistance(from: userLocation, to: markerCoordinate)
+        let tolerance: CLLocationDistance = 100
+        let radius: CLLocationDistance = selectedRadius - tolerance
+        
+        guard distance < radius else { return }
+        
+        onRegionEntry()
+    }
 }

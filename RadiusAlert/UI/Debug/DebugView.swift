@@ -113,7 +113,7 @@ extension DebugView {
             
             Spacer()
             
-            Text(locationManager.currentMode.rawValue)
+            Text(locationManager.currentDistanceMode?.rawValue ?? "nil")
                 .foregroundStyle(.secondary)
         }
     }
