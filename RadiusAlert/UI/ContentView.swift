@@ -30,11 +30,11 @@ struct ContentView: View {
                 .overlay { SearchListBackgroundView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
                 .overlay { KeyboardPreLoaderView() }
-                .popupCardViewModifier(vm: mapVM)
                 .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
                 .alertViewModifier(item: $alertManager.alertItem)
         }
+        .popupCardViewModifier(vm: mapVM)
         .onAppear { mapVM.positionToInitialUserLocation() }
     }
 }

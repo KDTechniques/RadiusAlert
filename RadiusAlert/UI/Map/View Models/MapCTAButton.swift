@@ -87,6 +87,7 @@ extension MapViewModel {
         guard startAlert_StartMonitoringRegion() else { return }
         
         startAlert_OnRegionEntry()
+        locationManager.setLocationAccuracy()
         Task { await HapticManager.shared.vibrate(type: .rigid) }
     }
     

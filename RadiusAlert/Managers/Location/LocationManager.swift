@@ -27,14 +27,15 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
     var currentUserLocation: CLLocationCoordinate2D?
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
+    
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
     @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
     @ObservationIgnored var onRegionEntry: (() -> Void) = { }
+    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
     
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
-    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
-    @ObservationIgnored private var currentMode: LocationDistanceModes?
+    private(set) var currentMode: LocationDistanceModes = .close
     
     // MARK: - DELEGATE FUNCTIONS
     
@@ -156,11 +157,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         self.monitoredRegion = nil
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    
     /// Dynamically adjusts location accuracy and update frequency
     /// based on distance from the marker coordinate.
-    private func setLocationAccuracy() {
+    func setLocationAccuracy() {
         guard
             let currentUserLocation,
             let markerCoordinate else {
@@ -168,19 +167,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
-        
-        let newMode: LocationDistanceModes
-        
-        switch distance {
-        case ..<1_000:
-            newMode = .close
-        case 1_000..<3_000:
-            newMode = .medium
-        case 3_000..<10_000:
-            newMode = .far
-        default:
-            newMode = .veryFar
-        }
+        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distance)
         
         // Only apply if mode actually changed
         guard newMode != currentMode else { return }
@@ -189,6 +176,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         switch newMode {
         case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            manager.distanceFilter = 50
+            stopSignificantUpdatesNStartLocationUpdates()
             
         case .medium:
             manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -206,6 +195,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             manager.startMonitoringSignificantLocationChanges()
         }
     }
+    
+    // MARK: - PRIVATE FUNCTIONS
     
     /// Helper function to stop significant-change updates
     /// and restart normal location updates.

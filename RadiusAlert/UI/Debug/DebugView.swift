@@ -13,6 +13,7 @@ struct DebugView: View {
     
     // MARK: -  ASSIGNED PROPERTIES
     let alertManager: AlertManager = .shared
+    let locationManager: LocationManager = .shared
     
     // MARK: - BODY
     var body: some View {
@@ -45,6 +46,7 @@ struct DebugView: View {
 extension DebugView {
     @ViewBuilder
     private var content: some View {
+        currentDistanceMode
         tone
         haptic
         notification
@@ -102,6 +104,17 @@ extension DebugView {
             }
         } header: {
             Text("Alert Popups")
+        }
+    }
+    
+    private var currentDistanceMode: some View {
+        HStack {
+            Text("Current Distance  Mode")
+            
+            Spacer()
+            
+            Text(locationManager.currentMode.rawValue)
+                .foregroundStyle(.secondary)
         }
     }
 }
