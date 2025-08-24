@@ -7,14 +7,18 @@
 
 import AVFoundation
 
-final class ToneManager {
+actor ToneManager {
     // MARK: - ASSIGNED PROPERTIRES
     static let shared = ToneManager()
     private let errorModel: ToneManagerErrorModel.Type = ToneManagerErrorModel.self
     private var player: AVAudioPlayer?
     
     // MARK: - INITIALIZER
-    private init() { activateAudioSession() }
+    private init() {
+        Task {
+            await activateAudioSession()
+        }
+    }
     
     // MARK: - PUBLIC FUNCTIONS
     

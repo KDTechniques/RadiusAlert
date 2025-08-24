@@ -29,17 +29,21 @@ final class AlertManager {
     }
     
     // Local Push Notifications Related
-    func sendNotification() {
-        notificationsManager.scheduleNotification()
+    func sendNotification(after seconds: TimeInterval = 0.5) {
+        notificationsManager.scheduleNotification(after: seconds)
     }
     
     // Tone Related
     func playTone(_ fileName: String, loopCount: Int = -1) {
-        toneManager.playTone(fileName, loopCount: loopCount)
+        Task {
+            await toneManager.playTone(fileName, loopCount: loopCount)
+        }
     }
     
     func stopTone() {
-        toneManager.stopTone()
+        Task {
+            await toneManager.stopTone()
+        }
     }
     
     // Haptics Related

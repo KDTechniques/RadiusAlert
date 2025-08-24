@@ -12,8 +12,9 @@ import MapKit
 @Observable
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
-    let manager: CLLocationManager = .init()
     static let shared: LocationManager = .init()
+    let manager: CLLocationManager = .init()
+    let alertManager: AlertManager = .shared
     
     // MARK: - INITIALIZER
     private override init() {
@@ -50,23 +51,21 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         case .notDetermined:
             print("Location service permission is not determined! 🤷🏻‍♂️")
             manager.requestWhenInUseAuthorization()
-            break
+            
         case .restricted, .denied:
             print("Location service permission is not granted! 😒")
-            AlertManager.shared.alertItem = AlertTypes.locationPermissionDenied
-            break
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            
         case .authorizedWhenInUse:
             print("Location service permission is granted for `When In Use`. 😉")
             manager.requestAlwaysAuthorization()
-            break
             
         case .authorizedAlways:
             print("Location service permission is granted for `Always`. 🤗")
-            break
+            
         default:
             print("Unhandled location service permission context is found! 🤔")
-            AlertManager.shared.alertItem = AlertTypes.locationPermissionDenied
-            break
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
         }
     }
     

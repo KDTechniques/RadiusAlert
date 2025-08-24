@@ -37,10 +37,11 @@ extension MapViewModel {
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
             guard let self, boolean else { return }
+            
             stopAlert()
             setSearchFieldFocused(false)
             setSelectedSearchResultCoordinate(item)
-        }
+        }.alert
     }
     
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
@@ -93,7 +94,7 @@ extension MapViewModel {
     /// - Returns: `true` if permission is granted as `.authorizedAlways`, otherwise `false`.
     private func startAlert_CheckAlwaysAllowPermission() -> Bool {
         guard locationManager.authorizationStatus == .authorizedAlways else {
-            alertManager.alertItem = AlertTypes.locationPermissionDenied
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
             return false
         }
         
@@ -103,7 +104,7 @@ extension MapViewModel {
     /// Validate that the selected radius is beyond the minimum allowed distance.
     private func startAlert_ValidateDistance() -> Bool {
         guard isBeyondMinimumDistance() else {
-            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance
+            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance.alert
             return false
         }
         
@@ -202,6 +203,6 @@ extension MapViewModel {
     private func stopAlertConfirmation() {
         alertManager.alertItem = AlertTypes.stopAlertHereConfirmation { [weak self] in
             self?.stopAlert()
-        }
+        }.alert
     }
 }

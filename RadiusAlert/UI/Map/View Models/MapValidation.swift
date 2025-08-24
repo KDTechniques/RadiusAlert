@@ -77,7 +77,7 @@ extension MapViewModel {
     
     func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
         guard selectedRadius < distance else {
-            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius
+            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius.alert
             return false
         }
         
