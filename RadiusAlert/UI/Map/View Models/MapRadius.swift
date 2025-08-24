@@ -12,7 +12,7 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        Binding { [weak self] in
+        return Binding { [weak self] in
             self?.selectedRadius ?? MapValues.minimumRadius
         } set: { newValue in
             withAnimation { [weak self] in

@@ -15,8 +15,6 @@ struct SearchBarSwiftUIView: View {
     
     // MARK: - BODY
     var body: some View {
-        @Bindable var mapVM: MapViewModel = mapVM
-        
         SearchBarView(
             searchBarText: mapVM.searchTextBinding(),
             placeholder: "Search",

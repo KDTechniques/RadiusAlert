@@ -35,7 +35,7 @@ struct AboutConnectSocialMediaLinkView: View {
 // MARK: - EXTENSIONS
 extension AboutConnectSocialMediaLinkView {
     private var button: some View {
-        Button(type.string) { type.openURL() }
+        Button(type.rawValue) { type.openURL() }
     }
     
     @ViewBuilder

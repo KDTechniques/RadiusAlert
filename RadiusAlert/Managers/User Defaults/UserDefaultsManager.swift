@@ -12,8 +12,10 @@ struct UserDefaultsManager {
     
     private let darkModeKey: String = "darkMode"
     private let toneKey: String = "tone"
+    private let mapStyleKey: String = "mapStyle"
+    private let mapStyleButtonVisibilityKey: String = "mapStyleButton"
     
-    
+    // MARK: Dark Mode
     func saveDarkMode(_ value: String) {
         defaults.set(value, forKey: darkModeKey)
     }
@@ -26,6 +28,7 @@ struct UserDefaultsManager {
         return colorSchemeType
     }
     
+    // MARK: Tone
     func saveTone(_ value: String) {
         defaults.set(value, forKey: toneKey)
     }
@@ -36,5 +39,26 @@ struct UserDefaultsManager {
             let tone: ToneTypes = ToneTypes.allCases.first(where: {$0.rawValue == toneRawValue }) else { return .defaultTone }
         
         return tone
+    }
+    
+    // MARK: Map Style
+    func getMapStyle() -> MapStyleTypes {
+        guard
+            let mapStyleRawValue: String = defaults.string(forKey: mapStyleKey),
+            let mapStyle: MapStyleTypes = MapStyleTypes.allCases.first(where: {$0.rawValue == mapStyleRawValue }) else { return .standard }
+        
+        return mapStyle
+    }
+    
+    func saveMapStyle(_ value: String) {
+        defaults.set(value, forKey: mapStyleKey)
+    }
+    
+    func getMapStyleButtonVisibility() -> Bool {
+        return defaults.bool(forKey: mapStyleButtonVisibilityKey)
+    }
+    
+    func saveMapStyleButtonVisibility(_ value: Bool) {
+        defaults.set(value, forKey: mapStyleButtonVisibilityKey)
     }
 }

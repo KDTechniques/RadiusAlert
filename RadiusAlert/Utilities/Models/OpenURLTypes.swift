@@ -8,20 +8,23 @@
 import UIKit
 
 enum OpenURLTypes {
-    case settings,whatsApp, facebook, gitHub, appStore
+    case whatsApp, facebook, gitHub
+    case appStore
+    case settings, notifications
     
-    var string: String {
+    var rawValue: String {
         switch self {
-        case .settings:
-            return "Settings"
         case .whatsApp:
             return "WhatsApp"
+            
         case .facebook:
             return "Facebook"
+            
         case .gitHub:
             return "GitHub"
-        case .appStore:
-            return "App Store"
+            
+        default:
+            return ""
         }
     }
     
@@ -38,10 +41,18 @@ enum OpenURLTypes {
         }
     }
     
+    func openURL() {
+        guard let url, UIApplication.shared.canOpenURL(url) else { return }
+        UIApplication.shared.open(url)
+    }
+    
     private var url: URL? {
         switch  self {
         case .settings:
             return .init(string: UIApplication.openSettingsURLString)
+            
+        case .notifications:
+            return .init(string: UIApplication.openNotificationSettingsURLString)
             
         case .whatsApp:
             return .init(string: "https://wa.me/94770050165")
@@ -55,10 +66,5 @@ enum OpenURLTypes {
         case .appStore:
             return .init(string: "https://apps.apple.com/app/284882215?action=write-review")
         }
-    }
-    
-    func openURL() {
-        guard let url, UIApplication.shared.canOpenURL(url) else { return }
-        UIApplication.shared.open(url)
     }
 }

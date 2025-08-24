@@ -11,9 +11,9 @@ struct SettingsView: View {
     // MARK: - BODY
     var body: some View {
         List {
-            appearance
-            alert
-            mapStyle
+            AppearanceListSectionView()
+            AlertsListSectionView()
+            MapStyleListSectionView()
         }
         .navigationTitle(Text("Settings"))
         .navigationBarTitleDisplayMode(.inline)
@@ -33,31 +33,4 @@ struct SettingsView: View {
         AboutView()
     }
     .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension SettingsView {
-    private var appearance: some View {
-        NavigationLink {
-            AppearanceListSectionView()
-        } label: {
-            Text("Appearance")
-        }
-    }
-    
-    private var alert: some View {
-        NavigationLink {
-            ToneNavigationLinkView()
-        } label: {
-            Text("Alerts")
-        }
-    }
-    
-    private var mapStyle: some View {
-        NavigationLink {
-            
-        } label: {
-            Text("Map Style")
-        }
-    }
 }

@@ -58,7 +58,7 @@ extension MapViewModel {
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func positionBinding() -> Binding<MapCameraPosition> {
-        Binding<MapCameraPosition>(
+        return Binding<MapCameraPosition>(
             get: { [weak self] in
                 self?.position ?? .automatic
             },
@@ -100,13 +100,13 @@ extension MapViewModel {
     /// Cycles through available map styles and sets the next one.
     func setNextMapStyle() {
         let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
-        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else {
+        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == settingsVM.selectedMapStyle }) else {
             Utilities.log(MapCameraErrorModel.failedToSetNextMapStyle.errorDescription)
             return
         }
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
-        setSelectedMapStyle(mapStylesArray[nextIndex])
+        settingsVM.setSelectedMapStyle(mapStylesArray[nextIndex])
     }
     
     // Sets the map region bounds to a given center and distance.
