@@ -55,7 +55,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         case .restricted, .denied:
             print("Location service permission is not granted! 😒")
-            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            _ = checkLocationPermission()
             
         case .authorizedWhenInUse:
             print("Location service permission is granted for `When In Use`. 😉")
@@ -66,7 +66,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         default:
             print("Unhandled location service permission context is found! 🤔")
-            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            _ = checkLocationPermission()
         }
     }
     
@@ -196,6 +196,20 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Checks the current location permission before proceeding with manager-level or UI-level actions.
+    /// This helps handle edge cases where the map may not function due to denied or restricted permissions,
+    /// ensuring a better user experience.
+    func checkLocationPermission() -> Bool {
+        switch manager.authorizationStatus {
+        case .denied, .restricted, .authorizedWhenInUse :
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            return false
+            
+        default:
+            return true
+        }
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Helper function to stop significant-change updates
@@ -204,7 +218,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.stopMonitoringSignificantLocationChanges()
         manager.startUpdatingLocation()
     }
-    
 }
 
 

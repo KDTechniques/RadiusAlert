@@ -64,6 +64,7 @@ extension MapViewModel {
     private func startAlert() {
         // First go through validations before proceeding.
         guard
+            locationManager.checkLocationPermission(),
             startAlert_ValidateDistance(),
             let (distance, currentUserLocation): (CLLocationDistance, CLLocationCoordinate2D) = startAlert_GetDistanceNUserLocation(),
             startAlert_ValidateRadius(distance: distance),
