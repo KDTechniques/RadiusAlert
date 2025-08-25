@@ -91,4 +91,17 @@ extension MapViewModel {
         
         return condition1 && (!condition2 || condition3)
     }
+    
+    // Check the coordinates between selectedMapItem and the center coordinate.
+    // If these two don’t match, it means the user has moved the map around,
+    // and it is no longer the selected search result coordinate.
+    func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
+        guard
+            let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate,
+            let centerCoordinate,
+            radiusAlertItem == nil,
+            !centerCoordinate.isEqual(to: selectedSearchResultCoordinate, precision: 5) else { return }
+        
+        setSelectedSearchResult(nil)
+    }
 }

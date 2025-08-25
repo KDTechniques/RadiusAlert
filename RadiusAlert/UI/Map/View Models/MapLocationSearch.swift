@@ -57,7 +57,7 @@ extension MapViewModel {
         
         Task {
             // Delay to ensure state updates propagate before moving the map
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
             
             let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
             
@@ -75,7 +75,7 @@ extension MapViewModel {
             // Wait for the default animation on setting marker position
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             
-            // Once the position animation is over, set the region bound for better  user experience
+            // Once the position animation is over, set the region bound for better user experience
             setRegionBoundsOnRadius()
         }
     }
