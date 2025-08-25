@@ -35,7 +35,7 @@ final class MapViewModel {
     private(set) var centerCoordinate: CLLocationCoordinate2D?
     private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
-    private(set) var selectedMapStyle: MapStyleTypes = .standard
+    
     private(set) var route: MKRoute?
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
@@ -88,10 +88,6 @@ final class MapViewModel {
     
     func setSearchFieldFocused(_ boolean: Bool) {
         isSearchFieldFocused = boolean
-    }
-    
-    func setSelectedMapStyle(_ mapStyle: MapStyleTypes) {
-        selectedMapStyle = mapStyle
     }
     
     func setCenterCoordinate(_ center: CLLocationCoordinate2D) {

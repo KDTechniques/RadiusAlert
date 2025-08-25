@@ -5,7 +5,7 @@
 //  Created by Mr. Kavinda Dilshan on 2025-08-19.
 //
 
-import Foundation
+import SwiftUI
 
 @Observable
 final class SettingsViewModel {
@@ -14,11 +14,15 @@ final class SettingsViewModel {
     let alertManager: AlertManager = .shared
     private(set) var selectedColorScheme: ColorSchemeTypes? = .light { didSet { onColorSchemeChange() } }
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
+    private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange() } }
+    private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange() } }
     
     // MARK: - INITIALIZER
     init() {
         selectedColorScheme = userDefaultsManager.getDarkMode()
         selectedTone = userDefaultsManager.getTone()
+        selectedMapStyle = userDefaultsManager.getMapStyle()
+        showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
     }
     
     // MARK: - SETTERS
@@ -30,6 +34,26 @@ final class SettingsViewModel {
         selectedTone = tone
     }
     
+    func setSelectedMapStyle(_ mapStyle: MapStyleTypes) {
+        selectedMapStyle = mapStyle
+    }
+    
+    func setShowMapStyleButton(_ boolean: Bool) {
+        showMapStyleButton = boolean
+    }
+    
+    // MARK: - PUBLIC FUNCTIONS
+    func mapStyleButtonVisibilityBinding() -> Binding<Bool> {
+        return Binding<Bool>(
+            get: { [weak self] in
+                self?.showMapStyleButton ?? true
+            },
+            set: { [weak self] newValue in
+                self?.setShowMapStyleButton(newValue)
+            }
+        )
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func onColorSchemeChange() {
         guard let selectedColorScheme else { return }
@@ -38,5 +62,13 @@ final class SettingsViewModel {
     
     private func onToneChange() {
         userDefaultsManager.saveTone(selectedTone.rawValue)
+    }
+    
+    private func onMapStyleChange() {
+        userDefaultsManager.saveMapStyle(selectedMapStyle.rawValue)
+    }
+    
+    private func onMapStyleButtonVisibilityChange() {
+        userDefaultsManager.saveMapStyleButtonVisibility(showMapStyleButton)
     }
 }

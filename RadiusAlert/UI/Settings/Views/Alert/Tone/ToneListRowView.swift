@@ -19,19 +19,14 @@ struct ToneListRowView: View {
     
     // MARK: - BODY
     var body: some View {
-        Button {
+        let condition: Bool = settingsVM.selectedTone == tone
+        
+        RadioButtonListRowView(isSelected: condition) {
+            Text(tone.name)
+                .tint(.primary)
+        } action: {
             settingsVM.setTone(tone)
             settingsVM.alertManager.playTone(tone.fileName, loopCount: 1)
-        } label: {
-            HStack {
-                Text(tone.name)
-                    .tint(.primary)
-                
-                Spacer()
-                
-                Image(systemName: settingsVM.selectedTone == tone ? "inset.filled.circle" : "circle")
-                    .foregroundStyle(Color.accentColor)
-            }
         }
         .onDisappear { handleOnDisappear() }
     }

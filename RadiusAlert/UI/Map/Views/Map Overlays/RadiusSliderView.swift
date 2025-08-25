@@ -18,8 +18,6 @@ struct RadiusSliderView: View {
     
     // MARK: - BODY
     var body: some View {
-        @Bindable var mapVM: MapViewModel = mapVM
-        
         Slider(
             value: mapVM.selectedRadiusBinding(),
             in: mapValues.minimumRadius...mapValues.maximumRadius,

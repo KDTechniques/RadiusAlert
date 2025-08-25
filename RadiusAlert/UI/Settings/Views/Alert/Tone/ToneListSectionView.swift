@@ -12,8 +12,8 @@ struct ToneListSectionView: View {
     var body: some View {
         List {
             Section {
-                ForEach(ToneTypes.allCases, id: \.self) { tone in
-                    ToneListRowView(tone)
+                ForEach(ToneTypes.allCases, id: \.self) {
+                    ToneListRowView($0)
                 }
             } header: {
                 Text("Select Radius Alert Tone")

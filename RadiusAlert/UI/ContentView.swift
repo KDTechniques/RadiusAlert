@@ -33,6 +33,7 @@ struct ContentView: View {
                 .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
                 .alertViewModifier(item: $alertManager.alertItem)
+                .navigationTitle(Text("Map"))
         }
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)

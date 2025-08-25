@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-enum MapStyleTypes: CaseIterable {
+enum MapStyleTypes: String, CaseIterable {
     case standard, hybrid, imagery
     
     var mapStyle: MapStyle {

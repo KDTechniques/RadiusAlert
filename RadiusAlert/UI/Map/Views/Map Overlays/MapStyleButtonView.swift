@@ -10,22 +10,25 @@ import SwiftUI
 struct MapStyleButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
     
     // MARK: - BODY
     var body: some View {
-        Button {
-            mapVM.setNextMapStyle()
-        } label: {
-            Image(systemName: mapVM.selectedMapStyle.mapStyleSystemImageName)
-                .foregroundStyle(Color.accentColor)
-                .padding(11.5)
-                .buttonBackground
+        if settingsVM.showMapStyleButton {
+            Button {
+                mapVM.setNextMapStyle()
+            } label: {
+                Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
+                    .foregroundStyle(Color.accentColor)
+                    .padding(11.5)
+                    .buttonBackground
+            }
+            .buttonBackground
+            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
+            .padding(.trailing, 5)
+            .padding(.bottom, 30)
+            .buttonStyle(.plain)
         }
-        .buttonBackground
-        .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-        .padding(.trailing, 5)
-        .padding(.bottom, 30)
-        .buttonStyle(.plain)
     }
 }
 

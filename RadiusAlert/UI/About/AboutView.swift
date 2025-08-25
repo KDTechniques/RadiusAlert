@@ -17,6 +17,8 @@ struct AboutView: View {
             AboutSomethingBoringView()
         }
         .toolbar { settingsNavigationLink }
+        .navigationTitle(Text("About"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
