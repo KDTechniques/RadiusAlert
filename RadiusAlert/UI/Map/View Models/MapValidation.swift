@@ -21,14 +21,6 @@ extension MapViewModel {
         return distance > mapValues.minimumDistance
     }
     
-    func checkLocationPermissionOnCA() {
-        // Check whether the user has still given permission to only when in use and ask them to change it to always ui get triggered here...
-        let status: CLAuthorizationStatus = locationManager.manager.authorizationStatus
-        if status == .authorizedWhenInUse {
-            print("Show a UI to direct user to system settings here...")
-        }
-    }
-    
     func showRadiusCircle() -> Bool {
         let condition1: Bool = isMarkerCoordinateNil() ? isBeyondMinimumDistance() : true
         
