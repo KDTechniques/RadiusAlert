@@ -18,20 +18,20 @@ struct SearchBarSwiftUIView: View {
         SearchBarView(
             searchBarText: mapVM.searchTextBinding(),
             placeholder: "Search",
-            context: .custom,
-            customColors: .init(
+            context: .custom(.init(
                 backgroundColor: .searchBarBackground,
                 searchIconTextColor: .searchBarForeground,
                 placeholderTextColor: .searchBarForeground,
                 textColor: .primary
-            )
-        ) { mapVM.setSearchFieldFocused($0) }
-            .focused($isFocused)
-            .submitLabel(.search)
-            .onSubmit { handleOnSubmit() }
-            .padding(.bottom, 14)
-            .padding(.top, 8)
-            .onChange(of: mapVM.isSearchFieldFocused) { isFocused = $1 }
+            ))
+        )
+        .focused($isFocused)
+        .submitLabel(.search)
+        .onSubmit { handleOnSubmit() }
+        .padding(.bottom, 14)
+        .padding(.top, 8)
+        .onChange(of: mapVM.isSearchFieldFocused) { isFocused = $1 }
+        .onChange(of: isFocused) { mapVM.setSearchFieldFocused($1) }
     }
 }
 
