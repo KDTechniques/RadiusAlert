@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		825297942E362A4500074199 /* SearchBarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 825297932E362A4500074199 /* SearchBarSwiftUI */; };
+		0B89880F2E5D5BE9009CF0FE /* SearchBarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0B89880E2E5D5BE9009CF0FE /* SearchBarSwiftUI */; };
+		0BB57AF92E5DFB1D006E6D42 /* SearchBarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0BB57AF82E5DFB1D006E6D42 /* SearchBarSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				825297942E362A4500074199 /* SearchBarSwiftUI in Frameworks */,
+				0BB57AF92E5DFB1D006E6D42 /* SearchBarSwiftUI in Frameworks */,
+				0B89880F2E5D5BE9009CF0FE /* SearchBarSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +85,8 @@
 			);
 			name = RadiusAlert;
 			packageProductDependencies = (
-				825297932E362A4500074199 /* SearchBarSwiftUI */,
+				0B89880E2E5D5BE9009CF0FE /* SearchBarSwiftUI */,
+				0BB57AF82E5DFB1D006E6D42 /* SearchBarSwiftUI */,
 			);
 			productName = RadiusAlert;
 			productReference = 825297812E36048900074199 /* RadiusAlert.app */;
@@ -114,7 +117,7 @@
 			mainGroup = 825297782E36048900074199;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				825297922E362A4500074199 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */,
+				0BB57AF72E5DFB1D006E6D42 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 825297822E36048900074199 /* Products */;
@@ -370,20 +373,24 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		825297922E362A4500074199 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */ = {
+		0BB57AF72E5DFB1D006E6D42 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/KDTechniques/search-bar-swiftui";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
+				minimumVersion = 1.3.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		825297932E362A4500074199 /* SearchBarSwiftUI */ = {
+		0B89880E2E5D5BE9009CF0FE /* SearchBarSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 825297922E362A4500074199 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */;
+			productName = SearchBarSwiftUI;
+		};
+		0BB57AF82E5DFB1D006E6D42 /* SearchBarSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0BB57AF72E5DFB1D006E6D42 /* XCRemoteSwiftPackageReference "search-bar-swiftui" */;
 			productName = SearchBarSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
