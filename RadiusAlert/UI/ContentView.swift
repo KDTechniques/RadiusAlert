@@ -12,6 +12,7 @@ import MapKit
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(\.scenePhase) private var scenePhase
     
     // MARK: - ASSIGNED PROPERTIES
     @State private var alertManager: AlertManager = .shared
@@ -38,6 +39,7 @@ struct ContentView: View {
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
         .onAppear { mapVM.positionToInitialUserLocation() }
+        .onChange(of: scenePhase) { onScenePhaseChange($1) }
     }
 }
 
@@ -59,6 +61,10 @@ extension ContentView {
                     }
                 }
         }
+    }
+    
+    private func onScenePhaseChange(_ value: ScenePhase) {
+        mapVM.reduceAlertToneVolumeOnScenePhaseChange(value)
     }
 }
 

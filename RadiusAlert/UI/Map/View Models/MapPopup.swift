@@ -45,6 +45,14 @@ extension MapViewModel {
         setPopupCardItem(popupCardItem)
     }
     
+    func reduceAlertToneVolumeOnScenePhaseChange(_ phase: ScenePhase) {
+        guard popupCardItem != nil , phase == .active else { return }
+        
+        // set the p[layer volume to absolute 50%
+        Utilities.getSystemVolume().description.debugPrint()
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
     private func generateDurationText(_ date: Date) -> String {
         let interval = Date.now.timeIntervalSince(date)
         let totalMinutes = Int(interval / 60)

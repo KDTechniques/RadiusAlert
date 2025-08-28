@@ -14,6 +14,7 @@ struct DebugView: View {
     // MARK: -  ASSIGNED PROPERTIES
     let alertManager: AlertManager = .shared
     let locationManager: LocationManager = .shared
+    @State private var volume: String?
     
     // MARK: - BODY
     var body: some View {
@@ -51,6 +52,7 @@ extension DebugView {
         haptic
         notification
         alert
+        systemVolume
     }
     
     private var tone: some View {
@@ -115,6 +117,22 @@ extension DebugView {
             
             Text(locationManager.currentDistanceMode?.rawValue ?? "nil")
                 .foregroundStyle(.secondary)
+        }
+    }
+    
+    private var systemVolume: some View {
+        HStack {
+            Button("Get System Volume") {
+                volume = Utilities.getSystemVolume()
+                    .formatted(.percent.precision(.fractionLength(0)))
+            }
+            
+            Spacer()
+            
+            if let volume {
+                Text(volume)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }
