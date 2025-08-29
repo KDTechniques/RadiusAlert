@@ -18,24 +18,28 @@ struct RadiusSliderView: View {
     
     // MARK: - BODY
     var body: some View {
-        Slider(
-            value: mapVM.selectedRadiusBinding(),
-            in: mapValues.minimumRadius...mapValues.maximumRadius,
-            step: mapValues.radiusStep) { }
-        minimumValueLabel: {
-            Text(mapValues.minimumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
-        } maximumValueLabel: {
-            Text(mapValues.maximumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
-        } onEditingChanged: {
-            mapVM.setRadiusSliderActiveState($0)
+        ZStack(alignment: .trailing) {
+            Slider(
+                value: mapVM.selectedRadiusBinding(),
+                in: mapValues.minimumRadius...mapValues.maximumRadius,
+                step: mapValues.radiusStep) { }
+            minimumValueLabel: {
+                Text(mapValues.minimumRadiusString)
+                    .radiusSliderViewModifier(colorScheme)
+            } maximumValueLabel: {
+                Text(mapValues.maximumRadiusString)
+                    .radiusSliderViewModifier(colorScheme)
+            } onEditingChanged: {
+                mapVM.setRadiusSliderActiveState($0)
+            }
+            .opacity(mapVM.showRadiusSlider() ? 1 : 0)
+            .disabled(!mapVM.showRadiusSlider())
+            
+            DistanceTextView()
         }
         .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
-        .opacity(mapVM.showRadiusSlider() ? 1 : 0)
-        .disabled(!mapVM.showRadiusSlider())
         .animation(.default, value: mapVM.showRadiusSlider())
     }
 }
@@ -53,5 +57,10 @@ extension View {
             .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
             .font(.caption)
             .fontWeight(.semibold)
+            .shadow(
+                color: .getNotPrimary(colorScheme: colorScheme),
+                radius: 0.3,
+                y: -0.5
+            )
     }
 }

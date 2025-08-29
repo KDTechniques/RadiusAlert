@@ -28,8 +28,8 @@ extension Color {
     /// depending on the system's color scheme.
     ///
     /// - Parameter colorScheme: The current `ColorScheme` (light or dark).
-    /// - Returns: `.white` in dark mode, `.black` in light mode.
+    /// - Returns: `.black` in dark mode, `.white` in light mode.
     static func getNotPrimary(colorScheme: ColorScheme) -> Self {
-        return colorScheme == .dark ? .white : .black
+        return colorScheme == .dark ? .black : .white
     }
 }

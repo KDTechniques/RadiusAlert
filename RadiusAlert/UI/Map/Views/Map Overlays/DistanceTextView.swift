@@ -28,7 +28,10 @@ struct DistanceTextView: View {
 
 // MARK: - PREVIEWS
 #Preview("Distance Text") {
-    Content(300)
+    Color.yellow
+        .overlay {
+            Content(300)
+        }
         .previewModifier()
 }
 
@@ -46,13 +49,16 @@ fileprivate struct Content:  View {
         let distanceString: String = mapVM.getRadiusTextString(distance, withAlertRadiusText: false)
         
         Text("Distance: \(distanceString)")
-            .animation(.default, value: distance)
-            .contentTransition(.numericText(countsDown: true))
-            .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
+            .fontDesign(.monospaced)
             .font(.caption)
             .fontWeight(.semibold)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing, 10)
-            .padding(.bottom, 8)
+            .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
+            .shadow(
+                color: .getNotPrimary(colorScheme: colorScheme),
+                radius: 0.3,
+                y: -0.5
+            )
+            .contentTransition(.numericText(countsDown: true))
+            .animation(.default, value: distance)
     }
 }

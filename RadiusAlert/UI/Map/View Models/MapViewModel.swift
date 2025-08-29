@@ -35,12 +35,12 @@ final class MapViewModel {
     private(set) var centerCoordinate: CLLocationCoordinate2D?
     private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
-    
     private(set) var route: MKRoute?
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
     private(set) var isCameraDragging: Bool = false
+    private(set) var sliderHeight: CGFloat?
     
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
@@ -124,6 +124,10 @@ final class MapViewModel {
     
     func setRadiusSliderActiveState(_ boolean: Bool) {
         isRadiusSliderActive = boolean
+    }
+    
+    func setSliderHeight(_ value: CGFloat) {
+        sliderHeight = value
     }
     
     // MARK: - PUBLIC FUNCTIONS
