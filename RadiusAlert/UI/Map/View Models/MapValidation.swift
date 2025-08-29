@@ -84,6 +84,13 @@ extension MapViewModel {
         return condition1 && (!condition2 || condition3)
     }
     
+    func showSearchListBackground() -> Bool {
+        let condition1: Bool = searchText.isEmpty
+        let condition2: Bool = isSearchFieldFocused
+        
+        return !condition1 || condition2
+    }
+    
     // Check the coordinates between selectedMapItem and the center coordinate.
     // If these two don’t match, it means the user has moved the map around,
     // and it is no longer the selected search result coordinate.

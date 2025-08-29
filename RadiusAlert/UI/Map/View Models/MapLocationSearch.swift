@@ -21,12 +21,6 @@ extension MapViewModel {
         }
     }
     
-    /// Called when the user presses return/submit on the search bar.
-    /// If there are no `MKLocalSearchCompleter` results, clear the search field.
-    func onSearchTextSubmit() {
-        locationSearchManager.results.isEmpty ? setSearchText("") : ()
-    }
-    
     /// Handles tapping a search result from the list.
     /// - If no marker coordinate is set, select the location directly.
     /// - If a marker already exists, show a confirmation to stop the ongoing alert before changing location.

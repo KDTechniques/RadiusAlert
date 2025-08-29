@@ -46,6 +46,5 @@ struct SearchBarSwiftUIView: View {
 extension SearchBarSwiftUIView {
     private func handleOnSubmit() {
         isFocused = false
-        mapVM.onSearchTextSubmit()
     }
 }
