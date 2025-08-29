@@ -48,8 +48,14 @@ extension MapViewModel {
     func reduceAlertToneVolumeOnScenePhaseChange(_ phase: ScenePhase) {
         guard popupCardItem != nil , phase == .active else { return }
         
-        // set the p[layer volume to absolute 50%
-        Utilities.getSystemVolume().description.debugPrint()
+        // set the player volume to absolute 50%. That means the total volume of both system and the player must equal to 50%.
+        // To do so: if system volume is 80%, we set the player volume to 30%.
+        // So player volume = system volume - Absolute Volume
+        let absoluteVolume: Float = 0.5
+        let systemVolume: Float = Utilities.getSystemVolume()
+        let playerVolume: Float = systemVolume - absoluteVolume
+        
+        alertManager.setToneVolume(playerVolume)
     }
     
     // MARK: - PRIVATE FUNCTIONS

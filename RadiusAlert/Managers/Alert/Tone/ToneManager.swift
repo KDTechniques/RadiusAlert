@@ -56,6 +56,14 @@ actor ToneManager {
         deactivateAudioSession()
     }
     
+    func setToneVolume(_ volume: Float, fadeDuration: Double) {
+        player?.setVolume(volume, fadeDuration: fadeDuration)
+    }
+    
+    func resetToneVolume(_ fadeDuration: Double) {
+        player?.setVolume(1.0, fadeDuration: fadeDuration)
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Configures and activates the audio session for playback.

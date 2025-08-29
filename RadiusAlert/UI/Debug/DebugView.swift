@@ -10,11 +10,13 @@ import SwiftUI
 struct DebugView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(SettingsViewModel.self) private var settingsVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: -  ASSIGNED PROPERTIES
     let alertManager: AlertManager = .shared
     let locationManager: LocationManager = .shared
     @State private var volume: String?
+    @State private var playerVolume: Float = 1.0
     
     // MARK: - BODY
     var body: some View {
@@ -52,7 +54,6 @@ extension DebugView {
         haptic
         notification
         alert
-        systemVolume
     }
     
     private var tone: some View {
@@ -64,6 +65,9 @@ extension DebugView {
             Button("Stop Tone") {
                 alertManager.stopTone()
             }
+            
+            getSystemVolume
+            SetSystemVolume
         } header: {
             Text("Tone Manager")
         }
@@ -120,7 +124,7 @@ extension DebugView {
         }
     }
     
-    private var systemVolume: some View {
+    private var getSystemVolume: some View {
         HStack {
             Button("Get System Volume") {
                 volume = Utilities.getSystemVolume()
@@ -133,6 +137,18 @@ extension DebugView {
                 Text(volume)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+    
+    private var SetSystemVolume: some View {
+        VStack(alignment: .leading) {
+            Text("Player Volume: \(playerVolume.formatted(.percent.precision(.fractionLength(0))))")
+                .foregroundStyle(.secondary)
+            
+            Slider(value: $playerVolume, in: 0...1, step: 0.1) { }
+                .onChange(of: playerVolume) {
+                    mapVM.alertManager.setToneVolume($1, fadeDuration: 0)
+                }
         }
     }
 }

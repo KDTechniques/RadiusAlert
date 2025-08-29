@@ -43,6 +43,19 @@ final class AlertManager {
     func stopTone() {
         Task {
             await toneManager.stopTone()
+            resetToneVolume()
+        }
+    }
+    
+    func setToneVolume(_ volume: Float, fadeDuration: Double = 0.8) {
+        Task {
+            await toneManager.setToneVolume(volume, fadeDuration: fadeDuration)
+        }
+    }
+    
+    private func resetToneVolume() {
+        Task {
+            await toneManager.resetToneVolume(.zero)
         }
     }
     
