@@ -64,6 +64,11 @@ extension ContentView {
     }
     
     private func onScenePhaseChange(_ value: ScenePhase) {
+        let condition1: Bool = value == .active
+        let condition2: Bool = UIApplication.shared.isProtectedDataAvailable
+        
+        guard condition1, condition2 else { return }
+        
         mapVM.reduceAlertToneVolumeOnScenePhaseChange(value)
     }
 }
