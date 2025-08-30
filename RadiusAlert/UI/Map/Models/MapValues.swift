@@ -6,7 +6,7 @@
 //
 
 import CoreLocation
-import SwiftUICore
+import SwiftUI
 
 struct MapValues {
     // MARK: - Map Related

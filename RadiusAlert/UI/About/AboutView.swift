@@ -43,6 +43,8 @@ extension AboutView {
                 SettingsView()
             } label: {
                 Image(systemName: "gear")
+                    .resizable()
+                    .scaledToFit()
             }
         }
     }

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>This app uses notifications to alert you when you&apos;ve reached your set radius.</string>
+	<string>This app uses notifications to alert you when you've reached your set radius.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
