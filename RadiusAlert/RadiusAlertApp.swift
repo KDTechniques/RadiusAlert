@@ -10,16 +10,24 @@ import SwiftUI
 @main
 struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
-    @State private var mapVM: MapViewModel = .init()
+    @State private var settingsVM: SettingsViewModel
+    @State private var mapVM: MapViewModel
     
-    init() { }
+    init() {
+        let settingsVM: SettingsViewModel =  .init()
+        self.settingsVM = settingsVM
+        
+        let mapVM: MapViewModel = .init(settingsVM: settingsVM)
+        self.mapVM = mapVM
+    }
     
     // MARK: - BODY
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(.light)
+                .environment(settingsVM)
                 .environment(mapVM)
+                .preferredColorScheme(settingsVM.selectedColorScheme?.colorScheme)
         }
     }
 }

@@ -8,49 +8,46 @@
 import UIKit
 import CoreHaptics
 
-enum HapticTypes: String, CaseIterable {
-    case success, error, warning
-    case light, medium, soft, rigid, heavy
-}
-
 actor HapticManager {
     //  MARK: - ASSIGNED PROPERTIES
     static let shared = HapticManager()
+    private let hapticFeedbackGeneratorWrapper = HapticFeedbackGeneratorWrapper()
+    private let errorModel: HapticManagerErrorModel.Type = HapticManagerErrorModel.self
     private var hapticEngine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
     
     // MARK: - INITIALIZER
-    init() { }
+    init() { Task { await setupHaptics() } }
     
     // MARK: - PUBLIC FUNCTIONS
-    func playSOSPattern() {
-        guard let engine = hapticEngine else {
-            setupHaptics()
-            return
-        }
+    
+    /// Plays a continuous SOS pattern using haptics (dot-dot-dot, dash-dash-dash, dot-dot-dot).
+    /// Loops indefinitely until `stopSOSPattern()` is called.
+    func playSOSPattern() async {
+        stopSOSPattern()
         
         var events = [CHHapticEvent]()
         let shortDuration: TimeInterval = 0.1
         let longDuration: TimeInterval = 0.3
         let pauseDuration: TimeInterval = 0.1
-        
         var currentTime: TimeInterval = 0
         
+        // Common parameters for short and long pulses
         let shortParams = [
             CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
             CHHapticEventParameter(parameterID: .hapticSharpness, value: 1.0)
         ]
         
-        let longParams = [
-            CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-            CHHapticEventParameter(parameterID: .hapticSharpness, value: 1.0)
-        ]
+        let longParams = shortParams
         
         // Three short pulses (dot-dot-dot)
         for _ in 0..<3 {
-            events.append(
-                CHHapticEvent(eventType: .hapticTransient, parameters: shortParams, relativeTime: currentTime)
-            )
+            events.append(CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: shortParams,
+                relativeTime: currentTime
+            ))
+            
             currentTime += shortDuration + pauseDuration
         }
         
@@ -62,37 +59,42 @@ actor HapticManager {
                 relativeTime: currentTime,
                 duration: longDuration
             ))
+            
             currentTime += longDuration + pauseDuration
         }
         
         // Three short pulses (dot-dot-dot)
         for _ in 0..<3 {
-            events.append(CHHapticEvent(
-                eventType: .hapticTransient,
-                parameters: shortParams,
-                relativeTime: currentTime
-            ))
+            events.append(CHHapticEvent(eventType: .hapticTransient, parameters: shortParams, relativeTime: currentTime))
             currentTime += shortDuration + pauseDuration
         }
         
+        // Attempt to create and start a looping advanced player
         do {
             let pattern = try CHHapticPattern(events: events, parameters: [])
-            player = try engine.makeAdvancedPlayer(with: pattern)
+            
+            // Lazily initialize the haptic engine if needed
+            hapticEngine == nil ? await setupHaptics() : ()
+            
+            player = try hapticEngine?.makeAdvancedPlayer(with: pattern)
             player?.loopEnabled = true
             try player?.start(atTime: 0)
         } catch {
-            print("Failed to play SOS pattern: \(error.localizedDescription)")
+            Utilities.log(errorModel.failedToPlaySOSPattern(error).errorDescription)
         }
     }
     
+    /// Stops the currently playing SOS haptic pattern.
     func stopSOSPattern() {
         do {
             try player?.stop(atTime: 0)
+            player = nil
         } catch {
-            print("Failed to stop haptic: \(error.localizedDescription)")
+            Utilities.log(errorModel.failedToStopHaptics(error).errorDescription)
         }
     }
     
+    /// Triggers a one-time haptic feedback for the given type.
     func vibrate(type: HapticTypes) {
         switch type {
         case .success:
@@ -115,32 +117,23 @@ actor HapticManager {
     }
     
     // MARK: - PRIVATE FUNCTIONS
-    private func setupHaptics() {
+    
+    /// Initializes the haptic engine and configures the reset handler.
+    private func setupHaptics() async {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        
         do {
             hapticEngine = try CHHapticEngine()
-            try hapticEngine?.start()
+            try await hapticEngine?.start()
+            
+            // Automatically restart engine if it stops
             hapticEngine?.resetHandler = {
-                Task { [weak self] in
-                    try? await self?.hapticEngine?.start()
+                Task { @MainActor [weak self] in
+                    try await self?.hapticEngine?.start()
                 }
             }
         } catch {
-            print("Error starting haptic engine: \(error.localizedDescription)")
+            Utilities.log(errorModel.failedToStartHapticEngine(error).errorDescription)
         }
-    }
-    
-    private let hapticFeedbackGeneratorWrapper = HapticFeedbackGeneratorWrapper()
-}
-
-fileprivate struct HapticFeedbackGeneratorWrapper {
-    private let generator = UINotificationFeedbackGenerator()
-    
-    func notificationOccurred(_ type: UINotificationFeedbackGenerator.FeedbackType) {
-        generator.notificationOccurred(type)
-    }
-    
-    func impactOccurred(style: UIImpactFeedbackGenerator.FeedbackStyle) {
-        UIImpactFeedbackGenerator(style: style).impactOccurred()
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - ASSIGNED PROPERTIES
@@ -23,7 +24,7 @@ struct TopSafeAreaView: View {
             SearchListView()
         }
         .padding(.top, 40)
-        .background(mapValues.safeAreaBackgroundColor)
+        .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
 }
 

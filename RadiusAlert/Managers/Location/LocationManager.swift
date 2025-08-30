@@ -12,8 +12,9 @@ import MapKit
 @Observable
 final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
-    let manager: CLLocationManager = .init()
     static let shared: LocationManager = .init()
+    let manager: CLLocationManager = .init()
+    let alertManager: AlertManager = .shared
     
     // MARK: - INITIALIZER
     private override init() {
@@ -26,15 +27,21 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - ASSIGNED PROPERTIES
     var currentUserLocation: CLLocationCoordinate2D?
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
+    
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
     @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
     @ObservationIgnored var onRegionEntry: (() -> Void) = { }
+    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
+    @ObservationIgnored var onRegionEntryFailure: (() -> Void) = { }
     
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
-    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
+    private(set) var currentDistanceMode: LocationDistanceModes?
     
     // MARK: - DELEGATE FUNCTIONS
+    
+    /// Called whenever the app’s location authorization changes.
+    /// Handles prompting the user for appropriate permissions.
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         // First, request permission for `WhenInUseAuthorization` when: .notDetermined
         // Secondly, request permission for `AlwaysAuthorization` when: .authorizedWhenInUse
@@ -46,41 +53,46 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         case .notDetermined:
             print("Location service permission is not determined! 🤷🏻‍♂️")
             manager.requestWhenInUseAuthorization()
-            break
+            
         case .restricted, .denied:
             print("Location service permission is not granted! 😒")
-            // Show an UI to direct user to system settings here...
-            break
+            _ = checkLocationPermission()
+            
         case .authorizedWhenInUse:
             print("Location service permission is granted for `When In Use`. 😉")
             manager.requestAlwaysAuthorization()
-            break
             
         case .authorizedAlways:
             print("Location service permission is granted for `Always`. 🤗")
-            break
+            
         default:
             print("Unhandled location service permission context is found! 🤔")
-            break
+            _ = checkLocationPermission()
         }
     }
     
+    /// Called whenever the device gets updated location(s).
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         currentUserLocation = locations.first?.coordinate
         setLocationAccuracy()
+        onRegionEntryFailure()
     }
     
+    /// Triggered when user enters a monitored circular region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard region.identifier == monitoredRegion?.identifier else { return }
         print("✅ Entered region: \(region.identifier)")
         onRegionEntry()
     }
     
+    /// Called when CoreLocation fails with an error
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print(error.localizedDescription)
     }
     
     // MARK: - PUBLIC FUNCTIONS
+    
+    /// Returns the initial camera position for the map centered on the user’s location
     func getInitialMapCameraPosition() -> MapCameraPosition? {
         guard let coordinate: CLLocationCoordinate2D =  currentUserLocation else {
             print("Error getting initial current location of the user!")
@@ -97,6 +109,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return .region(region)
     }
     
+    /// Fetches driving route from user’s location to the marker destination
     func getRoute() async -> MKRoute? {
         guard
             let currentUserLocation,
@@ -117,6 +130,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Starts monitoring a circular region around the marker coordinate.
+    /// Returns `false` if marker coordinate is not set.
     func startMonitoringRegion(radius: Double) -> Bool {
         // Stop monitoring old region if any
         if let oldRegion = monitoredRegion {
@@ -136,6 +151,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return true
     }
     
+    /// Stops monitoring the currently active circular region.
     func stopMonitoringRegion() {
         guard let monitoredRegion else { return }
         
@@ -143,28 +159,70 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         self.monitoredRegion = nil
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    private func setLocationAccuracy() {
+    /// Dynamically adjusts location accuracy and update frequency
+    /// based on distance from the marker coordinate.
+    func setLocationAccuracy() {
         guard
             let currentUserLocation,
             let markerCoordinate else {
-            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             return
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
+        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distance)
         
-        switch distance {
-        case ..<1_000:
+        // Only apply if mode actually changed
+        guard newMode != currentDistanceMode else { return }
+        currentDistanceMode = newMode
+        
+        switch newMode {
+        case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        case 1_000..<2_000:
+            manager.distanceFilter = 50
+            stopSignificantUpdatesNStartLocationUpdates()
+            
+        case .medium:
             manager.desiredAccuracy = kCLLocationAccuracyBest
-        case 2_000..<3_000:
-            manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        case 3_000..<10_000:
+            manager.distanceFilter = 100
+            stopSignificantUpdatesNStartLocationUpdates()
+            
+        case .far:
             manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        default:
+            manager.distanceFilter = 500
+            stopSignificantUpdatesNStartLocationUpdates()
+            
+        case .veryFar:
             manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
+            manager.stopUpdatingLocation()
+            manager.startMonitoringSignificantLocationChanges()
         }
     }
+    
+    /// Checks the current location permission before proceeding with manager-level or UI-level actions.
+    /// This helps handle edge cases where the map may not function due to denied or restricted permissions,
+    /// ensuring a better user experience.
+    func checkLocationPermission() -> Bool {
+        switch manager.authorizationStatus {
+        case .denied, .restricted, .authorizedWhenInUse :
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            return false
+            
+        default:
+            return true
+        }
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
+    /// Helper function to stop significant-change updates
+    /// and restart normal location updates.
+    private func stopSignificantUpdatesNStartLocationUpdates() {
+        manager.stopMonitoringSignificantLocationChanges()
+        manager.startUpdatingLocation()
+    }
 }
+
+
+
+
+

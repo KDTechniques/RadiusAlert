@@ -30,7 +30,7 @@ struct PopupCardView: View {
             PopupCardCTAButtonView()
         }
         .padding()
-        .background(.white, in: .rect(cornerRadius: 20))
+        .background(.background, in: .rect(cornerRadius: 20))
         .padding(.horizontal, 50)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)

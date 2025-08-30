@@ -14,17 +14,12 @@ extension MapViewModel {
     /// Returns a `Binding<String>` that keeps the search bar text in sync with the view model's `searchText`.
     /// Useful for connecting the SwiftUI TextField directly to the view model.
     func searchTextBinding() -> Binding<String> {
-        Binding { [weak self] in
+        return Binding { [weak self] in
             self?.searchText ?? ""
         } set: { [weak self] in
-            self?.setSearchText($0)
+            guard let self, searchText != $0 else { return }
+            setSearchText($0)
         }
-    }
-    
-    /// Called when the user presses return/submit on the search bar.
-    /// If there are no `MKLocalSearchCompleter` results, clear the search field.
-    func onSearchTextSubmit() {
-        locationSearchManager.results.isEmpty ? setSearchText("") : ()
     }
     
     /// Handles tapping a search result from the list.
@@ -40,7 +35,7 @@ extension MapViewModel {
     /// - If the text is empty, reset results.
     /// - Otherwise, update results with the `MKLocalSearchCompleter`.
     func onSearchTextChange(_ text: String) {
-        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.update(searchText: text)
+        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.setQueryText(searchText: text)
     }
     
     /// Clears the current search results.
@@ -57,7 +52,7 @@ extension MapViewModel {
         
         Task {
             // Delay to ensure state updates propagate before moving the map
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
             
             let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
             
@@ -75,7 +70,7 @@ extension MapViewModel {
             // Wait for the default animation on setting marker position
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             
-            // Once the position animation is over, set the region bound for better  user experience
+            // Once the position animation is over, set the region bound for better user experience
             setRegionBoundsOnRadius()
         }
     }

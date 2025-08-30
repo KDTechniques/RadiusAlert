@@ -10,27 +10,42 @@ import SwiftUI
 struct KeyboardPreLoaderView: View {
     // MARK: - ASSIGNED PROPERTIES
     @FocusState private var isFocused: Bool
-    @State private var showKeyboardPreLoader: Bool = true
+    let onKeyboardLoaderFinish: () -> Void
     
     // MARK: - BODY
     var body: some View {
-        if showKeyboardPreLoader {
-            TextField("", text: .constant(""))
-                .focused($isFocused)
-                .onAppear {
-                    Task {
-                        isFocused = true
-                        try? await Task.sleep(nanoseconds: 100_000_000)
-                        isFocused = false
-                        showKeyboardPreLoader = false
-                    }
-                }
-        }
+        TextField("", text: .constant(""))
+            .focused($isFocused)
+            .disabled(true)
+            .allowsHitTesting(false)
+            .opacity(0)
+            .tint(.clear)
+            .foregroundStyle(.clear)
+            .onAppear { handleOnAppear() }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Keyboard Pre-Loader") {
-    KeyboardPreLoaderView()
+    KeyboardPreLoaderView {
+        print("Keyboard Loader is Finished!")
+    }
+    .previewModifier()
+}
+
+#Preview("Content") {
+    ContentView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension KeyboardPreLoaderView {
+    private func handleOnAppear() {
+        Task {
+            isFocused = true
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            isFocused = false
+            onKeyboardLoaderFinish()
+        }
+    }
 }

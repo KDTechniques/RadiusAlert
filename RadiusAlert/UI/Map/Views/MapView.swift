@@ -12,14 +12,14 @@ struct MapView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
     
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace
     
     // MARK: - BODY
     var body: some View {
-        @Bindable var mapVM: MapViewModel = mapVM
-        let _ = Self._printChanges()
+        //        let _ = Self._printChanges()
         
         Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location
@@ -32,12 +32,18 @@ struct MapView: View {
                     center: centerCoordinate,
                     radius: mapVM.selectedRadius
                 )
-                .foregroundStyle(Color.getNotPrimary(colorScheme: colorScheme).opacity(0.3))
+                .foregroundStyle(.primary.opacity(0.3))
             }
             
             // Marker
             if let markerCoordinate = mapVM.markerCoordinate {
-                Marker(mapVM.getRadiusTextString(mapVM.selectedRadius), coordinate: markerCoordinate)
+                Marker(
+                    mapVM.getRadiusTextString(
+                        mapVM.selectedRadius,
+                        withAlertRadiusText: true
+                    ),
+                    coordinate: markerCoordinate
+                )
             }
             
             // Route
@@ -46,7 +52,7 @@ struct MapView: View {
                     .stroke(Color.pink.gradient, lineWidth: 3)
             }
         }
-        .mapStyle(mapVM.selectedMapStyle.mapStyle)
+        .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
         .mapControlVisibility(mapVM.isMarkerCoordinateNil() ? .visible : .hidden)
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }

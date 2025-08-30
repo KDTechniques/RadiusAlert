@@ -25,5 +25,7 @@ struct MapValues {
     static let radiusToRegionBoundsMetersFactor: Double = 5
     
     // MARK: - Safe Area Related
-    static let safeAreaBackgroundColor: Color = .white
+    static func safeAreaBackgroundColor(_ colorScheme: ColorScheme) -> Color {
+        return colorScheme == .dark ? .init(uiColor: .systemGray4) : .white
+    }
 }

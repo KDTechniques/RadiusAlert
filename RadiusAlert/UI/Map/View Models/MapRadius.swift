@@ -12,7 +12,7 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        Binding { [weak self] in
+        return Binding { [weak self] in
             self?.selectedRadius ?? MapValues.minimumRadius
         } set: { newValue in
             withAnimation { [weak self] in
@@ -21,12 +21,12 @@ extension MapViewModel {
         }
     }
     
-    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool = true) -> String {
+    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
         let numberText: String = radius >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(Int(radius))m"
         
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
-        guard let name: String = selectedSearchResult?.name else { return text }
+        guard withAlertRadiusText, let name: String = selectedSearchResult?.name else { return text }
         let textWithName: String = "(\(name))\n\(text)"
         
         return textWithName
@@ -46,5 +46,20 @@ extension MapViewModel {
         
         let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor
         setRegionBoundMeters(center: centerCoordinate, meters: regionBoundMeters)
+    }
+    
+    func handleOnRegionEntryAlertFailure() {
+        guard
+            locationManager.currentDistanceMode == .close,
+            let markerCoordinate,
+            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        let distance: CLLocationDistance = Utilities.getDistance(from: userLocation, to: markerCoordinate)
+        let tolerance: CLLocationDistance = 100
+        let radius: CLLocationDistance = selectedRadius - tolerance
+        
+        guard distance < radius else { return }
+        
+        onRegionEntry()
     }
 }

@@ -17,7 +17,7 @@ struct PopupCardCTAButtonView: View {
             mapVM.stopAlert()
         } label: {
             Text("OK")
-                .foregroundStyle(.black)
+                .tint(.primary)
                 .fontWeight(.medium)
                 .padding(.vertical, 12)
                 .frame(maxWidth: .infinity)
@@ -30,5 +30,6 @@ struct PopupCardCTAButtonView: View {
 // MARK: - PREVIEWS
 #Preview("Popup Card CTA Button") {
     PopupCardCTAButtonView()
+        .padding(.horizontal, 50)
         .previewModifier()
 }

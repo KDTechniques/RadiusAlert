@@ -14,17 +14,27 @@ struct CircularRadiusTextView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.showFloatingAlertRadiusText() {
-            Text(mapVM.getRadiusTextString(mapVM.selectedRadius))
-                .multilineTextAlignment(.center)
-                .font(.caption)
-                .fontWeight(.medium)
-                .offset(y: 40)
+            Content()
         }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("CircularRadiusTextView") {
-    CircularRadiusTextView()
+    Content()
         .previewModifier()
+}
+
+// MARK: - SUB VIEWS
+fileprivate struct Content: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(MapViewModel.self) private var mapVM
+    
+    var body: some View {
+        Text(mapVM.getRadiusTextString(mapVM.selectedRadius, withAlertRadiusText: true))
+            .multilineTextAlignment(.center)
+            .font(.caption)
+            .fontWeight(.medium)
+            .offset(y: 40)
+    }
 }

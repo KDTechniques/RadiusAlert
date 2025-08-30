@@ -18,7 +18,7 @@ struct NavigationTitleButtonView: View {
         } label: {
             HStack(spacing: 5) {
                 Text("Radius Alert")
-                    .foregroundStyle(.black)
+                    .tint(.primary)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
@@ -28,6 +28,8 @@ struct NavigationTitleButtonView: View {
                     .scaledToFit()
                     .foregroundStyle(mapVM.getNavigationTitleIconColor())
                     .frame(height: 50)
+                
+                debug
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading)
@@ -42,4 +44,15 @@ struct NavigationTitleButtonView: View {
         NavigationTitleButtonView()
     }
     .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension NavigationTitleButtonView {
+    @ViewBuilder
+    private var debug: some View  {
+#if DEBUG
+        Spacer()
+        DebugView()
+#endif
+    }
 }

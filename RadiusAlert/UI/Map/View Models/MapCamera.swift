@@ -18,7 +18,7 @@ extension MapViewModel {
         guard
             let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
             let region: MKCoordinateRegion = position.region else {
-            MapCameraErrorModel.failToGetInitialMapCameraPosition.errorDescription.debugLog()
+            Utilities.log(MapCameraErrorModel.failToGetInitialMapCameraPosition.errorDescription)
             return
         }
         
@@ -58,7 +58,7 @@ extension MapViewModel {
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func positionBinding() -> Binding<MapCameraPosition> {
-        Binding<MapCameraPosition>(
+        return Binding<MapCameraPosition>(
             get: { [weak self] in
                 self?.position ?? .automatic
             },
@@ -95,19 +95,19 @@ extension MapViewModel {
         guard isAuthorizedToGetMapCameraUpdate else { return }
         setCameraDragging(false)
         setCenterCoordinate(context.camera.centerCoordinate)
-        centerRegionBoundsForMarkerNUserLocation()
+        clearSelectedSearchResultItemOnMapCameraChangeByUser()
     }
     
     /// Cycles through available map styles and sets the next one.
     func setNextMapStyle() {
         let mapStylesArray: [MapStyleTypes] = MapStyleTypes.allCases
-        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == selectedMapStyle }) else {
-            MapCameraErrorModel.failedToSetNextMapStyle.errorDescription.debugLog()
+        guard let index: Int = mapStylesArray.firstIndex(where: { $0 == settingsVM.selectedMapStyle }) else {
+            Utilities.log(MapCameraErrorModel.failedToSetNextMapStyle.errorDescription)
             return
         }
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
-        setSelectedMapStyle(mapStylesArray[nextIndex])
+        settingsVM.setSelectedMapStyle(mapStylesArray[nextIndex])
     }
     
     // Sets the map region bounds to a given center and distance.
@@ -123,10 +123,21 @@ extension MapViewModel {
     /// If either is unavailable, logs an error instead.
     func centerRegionBoundsForMarkerNUserLocation() {
         guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else {
-            MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription.debugLog()
+            Utilities.log(MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription)
             return
         }
         
         positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
+    }
+    
+    func clearMemoryByMapStyles() {
+        memoryWarningsHandler.registerCleanupAction {
+            Task { @MainActor [weak self] in
+                for _ in 1...3 {
+                    self?.setNextMapStyle()
+                    try? await Task.sleep(nanoseconds: 100_000_000)
+                }
+            }
+        }
     }
 }

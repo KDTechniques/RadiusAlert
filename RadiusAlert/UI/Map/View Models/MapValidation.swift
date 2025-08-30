@@ -21,14 +21,6 @@ extension MapViewModel {
         return distance > mapValues.minimumDistance
     }
     
-    func checkLocationPermissionOnCA() {
-        // Check whether the user has still given permission to only when in use and ask them to change it to always ui get triggered here...
-        let status: CLAuthorizationStatus = locationManager.manager.authorizationStatus
-        if status == .authorizedWhenInUse {
-            print("Show a UI to direct user to system settings here...")
-        }
-    }
-    
     func showRadiusCircle() -> Bool {
         let condition1: Bool = isMarkerCoordinateNil() ? isBeyondMinimumDistance() : true
         
@@ -62,10 +54,10 @@ extension MapViewModel {
     
     func showNoSearchResultsText() -> Bool {
         let condition1: Bool = searchText.isEmpty
-        let condition2: Bool = locationSearchManager.isSearching
-        let condition3: Bool = locationSearchManager.results.isEmpty
+        let condition2: Bool = locationSearchManager.results.isEmpty
+        let condition3: Bool = locationSearchManager.isSearching
         
-        return !condition1 && !condition2 && condition3
+        return !condition1 && condition2 && !condition3
     }
     
     func showCTAButton() -> Bool {
@@ -77,7 +69,7 @@ extension MapViewModel {
     
     func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
         guard selectedRadius < distance else {
-            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius
+            AlertManager.shared.alertItem = AlertTypes.alreadyInRadius.alert
             return false
         }
         
@@ -90,5 +82,25 @@ extension MapViewModel {
         let condition3: Bool = isSearchFieldFocused
         
         return condition1 && (!condition2 || condition3)
+    }
+    
+    func showSearchListBackground() -> Bool {
+        let condition1: Bool = searchText.isEmpty
+        let condition2: Bool = isSearchFieldFocused
+        
+        return !condition1 || condition2
+    }
+    
+    // Check the coordinates between selectedMapItem and the center coordinate.
+    // If these two don’t match, it means the user has moved the map around,
+    // and it is no longer the selected search result coordinate.
+    func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
+        guard
+            let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate,
+            let centerCoordinate,
+            radiusAlertItem == nil,
+            !centerCoordinate.isEqual(to: selectedSearchResultCoordinate, precision: 5) else { return }
+        
+        setSelectedSearchResult(nil)
     }
 }

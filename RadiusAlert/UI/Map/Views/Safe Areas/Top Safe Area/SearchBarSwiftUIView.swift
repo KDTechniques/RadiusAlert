@@ -15,25 +15,23 @@ struct SearchBarSwiftUIView: View {
     
     // MARK: - BODY
     var body: some View {
-        @Bindable var mapVM: MapViewModel = mapVM
-        
         SearchBarView(
             searchBarText: mapVM.searchTextBinding(),
             placeholder: "Search",
-            context: .custom,
-            customColors: .init(
+            context: .custom(.init(
                 backgroundColor: .searchBarBackground,
                 searchIconTextColor: .searchBarForeground,
                 placeholderTextColor: .searchBarForeground,
                 textColor: .primary
-            )
-        ) { mapVM.setSearchFieldFocused($0) }
-            .focused($isFocused)
-            .submitLabel(.search)
-            .onSubmit { handleOnSubmit() }
-            .padding(.bottom, 14)
-            .padding(.top, 8)
-            .onChange(of: mapVM.isSearchFieldFocused) { isFocused = $1 }
+            )),
+            isSearching: mapVM.locationSearchManager.isSearching
+        )
+        .focused($isFocused)
+        .submitLabel(.search)
+        .padding(.bottom, 14)
+        .padding(.top, 8)
+        .onChange(of: isFocused) { mapVM.setSearchFieldFocused($1) }
+        .onChange(of: mapVM.isSearchFieldFocused) { isFocused = $1 }
     }
 }
 
@@ -41,12 +39,4 @@ struct SearchBarSwiftUIView: View {
 #Preview("Search Bar") {
     SearchBarSwiftUIView()
         .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension SearchBarSwiftUIView {
-    private func handleOnSubmit() {
-        isFocused = false
-        mapVM.onSearchTextSubmit()
-    }
 }

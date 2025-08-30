@@ -19,16 +19,4 @@ extension String {
     func debugPrint() {
         print(self)
     }
-    
-    /// Logs the string using the `Utilities.log` method.
-    ///
-    /// Includes file name, line number, and function name when in debug mode.
-    ///
-    /// Example:
-    /// ```swift
-    /// "User location updated".debugLog()
-    /// ```
-    func debugLog() {
-        Utilities.log(self)
-    }
 }

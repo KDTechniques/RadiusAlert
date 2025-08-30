@@ -37,10 +37,11 @@ extension MapViewModel {
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
             guard let self, boolean else { return }
+            
             stopAlert()
             setSearchFieldFocused(false)
             setSelectedSearchResultCoordinate(item)
-        }
+        }.alert
     }
     
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
@@ -53,7 +54,17 @@ extension MapViewModel {
         resetMapToCurrentUserLocation()
         clearPopupCardItem()
         setRadiusAlertItem(nil)
+        setPopupCardItem(nil)
         setSelectedSearchResult(nil)
+    }
+    
+    func onRegionEntry() {
+        locationManager.onRegionEntryFailure = { }
+        locationManager.onRegionEntry = { }
+        alertManager.sendNotification()
+        alertManager.playTone(settingsVM.selectedTone.fileName)
+        alertManager.playHaptic()
+        generateNSetPopupCardItem()
     }
     
     // MARK: - PRIVATE FUNCTIONS
@@ -63,9 +74,11 @@ extension MapViewModel {
     private func startAlert() {
         // First go through validations before proceeding.
         guard
+            locationManager.checkLocationPermission(),
             startAlert_ValidateDistance(),
             let (distance, currentUserLocation): (CLLocationDistance, CLLocationCoordinate2D) = startAlert_GetDistanceNUserLocation(),
-            startAlert_ValidateRadius(distance: distance)  else { return }
+            startAlert_ValidateRadius(distance: distance),
+            startAlert_CheckAlwaysAllowPermission() else { return }
         
         // Request local push notification permission if needed
         /// We don't request notification permission at the time of requesting location permission to provide better user experience.
@@ -85,13 +98,26 @@ extension MapViewModel {
         guard startAlert_StartMonitoringRegion() else { return }
         
         startAlert_OnRegionEntry()
+        startAlert_OnRegionEntryFailure()
+        locationManager.setLocationAccuracy()
         Task { await HapticManager.shared.vibrate(type: .rigid) }
+    }
+    
+    /// Checks whether the app has `Always Allow` location permission.
+    /// - Returns: `true` if permission is granted as `.authorizedAlways`, otherwise `false`.
+    private func startAlert_CheckAlwaysAllowPermission() -> Bool {
+        guard locationManager.authorizationStatus == .authorizedAlways else {
+            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            return false
+        }
+        
+        return true
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.
     private func startAlert_ValidateDistance() -> Bool {
         guard isBeyondMinimumDistance() else {
-            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance
+            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance.alert
             return false
         }
         
@@ -105,7 +131,7 @@ extension MapViewModel {
             let centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation
         else {
-            MapCTAButtonErrorModel.failedToGetDistance.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
             return nil
         }
         
@@ -122,7 +148,7 @@ extension MapViewModel {
     /// - Returns: True if the selected radius is less than the distance; otherwise false.
     private func startAlert_ValidateRadius(distance: CLLocationDistance) -> Bool {
         guard isSelectedRadiusLessThanDistance(distance: distance) else {
-            MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription)
             return false
         }
         
@@ -163,7 +189,7 @@ extension MapViewModel {
     private func startAlert_StartMonitoringRegion() -> Bool {
         guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
             stopAlert()
-            MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription.debugLog()
+            Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
         
@@ -174,14 +200,22 @@ extension MapViewModel {
     private func startAlert_OnRegionEntry() {
         locationManager.onRegionEntry = { [weak self] in
             guard let self else {
-                MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription.debugLog()
+                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription)
                 return
             }
             
-            alertManager.sendNotification()
-            alertManager.playTone()
-            alertManager.playHaptic()
-            generateNSetPopupCardItem()
+            onRegionEntry()
+        }
+    }
+    
+    private func startAlert_OnRegionEntryFailure() {
+        locationManager.onRegionEntryFailure = { [weak self] in
+            guard let self else {
+                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntryFailure.errorDescription)
+                return
+            }
+            
+            handleOnRegionEntryAlertFailure()
         }
     }
     
@@ -190,6 +224,6 @@ extension MapViewModel {
     private func stopAlertConfirmation() {
         alertManager.alertItem = AlertTypes.stopAlertHereConfirmation { [weak self] in
             self?.stopAlert()
-        }
+        }.alert
     }
 }

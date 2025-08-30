@@ -11,7 +11,12 @@ struct AboutFutureUpdatesView: View {
     var body: some View {
         NavigationLink {
             List {
-                Text("• Bullet points list of future updates goes here.")
+                ForEach(UpdateTypes.futureUpdates) { update in
+                    HStack {
+                        Text(update.emoji)
+                        Text(update.description)
+                    }
+                }
             }
             .navigationTitle(Text("Future Updates"))
             .navigationBarTitleDisplayMode(.inline)

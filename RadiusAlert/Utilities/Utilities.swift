@@ -10,6 +10,7 @@
 
 import CoreLocation
 import UIKit
+import AVFoundation
 
 struct Utilities {
     /// Logs debug info with file name, line number, and calling function.
@@ -53,5 +54,15 @@ struct Utilities {
     
     static func getCountryCode() -> String? {
         return Locale.current.region?.identifier // e.g. "US", "LK"
+    }
+    
+    static func isCountryCodeSriLanka() -> Bool {
+        let countryCode = Locale.current.region?.identifier
+        return countryCode == "LK"
+    }
+    
+    static func getSystemVolume() -> Float {
+        let audioSession = AVAudioSession.sharedInstance()
+        return audioSession.outputVolume  // Value between 0.0 and 1.0
     }
 }

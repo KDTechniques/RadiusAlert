@@ -39,12 +39,17 @@ struct SearchResultListRowView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Search Result List Row View") {
+#Preview("Search Result List Row") {
     SearchResultListRowView(
         title: "Name: 1234567890 1234567890 ",
         subTitle: "Title: 1234567890 1234567890 1234567890 12345678"
     )
     .previewModifier()
+}
+
+#Preview("Content") {
+    ContentView()
+        .previewModifier()
 }
 
 // MARK: - EXTENSIONS
@@ -56,7 +61,7 @@ extension SearchResultListRowView {
     }
     
     private var subTitleText: some View {
-        Text(subTitle)
+        Text(subTitle.isEmpty ? "Address Not Available" : subTitle)
             .font(.caption)
             .foregroundStyle(.secondary)
             .padding(.trailing, 50)

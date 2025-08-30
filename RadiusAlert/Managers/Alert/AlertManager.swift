@@ -29,17 +29,34 @@ final class AlertManager {
     }
     
     // Local Push Notifications Related
-    func sendNotification() {
-        notificationsManager.scheduleNotification()
+    func sendNotification(after seconds: TimeInterval = 0.5) {
+        notificationsManager.scheduleNotification(after: seconds)
     }
     
     // Tone Related
-    func playTone() {
-        toneManager.playDefaultTone()
+    func playTone(_ fileName: String, loopCount: Int = -1) {
+        Task {
+            await toneManager.playTone(fileName, loopCount: loopCount)
+        }
     }
     
     func stopTone() {
-        toneManager.stopDefaultTone()
+        Task {
+            await toneManager.stopTone()
+            resetToneVolume()
+        }
+    }
+    
+    func setToneVolume(_ volume: Float, fadeDuration: Double = 0.8) {
+        Task {
+            await toneManager.setToneVolume(volume, fadeDuration: fadeDuration)
+        }
+    }
+    
+    private func resetToneVolume() {
+        Task {
+            await toneManager.resetToneVolume(.zero)
+        }
     }
     
     // Haptics Related
