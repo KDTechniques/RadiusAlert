@@ -17,7 +17,8 @@ extension MapViewModel {
         return Binding { [weak self] in
             self?.searchText ?? ""
         } set: { [weak self] in
-            self?.setSearchText($0)
+            guard let self, searchText != $0 else { return }
+            setSearchText($0)
         }
     }
     

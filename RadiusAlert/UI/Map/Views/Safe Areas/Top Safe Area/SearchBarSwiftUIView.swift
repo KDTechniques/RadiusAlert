@@ -28,7 +28,6 @@ struct SearchBarSwiftUIView: View {
         )
         .focused($isFocused)
         .submitLabel(.search)
-        .onSubmit { handleOnSubmit() }
         .padding(.bottom, 14)
         .padding(.top, 8)
         .onChange(of: isFocused) { mapVM.setSearchFieldFocused($1) }
@@ -40,11 +39,4 @@ struct SearchBarSwiftUIView: View {
 #Preview("Search Bar") {
     SearchBarSwiftUIView()
         .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension SearchBarSwiftUIView {
-    private func handleOnSubmit() {
-        isFocused = false
-    }
 }

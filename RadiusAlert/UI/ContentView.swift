@@ -69,7 +69,7 @@ extension ContentView {
         
         guard condition1, condition2 else { return }
         
-        mapVM.reduceAlertToneVolumeOnScenePhaseChange(value)
+        mapVM.reduceAlertToneVolumeOnScenePhaseChange()
     }
 }
 

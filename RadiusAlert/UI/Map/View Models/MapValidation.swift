@@ -54,10 +54,10 @@ extension MapViewModel {
     
     func showNoSearchResultsText() -> Bool {
         let condition1: Bool = searchText.isEmpty
-        let condition2: Bool = locationSearchManager.isSearching
-        let condition3: Bool = locationSearchManager.results.isEmpty
+        let condition2: Bool = locationSearchManager.results.isEmpty
+        let condition3: Bool = locationSearchManager.isSearching
         
-        return !condition1 && !condition2 && condition3
+        return !condition1 && condition2 && !condition3
     }
     
     func showCTAButton() -> Bool {
