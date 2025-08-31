@@ -14,7 +14,7 @@ final class AlertManager {
     private let toneManager: ToneManager = .shared
     private let hapticManager: HapticManager = .shared
     private let notificationsManager: NotificationManager = .shared
-    var alertItem: AlertModel?
+    private(set) var alertItems: [AlertModel]
     
     //  MARK: -  INITIALIZER
     private  init() { }
@@ -22,13 +22,15 @@ final class AlertManager {
     // 1 - Local Push Notifications
     // 2 - Tone
     // 3 - Haptic Feedback
+    // 4 - Alert
     
     // MARK: - PUBLIC FUNCTIONS
+    
+    // Local Push Notifications Related
     func requestNotificationPermission() {
         notificationsManager.requestAuthorizationIfNeeded()
     }
     
-    // Local Push Notifications Related
     func sendNotification(after seconds: TimeInterval = 0.5) {
         notificationsManager.scheduleNotification(after: seconds)
     }
@@ -69,6 +71,15 @@ final class AlertManager {
     func stopHaptic() {
         Task {
             await hapticManager.stopSOSPattern()
+        }
+    }
+    
+    // Alerts Related
+    /// This function simplifies the process of displaying an alert item, eliminating the need to use `isPresented` for each alert we create.
+    func showAlert(_ alertType: AlertModel) {
+        Task  {
+            await hapticManager.vibrate(type: alertType.hapticType)
+            alertItem = alertType
         }
     }
 }

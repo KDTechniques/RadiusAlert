@@ -47,6 +47,10 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
         results = []
     }
     
+    func setIsSearching(_ value: Bool) {
+        isSearching = value
+    }
+    
     // MARK: - DELEGATE  FUNCTIONS
     
     /// Delegate method triggered when the search completer updates its results.
@@ -71,6 +75,15 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        // First, try to cast the error to NSError to access error codes
+        let nsError = error as NSError
+        
+        // Check if it's a network-related timeout
+        if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorTimedOut {
+            setIsSearching(false)
+            clearResults()
+        }
+        
         Utilities.log(errorModel.failedMKLocalSearchCompleter(error).errorDescription)
     }
 }
