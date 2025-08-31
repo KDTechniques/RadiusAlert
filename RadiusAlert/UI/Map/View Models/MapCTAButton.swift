@@ -35,13 +35,16 @@ extension MapViewModel {
     /// If confirmed, stops the existing alert and sets a new alert at the selected coordinate.
     /// - Parameter item: The selected search completion item representing the new alert location.
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
-        alertManager.alertItem = AlertTypes.stopAlertOnSubmit { [weak self] boolean in
-            guard let self, boolean else { return }
-            
-            stopAlert()
-            setSearchFieldFocused(false)
-            setSelectedSearchResultCoordinate(item)
-        }.alert
+        alertManager.showAlert(
+            .stopAlertOnSubmit { [weak self] in
+                guard let self else { return }
+                
+                stopAlert()
+                setSearchFieldFocused(false)
+                setSelectedSearchResultCoordinate(item)
+                
+            }
+        )
     }
     
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
@@ -107,7 +110,7 @@ extension MapViewModel {
     /// - Returns: `true` if permission is granted as `.authorizedAlways`, otherwise `false`.
     private func startAlert_CheckAlwaysAllowPermission() -> Bool {
         guard locationManager.authorizationStatus == .authorizedAlways else {
-            alertManager.alertItem = AlertTypes.locationPermissionDenied.alert
+            alertManager.showAlert(.locationPermissionDenied)
             return false
         }
         
@@ -117,7 +120,7 @@ extension MapViewModel {
     /// Validate that the selected radius is beyond the minimum allowed distance.
     private func startAlert_ValidateDistance() -> Bool {
         guard isBeyondMinimumDistance() else {
-            alertManager.alertItem = AlertTypes.radiusNotBeyondMinimumDistance.alert
+            alertManager.showAlert(.radiusNotBeyondMinimumDistance)
             return false
         }
         
@@ -222,8 +225,10 @@ extension MapViewModel {
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation() {
-        alertManager.alertItem = AlertTypes.stopAlertHereConfirmation { [weak self] in
-            self?.stopAlert()
-        }.alert
+        alertManager.showAlert(
+            .stopAlertHereConfirmation { [weak self] in
+                self?.stopAlert()
+            }
+        )
     }
 }

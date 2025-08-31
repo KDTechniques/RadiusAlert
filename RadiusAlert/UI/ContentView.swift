@@ -36,18 +36,9 @@ struct ContentView: View {
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
                 .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
-//                .alertViewModifier(item: $alertManager.alertItem)
                 .navigationTitle(Text("Map"))
-                .alert(alertManager.alertItem?.title ?? "", isPresented: $isPresented, presenting: alertManager.alertItem) { alert in
-                    
-                } message: { alert in
-                    Text(alert.message)
-                }
-                .onChange(of: isPresented) {
-                    print($1)
-                }
-
         }
+        .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
         .onAppear { mapVM.positionToInitialUserLocation() }

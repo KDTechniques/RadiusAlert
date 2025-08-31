@@ -105,7 +105,7 @@ extension DebugView {
         Section {
             ForEach(AlertTypes.allCases, id: \.self)  { alert in
                 Button(alert.rawValue)  {
-                    alertManager.alertItem = alert.alert
+                    alertManager.showAlert(alert)
                 }
             }
         } header: {

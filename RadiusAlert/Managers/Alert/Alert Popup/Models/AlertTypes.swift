@@ -14,7 +14,7 @@ enum AlertTypes: CaseIterable, Hashable {
     case alreadyInRadius
     case radiusNotBeyondMinimumDistance
     case stopAlertHereConfirmation(() -> Void)
-    case stopAlertOnSubmit((Bool) -> Void)
+    case stopAlertOnSubmit(() -> Void)
     
     static var allCases: [AlertTypes] = [
         .alreadyInRadius,
@@ -23,7 +23,7 @@ enum AlertTypes: CaseIterable, Hashable {
         .requestTimedOut,
         .radiusNotBeyondMinimumDistance,
         .stopAlertHereConfirmation({ }),
-        .stopAlertOnSubmit({ _ in })
+        .stopAlertOnSubmit({ })
     ]
     
     // Implement Hashable manually
@@ -33,18 +33,7 @@ enum AlertTypes: CaseIterable, Hashable {
     
     // Implement Equatable manually
     static func == (lhs: AlertTypes, rhs: AlertTypes) -> Bool {
-        switch (lhs, rhs) {
-        case (.noConnection, .noConnection),
-            (.requestTimedOut, .requestTimedOut),
-            (.locationPermissionDenied, .locationPermissionDenied),
-            (.alreadyInRadius, .alreadyInRadius),
-            (.radiusNotBeyondMinimumDistance, .radiusNotBeyondMinimumDistance),
-            (.stopAlertHereConfirmation, .stopAlertHereConfirmation),
-            (.stopAlertOnSubmit, .stopAlertOnSubmit):
-            return true
-        default:
-            return false
-        }
+        lhs.rawValue == rhs.rawValue
     }
     
     var rawValue: String {
@@ -79,7 +68,7 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "No Internet Connection",
                 message: "Please check your internet connection and try again.",
                 hapticType: .warning,
-                primaryAction: .default(Text("OK"))
+                actions: [.init(role: .ok)]
             )
             
         case .requestTimedOut:
@@ -87,8 +76,10 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Search Request Timed out",
                 message: "Your internet connection seems slow. Please check your connection and try again.",
                 hapticType: .warning,
-                primaryAction: .default(Text("Try Again")) {  },
-                secondaryAction: .cancel {  }
+                actions: [
+                    .init(role: .custom("Try Again")),
+                    .init(role: .cancel)
+                ]
             )
             
         case .locationPermissionDenied:
@@ -96,7 +87,9 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Location Permission Required",
                 message: "This app cannot work correctly without location access set to 'Always Allow'. Please enable it in Settings to continue.",
                 hapticType: .warning,
-                primaryAction: .default(Text("Go to Settings")) { OpenURLTypes.settings.openURL() }
+                actions: [
+                    .init(role: .custom("Open Settings")) { OpenURLTypes.settings.openURL() }
+                ]
             )
             
         case .alreadyInRadius:
@@ -104,7 +97,7 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Already Within Radius",
                 message: "Please reduce the radius to set a meaningful alert.",
                 hapticType: .warning,
-                primaryAction: .default(Text("OK"))
+                actions: [.init(role: .ok)]
             )
             
         case .radiusNotBeyondMinimumDistance:
@@ -112,7 +105,7 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Too Close to Set Alert",
                 message: "The alert radius must be set at least 1km ahead of your current location.",
                 hapticType: .warning,
-                primaryAction: .default(Text("OK"))
+                actions: [.init(role: .ok)]
             )
             
         case .stopAlertHereConfirmation(let action):
@@ -120,8 +113,10 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Are You Sure?",
                 message: "This will stop the alert immediately.",
                 hapticType: .warning,
-                primaryAction: .destructive(Text("OK")) { action() },
-                secondaryAction: .cancel()
+                actions: [
+                    .init(role: .destructive("OK")) { action() },
+                    .init(role: .cancel)
+                ]
             )
             
         case .stopAlertOnSubmit(let action):
@@ -129,8 +124,10 @@ enum AlertTypes: CaseIterable, Hashable {
                 title: "Stop Existing Radius Alert?",
                 message: "You already have a radius alert set. Do you want to stop it to set a new radius alert?",
                 hapticType: .warning,
-                primaryAction: .destructive(Text("Yes")) { action(true) },
-                secondaryAction: .cancel()
+                actions: [
+                    .init(role: .destructive("Yes")) { action() },
+                    .init(role: .cancel)
+                ]
             )
         }
     }
