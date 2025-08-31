@@ -5,7 +5,7 @@
 //  Created by Mr. Kavinda Dilshan on 2025-07-31.
 //
 
-import Foundation
+import SwiftUI
 
 @Observable
 final class AlertManager {
@@ -14,7 +14,7 @@ final class AlertManager {
     private let toneManager: ToneManager = .shared
     private let hapticManager: HapticManager = .shared
     private let notificationsManager: NotificationManager = .shared
-    var alertItem: AlertModel?
+    private let alertPopupmanager: AlertPopupManager = .shared
     
     //  MARK: -  INITIALIZER
     private  init() { }
@@ -22,18 +22,20 @@ final class AlertManager {
     // 1 - Local Push Notifications
     // 2 - Tone
     // 3 - Haptic Feedback
+    // 4 - Alert Popup
     
     // MARK: - PUBLIC FUNCTIONS
+    
+    // Local Push Notifications Related
     func requestNotificationPermission() {
         notificationsManager.requestAuthorizationIfNeeded()
     }
     
-    // Local Push Notifications Related
     func sendNotification(after seconds: TimeInterval = 0.5) {
         notificationsManager.scheduleNotification(after: seconds)
     }
     
-    // Tone Related
+    // MARK: Tone Related
     func playTone(_ fileName: String, loopCount: Int = -1) {
         Task {
             await toneManager.playTone(fileName, loopCount: loopCount)
@@ -59,7 +61,7 @@ final class AlertManager {
         }
     }
     
-    // Haptics Related
+    // MARK: Haptics Related
     func playHaptic() {
         Task {
             await hapticManager.playSOSPattern()
@@ -70,5 +72,18 @@ final class AlertManager {
         Task {
             await hapticManager.stopSOSPattern()
         }
+    }
+    
+    // MARK: Alert Popup Related
+    func showAlert(_ type: AlertTypes) {
+        alertPopupmanager.showAlert(type)
+    }
+    
+    func getFirstAlertItem() -> AlertModel? {
+        alertPopupmanager.alertItems.first
+    }
+    
+    func alertPopupBinding() -> Binding<Bool> {
+        return alertPopupmanager.alertIsPresentedBinding()
     }
 }
