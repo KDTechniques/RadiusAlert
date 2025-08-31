@@ -19,36 +19,25 @@ extension View {
             .environment(SettingsViewModel())
     }
     
-    /// Attaches an alert that displays based on a bound `AlertModel?`.
-    ///
-    /// - Parameter item: A `Binding` to an optional `AlertModel`.
-    ///   When non-nil, the alert is presented.
-    ///
-    /// - Returns: A modified view with the alert attached.
-    ///
-    /// This helper also triggers haptic feedback (if specified in the model).
-    func alertViewModifier(item: Binding<AlertModel?>) -> some View {
+    @ViewBuilder
+    var alertViewModifier: some View {
+        let alertManager: AlertManager = .shared
+        let firstItem: AlertModel? = alertManager.getFirstAlertItem()
+        
         self
-            .alert(item: item) { alertItem in
-                // Trigger haptic feedback asynchronously
-                Task {
-                    await HapticManager.shared.vibrate(type: alertItem.hapticType)
+            .alert(
+                firstItem?.title ?? "",
+                /// isPresented: get true & false, but only setting false when dismissed by the user.
+                isPresented: alertManager.alertPopupBinding(),
+                presenting: firstItem,
+                actions: { alert in
+                    ForEach(alert.actions) { action in
+                        action.button
+                    }
+                },
+                message: { alert in
+                    Text(alert.message)
                 }
-                
-                if let secondaryAction: Alert.Button = alertItem.secondaryAction {
-                    return Alert(
-                        title: Text(alertItem.title),
-                        message: Text(alertItem.message),
-                        primaryButton: alertItem.primaryAction,
-                        secondaryButton: secondaryAction
-                    )
-                } else {
-                    return Alert(
-                        title: Text(alertItem.title),
-                        message: Text(alertItem.message),
-                        dismissButton: alertItem.primaryAction
-                    )
-                }
-            }
+            )
     }
 }

@@ -18,6 +18,9 @@ struct ContentView: View {
     @State private var alertManager: AlertManager = .shared
     @State private var showSplashScreen: Bool = true
     
+    
+    @State var isPresented: Bool = true
+    
     // MARK: - BODY
     var body: some View {
         NavigationStack {
@@ -33,9 +36,9 @@ struct ContentView: View {
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
                 .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
-                .alertViewModifier(item: $alertManager.alertItem)
                 .navigationTitle(Text("Map"))
         }
+        .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
         .onAppear { mapVM.positionToInitialUserLocation() }

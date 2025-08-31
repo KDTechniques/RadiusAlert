@@ -183,6 +183,53 @@
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>97</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>96</string>
+					<key>Timestamp</key>
+					<string>778351080.845228</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/Managers/Alert/Models/AlertTypes.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        case .locationPermissionDenied:
+</string>
+				<key>leading</key>
+				<string>            )
+            
+</string>
+				<key>trailing</key>
+				<string>            return .init(
+                title: "Location Permission Required",
+                message: "This app cannot work correctly without location access set to 'Always Allow'. Please enable it in Settings to continue.",
+</string>
+			</dict>
+			<key>title</key>
+			<string>accept the action, don't hard code it</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
 	</array>
 </dict>
 </plist>

@@ -8,7 +8,7 @@
 import UIKit
 
 enum OpenURLTypes {
-    case whatsApp, facebook, gitHub
+    case whatsApp, facebook, gitHub, linkedIn
     case appStore
     case settings, notifications
     
@@ -19,6 +19,9 @@ enum OpenURLTypes {
             
         case .facebook:
             return "Facebook"
+            
+        case .linkedIn:
+            return "LinkedIn"
             
         case .gitHub:
             return "GitHub"
@@ -32,10 +35,16 @@ enum OpenURLTypes {
         switch self {
         case .whatsApp:
             return .whatsApp
+            
         case .facebook:
             return .facebook
+            
         case .gitHub:
             return .gitHub
+            
+        case .linkedIn:
+            return .linkedin
+            
         default:
             return nil
         }
@@ -62,6 +71,9 @@ enum OpenURLTypes {
             
         case .gitHub:
             return .init(string: "https://github.com/KDTechniques/RadiusAlert")
+            
+        case .linkedIn:
+            return .init(string: "https://www.linkedin.com/in/paramsoodi")
             
         case .appStore:
             return .init(string: "https://apps.apple.com/app/284882215?action=write-review")
