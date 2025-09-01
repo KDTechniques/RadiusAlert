@@ -17,6 +17,7 @@ struct DebugView: View {
     let locationManager: LocationManager = .shared
     @State private var volume: String?
     @State private var playerVolume: Float = 1.0
+    @State private var isPresentedReadMe: Bool = false
     
     // MARK: - BODY
     var body: some View {
@@ -29,6 +30,9 @@ struct DebugView: View {
             Image(systemName: "ladybug.fill")
         }
         .padding(.trailing)
+        .sheet(isPresented: $isPresentedReadMe) {
+            ReadMeView(isPresented: $isPresentedReadMe)
+        }
     }
 }
 
@@ -54,6 +58,7 @@ extension DebugView {
         haptic
         notification
         alert
+        readMe
     }
     
     private var tone: some View {
@@ -149,6 +154,14 @@ extension DebugView {
                 .onChange(of: playerVolume) {
                     mapVM.alertManager.setToneVolume($1, fadeDuration: 0)
                 }
+        }
+    }
+    
+    private var readMe:  some View {
+        Section {
+            Button("Show Read Me") {
+                isPresentedReadMe = true
+            }
         }
     }
 }

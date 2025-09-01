@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct AlertModel: Identifiable {
-    let id              : String = UUID().uuidString
-    let title           : String
-    let message         : String
-    let hapticType      : HapticTypes
+    let id: String = UUID().uuidString
+    let title: String
+    let message: String
+    let hapticType: HapticTypes
     let actions: [AlertButtonModel]
     
     init(

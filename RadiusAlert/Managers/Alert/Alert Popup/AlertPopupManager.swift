@@ -28,7 +28,7 @@ final class AlertPopupManager {
             
             self.setIsPresented(newValue)
             
-            // Once the user dissmiss the current alert the following get excecuted
+            // Once the user dismiss the current alert the following get executed
             guard !newValue else { return }
             self.removeFirstNPresentNextAlert()
         }
