@@ -25,14 +25,15 @@ struct DebugView: View {
             List {
                 content
             }
+            .sheet(isPresented: $isPresentedReadMe) {
+                ReadMeView(isPresented: $isPresentedReadMe)
+            }
             .navigationTitle(Text("Debug"))
         } label: {
             Image(systemName: "ladybug.fill")
         }
         .padding(.trailing)
-        .sheet(isPresented: $isPresentedReadMe) {
-            ReadMeView(isPresented: $isPresentedReadMe)
-        }
+        
     }
 }
 
