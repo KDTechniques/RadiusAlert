@@ -28,6 +28,9 @@ struct AboutConnectWithDeveloperView: View {
 
 // MARK: - SUB VIEWS
 fileprivate struct Content: View {
+    @State private var showExpandedPhoto: Bool = false
+    @Namespace private var photo
+    let nameSpaceID: String = "photo"
     let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn, .gitHub]
     let reasons: [String] = [
         "To share some love ❤️",
@@ -43,8 +46,10 @@ fileprivate struct Content: View {
             reasonsSection
             sources
         }
+        .overlay { if showExpandedPhoto { expandedPhoto } }
         .navigationTitle(Text("Connect with Kavinda"))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(showExpandedPhoto)
     }
 }
 
@@ -53,9 +58,23 @@ extension Content {
         Image(.developer)
             .resizable()
             .scaledToFit()
-            .frame(width: 50, height: 50)
             .clipShape(.circle)
+            .matchedGeometryEffect(id: nameSpaceID, in: photo)
+            .frame(width: 50, height: 50)
+            .onTapGesture { handlePhotoTap() }
             .padding(.top, 4)
+    }
+    
+    private var expandedPhoto: some View {
+        Color.clear
+            .overlay {
+                Image(.developer)
+                    .resizable()
+                    .scaledToFit()
+                    .matchedGeometryEffect(id: nameSpaceID, in: photo)
+            }
+            .background(.ultraThinMaterial)
+            .onTapGesture { handlePhotoTap() }
     }
     
     private var nameNAbout: some View {
@@ -73,6 +92,8 @@ extension Content {
         VStack(alignment: .leading, spacing: 10) {
             Text("You can connect with me for any of the following reasons:")
                 .fontWeight(.medium)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
             
             VStack(alignment: .leading, spacing: 5) {
                 ForEach(reasons,id: \.self) {
@@ -86,7 +107,15 @@ extension Content {
         Section {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .top) {
-                    developerImage
+                    Group {
+                        if showExpandedPhoto {
+                            Color.clear
+                        } else {
+                            developerImage
+                        }
+                    }
+                    .frame(width: 50, height: 50)
+                    
                     nameNAbout
                 }
                 
@@ -102,6 +131,12 @@ extension Content {
             ForEach(socialMediaTypes, id: \.self) {
                 AboutConnectSocialMediaLinkView(type: $0)
             }
+        }
+    }
+    
+    private func handlePhotoTap() {
+        withAnimation(.snappy(duration: 0.25)) {
+            showExpandedPhoto.toggle()
         }
     }
 }
