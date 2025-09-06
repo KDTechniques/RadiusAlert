@@ -40,17 +40,11 @@ struct ReadMeView: View, ReadMeComponents {
 // MARK: - EXTENSIONS
 extension ReadMeView {
     private var dismissButton: some View {
-        Button {
+        MatchedGeometryTestingView {
             isPresented.toggle()
-        } label: {
-            Image(systemName: "xmark.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 40, height: 40)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         .padding(25)
-        .buttonStyle(.plain)
     }
     
     private var content: some View {
