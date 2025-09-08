@@ -13,8 +13,13 @@ struct AboutReadMeView: View {
     
     // MARK: - BODY
     var body: some View {
-        Button("Read Me") { isPresented = true }
-            .sheet(isPresented: $isPresented) { ReadMeView(isPresented: $isPresented) }
+        Button("Read Me") {
+            isPresented = true
+        }
+        .sheet(isPresented: $isPresented) {
+            ReadMeTestingView($isPresented)
+                .presentationCornerRadius(40)
+        }
     }
 }
 

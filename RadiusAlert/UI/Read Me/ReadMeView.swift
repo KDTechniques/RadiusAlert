@@ -39,14 +39,6 @@ struct ReadMeView: View, ReadMeComponents {
 
 // MARK: - EXTENSIONS
 extension ReadMeView {
-    private var dismissButton: some View {
-        MatchedGeometryTestingView {
-            isPresented.toggle()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-        .padding(25)
-    }
-    
     private var content: some View {
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 50) {
@@ -60,5 +52,13 @@ extension ReadMeView {
             .padding(.top, 110)
             .fixedSize(horizontal: false, vertical: true)
         }
+    }
+    
+    private var dismissButton: some View {
+        ReadMe_DismissButtonView {
+            isPresented = false
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(20)
     }
 }

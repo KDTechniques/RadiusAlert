@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct ReadMeTestingView: View {
+    
+    @Binding var isPresented: Bool
+    
+    init(_ isPresented: Binding<Bool>) {
+        _isPresented = isPresented
+    }
+    
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 0) {
@@ -28,10 +35,7 @@ struct ReadMeTestingView: View {
                     }
                     .overlay {
                         VStack(spacing: 10) {
-                            Text("Radius Alert")
-                                .font(.largeTitle)
-                                .fontWeight(.heavy)
-                                .foregroundStyle(.white)
+                            ReadMe_MorphAnimationView()
                             
                             Text("Radius Alert is an iOS app designed to solve a simple but common problem: falling asleep or getting distracted during your bus or train ride and missing your stop.")
                                 .foregroundStyle(.white)
@@ -198,27 +202,25 @@ struct ReadMeTestingView: View {
             }
         }
         .overlay(alignment: .topTrailing) {
-            MatchedGeometryTestingView {
-                
+            ReadMe_DismissButtonView {
+                isPresented = false
             }
-            .foregroundStyle(.primary)
             .padding(20)
         }
-        
     }
 }
 
-#Preview {
+#Preview("On Sheet") {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            ReadMeTestingView()
-                .presentationContentInteraction(.scrolls)
+            ReadMeTestingView(.constant(true))
+                .presentationCornerRadius(40)
         }
 }
 
-#Preview {
+#Preview("Without Sheet") {
     VStack {
-        ReadMeTestingView()
+        ReadMeTestingView(.constant(true))
             .background {
                 Color.clear
                     .background(.regularMaterial)
