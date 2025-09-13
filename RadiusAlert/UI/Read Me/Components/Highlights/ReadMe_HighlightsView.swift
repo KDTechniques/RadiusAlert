@@ -36,6 +36,7 @@ struct ReadMe_HighlightsView: View {
             }
         }
         .frame(maxWidth: screenWidth)
+        .padding(.vertical, 20)
     }
 }
 
