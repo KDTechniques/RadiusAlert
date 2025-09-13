@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct ReadMe_MorphAnimationView: View {
+    // MARK: - INJECTED PROPERTIES
+    let onAnimationEnd: () -> Void
+    
+    // MARK: - INITIALIZER
+    init(onAnimationEnd: @escaping () -> Void = { }) {
+        self.onAnimationEnd = onAnimationEnd
+    }
+    
     // MARK: - ASSIGNED PROPERTIES
     @State private var selectedAnimation: ReadMeMorphAnimationModel = .init(type: .animation_1)
     @Namespace private var namespace
@@ -35,8 +43,10 @@ struct ReadMe_MorphAnimationView: View {
 
 //  MARK: - PREVIEWS
 #Preview("ReadMe_MorphAnimationView") {
-    ReadMe_MorphAnimationView()
-        .previewModifier()
+    ReadMe_MorphAnimationView {
+        print("Animation Ended!")
+    }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
@@ -89,6 +99,7 @@ extension ReadMe_MorphAnimationView {
             await startAnimation(for: .animation_2)
             await startAnimation(for: .animation_3)
             await startAnimation_4()
+            onAnimationEnd()
         }
     }
     
@@ -117,5 +128,6 @@ extension ReadMe_MorphAnimationView {
         withAnimation(.smooth(duration: selectedAnimation.type.duration.secondaryDuration)) {
             selectedAnimation.showAnimation = true
         }
+        try? await Task.sleep(nanoseconds: .seconds(selectedAnimation.type.duration.secondaryDuration))
     }
 }

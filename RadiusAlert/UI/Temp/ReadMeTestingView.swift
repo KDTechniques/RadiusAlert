@@ -10,6 +10,7 @@ import SwiftUI
 struct ReadMeTestingView: View {
     
     @Binding var isPresented: Bool
+    @State private var animate: Bool = false
     
     init(_ isPresented: Binding<Bool>) {
         _isPresented = isPresented
@@ -35,7 +36,9 @@ struct ReadMeTestingView: View {
                     }
                     .overlay {
                         VStack(spacing: 10) {
-                            ReadMe_MorphAnimationView()
+                            ReadMe_MorphAnimationView {
+                                animate = true
+                            }
                             
                             Text("Radius Alert is an iOS app designed to solve a simple but common problem: falling asleep or getting distracted during your bus or train ride and missing your stop.")
                                 .foregroundStyle(.white)
@@ -47,10 +50,8 @@ struct ReadMeTestingView: View {
                         .frame(maxHeight: .infinity, alignment: .bottom)
                     }
                 
-                Image(.readMePhoto1)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(20)
+                ReadMe_HighlightsView(hPadding: 20, animate: animate)
+                    .padding(.vertical, 20)
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("🚌 Why Radius Alert?")
