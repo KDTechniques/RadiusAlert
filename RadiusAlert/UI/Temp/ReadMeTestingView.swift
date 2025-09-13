@@ -112,7 +112,10 @@ struct ReadMeTestingView: View {
                                         .padding()
                                 }
                         }
+                        .scrollTargetLayout()
                     }
+                    .scrollTargetBehavior(.viewAligned)
+                    .scrollBounceBehavior(.basedOnSize)
                     .scrollIndicators(.hidden)
                     .padding(.top, 30)
                     

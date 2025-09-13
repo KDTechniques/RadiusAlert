@@ -29,6 +29,7 @@ struct ReadMe_MorphAnimation_CurrentLocationNotationView: View {
                     .padding(5)
                     .matchedGeometryEffect(id: 2, in: namespace)
             }
+            .frame(width: 38, height: 38)
     }
 }
 
