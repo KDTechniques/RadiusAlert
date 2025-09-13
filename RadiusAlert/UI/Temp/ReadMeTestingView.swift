@@ -124,7 +124,7 @@ struct ReadMeTestingView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                     
-                    //                     Key Features
+                    // Key Features
                     
                     Text("✨ Key Features")
                         .font(.title2)
