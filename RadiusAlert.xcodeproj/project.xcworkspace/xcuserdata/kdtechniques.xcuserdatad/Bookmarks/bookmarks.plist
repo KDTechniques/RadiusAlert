@@ -230,50 +230,6 @@
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>5</string>
-					<key>EndingLineNumber</key>
-					<string>54</string>
-					<key>StartingColumnNumber</key>
-					<string>5</string>
-					<key>StartingLineNumber</key>
-					<string>54</string>
-					<key>Timestamp</key>
-					<string>779478153.416575</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RadiusAlert/UI/Read Me/ReadMeView_EXT.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string></string>
-				<key>leading</key>
-				<string>        .fontWeight(.medium)
-        .foregroundStyle(.secondary)
-    }</string>
-				<key>trailing</key>
-				<string>
-}
-
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
 	</array>
 </dict>
 </plist>

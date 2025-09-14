@@ -8,14 +8,6 @@
 import SwiftUI
 
 struct ReadMe_HeadingSection3View: View {
-    // MARK: - INJECTED PROPERTIES
-    let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
-    
     // MARK: - ASSIGNED PROPERTIES
     private let values: ReadMe_Values.Type = ReadMe_Values.self
     
@@ -30,12 +22,10 @@ struct ReadMe_HeadingSection3View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection3View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection3View(padding: padding)
+        ReadMe_HeadingSection3View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -44,7 +34,7 @@ extension ReadMe_HeadingSection3View {
     private var heading: some View {
         Text("💤 Carefree Commuting")
             .readMeHeading1ViewModifier
-            .headingSectionToSectionPadding
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var descrioption1: some View {
@@ -57,7 +47,7 @@ extension ReadMe_HeadingSection3View {
             .resizable()
             .scaledToFit()
             .clipShape(.rect(cornerRadius: values.cornerRadius))
-            .padding(.vertical, padding)
+            .padding(.vertical, values.padding)
     }
     
     private var description2: some View {

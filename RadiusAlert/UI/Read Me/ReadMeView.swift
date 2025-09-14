@@ -28,12 +28,13 @@ struct ReadMeView: View {
                 ReadMe_HighlightsView(hPadding: padding, animate: animate)
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    ReadMe_HeadingSection1View(padding: padding)
-                    ReadMe_HeadingSection2View(padding: padding)
-                    ReadMe_HeadingSection3View(padding: padding)
-                    ReadMe_HeadingSection4View(padding: padding)
-                    ReadMe_HeadingSection5View(padding: padding)
-                    ReadMe_HeadingSection6View(padding: padding)
+                    ReadMe_HeadingSection1View()
+                    ReadMe_HeadingSection2View()
+                    ReadMe_HeadingSection3View()
+                    ReadMe_HeadingSection4View()
+                    ReadMe_HeadingSection5View()
+                    ReadMe_HeadingSection6View()
+                    ReadMe_HeadingSection7View()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(padding)

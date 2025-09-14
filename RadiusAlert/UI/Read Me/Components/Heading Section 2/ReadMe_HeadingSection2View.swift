@@ -10,13 +10,7 @@ import SwiftUI
 struct ReadMe_HeadingSection2View: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
-    let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
-    
+
     // MARK: - ASSIGNED PROPERTIES
     private let values: ReadMe_Values.Type = ReadMe_Values.self
     
@@ -30,12 +24,10 @@ struct ReadMe_HeadingSection2View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection2View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection2View(padding: padding)
+        ReadMe_HeadingSection2View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -44,7 +36,7 @@ extension ReadMe_HeadingSection2View {
     private var heading: some View {
         Text("✨ Key Features")
             .readMeHeading2ViewModifier
-            .headingSectionToSectionPadding
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var subHeading: some View {
@@ -63,7 +55,7 @@ extension ReadMe_HeadingSection2View {
             Image(type.imageResource(colorScheme))
                 .resizable()
                 .scaledToFill()
-                .frame(width: values.cardWidth - padding*3 )
+                .frame(width: values.cardWidth - values.padding*3 )
                 .offset(y: type.offsetY)
         }
         
@@ -71,13 +63,13 @@ extension ReadMe_HeadingSection2View {
             type.description
                 .font(.footnote)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, padding)
+                .padding(.horizontal, values.padding)
         }
         
         return ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: padding) {
+            HStack(alignment: .top, spacing: values.padding) {
                 ForEach(ReadMe_HeadingSection2CardImageTypes.allCases, id: \.self) { type in
-                    VStack(alignment: .leading, spacing: padding) {
+                    VStack(alignment: .leading, spacing: values.padding) {
                         card
                             .overlay { image(type) }
                             .clipped()
@@ -87,11 +79,11 @@ extension ReadMe_HeadingSection2View {
                     .frame(width: values.cardWidth)
                 }
             }
-            .padding(.horizontal, padding)
+            .padding(.horizontal, values.padding)
             .scrollTargetLayout()
         }
-        .padding(.horizontal, -padding)
-        .afterScrollTargetLayoutViewModifier
-        .padding(.top, padding)
+        .padding(.horizontal, -values.padding)
+        .readMeAfterScrollTargetLayoutViewModifier
+        .padding(.top, values.padding)
     }
 }

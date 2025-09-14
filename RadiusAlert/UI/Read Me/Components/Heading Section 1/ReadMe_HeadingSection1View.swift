@@ -10,14 +10,6 @@ import SwiftUI
 
 
 struct ReadMe_HeadingSection1View: View {
-    // MARK: - INJECTED PROPERTIES
-    private let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
-    
     // MARK: - ASSIGNED PROPERTIES
     private let values: ReadMe_Values.Type = ReadMe_Values.self
     private let screenWidth: CGFloat = UIScreen.main.bounds.width
@@ -39,12 +31,10 @@ struct ReadMe_HeadingSection1View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection1View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection1View(padding: padding)
+        ReadMe_HeadingSection1View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -84,7 +74,7 @@ extension ReadMe_HeadingSection1View {
         }
         
         return ScrollView(.horizontal) {
-            HStack(spacing: padding) {
+            HStack(spacing: values.padding) {
                 ForEach(cards) { card in
                     image(card)
                         .overlay(alignment: .top) { overlay }
@@ -92,12 +82,12 @@ extension ReadMe_HeadingSection1View {
                         .overlay(alignment: .topLeading) { overlayText(card) }
                 }
             }
-            .padding(.horizontal, padding)
+            .padding(.horizontal, values.padding)
             .scrollTargetLayout()
         }
-        .afterScrollTargetLayoutViewModifier
-        .padding(.vertical, padding)
-        .padding(.horizontal, -padding)
+        .readMeAfterScrollTargetLayoutViewModifier
+        .padding(.vertical, values.padding)
+        .padding(.horizontal, -values.padding)
     }
     
     private var footer: some View {

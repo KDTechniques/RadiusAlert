@@ -10,12 +10,6 @@ import SwiftUI
 struct ReadMe_HeadingSection6View: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
-    let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
     
     // MARK: - ASSIGNED PROPERTIES
     private let values: ReadMe_Values.Type = ReadMe_Values.self
@@ -38,12 +32,10 @@ struct ReadMe_HeadingSection6View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection6View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection6View(padding: padding)
+        ReadMe_HeadingSection6View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -52,7 +44,7 @@ extension ReadMe_HeadingSection6View {
     private var heading: some View {
         Text("🧩 UX Choices That Matter")
             .readMeHeading2ViewModifier
-            .headingSectionToSectionPadding
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var subHeading: some View {
@@ -75,7 +67,7 @@ extension ReadMe_HeadingSection6View {
             }
         }
         .readMeBodyViewModifier
-        .padding(.top, padding)
+        .padding(.top, values.padding)
     }
     
     private var image: some View {
@@ -85,6 +77,6 @@ extension ReadMe_HeadingSection6View {
             .shadow(color: .primary.opacity(0.3), radius: 1)
             .frame(width: values.cardWidth)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, padding)
+            .padding(.vertical, values.padding)
     }
 }

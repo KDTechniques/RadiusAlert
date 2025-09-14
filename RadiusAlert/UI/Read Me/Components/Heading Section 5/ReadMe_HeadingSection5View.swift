@@ -8,14 +8,6 @@
 import SwiftUI
 
 struct ReadMe_HeadingSection5View: View {
-    // MARK: - INJECTED PROPERTIES
-    let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
-    
     // MARK: - BODY
     var body: some View {
         heading
@@ -27,12 +19,10 @@ struct ReadMe_HeadingSection5View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection5View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection5View(padding: padding)
+        ReadMe_HeadingSection5View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -41,7 +31,7 @@ extension ReadMe_HeadingSection5View {
     private var heading: some View {
         Text("🚫 Distraction-Free")
             .readMeHeading1ViewModifier
-            .headingSectionToSectionPadding
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var descrioption1: some View {

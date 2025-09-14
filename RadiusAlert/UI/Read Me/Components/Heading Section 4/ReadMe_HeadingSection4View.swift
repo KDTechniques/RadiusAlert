@@ -8,14 +8,6 @@
 import SwiftUI
 
 struct ReadMe_HeadingSection4View: View {
-    // MARK: - INJECTED PROPERTIES
-    let padding:  CGFloat
-    
-    // MARK: - INITIALIZER
-    init(padding: CGFloat) {
-        self.padding = padding
-    }
-    
     // MARK: - BODY
     var body: some View {
         heading
@@ -26,12 +18,10 @@ struct ReadMe_HeadingSection4View: View {
 
 // MARK: - PREVIEWS
 #Preview("ReadMe_HeadingSection4View") {
-    let padding: CGFloat = 20
-    
     VStack(alignment: .leading, spacing: 10) {
-        ReadMe_HeadingSection4View(padding: padding)
+        ReadMe_HeadingSection4View()
     }
-    .padding(.horizontal, padding)
+    .padding(.horizontal, ReadMe_Values.padding)
     .previewModifier()
 }
 
@@ -40,7 +30,7 @@ extension ReadMe_HeadingSection4View {
     private var heading: some View {
         Text("🔋 Battery-Friendly by Design")
             .readMeHeading1ViewModifier
-            .headingSectionToSectionPadding
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var descrioption1: some View {
