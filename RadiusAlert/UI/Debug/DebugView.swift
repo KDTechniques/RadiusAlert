@@ -26,7 +26,7 @@ struct DebugView: View {
                 content
             }
             .sheet(isPresented: $isPresentedReadMe) {
-                ReadMeView(isPresented: $isPresentedReadMe)
+                ReadMeView($isPresentedReadMe)
             }
             .navigationTitle(Text("Debug"))
         } label: {

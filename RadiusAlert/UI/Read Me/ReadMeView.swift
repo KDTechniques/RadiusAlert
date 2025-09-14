@@ -2,63 +2,62 @@
 //  ReadMeView.swift
 //  RadiusAlert
 //
-//  Created by Kavinda Dilshan on 2025-09-01.
+//  Created by Mr. Kavinda Dilshan on 2025-09-07.
 //
 
 import SwiftUI
 
-struct ReadMeView: View, ReadMeComponents {
+struct ReadMeView: View {
     // MARK: - INJECTED PROPERTIES
     @Binding var isPresented: Bool
     
     // MARK: - INITIALIZER
-    init(isPresented: Binding<Bool>) {
+    init(_ isPresented: Binding<Bool>) {
         _isPresented = isPresented
     }
     
+    // MARK: - ASSIGNED PROPERTIES
+    @State private var animate: Bool = false
+    let padding: CGFloat = 20
+    
     // MARK: - BODY
     var body: some View {
-        ZStack {
-            content
-            dismissButton
+        ScrollView(.vertical) {
+            VStack(spacing: 0) {
+                ReadMe_IntroductionView(animate: $animate)
+                ReadMe_HighlightsView(hPadding: padding, animate: animate)
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    ReadMe_HeadingSection1View(padding: padding)
+                    ReadMe_HeadingSection2View(padding: padding)
+                    ReadMe_HeadingSection3View(padding: padding)
+                    ReadMe_HeadingSection4View(padding: padding)
+                    ReadMe_HeadingSection5View(padding: padding)
+                    ReadMe_HeadingSection6View(padding: padding)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(padding)
+            }
         }
-        .presentationCornerRadius(40)
+        .overlay(alignment: .topTrailing) { dismissButton }
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Read Me") {
-    @Previewable @State var isPresented: Bool = true
-    
+#Preview("ReadMeView") {
     Color.clear
-        .sheet(isPresented: $isPresented) {
-            ReadMeView(isPresented: $isPresented)
+        .sheet(isPresented: .constant(true)) {
+            ReadMeView(.constant(true))
+                .presentationCornerRadius(40)
         }
-        .previewModifier()
 }
 
 // MARK: - EXTENSIONS
 extension ReadMeView {
-    private var content: some View {
-        ScrollView(.vertical) {
-            VStack(alignment: .leading, spacing: 50) {
-                ReadMe_AppNameNDescriptionView()
-                ReadMe_WhyView()
-                ReadMe_KeyFeaturesView()
-                ReadMe_HowItWorksView()
-                ReadMe_UXChoicesView()
-            }
-            .padding(.horizontal, 50)
-            .padding(.top, 110)
-            .fixedSize(horizontal: false, vertical: true)
-        }
+    private var dismissButton: some View {
+        ReadMe_DismissButtonView { isPresented = false }
+            .padding(padding)
     }
     
-    private var dismissButton: some View {
-        ReadMe_DismissButtonView {
-            isPresented = false
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-        .padding(20)
-    }
+    
 }

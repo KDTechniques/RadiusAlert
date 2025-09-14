@@ -17,7 +17,7 @@ struct AboutReadMeView: View {
             isPresented = true
         }
         .sheet(isPresented: $isPresented) {
-            ReadMeTestingView($isPresented)
+            ReadMeView($isPresented)
                 .presentationCornerRadius(40)
         }
     }

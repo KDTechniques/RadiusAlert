@@ -1,0 +1,67 @@
+//
+//  ReadMe_HeadingSection3View.swift
+//  RadiusAlert
+//
+//  Created by Mr. Kavinda Dilshan on 2025-09-14.
+//
+
+import SwiftUI
+
+struct ReadMe_HeadingSection3View: View {
+    // MARK: - INJECTED PROPERTIES
+    let padding:  CGFloat
+    
+    // MARK: - INITIALIZER
+    init(padding: CGFloat) {
+        self.padding = padding
+    }
+    
+    // MARK: - ASSIGNED PROPERTIES
+    private let values: ReadMe_Values.Type = ReadMe_Values.self
+    
+    // MARK: - BODY
+    var body: some View {
+        heading
+        descrioption1
+        image
+        description2
+    }
+}
+
+// MARK: - PREVIEWS
+#Preview("ReadMe_HeadingSection3View") {
+    let padding: CGFloat = 20
+    
+    VStack(alignment: .leading, spacing: 10) {
+        ReadMe_HeadingSection3View(padding: padding)
+    }
+    .padding(.horizontal, padding)
+    .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension ReadMe_HeadingSection3View {
+    private var heading: some View {
+        Text("💤 Carefree Commuting")
+            .readMeHeading1ViewModifier
+            .headingSectionToSectionPadding
+    }
+    
+    private var descrioption1: some View {
+        Text("Nap, read, listen to music, or scroll TikTok worry-free.")
+            .readMeBodyViewModifier
+    }
+    
+    private var image: some View {
+        Image(.readMeHeadingSection3)
+            .resizable()
+            .scaledToFit()
+            .clipShape(.rect(cornerRadius: values.cornerRadius))
+            .padding(.vertical, padding)
+    }
+    
+    private var description2: some View {
+        Text("The app runs quietly in the background and won’t interrupt your music — instead, it smoothly lowers the volume, plays the alert sound, and then restores your audio.")
+            .readMeBodyViewModifier
+    }
+}
