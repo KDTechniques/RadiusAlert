@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
-    case image1, image2, image3
+    case image1, image2, image3, image4
     
     func imageResource(_ colorScheme: ColorScheme) -> ImageResource {
         switch self {
@@ -20,6 +20,9 @@ enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
             
         case .image3:
             return colorScheme == .dark ? .readMeHeadingSection2Image3Dark : .readMeHeadingSection2Image3Light
+            
+        case .image4:
+            return colorScheme == .dark ? .readMeHeadingSection2Image4Dark : .readMeHeadingSection2Image4Light
         }
     }
     
@@ -32,7 +35,10 @@ enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
             return Text("**or Search for a location.** Use the search bar to find your stop, then select a result from the list.")
             
         case .image3:
-            return Text("**Adjust Circular Radius.** Use the slider (700m to 3km) to set your preferred radius. You’ll be notified when you reach the edge of the circle.")
+            return Text("**Adjust circular radius.** Use the slider (700m to 3km) to set your preferred radius. You’ll be notified when you reach the edge of the circle.")
+            
+        case .image4:
+            return  Text("**Get notified with push notifications.** When you enter your set destination radius, you’ll receive a notification — even if you’re browsing the web, scrolling through TikTok, or using other apps on your iPhone.")
         }
     }
     
@@ -45,6 +51,9 @@ enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
             
         case .image3:
             return -values.cardHeight/4
+            
+        case .image4:
+            return .zero
         }
     }
 }

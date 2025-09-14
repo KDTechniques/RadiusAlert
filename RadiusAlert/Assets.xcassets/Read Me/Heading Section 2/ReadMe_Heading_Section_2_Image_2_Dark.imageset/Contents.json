@@ -1,17 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Asset 29@3x.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Asset 34@3x.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

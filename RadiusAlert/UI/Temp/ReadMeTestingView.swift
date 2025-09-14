@@ -30,9 +30,10 @@ struct ReadMeTestingView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     ReadMe_HeadingSection1View(padding: padding)
                     ReadMe_HeadingSection2View(padding: padding)
+                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20)
+                .padding(padding)
             }
         }
         .overlay(alignment: .topTrailing) { dismissButton }
