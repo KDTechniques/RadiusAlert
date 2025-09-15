@@ -35,6 +35,7 @@ extension ReadMe_HeadingSection7View {
     private var heading: some View {
         Text("🧠 Memory-Friendly")
             .readMeHeading1ViewModifier
+            .readMeHeadingSectionToSectionPadding
     }
     
     private var description: some View {

@@ -31,14 +31,13 @@ fileprivate struct Content: View {
     @State private var showExpandedPhoto: Bool = false
     @Namespace private var photo
     let nameSpaceID: String = "photo"
-    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn, .gitHub]
+    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn]
     let reasons: [String] = [
-        "To share some love ❤️",
-        "If you found a bug 🐞",
-        "If you have a concern 🤔",
-        "To share an idea 💡",
-        "To suggest an improvement ✨",
-        "If there’s something you don’t like 👎"
+        "Show some love ❤️",
+        "Report a bug 🐞",
+        "Ask a question or raise a concern 🙋🏻‍♂️",
+        "Suggest a new idea 💡",
+        "Propose improvements or feedback 🔧"
     ]
     
     var body: some View {
@@ -90,7 +89,7 @@ extension Content {
     
     private var reasonPoints: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("You can connect with me for any of the following reasons:")
+            Text("Want to connect? You can reach me anytime to:")
                 .fontWeight(.medium)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -99,6 +98,7 @@ extension Content {
                 ForEach(reasons,id: \.self) {
                     Text("• \($0)")
                 }
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
