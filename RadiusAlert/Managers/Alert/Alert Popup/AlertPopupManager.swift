@@ -38,7 +38,7 @@ final class AlertPopupManager {
     
     /// This function simplifies the process of displaying an alert item, eliminating the need to use `isPresented` for each alert we create.
     func showAlert(_ type: AlertTypes) {
-        /// If the functon get called more than once
+        /// If the function get called more than once
         /// we can't show all of them at once.
         /// So we add them to the queue
         /// and later we can show one after another

@@ -17,6 +17,7 @@ extension View {
             .preferredColorScheme(.light)
             .environment(MapViewModel(settingsVM: .init()))
             .environment(SettingsViewModel())
+            .dynamicTypeSizeViewModifier
     }
     
     @ViewBuilder
@@ -39,5 +40,15 @@ extension View {
                     Text(alert.message)
                 }
             )
+    }
+    
+    var dynamicTypeSizeViewModifier: some View {
+        self
+            .dynamicTypeSize(.xSmall ... .large)
+    }
+    
+    var defaultTypeSizeViewModifier: some View {
+        self
+            .dynamicTypeSize(.large)
     }
 }
