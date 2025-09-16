@@ -28,6 +28,7 @@ struct RadiusAlertApp: App {
                 .environment(settingsVM)
                 .environment(mapVM)
                 .preferredColorScheme(settingsVM.selectedColorScheme?.colorScheme)
+                .dynamicTypeSizeViewModifier
         }
     }
 }

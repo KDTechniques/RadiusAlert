@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  RadiusAlert
 //
-//  Created by Kavinda Dilshan on 2025-07-27.
+//  Created by Kavinda Dilshan on 2025-07-27
 //
 
 import SwiftUI
@@ -17,9 +17,6 @@ struct ContentView: View {
     // MARK: - ASSIGNED PROPERTIES
     @State private var alertManager: AlertManager = .shared
     @State private var showSplashScreen: Bool = true
-    
-    
-    @State var isPresented: Bool = true
     
     // MARK: - BODY
     var body: some View {

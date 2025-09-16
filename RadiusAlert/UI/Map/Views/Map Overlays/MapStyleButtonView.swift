@@ -9,33 +9,43 @@ import SwiftUI
 
 struct MapStyleButtonView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
     @Environment(SettingsViewModel.self) private var settingsVM
     
     // MARK: - BODY
     var body: some View {
         if settingsVM.showMapStyleButton {
-            Button {
-                mapVM.setNextMapStyle()
-            } label: {
-                Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-                    .foregroundStyle(Color.accentColor)
-                    .padding(11.5)
-                    .buttonBackground
-            }
-            .buttonBackground
-            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-            .padding(.trailing, 5)
-            .padding(.bottom, 30)
-            .buttonStyle(.plain)
+            ButtonView()
         }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Map Style Button View") {
-    MapStyleButtonView()
+    ButtonView()
         .previewModifier()
+}
+
+//  MARK: - SUB VIEWS
+fileprivate struct ButtonView: View {
+    @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
+    
+    var body: some View {
+        Button {
+            mapVM.setNextMapStyle()
+        } label: {
+            Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
+                .foregroundStyle(Color.accentColor)
+                .padding(11.5)
+                .buttonBackground
+                .defaultTypeSizeViewModifier
+        }
+        .buttonBackground
+        .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
+        .padding(.trailing, 5)
+        .padding(.bottom, 30)
+        .buttonStyle(.plain)
+    }
 }
 
 // MARK: - EXTENSIONS

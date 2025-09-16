@@ -45,6 +45,7 @@ extension AboutView {
                 Image(systemName: "gear")
                     .resizable()
                     .scaledToFit()
+                    .defaultTypeSizeViewModifier
             }
         }
     }

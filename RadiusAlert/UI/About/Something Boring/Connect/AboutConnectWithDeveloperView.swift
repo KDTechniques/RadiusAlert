@@ -28,14 +28,16 @@ struct AboutConnectWithDeveloperView: View {
 
 // MARK: - SUB VIEWS
 fileprivate struct Content: View {
-    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn, .gitHub]
+    @State private var showExpandedPhoto: Bool = false
+    @Namespace private var photo
+    let nameSpaceID: String = "photo"
+    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn]
     let reasons: [String] = [
-        "To share some love ❤️",
-        "If you found a bug 🐞",
-        "If you have a concern 🤔",
-        "To share an idea 💡",
-        "To suggest an improvement ✨",
-        "If there’s something you don’t like 👎"
+        "Show some love ❤️",
+        "Report a bug 🐞",
+        "Ask a question or raise a concern 🙋🏻‍♂️",
+        "Suggest a new idea 💡",
+        "Propose improvements or feedback 🔧"
     ]
     
     var body: some View {
@@ -43,8 +45,10 @@ fileprivate struct Content: View {
             reasonsSection
             sources
         }
+        .overlay { if showExpandedPhoto { expandedPhoto } }
         .navigationTitle(Text("Connect with Kavinda"))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(showExpandedPhoto)
     }
 }
 
@@ -53,9 +57,23 @@ extension Content {
         Image(.developer)
             .resizable()
             .scaledToFit()
-            .frame(width: 50, height: 50)
             .clipShape(.circle)
+            .matchedGeometryEffect(id: nameSpaceID, in: photo)
+            .frame(width: 50, height: 50)
+            .onTapGesture { handlePhotoTap() }
             .padding(.top, 4)
+    }
+    
+    private var expandedPhoto: some View {
+        Color.clear
+            .overlay {
+                Image(.developer)
+                    .resizable()
+                    .scaledToFit()
+                    .matchedGeometryEffect(id: nameSpaceID, in: photo)
+            }
+            .background(.ultraThinMaterial)
+            .onTapGesture { handlePhotoTap() }
     }
     
     private var nameNAbout: some View {
@@ -71,13 +89,16 @@ extension Content {
     
     private var reasonPoints: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("You can connect with me for any of the following reasons:")
+            Text("Want to connect? You can reach me anytime to:")
                 .fontWeight(.medium)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
             
             VStack(alignment: .leading, spacing: 5) {
                 ForEach(reasons,id: \.self) {
                     Text("• \($0)")
                 }
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -86,7 +107,15 @@ extension Content {
         Section {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .top) {
-                    developerImage
+                    Group {
+                        if showExpandedPhoto {
+                            Color.clear
+                        } else {
+                            developerImage
+                        }
+                    }
+                    .frame(width: 50, height: 50)
+                    
                     nameNAbout
                 }
                 
@@ -102,6 +131,12 @@ extension Content {
             ForEach(socialMediaTypes, id: \.self) {
                 AboutConnectSocialMediaLinkView(type: $0)
             }
+        }
+    }
+    
+    private func handlePhotoTap() {
+        withAnimation(.snappy(duration: 0.25)) {
+            showExpandedPhoto.toggle()
         }
     }
 }

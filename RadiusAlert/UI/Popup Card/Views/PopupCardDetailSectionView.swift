@@ -36,6 +36,9 @@ struct PopupCardDetailSectionView: View {
                 Text(value)
                     .font(.footnote)
                     .bold()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    
             }
             .foregroundStyle(foregroundColor)
         }

@@ -11,7 +11,7 @@ struct AboutBasicInfoView: View {
     // MARK: - BODY
     var body: some View {
         Section {
-            AboutListRowView("Version", "1.0.0")
+            version
             AboutListRowView("Launch", "15th Sep 2025")
             AboutListRowView("Developer", "Paramsoodi Kavinda Dilshan")
         }
@@ -23,5 +23,15 @@ struct AboutBasicInfoView: View {
     List {
         AboutBasicInfoView()
             .previewModifier()
+    }
+}
+
+// MARK: -  EXTENSIONS
+extension  AboutBasicInfoView {
+    @ViewBuilder
+    private var version: some View {
+        if let versionNBuildNumber: String = Utilities.appVersion() {
+            AboutListRowView("Version", versionNBuildNumber)
+        }
     }
 }

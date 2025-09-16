@@ -13,6 +13,7 @@ struct AboutSomethingBoringView: View {
         Section {
             AboutOriginView()
             AboutConnectWithDeveloperView()
+            AboutReadMeView()
         } header: {
             Text("Something Boring")
         } footer: {

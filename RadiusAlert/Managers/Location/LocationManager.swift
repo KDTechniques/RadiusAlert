@@ -221,8 +221,3 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.startUpdatingLocation()
     }
 }
-
-
-
-
-

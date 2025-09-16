@@ -11,7 +11,6 @@ struct AboutAppImprovementsView: View {
     // MARK: - BODY
     var body: some View {
         Section {
-            AboutWhatsNewView()
             AboutFutureUpdatesView()
         } header: {
             Text("App Improvements")

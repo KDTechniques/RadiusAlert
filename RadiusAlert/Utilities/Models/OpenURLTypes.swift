@@ -76,7 +76,7 @@ enum OpenURLTypes {
             return .init(string: "https://www.linkedin.com/in/paramsoodi")
             
         case .appStore:
-            return .init(string: "https://apps.apple.com/app/284882215?action=write-review")
+            return .init(string: "https://apps.apple.com/app/6752566436?action=write-review")
         }
     }
 }
