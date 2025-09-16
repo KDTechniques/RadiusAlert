@@ -52,6 +52,9 @@ fileprivate struct ButtonView: View {
 fileprivate extension View {
     var buttonBackground: some View {
         self
-            .background(.mapControlButtonBackground, in: .rect(cornerRadius: 7))
+            .background(
+                Color.custom.Map.mapControlButtonBackground.color,
+                in: .rect(cornerRadius: 7)
+            )
     }
 }

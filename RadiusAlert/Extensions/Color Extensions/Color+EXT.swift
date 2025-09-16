@@ -32,4 +32,6 @@ extension Color {
     static func getNotPrimary(colorScheme: ColorScheme) -> Self {
         return colorScheme == .dark ? .black : .white
     }
+    
+    static let custom: CustomColors.Type = CustomColors.self
 }
