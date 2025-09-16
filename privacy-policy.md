@@ -13,7 +13,7 @@ This Privacy Policy ("Radius Alert Privacy Policy") governs the handling of user
 Radius Alert fully complies with global privacy standards, including the General Data Protection Regulation ("GDPR").  
 
 If you have any questions about this Privacy Policy, you can contact us at:  
-📧 **kdtechniques@gmail.com**  
+📧 **radiusalert.privacy.inquiries@gmail.com**  
 
 This Privacy Policy is subject to updates, and users are encouraged to review it periodically for any changes.  
 
