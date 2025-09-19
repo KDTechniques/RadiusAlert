@@ -12,7 +12,7 @@ struct AboutBasicInfoView: View {
     var body: some View {
         Section {
             version
-            AboutListRowView("Launch", "15th Sep 2025")
+            AboutListRowView("Launch", "19th Sep 2025")
             AboutListRowView("Developer", "Paramsoodi Kavinda Dilshan")
         }
     }
