@@ -24,6 +24,8 @@ struct PopupCardToolBarView: View {
         .buttonStyle(.plain)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
+        .disabled(true)
+        .opacity(0)
     }
 }
 

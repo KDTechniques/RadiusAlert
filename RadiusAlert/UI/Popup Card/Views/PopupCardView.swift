@@ -20,9 +20,7 @@ struct PopupCardView: View {
     //MARK: - BODY
     var body: some View {
         VStack {
-#if DEBUG
             PopupCardToolBarView()
-#endif
             PopupCardTitlesView()
             PopupCardLocationTitleView(title: item.locationTitle)
             

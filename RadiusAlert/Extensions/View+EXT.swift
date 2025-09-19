@@ -42,11 +42,33 @@ extension View {
             )
     }
     
+    /// Restricts the dynamic type size of the view to a range between `.xSmall` and `.large`.
+    ///
+    /// This ensures that the text inside the view will scale only within this range,
+    /// while still respecting accessibility settings up to the **default iPhone text size** (`.large`).
+    ///
+    /// Example:
+    /// ```swift
+    /// Text("Hello, world!")
+    ///     .dynamicTypeSizeViewModifier
+    /// ```
     var dynamicTypeSizeViewModifier: some View {
         self
             .dynamicTypeSize(.xSmall ... .large)
     }
     
+    /// Fixes the dynamic type size of the view to `.large`.
+    ///
+    /// `.large` corresponds to the **default text size on iPhones**.
+    /// This ensures the text inside the view always renders at that default size,
+    /// regardless of the user’s dynamic type settings.
+    /// Useful for UI elements that require consistent sizing.
+    ///
+    /// Example:
+    /// ```swift
+    /// Text("Fixed Size")
+    ///     .defaultTypeSizeViewModifier
+    /// ```
     var defaultTypeSizeViewModifier: some View {
         self
             .dynamicTypeSize(.large)

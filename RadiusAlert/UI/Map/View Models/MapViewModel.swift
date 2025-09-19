@@ -33,7 +33,7 @@ final class MapViewModel {
     private(set) var position: MapCameraPosition = .automatic
     private(set) var interactionModes: MapInteractionModes = [.all]
     private(set) var centerCoordinate: CLLocationCoordinate2D?
-    private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange() } }
+    private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange(selectedRadius) } }
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
     private(set) var route: MKRoute?
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
