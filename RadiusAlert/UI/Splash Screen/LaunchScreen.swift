@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-struct LaunchScreenLogoTextModel: Identifiable {
-    let id: String = UUID().uuidString
-    let character: String
-    var opacity: CGFloat
-}
-
 struct LaunchScreen: View {
     // MARK: - ASSIGNED PROPERTIES
     @State var modelArray: [LaunchScreenLogoTextModel] = [
@@ -46,6 +40,7 @@ struct LaunchScreen: View {
         .previewModifier()
 }
 
+// MARK: - EXTENSIONS
 extension LaunchScreen {
     private var characters: some View {
         HStack(spacing: 0) {

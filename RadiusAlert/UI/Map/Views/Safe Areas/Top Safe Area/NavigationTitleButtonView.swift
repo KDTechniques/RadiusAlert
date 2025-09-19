@@ -29,7 +29,7 @@ struct NavigationTitleButtonView: View {
                     .foregroundStyle(mapVM.getNavigationTitleIconColor())
                     .frame(height: 50)
                 
-                debug
+//                debug
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading)

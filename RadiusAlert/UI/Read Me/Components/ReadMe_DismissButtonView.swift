@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReadMe_DismissButtonView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme)  private var colorScheme
     let action: () -> Void
     
     // MARK: - INITIALIZER
@@ -24,7 +25,10 @@ struct ReadMe_DismissButtonView: View {
             Image(systemName: "xmark.circle.fill")
                 .resizable()
                 .scaledToFit()
-                .foregroundStyle(.white)
+                .foregroundStyle(colorScheme == .dark
+                                 ? Color.white
+                                 : Color(uiColor: .lightGray)
+                )
                 .frame(width: 40, height: 40)
         }
         .buttonStyle(.plain)

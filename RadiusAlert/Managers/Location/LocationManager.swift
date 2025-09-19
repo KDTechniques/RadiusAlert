@@ -30,6 +30,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
     @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
+    @ObservationIgnored var selectedRadius: CLLocationDistance = MapValues.minimumRadius
     @ObservationIgnored var onRegionEntry: (() -> Void) = { }
     @ObservationIgnored private var monitoredRegion: CLCircularRegion?
     @ObservationIgnored var onRegionEntryFailure: (() -> Void) = { }
@@ -169,7 +170,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
-        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distance)
+        let distanceToRadius: CLLocationDistance = distance - selectedRadius
+        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distanceToRadius)
         
         // Only apply if mode actually changed
         guard newMode != currentDistanceMode else { return }

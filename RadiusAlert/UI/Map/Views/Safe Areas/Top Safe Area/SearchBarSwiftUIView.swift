@@ -19,9 +19,9 @@ struct SearchBarSwiftUIView: View {
             searchBarText: mapVM.searchTextBinding(),
             placeholder: "Search",
             context: .custom(.init(
-                backgroundColor: .searchBarBackground,
-                searchIconTextColor: .searchBarForeground,
-                placeholderTextColor: .searchBarForeground,
+                backgroundColor: .custom.SearchBar.searchBarBackground.color,
+                searchIconTextColor: .custom.SearchBar.searchBarForeground.color,
+                placeholderTextColor: .custom.SearchBar.searchBarForeground.color,
                 textColor: .primary
             )),
             isSearching: mapVM.locationSearchManager.isSearching

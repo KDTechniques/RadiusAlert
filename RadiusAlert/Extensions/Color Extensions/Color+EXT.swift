@@ -32,4 +32,16 @@ extension Color {
     static func getNotPrimary(colorScheme: ColorScheme) -> Self {
         return colorScheme == .dark ? .black : .white
     }
+    
+    /// Provides access to all centralized custom colors defined in `CustomColors`.
+    ///
+    /// This allows referencing custom colors directly from `Color.custom`,
+    /// making the code more readable and consistent.
+    ///
+    /// Example:
+    /// ```swift
+    /// let background = Color.custom.SearchBar.searchBarBackground.color
+    /// let mapButton = Color.custom.Map.mapControlButtonBackground.color
+    /// ```
+    static let custom: CustomColors.Type = CustomColors.self
 }

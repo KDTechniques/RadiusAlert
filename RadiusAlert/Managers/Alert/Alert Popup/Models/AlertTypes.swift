@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+/// Defines all alert types used throughout the app.
+///
+/// Each case represents a specific kind of alert, such as network issues,
+/// location permission problems, or radius-related actions.
+///
+/// Use the `alert` property of each case to get the corresponding `AlertModel`,
+/// which includes the alert title, message, haptic feedback, and buttons.
+///
+/// Example usage:
+/// ```swift
+/// let alertType: AlertTypes = .noConnection
+/// let alertModel = alertType.alert
+/// ```
 enum AlertTypes: CaseIterable, Hashable {
     case noConnection
     case requestTimedOut

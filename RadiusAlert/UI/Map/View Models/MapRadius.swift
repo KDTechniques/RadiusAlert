@@ -37,8 +37,9 @@ extension MapViewModel {
         return isMarkerCoordinateNil() ? centerCoordinate : markerCoordinate!
     }
     
-    func onRadiusChange() {
+    func onRadiusChange(_ radius: CLLocationDistance) {
         setRegionBoundsOnRadius()
+        locationManager.selectedRadius = radius
     }
     
     func setRegionBoundsOnRadius() {

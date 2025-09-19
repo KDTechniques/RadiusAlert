@@ -20,6 +20,9 @@ final class AlertPopupManager {
         isAlertPresented = boolean
     }
     
+    /// Returns a `Binding<Bool>` representing whether an alert is currently presented.
+    ///
+    /// Automatically updates the alert queue when the current alert is dismissed.
     func alertIsPresentedBinding() -> Binding<Bool> {
         Binding {
             return !self.alertItems.isEmpty
@@ -36,15 +39,18 @@ final class AlertPopupManager {
     
     // MARK: - PUBLIC FUNCTIONS
     
-    /// This function simplifies the process of displaying an alert item, eliminating the need to use `isPresented` for each alert we create.
+    /// Displays an alert of the specified type.
+    ///
+    /// Alerts are queued if multiple alerts are triggered simultaneously,
+    /// and are presented one by one as previous alerts are dismissed.
+    /// - Parameter type: The `AlertTypes` value representing the alert to show.
     func showAlert(_ type: AlertTypes) {
-        /// If the function get called more than once
-        /// we can't show all of them at once.
-        /// So we add them to the queue
-        /// and later we can show one after another
-        /// when each alert get dismissed by the user.
+        /// If this function is called multiple times, alerts cannot be displayed simultaneously.
+        /// Therefore, each alert is added to a queue and presented one by one.
+        /// Each subsequent alert is shown only after the previous one is dismissed by the user.
         appendAlertItem(type.alert)
         
+        // If this is the only alert in the queue, vibrate and present immediately
         guard alertItems.count == 1,
               let firstItemHaptic: HapticTypes = alertItems.first?.hapticType else { return }
         

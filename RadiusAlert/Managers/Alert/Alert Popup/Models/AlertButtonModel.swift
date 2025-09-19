@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+/// A model representing a button for use in alerts.
+///
+/// Each `AlertButtonModel` has a unique identifier, a role, and an associated action.
+/// The role determines the button’s appearance and behavior in an alert,
+/// such as `.ok`, `.cancel`, `.destructive`, or a custom label.
+///
+/// Returns a SwiftUI `Button` view configured according to the button’s role via the `button` property.
+///
+/// Example usage:
+/// ```swift
+/// let okButton = AlertButtonModel(role: .ok)
+/// let customButton = AlertButtonModel(role: .custom("Retry")) { print("Retry tapped") }
+/// ```
 struct AlertButtonModel: Identifiable {
     let id: String = UUID().uuidString
     let role: AlertButtonRoles
@@ -16,6 +29,7 @@ struct AlertButtonModel: Identifiable {
         self.role = role
         self.action = action
     }
+    
     
     var button: some View {
         switch role {
