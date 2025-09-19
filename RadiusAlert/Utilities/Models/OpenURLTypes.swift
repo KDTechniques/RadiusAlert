@@ -7,6 +7,21 @@
 
 import UIKit
 
+/// Defines supported external and system URLs that can be opened within the app.
+/// Each case provides a corresponding display name (`rawValue`), optional icon,
+/// and a method to safely open its associated URL.
+///
+/// Example usage:
+/// ```swift
+/// // Open the app's App Store review page
+/// OpenURLTypes.appStore.openURL()
+///
+/// // Open LinkedIn profile
+/// OpenURLTypes.linkedIn.openURL()
+///
+/// // Get an icon for display
+/// let icon = OpenURLTypes.gitHub.icon
+/// ```
 enum OpenURLTypes {
     case whatsApp, facebook, gitHub, linkedIn
     case appStore

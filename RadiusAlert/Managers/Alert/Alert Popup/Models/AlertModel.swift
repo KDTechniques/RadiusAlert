@@ -7,6 +7,23 @@
 
 import SwiftUI
 
+/// A model representing an alert in the app.
+///
+/// Each `AlertModel` has a unique identifier, a title, an optional message,
+/// a haptic feedback type, and one or more associated alert buttons.
+///
+/// Example usage:
+/// ```swift
+/// let alert = AlertModel(
+///     title: "Network Error",
+///     message: "Please try again later.",
+///     hapticType: .error,
+///     actions: [
+///         AlertButtonModel(role: .ok),
+///         AlertButtonModel(role: .cancel)
+///     ]
+/// )
+/// ```
 struct AlertModel: Identifiable {
     let id: String = UUID().uuidString
     let title: String

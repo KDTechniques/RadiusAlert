@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/// A centralized manager that coordinates all alert-related features in the app.
+///
+/// The `AlertManager` serves as a single access point for:
+/// 1. **Local push notifications** – handled by `NotificationManager`
+/// 2. **Tones** – handled by `ToneManager`
+/// 3. **Haptic feedback** – handled by `HapticManager`
+/// 4. **Popup alerts** – handled by `AlertPopupManager`
+///
+/// This ensures consistent management of notifications, sounds, haptics, and alerts
+/// without requiring direct interaction with their individual managers.
 @Observable
 final class AlertManager {
     // MARK: - ASSIGNED PROPERTIES
