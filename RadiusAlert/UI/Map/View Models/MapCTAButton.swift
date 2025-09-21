@@ -127,11 +127,11 @@ extension MapViewModel {
         return true
     }
     
-    /// Calculate the distance between the center coordinate and the current user location.
+    /// Calculate the distance between the map pin { center coordinate } and the current user location.
     /// - Returns: A tuple containing the distance and current user location, or nil if unavailable.
     private func startAlert_GetDistanceNUserLocation() -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
         guard
-            let centerCoordinate,
+            let mapPinCoordinate: CLLocationCoordinate2D = centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation
         else {
             Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
@@ -139,7 +139,7 @@ extension MapViewModel {
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(
-            from: centerCoordinate,
+            from: mapPinCoordinate,
             to: currentUserLocation
         )
         

@@ -121,7 +121,7 @@ extension DebugView {
     
     private var currentDistanceMode: some View {
         HStack {
-            Text("Current Distance  Mode")
+            Text("Current Distance Mode")
             
             Spacer()
             

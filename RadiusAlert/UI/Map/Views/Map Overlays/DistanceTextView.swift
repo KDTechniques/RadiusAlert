@@ -15,8 +15,15 @@ struct DistanceTextView: View {
     // MARK: - BODY
     var body: some View {
         if let markerCoordinate: CLLocationCoordinate2D = mapVM.markerCoordinate,
-           let userLocation: CLLocationCoordinate2D = mapVM.locationManager.currentUserLocation {
-            Content(getDistanceToRadius(from: markerCoordinate, and: userLocation))
+           let userCoordinate: CLLocationCoordinate2D = mapVM.locationManager.currentUserLocation {
+            
+            let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+                userCoordinate: userCoordinate,
+                markerCoordinate: markerCoordinate,
+                radius: mapVM.selectedRadius
+            )
+            
+            Content(distanceToRadius)
         }
     }
 }
@@ -28,19 +35,6 @@ struct DistanceTextView: View {
             Content(300)
         }
         .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension DistanceTextView  {
-    private func getDistanceToRadius(
-        from coordinate1: CLLocationCoordinate2D,
-        and coordinate2: CLLocationCoordinate2D) -> CLLocationDistance {
-            let distance: CLLocationDistance = Utilities
-                .getDistance(from: coordinate1, to: coordinate2)
-            let distanceToRadius: CLLocationDistance = distance - mapVM.selectedRadius
-            
-            return distanceToRadius
-        }
 }
 
 // MARK: - SUB VIEWS

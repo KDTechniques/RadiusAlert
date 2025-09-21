@@ -169,8 +169,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         
-        let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
-        let distanceToRadius: CLLocationDistance = distance - selectedRadius
+        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: currentUserLocation,
+            markerCoordinate: markerCoordinate,
+            radius: selectedRadius
+        )
+        
         let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distanceToRadius)
         
         // Only apply if mode actually changed
@@ -180,7 +184,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         switch newMode {
         case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            manager.distanceFilter = 50
             stopSignificantUpdatesNStartLocationUpdates()
             
         case .medium:

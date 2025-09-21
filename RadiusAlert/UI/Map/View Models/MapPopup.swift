@@ -20,18 +20,22 @@ extension MapViewModel {
         let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false)
         let duration: String = generateDurationText(item.firstDate)
         
-        let coordinate1: CLLocation = .init(
-            latitude: item.firstUserLocation.latitude,
-            longitude: item.firstUserLocation.longitude
-        )
+        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: item.firstUserLocation,
+            markerCoordinate: item.markerCoordinate,
+            radius: item.setRadius)
         
-        let coordinate2: CLLocation = .init(
-            latitude: item.markerCoordinate.latitude,
-            longitude: item.markerCoordinate.longitude
-        )
+        let temp: CLLocationDistance = Utilities.getDistance(from: item.firstUserLocation, to: locationManager.currentUserLocation!)
         
-        let actualDistance: CLLocationDistance = coordinate1.distance(from: coordinate2) - item.setRadius
-        let distanceText: String = getRadiusTextString(actualDistance, withAlertRadiusText: false)
+        var errorDistanceText: String = ""
+        
+#if DEBUG
+        errorDistanceText = "error: \(String(format: "%.0f", temp - distanceToRadius))m"
+#endif
+        
+        let distanceText: String = getRadiusTextString(distanceToRadius, withAlertRadiusText: false)
+        + "\n"
+        + errorDistanceText
         
         let popupCardItem: PopupCardModel = .init(
             typeNValue: [

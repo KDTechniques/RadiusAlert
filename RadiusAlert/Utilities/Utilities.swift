@@ -73,4 +73,12 @@ struct Utilities {
         
         return "\(version)"
     }
+    
+    static func getDistanceToRadius(
+        userCoordinate: CLLocationCoordinate2D,
+        markerCoordinate:CLLocationCoordinate2D,
+        radius: CLLocationDistance
+    ) -> CLLocationDistance {
+       return getDistance(from: userCoordinate, to: markerCoordinate) - radius
+    }
 }

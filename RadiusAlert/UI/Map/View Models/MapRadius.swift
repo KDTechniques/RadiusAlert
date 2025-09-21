@@ -56,10 +56,7 @@ extension MapViewModel {
             let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
         
         let distance: CLLocationDistance = Utilities.getDistance(from: userLocation, to: markerCoordinate)
-        let tolerance: CLLocationDistance = 100
-        let radius: CLLocationDistance = selectedRadius - tolerance
-        
-        guard distance < radius else { return }
+        guard distance < selectedRadius else { return }
         
         onRegionEntry()
     }
