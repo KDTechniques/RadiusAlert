@@ -21,7 +21,7 @@ struct CTAButtonView: View {
                 .foregroundStyle(mapVM.getCTAButtonForegroundColor())
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                .background(mapVM.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
+                .buttonBackground(mapVM)
                 .padding(.horizontal)
         }
         .frame(maxWidth: .infinity)
@@ -34,4 +34,19 @@ struct CTAButtonView: View {
 #Preview("Call to Action Button View") {
     CTAButtonView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+fileprivate extension View {
+    @ViewBuilder
+    func buttonBackground(_ vm: MapViewModel) -> some View {
+        if #available(iOS 26.0, *) {
+            self
+                .background(vm.getCTAButtonBackgroundColor(), in: .capsule)
+                .glassEffect()
+        } else {
+            self
+                .background(vm.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
+        }
+    }
 }

@@ -62,7 +62,7 @@ fileprivate extension Text {
     var lineLimitDebugViewModifier: some View {
 #if DEBUG
         self
-            .lineLimit(2)
+            .lineLimit(3)
 #else
         self
             .lineLimit(1)
