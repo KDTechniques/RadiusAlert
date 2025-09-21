@@ -79,6 +79,8 @@ struct Utilities {
         markerCoordinate:CLLocationCoordinate2D,
         radius: CLLocationDistance
     ) -> CLLocationDistance {
-       return getDistance(from: userCoordinate, to: markerCoordinate) - radius
+        return getDistance(from: userCoordinate, to: markerCoordinate) - radius
     }
+    
+    static var screenWidth: CGFloat = UIScreen.main.bounds.width
 }

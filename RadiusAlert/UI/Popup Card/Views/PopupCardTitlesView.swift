@@ -17,7 +17,7 @@ struct PopupCardTitlesView: View {
                 .bold()
             
             // Subtitle
-            Text("You've arrived to your destination radius")
+            Text("You've arrived at your destination radius")
                 .foregroundStyle(.secondary)
                 .font(.callout)
                 .multilineTextAlignment(.center)

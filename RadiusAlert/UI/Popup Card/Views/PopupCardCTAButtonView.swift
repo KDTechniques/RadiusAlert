@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PopupCardCTAButtonView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
@@ -17,12 +18,12 @@ struct PopupCardCTAButtonView: View {
             mapVM.stopAlert()
         } label: {
             Text("OK")
-                .tint(.primary)
+                .textTintViewModifier(colorScheme)
                 .fontWeight(.medium)
                 .padding(.vertical, 12)
                 .frame(maxWidth: .infinity)
+                .glassEffectViewModifier
         }
-        .background(.regularMaterial, in: .rect(cornerRadius: 12))
         .padding(.top)
     }
 }
@@ -32,4 +33,29 @@ struct PopupCardCTAButtonView: View {
     PopupCardCTAButtonView()
         .padding(.horizontal, 50)
         .previewModifier()
+}
+
+// MARK: EXTENSIONS
+fileprivate extension View {
+    @ViewBuilder
+    var glassEffectViewModifier: some View {
+        if #available(iOS 26.0, *) {
+            self
+                .glassEffect(.clear.tint(.primary))
+        } else {
+            self
+                .background(.regularMaterial, in: .rect(cornerRadius: 12))
+        }
+    }
+    
+    @ViewBuilder
+    func textTintViewModifier(_ colorScheme: ColorScheme) -> some View {
+        if #available(iOS 26.0, *) {
+            self
+                .tint(.getNotPrimary(colorScheme: colorScheme))
+        } else {
+            self
+                .tint(.primary)
+        }
+    }
 }
