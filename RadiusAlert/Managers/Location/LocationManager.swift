@@ -184,7 +184,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         switch newMode {
         case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            manager.distanceFilter = 50
             stopSignificantUpdatesNStartLocationUpdates()
             
         case .medium:

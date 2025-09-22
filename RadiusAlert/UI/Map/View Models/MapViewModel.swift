@@ -9,6 +9,11 @@ import SwiftUI
 import MapKit
 import Combine
 
+struct SearchResultModel {
+    var result: MKMapItem
+    var doneSetting: Bool = false
+}
+
 @Observable
 final class MapViewModel {
     // MARK: - INJKECTED PROPERTIES
@@ -44,12 +49,12 @@ final class MapViewModel {
     
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
-    @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
+    @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel?
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     
     // MARK: - PUBLISHERS
-    func authorizationStatusPublisher() {
+    private func authorizationStatusPublisher() {
         locationManager.$authorizationStatus$
             .dropFirst()
             .removeDuplicates()
@@ -66,7 +71,7 @@ final class MapViewModel {
             }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - SETTERS
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
@@ -118,7 +123,7 @@ final class MapViewModel {
         radiusAlertItem = item
     }
     
-    func setSelectedSearchResult(_ item: MKMapItem?) {
+    func setSelectedSearchResult(_ item: SearchResultModel?) {
         selectedSearchResult = item
     }
     

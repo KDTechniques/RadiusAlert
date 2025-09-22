@@ -67,11 +67,16 @@ extension MapViewModel {
             // Set the marker coordinate position
             setPosition(region: region, animate: true)
             
-            // Wait for the default animation on setting marker position
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            // Wait for the default animation on setting marker position above
+            try? await Task.sleep(nanoseconds: 800_000_000)
             
             // Once the position animation is over, set the region bound for better user experience
             setRegionBoundsOnRadius()
+            
+            // Wait for the default animation on setting region bounds above
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            
+            setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
         }
     }
     
@@ -108,7 +113,7 @@ extension MapViewModel {
                     return
                 }
                 
-                setSelectedSearchResult(mapItem)
+                setSelectedSearchResult(.init(result: mapItem))
             } catch {
                 setSelectedSearchResult(nil)
             }

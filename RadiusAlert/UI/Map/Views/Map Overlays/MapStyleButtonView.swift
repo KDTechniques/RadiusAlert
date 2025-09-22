@@ -68,7 +68,7 @@ extension ButtonView {
                     .foregroundStyle(Color.accentColor)
                     .padding(11.5)
                     .glassButtonBackground
-                    .glassEffect()
+                    .glassEffect(.regular)
                     .defaultTypeSizeViewModifier
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)

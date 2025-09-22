@@ -26,7 +26,7 @@ extension MapViewModel {
         
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
-        guard withAlertRadiusText, let name: String = selectedSearchResult?.name else { return text }
+        guard withAlertRadiusText, let name: String = selectedSearchResult?.result.name else { return text }
         let textWithName: String = "(\(name))\n\(text)"
         
         return textWithName

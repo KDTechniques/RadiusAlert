@@ -44,6 +44,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     }
     
     func clearResults() {
+        completer.cancel()
         results = []
     }
     

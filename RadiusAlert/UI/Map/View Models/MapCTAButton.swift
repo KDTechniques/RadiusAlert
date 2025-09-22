@@ -167,9 +167,9 @@ extension MapViewModel {
             var coordinateCheck: Bool =  false
             var locationTitle: String?
             
-            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate {
+            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
                 coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
-                locationTitle = coordinateCheck ? selectedSearchResult?.name : nil
+                locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
             }
             
             // Create the RadiusAlertModel:

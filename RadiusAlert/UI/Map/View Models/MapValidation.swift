@@ -96,10 +96,11 @@ extension MapViewModel {
     // and it is no longer the selected search result coordinate.
     func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
         guard
-            let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate,
+            let selectedSearchResult,
+            selectedSearchResult.doneSetting,
             let centerCoordinate,
             radiusAlertItem == nil,
-            !centerCoordinate.isEqual(to: selectedSearchResultCoordinate, precision: 5) else { return }
+            !centerCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
         
         setSelectedSearchResult(nil)
     }
