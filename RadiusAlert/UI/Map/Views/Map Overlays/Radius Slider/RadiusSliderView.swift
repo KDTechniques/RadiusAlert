@@ -15,7 +15,6 @@ struct RadiusSliderView: View {
     //  MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     let screenWidth: CGFloat = UIScreen.main.bounds.size.width
-//    let radiusSliderTip: RadiusSliderTipModel = .init()
     
     // MARK: - BODY
     var body: some View {
@@ -30,25 +29,34 @@ struct RadiusSliderView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showRadiusSlider())
+        .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
+            withAnimation {
+                mapVM.setSelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
+            }
+        }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Radius Slider View - SliderView") {
-    SliderView()
-        .previewModifier()
-}
-
-#Preview("Radius Slider View - DistanceTextView") {
-    DistanceTextView()
-        .previewModifier()
+    VStack {
+        SliderView()
+    
+        Button("Show Tip") {
+            RadiusSliderTipModel.isSetRadius = true
+        }
+    }
+    .padding(.horizontal, 50)
+    .previewModifier()
 }
 
 // MARK: - SUB VIEWS
 fileprivate struct SliderView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    
     let mapValues: MapValues.Type = MapValues.self
+    let radiusSliderTip: RadiusSliderTipModel = .init()
     
     var body: some View {
         Slider(
@@ -64,6 +72,7 @@ fileprivate struct SliderView: View {
         } onEditingChanged: {
             mapVM.setRadiusSliderActiveState($0)
         }
+        .popoverTip(radiusSliderTip)
     }
 }
 

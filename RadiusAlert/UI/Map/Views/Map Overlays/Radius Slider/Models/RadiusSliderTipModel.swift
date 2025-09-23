@@ -8,8 +8,6 @@
 import TipKit
 
 struct RadiusSliderTipModel: Tip {
-    //    let action: () -> Void
-    
     @Parameter
     static var isSetRadius: Bool = false
     
@@ -29,11 +27,26 @@ struct RadiusSliderTipModel: Tip {
     var actions: [Action] {
         [
             .init(id: "radius-slider-tip-action", title: "Show me how") {
-                
-                print("Tip action executed! 🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️")
+                NotificationCenter.default.post(
+                    name: .radiusSliderTipDidTrigger,
+                    object: nil
+                )
             }
         ]
     }
     
     var rules: [Rule] { [ #Rule(Self.$isSetRadius) { $0 } ] }
+    
+//    var options: [any TipOption] {
+//        [
+//            Tips.MaxDisplayCount(1)
+//        ]
+//    }
+}
+
+
+
+
+extension Notification.Name {
+    static let radiusSliderTipDidTrigger = Notification.Name("radiusSliderTipDidTrigger")
 }

@@ -75,8 +75,9 @@ extension MapViewModel {
             
             // Wait for the default animation on setting region bounds above
             try? await Task.sleep(nanoseconds: 500_000_000)
-            
             setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
+            
+            RadiusSliderTipModel.isSetRadius = true
         }
     }
     
