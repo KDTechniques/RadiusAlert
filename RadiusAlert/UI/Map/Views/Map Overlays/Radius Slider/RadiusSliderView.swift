@@ -10,40 +10,19 @@ import TipKit
 
 struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     //  MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     let screenWidth: CGFloat = UIScreen.main.bounds.size.width
-    let radiusSliderTip: RadiusSliderTipModel = .init()
-    @State private var isTipPresented: Bool = false
+//    let radiusSliderTip: RadiusSliderTipModel = .init()
     
     // MARK: - BODY
     var body: some View {
         ZStack(alignment: .trailing) {
-            VStack {
-                Button("Show Tip") {
-                    isTipPresented = true
-                }
-                
-                Slider(
-                    value: mapVM.selectedRadiusBinding(),
-                    in: mapValues.minimumRadius...mapValues.maximumRadius,
-                    step: mapValues.radiusStep) { }
-                minimumValueLabel: {
-                    Text(mapValues.minimumRadiusString)
-                        .radiusSliderViewModifier(colorScheme)
-                } maximumValueLabel: {
-                    Text(mapValues.maximumRadiusString)
-                        .radiusSliderViewModifier(colorScheme)
-                } onEditingChanged: {
-                    mapVM.setRadiusSliderActiveState($0)
-                }
+            SliderView()
                 .opacity(mapVM.showRadiusSlider() ? 1 : 0)
                 .disabled(!mapVM.showRadiusSlider())
-                .tipViewModifier(tip: radiusSliderTip, $isTipPresented)
-            }
             
             DistanceTextView()
         }
@@ -55,9 +34,37 @@ struct RadiusSliderView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Radius Slider View") {
-    RadiusSliderView()
+#Preview("Radius Slider View - SliderView") {
+    SliderView()
         .previewModifier()
+}
+
+#Preview("Radius Slider View - DistanceTextView") {
+    DistanceTextView()
+        .previewModifier()
+}
+
+// MARK: - SUB VIEWS
+fileprivate struct SliderView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(MapViewModel.self) private var mapVM
+    let mapValues: MapValues.Type = MapValues.self
+    
+    var body: some View {
+        Slider(
+            value: mapVM.selectedRadiusBinding(),
+            in: mapValues.minimumRadius...mapValues.maximumRadius,
+            step: mapValues.radiusStep) { }
+        minimumValueLabel: {
+            Text(mapValues.minimumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        } maximumValueLabel: {
+            Text(mapValues.maximumRadiusString)
+                .radiusSliderViewModifier(colorScheme)
+        } onEditingChanged: {
+            mapVM.setRadiusSliderActiveState($0)
+        }
+    }
 }
 
 // MARK: - EXTENSIONS
@@ -72,15 +79,5 @@ fileprivate extension View {
                 radius: 0.3,
                 y: -0.5
             )
-    }
-    
-    @ViewBuilder
-    func tipViewModifier(tip: RadiusSliderTipModel, _ isPresented: Binding<Bool>) -> some View {
-        if #available(iOS 26.0, *) {
-            self
-                .popoverTip(tip, isPresented: isPresented)
-        } else {
-            self
-        }
     }
 }

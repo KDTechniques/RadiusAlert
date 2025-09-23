@@ -8,6 +8,11 @@
 import TipKit
 
 struct RadiusSliderTipModel: Tip {
+    //    let action: () -> Void
+    
+    @Parameter
+    static var isSetRadius: Bool = false
+    
     var title: Text {
         Text("Adjust Radius")
             .foregroundStyle(Color.accentColor)
@@ -18,20 +23,17 @@ struct RadiusSliderTipModel: Tip {
     }
     
     var image: Image? {
-        Image(systemName: "circle.fill")
+        Image(systemName: "circle")
     }
     
     var actions: [Action] {
         [
             .init(id: "radius-slider-tip-action", title: "Show me how") {
-                print("Tip action executed!")
+                
+                print("Tip action executed! 🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️🙋🏻‍♂️")
             }
         ]
     }
     
-    var options: [any TipOption] {
-        [
-            
-        ]
-    }
+    var rules: [Rule] { [ #Rule(Self.$isSetRadius) { $0 } ] }
 }
