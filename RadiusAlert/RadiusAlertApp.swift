@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 @main
 struct RadiusAlertApp: App {
@@ -14,6 +15,9 @@ struct RadiusAlertApp: App {
     @State private var mapVM: MapViewModel
     
     init() {
+        try? Tips.configure()
+//        try? Tips.resetDatastore()
+        
         let settingsVM: SettingsViewModel =  .init()
         self.settingsVM = settingsVM
         

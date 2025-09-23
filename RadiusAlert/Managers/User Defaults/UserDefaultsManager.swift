@@ -54,8 +54,14 @@ struct UserDefaultsManager {
         defaults.set(value, forKey: mapStyleKey)
     }
     
+    // MARK: Map Style Button
+    
     func getMapStyleButtonVisibility() -> Bool {
-        return defaults.bool(forKey: mapStyleButtonVisibilityKey)
+        if defaults.object(forKey: mapStyleButtonVisibilityKey) == nil {
+            return true
+        } else {
+            return defaults.bool(forKey: mapStyleButtonVisibilityKey)
+        }
     }
     
     func saveMapStyleButtonVisibility(_ value: Bool) {
