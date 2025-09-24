@@ -16,6 +16,7 @@ struct RadiusAlertApp: App {
     
     init() {
         try? Tips.configure()
+//        try? Tips.resetDatastore()
         
         let settingsVM: SettingsViewModel =  .init()
         self.settingsVM = settingsVM

@@ -9,11 +9,6 @@ import SwiftUI
 import MapKit
 import Combine
 
-struct SearchResultModel {
-    var result: MKMapItem
-    var doneSetting: Bool = false
-}
-
 @Observable
 final class MapViewModel {
     // MARK: - INJKECTED PROPERTIES
@@ -34,6 +29,7 @@ final class MapViewModel {
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
     let mapValues: MapValues.Type = MapValues.self
+    let radiusSliderTip: RadiusSliderTipModel = .init()
     
     private(set) var position: MapCameraPosition = .automatic
     private(set) var interactionModes: MapInteractionModes = [.all]

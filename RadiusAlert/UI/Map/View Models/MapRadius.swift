@@ -60,4 +60,26 @@ extension MapViewModel {
         
         onRegionEntry()
     }
+    
+    func onRadiusSliderTipAction() {
+        withAnimation {
+            setSelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
+        } completion: { [weak self] in
+            self?.radiusSliderTip.invalidate(reason: .actionPerformed)
+        }
+    }
+    
+    func onRadiusSliderEditingChanged(_ isEditing: Bool) {
+        setRadiusSliderActiveState(isEditing)
+        invalidateRadiusSliderTip()
+    }
+    
+    func showRadiusSliderTip(_ item: SearchResultModel?) {
+        guard item?.doneSetting ?? false else { return }
+        RadiusSliderTipModel.isSetRadius = true
+    }
+    
+    func invalidateRadiusSliderTip() {
+        radiusSliderTip.invalidate(reason: .actionPerformed)
+    }
 }

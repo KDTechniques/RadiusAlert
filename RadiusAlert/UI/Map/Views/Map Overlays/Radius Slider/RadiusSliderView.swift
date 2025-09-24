@@ -29,11 +29,7 @@ struct RadiusSliderView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showRadiusSlider())
-        .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
-            withAnimation {
-                mapVM.setSelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
-            }
-        }
+        .onChange(of: mapVM.selectedSearchResult) { mapVM.showRadiusSliderTip($1) }
     }
 }
 
@@ -41,9 +37,9 @@ struct RadiusSliderView: View {
 #Preview("Radius Slider View - SliderView") {
     VStack {
         SliderView()
-    
+        
         Button("Show Tip") {
-            RadiusSliderTipModel.isSetRadius = true
+            RadiusSliderTipModel.isSetRadius.toggle()
         }
     }
     .padding(.horizontal, 50)
@@ -56,7 +52,6 @@ fileprivate struct SliderView: View {
     @Environment(MapViewModel.self) private var mapVM
     
     let mapValues: MapValues.Type = MapValues.self
-    let radiusSliderTip: RadiusSliderTipModel = .init()
     
     var body: some View {
         Slider(
@@ -70,9 +65,12 @@ fileprivate struct SliderView: View {
             Text(mapValues.maximumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
         } onEditingChanged: {
-            mapVM.setRadiusSliderActiveState($0)
+            mapVM.onRadiusSliderEditingChanged($0)
         }
-        .popoverTip(radiusSliderTip)
+        .popoverTip(mapVM.radiusSliderTip)
+        .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
+            mapVM.onRadiusSliderTipAction()
+        }
     }
 }
 
