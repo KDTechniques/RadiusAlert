@@ -17,7 +17,7 @@ struct RadiusSliderTipModel: Tip {
     }
     
     var message: Text? {
-        Text("Drag the slider to change the search radius on the map.")
+        Text("Drag the slider to change the alert radius on the map.")
     }
     
     var image: Image? {

@@ -13,7 +13,7 @@ final class AlertPopupManager {
     static let shared = AlertPopupManager()
     private let hapticManager: HapticManager = .shared
     private(set) var alertItems: [AlertModel] = []
-    private var isAlertPresented: Bool = false { didSet { print(isAlertPresented) } }
+    private var isAlertPresented: Bool = false
     
     // MARK: - SETTERS
     private func setIsPresented(_ boolean: Bool) {

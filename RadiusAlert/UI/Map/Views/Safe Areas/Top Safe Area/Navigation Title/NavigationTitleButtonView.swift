@@ -10,6 +10,7 @@ import SwiftUI
 struct NavigationTitleButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(AboutViewModel.self) private var aboutVM
     
     // MARK: - BODY
     var body: some View {
@@ -17,18 +18,8 @@ struct NavigationTitleButtonView: View {
             AboutView()
         } label: {
             HStack(spacing: 5) {
-                Text("Radius Alert")
-                    .tint(.primary)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Image(.logo)
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(mapVM.getNavigationTitleIconColor())
-                    .frame(height: 50)
-                
+                titleText
+                LogoView(color: mapVM.getNavigationTitleIconColor(), size: 35)
                 debug
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -48,6 +39,15 @@ struct NavigationTitleButtonView: View {
 
 // MARK: - EXTENSIONS
 extension NavigationTitleButtonView {
+    private var titleText: some View {
+        Text("Radius Alert")
+            .tint(.primary)
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .popoverTip(aboutVM.navigationTitleTip)
+            .tipImageStyle(.secondary)
+    }
+    
     @ViewBuilder
     private var debug: some View  {
 #if DEBUG

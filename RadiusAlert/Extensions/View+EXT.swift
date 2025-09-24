@@ -17,6 +17,7 @@ extension View {
             .preferredColorScheme(.light)
             .environment(MapViewModel(settingsVM: .init()))
             .environment(SettingsViewModel())
+            .environment(AboutViewModel())
             .dynamicTypeSizeViewModifier
     }
     

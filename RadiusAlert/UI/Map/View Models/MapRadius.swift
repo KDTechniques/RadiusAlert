@@ -22,13 +22,20 @@ extension MapViewModel {
     }
     
     func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
-        let numberText: String = radius >= 1000 ? String(format: "%.1fkm", radius/1000) : "\(Int(radius))m"
+        let radius: Double = radius.rounded()
+        let radiusInkilo: Double = radius/1000
+        let hasDecimalPoints: Bool = radiusInkilo.truncatingRemainder(dividingBy: 1) != 0
+        let inKiloMeters: String = String(format: hasDecimalPoints ? "%.1fkm" : "%.0fkm", radiusInkilo)
+        let inMeters: String = "\(Int(radius))m"
         
+        let numberText: String = radius >= 1000 ? inKiloMeters : inMeters
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
+        // Returns text only
         guard withAlertRadiusText, let name: String = selectedSearchResult?.result.name else { return text }
-        let textWithName: String = "(\(name))\n\(text)"
         
+        // Returns text with name
+        let textWithName: String = "(\(name))\n\(text)"
         return textWithName
     }
     

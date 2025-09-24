@@ -13,7 +13,7 @@ struct PopupCardModel: Identifiable {
     let locationTitle: String?
     
     static let mockValues: Self = .init(
-        typeNValue: [(.radius, "700m"), (.duration, "43 min."), (.distance, "34km")],
+        typeNValue: [(.radius, "700m"), (.duration, "43 min."), (.distance, "34.3km")],
         locationTitle: "Pettah Floating Market"
     )
 }

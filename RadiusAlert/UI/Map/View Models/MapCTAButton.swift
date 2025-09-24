@@ -103,7 +103,11 @@ extension MapViewModel {
         startAlert_OnRegionEntry()
         startAlert_OnRegionEntryFailure()
         locationManager.setLocationAccuracy()
-        Task { await HapticManager.shared.vibrate(type: .rigid) }
+        
+        Task {
+            await HapticManager.shared.vibrate(type: .rigid)
+            await NavigationTitleTipModel.startAlertEvent.donate()
+        }
     }
     
     /// Checks whether the app has `Always Allow` location permission.

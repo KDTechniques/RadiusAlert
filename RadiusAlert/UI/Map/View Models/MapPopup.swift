@@ -25,17 +25,7 @@ extension MapViewModel {
             markerCoordinate: item.markerCoordinate,
             radius: item.setRadius)
         
-        let temp: CLLocationDistance = Utilities.getDistance(from: item.firstUserLocation, to: locationManager.currentUserLocation!)
-        
-        var errorDistanceText: String = ""
-        
-#if DEBUG
-        errorDistanceText = "error: \(String(format: "%.0f", temp - distanceToRadius))m"
-#endif
-        
         let distanceText: String = getRadiusTextString(distanceToRadius, withAlertRadiusText: false)
-        + "\n"
-        + errorDistanceText
         
         let popupCardItem: PopupCardModel = .init(
             typeNValue: [

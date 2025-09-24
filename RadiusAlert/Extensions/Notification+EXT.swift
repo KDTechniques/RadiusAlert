@@ -9,4 +9,5 @@ import Foundation
 
 extension Notification.Name {
     static let radiusSliderTipDidTrigger = Notification.Name("radiusSliderTipDidTrigger")
+    static let navigationTitleTipDidTrigger = Notification.Name("navigationTitleTipDidTrigger")
 }

@@ -13,10 +13,14 @@ struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
     @State private var settingsVM: SettingsViewModel
     @State private var mapVM: MapViewModel
+    @State private var aboutVM: AboutViewModel = .init()
     
     init() {
         try? Tips.configure()
-//        try? Tips.resetDatastore()
+        
+#if DEBUG
+        try? Tips.resetDatastore()
+#endif
         
         let settingsVM: SettingsViewModel =  .init()
         self.settingsVM = settingsVM
@@ -31,6 +35,7 @@ struct RadiusAlertApp: App {
             ContentView()
                 .environment(settingsVM)
                 .environment(mapVM)
+                .environment(aboutVM)
                 .preferredColorScheme(settingsVM.selectedColorScheme?.colorScheme)
                 .dynamicTypeSizeViewModifier
         }

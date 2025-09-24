@@ -29,7 +29,7 @@ struct PopupCardView: View {
             PopupCardDetailsView(item: item)
             PopupCardCTAButtonView()
         }
-        .padding()
+        .padding([.horizontal, .bottom])
         .glassEffectViewModifier
         .padding(.horizontal, 50)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

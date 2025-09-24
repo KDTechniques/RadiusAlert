@@ -36,5 +36,6 @@ fileprivate struct Content: View {
             .font(.caption)
             .fontWeight(.medium)
             .offset(y: 40)
+            .animation(.none, value: mapVM.selectedRadius)
     }
 }

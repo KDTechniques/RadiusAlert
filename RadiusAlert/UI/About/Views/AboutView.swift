@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AboutView: View {
+    @Environment(AboutViewModel.self) var aboutVM: AboutViewModel
+    
     // MARK: - BODY
     var body: some View {
         List {
@@ -19,6 +21,7 @@ struct AboutView: View {
         .toolbar { settingsNavigationLink }
         .navigationTitle(Text("About"))
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear { aboutVM.handleOnAppear() }
     }
 }
 

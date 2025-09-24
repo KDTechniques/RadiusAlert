@@ -34,12 +34,11 @@ struct PopupCardDetailSectionView: View {
                 Image(systemName: systemImageName)
                 
                 Text(value)
-                    .font(.footnote)
                     .bold()
-                    .lineLimitDebugViewModifier
+                    .lineLimit(1)
                     .minimumScaleFactor(0.8)
-                
             }
+            .font(.footnote)
             .foregroundStyle(foregroundColor)
         }
     }
@@ -54,18 +53,4 @@ struct PopupCardDetailSectionView: View {
         foregroundColor: .red
     )
     .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-fileprivate extension Text {
-    @ViewBuilder
-    var lineLimitDebugViewModifier: some View {
-#if DEBUG
-        self
-            .lineLimit(3)
-#else
-        self
-            .lineLimit(1)
-#endif
-    }
 }
