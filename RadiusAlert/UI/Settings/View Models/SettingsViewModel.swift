@@ -16,6 +16,7 @@ final class SettingsViewModel {
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange() } }
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange() } }
+    let mapStyleButtonTip: MapStyleButtonTipModel = .init()
     
     // MARK: - INITIALIZER
     init() {
@@ -52,6 +53,10 @@ final class SettingsViewModel {
                 self?.setShowMapStyleButton(newValue)
             }
         )
+    }
+    
+    func invalidateMapStyleButtonTip() {
+        mapStyleButtonTip.invalidate(reason: .actionPerformed)
     }
     
     // MARK: - PRIVATE FUNCTIONS

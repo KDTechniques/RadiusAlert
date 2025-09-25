@@ -108,6 +108,7 @@ extension MapViewModel {
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
         settingsVM.setSelectedMapStyle(mapStylesArray[nextIndex])
+        settingsVM.invalidateMapStyleButtonTip()
     }
     
     // Sets the map region bounds to a given center and distance.

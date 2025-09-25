@@ -50,6 +50,7 @@ extension ButtonView {
                 .padding(11.5)
                 .buttonBackground
                 .defaultTypeSizeViewModifier
+                .popoverTip(settingsVM.mapStyleButtonTip)
         }
         .buttonBackground
         .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
@@ -70,6 +71,7 @@ extension ButtonView {
                     .glassButtonBackground
                     .glassEffect(.regular)
                     .defaultTypeSizeViewModifier
+                    .popoverTip(settingsVM.mapStyleButtonTip)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
             .padding(.trailing)

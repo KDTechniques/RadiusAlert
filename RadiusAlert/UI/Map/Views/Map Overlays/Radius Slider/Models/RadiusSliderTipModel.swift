@@ -13,7 +13,6 @@ struct RadiusSliderTipModel: Tip {
     
     var title: Text {
         Text("Adjust Radius")
-            .foregroundStyle(Color.accentColor)
     }
     
     var message: Text? {

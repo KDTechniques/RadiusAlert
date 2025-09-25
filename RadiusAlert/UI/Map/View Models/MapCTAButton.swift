@@ -107,6 +107,7 @@ extension MapViewModel {
         Task {
             await HapticManager.shared.vibrate(type: .rigid)
             await NavigationTitleTipModel.startAlertEvent.donate()
+            await MapStyleButtonTipModel.startAlertEvent.donate()
         }
     }
     

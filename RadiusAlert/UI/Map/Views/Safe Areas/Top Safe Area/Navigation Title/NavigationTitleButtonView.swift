@@ -20,7 +20,7 @@ struct NavigationTitleButtonView: View {
             HStack(spacing: 5) {
                 titleText
                 LogoView(color: mapVM.getNavigationTitleIconColor(), size: 35)
-                debug
+//                debug
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading)
