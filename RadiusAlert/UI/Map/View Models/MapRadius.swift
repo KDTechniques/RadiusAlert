@@ -82,7 +82,11 @@ extension MapViewModel {
     }
     
     func showRadiusSliderTip(_ item: SearchResultModel?) {
-        guard item?.doneSetting ?? false else { return }
+        guard item?.doneSetting ?? false else {
+            RadiusSliderTipModel.isSetRadius = false
+            return
+        }
+        
         RadiusSliderTipModel.isSetRadius = true
     }
     

@@ -118,4 +118,8 @@ extension MapViewModel {
             }
         }
     }
+    
+    func onSelectedSearchResultChange(_ result: SearchResultModel?) {
+        showRadiusSliderTip(result)
+    }
 }

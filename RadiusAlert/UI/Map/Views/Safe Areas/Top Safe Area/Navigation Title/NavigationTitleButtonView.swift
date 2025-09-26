@@ -22,6 +22,8 @@ struct NavigationTitleButtonView: View {
                 LogoView(color: mapVM.getNavigationTitleIconColor(), size: 35)
 //                debug
             }
+            .popoverTip(aboutVM.navigationTitleTip)
+            .tipImageStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading)
         }
@@ -44,8 +46,6 @@ extension NavigationTitleButtonView {
             .tint(.primary)
             .font(.largeTitle)
             .fontWeight(.bold)
-            .popoverTip(aboutVM.navigationTitleTip)
-            .tipImageStyle(.secondary)
     }
     
     @ViewBuilder

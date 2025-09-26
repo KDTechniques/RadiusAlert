@@ -8,6 +8,12 @@
 import TipKit
 
 struct MapStyleButtonTipModel: Tip {
+    @Parameter(.transient)
+    static var isMapStyleButtonVisible: Bool = false
+    
+    @Parameter(.transient)
+    static var isOnMapView: Bool = false
+    
     static let startAlertEvent: Event = .init(id: "startAlertEvent")
     
     var title: Text {
@@ -15,10 +21,12 @@ struct MapStyleButtonTipModel: Tip {
     }
     
     var message: Text? {
-        Text("Map styles are great if you want to see things in 3D on the map.")
+        Text("Map styles are useful if you want to view the map in 3D.")
     }
     
     var rules: [Rule] { [
-        #Rule(Self.startAlertEvent) { $0.donations.count >= 5 }
+        #Rule(Self.startAlertEvent) { $0.donations.count >= 5 },
+        #Rule(Self.$isMapStyleButtonVisible) { $0 },
+        #Rule(Self.$isOnMapView) { $0 }
     ] }
 }

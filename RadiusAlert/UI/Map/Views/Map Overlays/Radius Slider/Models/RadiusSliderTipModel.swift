@@ -11,6 +11,9 @@ struct RadiusSliderTipModel: Tip {
     @Parameter(.transient)
     static var isSetRadius: Bool = false
     
+    @Parameter(.transient)
+    static var isSliderVisible: Bool = false
+    
     var title: Text {
         Text("Adjust Radius")
     }
@@ -32,5 +35,8 @@ struct RadiusSliderTipModel: Tip {
         }
     ] }
     
-    var rules: [Rule] { [ #Rule(Self.$isSetRadius) { $0 } ] }
+    var rules: [Rule] { [
+        #Rule(Self.$isSetRadius) { $0 },
+        #Rule(Self.$isSliderVisible) { $0 }
+    ] }
 }

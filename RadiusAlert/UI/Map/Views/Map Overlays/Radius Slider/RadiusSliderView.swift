@@ -29,7 +29,9 @@ struct RadiusSliderView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showRadiusSlider())
-        .onChange(of: mapVM.selectedSearchResult) { mapVM.showRadiusSliderTip($1) }
+        .onChange(of: mapVM.showRadiusSlider()) {
+            RadiusSliderTipModel.isSliderVisible = $1
+        }
     }
 }
 
@@ -40,6 +42,7 @@ struct RadiusSliderView: View {
         
         Button("Show Tip") {
             RadiusSliderTipModel.isSetRadius.toggle()
+            RadiusSliderTipModel.isSliderVisible.toggle()
         }
     }
     .padding(.horizontal, 50)

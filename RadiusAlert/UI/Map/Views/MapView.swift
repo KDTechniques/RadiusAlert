@@ -57,6 +57,12 @@ struct MapView: View {
         .mapControlVisibility(mapVM.isMarkerCoordinateNil() ? .visible : .hidden)
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
         .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
+        .onAppear {
+            MapStyleButtonTipModel.isOnMapView = true
+        }
+        .onDisappear {
+            MapStyleButtonTipModel.isOnMapView = false
+        }
     }
 }
 

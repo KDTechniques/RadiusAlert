@@ -45,7 +45,7 @@ final class MapViewModel {
     
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
-    @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel?
+    @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     
