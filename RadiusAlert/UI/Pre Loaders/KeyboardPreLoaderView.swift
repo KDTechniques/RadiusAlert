@@ -12,6 +12,10 @@ struct KeyboardPreLoaderView: View {
     @FocusState private var isFocused: Bool
     let onKeyboardLoaderFinish: () -> Void
     
+    init(onKeyboardLoaderFinish: @escaping () -> Void) {
+        self.onKeyboardLoaderFinish = onKeyboardLoaderFinish
+    }
+    
     // MARK: - BODY
     var body: some View {
         TextField("", text: .constant(""))

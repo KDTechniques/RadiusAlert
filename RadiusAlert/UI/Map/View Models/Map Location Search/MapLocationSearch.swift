@@ -35,17 +35,12 @@ extension MapViewModel {
     /// - If the text is empty, reset results.
     /// - Otherwise, update results with the `MKLocalSearchCompleter`.
     func onSearchTextChange(_ text: String) {
-        searchText.isEmpty ? onEmptySearchText() : locationSearchManager.setQueryText(searchText: text)
-    }
-    
-    /// Clears the current search results.
-    func onEmptySearchText() {
-        resetSearchResults()
+        searchText.isEmpty ? resetSearchResults() : onNotEmptySearchText(text)
     }
     
     /// Sets the selected search result’s coordinate and updates the map.
     /// Also resets search text and results, then animates map to the new location.
-    func setSelectedSearchResultCoordinate(_ item: MKLocalSearchCompletion) {
+    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
         setSelectedMapItem(item)
         resetSearchResults()
         resetSearchText()
@@ -81,9 +76,14 @@ extension MapViewModel {
     
     // MARK: - PRIVATE FUNCTIONS
     
+    private func onNotEmptySearchText(_ text: String) {
+        locationSearchManager.setIsSearching(true)
+        locationSearchManager.setQueryText(searchText: text)
+    }
+    
     /// Handles search result selection when there’s no existing marker.
     private func onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: MKLocalSearchCompletion) {
-        setSelectedSearchResultCoordinate(item)
+        prepareSelectedSearchResultCoordinateOnMap(item)
         setSearchFieldFocused(false)
     }
     
@@ -120,6 +120,6 @@ extension MapViewModel {
     }
     
     func onSelectedSearchResultChange(_ result: SearchResultModel?) {
-        showRadiusSliderTip(result)
+        setRadiusSliderTipRule_IsSetRadius(result)
     }
 }

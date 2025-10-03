@@ -29,9 +29,6 @@ struct RadiusSliderView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showRadiusSlider())
-        .onChange(of: mapVM.showRadiusSlider()) {
-            RadiusSliderTipModel.isSliderVisible = $1
-        }
     }
 }
 

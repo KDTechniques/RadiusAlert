@@ -14,7 +14,7 @@ final class SettingsViewModel {
     let alertManager: AlertManager = .shared
     private(set) var selectedColorScheme: ColorSchemeTypes? = .light { didSet { onColorSchemeChange() } }
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
-    private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange() } }
+    private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
     let mapStyleButtonTip: MapStyleButtonTipModel = .init()
     
@@ -55,9 +55,6 @@ final class SettingsViewModel {
         )
     }
     
-    func invalidateMapStyleButtonTip() {
-        mapStyleButtonTip.invalidate(reason: .actionPerformed)
-    }
     
     // MARK: - PRIVATE FUNCTIONS
     private func onColorSchemeChange() {
@@ -69,8 +66,13 @@ final class SettingsViewModel {
         userDefaultsManager.saveTone(selectedTone.rawValue)
     }
     
-    private func onMapStyleChange() {
-        userDefaultsManager.saveMapStyle(selectedMapStyle.rawValue)
+    private func invalidateMapStyleButtonTip() {
+        mapStyleButtonTip.invalidate(reason: .actionPerformed)
+    }
+    
+    private func onMapStyleChange(_ style: MapStyleTypes) {
+        userDefaultsManager.saveMapStyle(style.rawValue)
+        invalidateMapStyleButtonTip()
     }
     
     private func onMapStyleButtonVisibilityChange(_ boolean: Bool) {

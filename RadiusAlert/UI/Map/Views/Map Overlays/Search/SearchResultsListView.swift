@@ -23,7 +23,7 @@ struct SearchResultsListView: View {
             }
         case .noConnection:
             if mapVM.showNoInternetConnectionText() {
-                UnavailableView("No Internet Connection")
+                UnavailableView("No Internet Connection", foregroundColor: .red)
             }
         }
     }

@@ -42,7 +42,10 @@ extension MapViewModel {
         let condition1: Bool = isMarkerCoordinateNil()
         let condition2: Bool = isBeyondMinimumDistance()
         
-        return condition1 && condition2
+        let boolean: Bool = condition1 && condition2
+        onRadiusSliderVisibilityChange(boolean)
+        
+        return boolean
     }
     
     func showFloatingAlertRadiusText() -> Bool {

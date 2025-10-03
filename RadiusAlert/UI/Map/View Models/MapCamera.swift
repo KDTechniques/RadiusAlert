@@ -22,7 +22,7 @@ extension MapViewModel {
             return
         }
         
-        setPosition(region: region, animate: true)
+        setPosition(region: region, animate: true) 
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -108,7 +108,6 @@ extension MapViewModel {
         
         let nextIndex: Int = mapStylesArray.nextIndex(after: index)
         settingsVM.setSelectedMapStyle(mapStylesArray[nextIndex])
-        settingsVM.invalidateMapStyleButtonTip()
     }
     
     // Sets the map region bounds to a given center and distance.

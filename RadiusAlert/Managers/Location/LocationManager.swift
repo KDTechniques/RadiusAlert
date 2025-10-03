@@ -38,6 +38,16 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
     private(set) var currentDistanceMode: LocationDistanceModes?
+    private(set) var currentRegionName: String?
+    
+    // MARK: - SETTERS
+    func setCurrentDistanceMode(_ value: LocationDistanceModes) {
+        currentDistanceMode = value
+    }
+    
+    func setCurrentRegionName(_ value: String?) {
+        currentRegionName = value
+    }
     
     // MARK: - DELEGATE FUNCTIONS
     
@@ -74,7 +84,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// Called whenever the device gets updated location(s).
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentUserLocation = locations.first?.coordinate
+        currentUserLocation = locations.last?.coordinate
         setLocationAccuracy()
         onRegionEntryFailure()
     }
@@ -95,7 +105,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// Returns the initial camera position for the map centered on the user’s location
     func getInitialMapCameraPosition() -> MapCameraPosition? {
-        guard let coordinate: CLLocationCoordinate2D =  currentUserLocation else {
+        guard let coordinate: CLLocationCoordinate2D = currentUserLocation else {
             print("Error getting initial current location of the user!")
             return nil
         }
@@ -179,7 +189,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         
         // Only apply if mode actually changed
         guard newMode != currentDistanceMode else { return }
-        currentDistanceMode = newMode
+        setCurrentDistanceMode(newMode)
         
         switch newMode {
         case .close:
@@ -214,6 +224,28 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         default:
             return true
+        }
+    }
+    
+    func getCurrentRegionName() {
+        guard let latitude = currentUserLocation?.latitude,
+              let longitude = currentUserLocation?.longitude else { return }
+        
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geoCoder = CLGeocoder()
+        
+        Task {
+            do {
+                let placemarks = try await geoCoder.reverseGeocodeLocation(location)
+                let country = placemarks.first?.country
+                await MainActor.run {
+                    self.setCurrentRegionName(country)
+                }
+            } catch {
+                await MainActor.run {
+                    self.setCurrentRegionName(nil)
+                }
+            }
         }
     }
     

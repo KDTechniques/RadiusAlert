@@ -67,7 +67,7 @@ final class MapViewModel {
             }
             .store(in: &cancellables)
     }
-
+    
     // MARK: - SETTERS
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
@@ -136,5 +136,14 @@ final class MapViewModel {
         networkManager.connectionState == .connected
         ? .primary
         : .init(uiColor: .systemGray5)
+    }
+    
+    func onMapViewAppear() {
+        MapStyleButtonTipModel.isOnMapView = true
+        locationManager.getCurrentRegionName()
+    }
+    
+    func onMapViewDisappear() {
+        MapStyleButtonTipModel.isOnMapView = false
     }
 }

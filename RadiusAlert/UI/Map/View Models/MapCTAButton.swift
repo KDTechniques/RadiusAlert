@@ -41,7 +41,7 @@ extension MapViewModel {
                 
                 stopAlert()
                 setSearchFieldFocused(false)
-                setSelectedSearchResultCoordinate(item)
+                prepareSelectedSearchResultCoordinateOnMap(item)
                 
             }
         )
@@ -103,7 +103,10 @@ extension MapViewModel {
         startAlert_OnRegionEntry()
         startAlert_OnRegionEntryFailure()
         locationManager.setLocationAccuracy()
-        
+        onAlertStartEnded()
+    }
+    
+    private func onAlertStartEnded() {
         Task {
             await HapticManager.shared.vibrate(type: .rigid)
             await NavigationTitleTipModel.startAlertEvent.donate()

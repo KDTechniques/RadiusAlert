@@ -81,7 +81,7 @@ extension MapViewModel {
         invalidateRadiusSliderTip()
     }
     
-    func showRadiusSliderTip(_ item: SearchResultModel?) {
+    func setRadiusSliderTipRule_IsSetRadius(_ item: SearchResultModel?) {
         guard item?.doneSetting ?? false else {
             RadiusSliderTipModel.isSetRadius = false
             return
@@ -92,5 +92,9 @@ extension MapViewModel {
     
     func invalidateRadiusSliderTip() {
         radiusSliderTip.invalidate(reason: .actionPerformed)
+    }
+    
+    func onRadiusSliderVisibilityChange(_ boolean: Bool) {
+        RadiusSliderTipModel.isSliderVisible = boolean
     }
 }
