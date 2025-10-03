@@ -140,7 +140,6 @@ final class MapViewModel {
     
     func onMapViewAppear() {
         MapStyleButtonTipModel.isOnMapView = true
-        locationManager.getCurrentRegionName()
     }
     
     func onMapViewDisappear() {
