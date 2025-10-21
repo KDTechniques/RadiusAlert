@@ -11,6 +11,7 @@ struct AboutAppImprovementsView: View {
     // MARK: - BODY
     var body: some View {
         Section {
+            AboutWhatsNewView()
             AboutFutureUpdatesView()
         } header: {
             Text("App Improvements")
@@ -20,8 +21,10 @@ struct AboutAppImprovementsView: View {
 
 // MARK: -  PREVIEWS
 #Preview("About - App Improvements") {
-    List {
-        AboutAppImprovementsView()
+    NavigationStack {
+        List {
+            AboutAppImprovementsView()
+        }
     }
     .previewModifier()
 }

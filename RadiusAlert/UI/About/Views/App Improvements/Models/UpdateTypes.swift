@@ -12,12 +12,11 @@ struct UpdateTypes: Identifiable {
     let emoji: String
     let description: String
     
-    static let whatsNew: [String] = [
-        
+    static let whatsNew: [Self] = [
+        .init(emoji: "🌍", description: "Location-based search filtering (results relevant to your region only)"),
     ]
     
     static let futureUpdates: [Self] = [
-        .init(emoji: "🌍", description: "Location-based search filtering (results relevant to your region only)"),
         .init(emoji: "📍", description: "Saved pins for quick access to frequent stops"),
         .init(emoji: "🗺️", description: "Smarter map handling with static snapshots to save memory"),
         .init(emoji: "➕", description: "Add multiple stops and view distances between them"),
