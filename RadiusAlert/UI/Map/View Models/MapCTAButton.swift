@@ -68,6 +68,7 @@ extension MapViewModel {
         alertManager.playTone(settingsVM.selectedTone.fileName)
         alertManager.playHaptic()
         generateNSetPopupCardItem()
+        settingsVM.setToneVolumeToFade()
     }
     
     // MARK: - PRIVATE FUNCTIONS

@@ -33,7 +33,7 @@ struct AlertsListSectionView: View {
 extension AlertsListSectionView {
     private var tone: some View {
         NavigationLink {
-            ToneListSectionView()
+            ToneSettingsView()
         } label: {
             Text("Tone")
         }

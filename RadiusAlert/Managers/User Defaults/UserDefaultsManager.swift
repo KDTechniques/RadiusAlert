@@ -10,19 +10,14 @@ import Foundation
 struct UserDefaultsManager {
     let defaults: UserDefaults = .init()
     
-    private let darkModeKey: String = "darkMode"
-    private let toneKey: String = "tone"
-    private let mapStyleKey: String = "mapStyle"
-    private let mapStyleButtonVisibilityKey: String = "mapStyleButton"
-    
     // MARK: Dark Mode
     func saveDarkMode(_ value: String) {
-        defaults.set(value, forKey: darkModeKey)
+        defaults.set(value, forKey: UserDefaultKeys.darkMode.rawValue)
     }
     
     func getDarkMode() -> ColorSchemeTypes {
         guard
-            let modeRawValue: String = defaults.string(forKey: darkModeKey),
+            let modeRawValue: String = defaults.string(forKey: UserDefaultKeys.darkMode.rawValue),
             let colorSchemeType: ColorSchemeTypes = ColorSchemeTypes.allCases.first(where: { $0.rawValue == modeRawValue }) else { return .light }
         
         return colorSchemeType
@@ -30,12 +25,12 @@ struct UserDefaultsManager {
     
     // MARK: Tone
     func saveTone(_ value: String) {
-        defaults.set(value, forKey: toneKey)
+        defaults.set(value, forKey: UserDefaultKeys.tone.rawValue)
     }
     
     func getTone() -> ToneTypes {
         guard
-            let toneRawValue: String = defaults.string(forKey: toneKey),
+            let toneRawValue: String = defaults.string(forKey: UserDefaultKeys.tone.rawValue),
             let tone: ToneTypes = ToneTypes.allCases.first(where: {$0.rawValue == toneRawValue }) else { return .defaultTone }
         
         return tone
@@ -44,27 +39,51 @@ struct UserDefaultsManager {
     // MARK: Map Style
     func getMapStyle() -> MapStyleTypes {
         guard
-            let mapStyleRawValue: String = defaults.string(forKey: mapStyleKey),
+            let mapStyleRawValue: String = defaults.string(forKey: UserDefaultKeys.mapStyle.rawValue),
             let mapStyle: MapStyleTypes = MapStyleTypes.allCases.first(where: {$0.rawValue == mapStyleRawValue }) else { return .standard }
         
         return mapStyle
     }
     
     func saveMapStyle(_ value: String) {
-        defaults.set(value, forKey: mapStyleKey)
+        defaults.set(value, forKey: UserDefaultKeys.mapStyle.rawValue)
     }
     
     // MARK: Map Style Button
     
     func getMapStyleButtonVisibility() -> Bool {
-        if defaults.object(forKey: mapStyleButtonVisibilityKey) == nil {
+        if defaults.object(forKey: UserDefaultKeys.mapStyleButton.rawValue) == nil {
             return true
         } else {
-            return defaults.bool(forKey: mapStyleButtonVisibilityKey)
+            return defaults.bool(forKey: UserDefaultKeys.mapStyleButton.rawValue)
         }
     }
     
     func saveMapStyleButtonVisibility(_ value: Bool) {
-        defaults.set(value, forKey: mapStyleButtonVisibilityKey)
+        defaults.set(value, forKey: UserDefaultKeys.mapStyleButton.rawValue)
+    }
+    
+    // MARK: - Tone Fade
+    
+    func getToneFade() -> Bool {
+        if defaults.object(forKey: UserDefaultKeys.toneFade.rawValue) == nil {
+            return false
+        } else {
+            return defaults.bool(forKey: UserDefaultKeys.toneFade.rawValue)
+        }
+    }
+    
+    func saveToneFade(_ value: Bool) {
+        defaults.set(value, forKey: UserDefaultKeys.toneFade.rawValue)
+    }
+    
+    func getToneFadeDuration() -> Double {
+        let duration: Double = defaults.double(forKey: UserDefaultKeys.toneFadeDuration.rawValue)
+        return duration == 0 ? 3 : duration
+    }
+    
+    func saveFadeDuration(_ value: Double) {
+        defaults.set(value, forKey: UserDefaultKeys.toneFadeDuration.rawValue)
     }
 }
+
