@@ -37,9 +37,9 @@ final class NotificationManager {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["arrivalNotification"])
         
         // 5. Add the new notification request to the notification center
-        UNUserNotificationCenter.current().add(request) { [weak self] error in
-            if let self, let error {
-                Utilities.log(errorModel.failedToScheduleNotification(error).errorDescription)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                Utilities.log(self.errorModel.failedToScheduleNotification(error).errorDescription)
             }
         }
     }
@@ -54,10 +54,10 @@ final class NotificationManager {
             guard settings.authorizationStatus != .authorized else { return }
             
             // 3. Request authorization for alerts and sounds
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { [weak self] granted, error in
-                if let self, let error {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+                if let error {
                     // Log any errors that occur during the authorization request
-                    Utilities.log(errorModel.failedToAuthorizeNotification(error).errorDescription)
+                    Utilities.log(self.errorModel.failedToAuthorizeNotification(error).errorDescription)
                 } else {
                     // Log the result of the authorization request
                     print("✅: Notification Permission Granted:", granted)

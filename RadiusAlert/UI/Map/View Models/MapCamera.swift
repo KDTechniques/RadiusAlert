@@ -22,7 +22,7 @@ extension MapViewModel {
             return
         }
         
-        setPosition(region: region, animate: true) 
+        setPosition(region: region, animate: true)
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -59,12 +59,8 @@ extension MapViewModel {
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func positionBinding() -> Binding<MapCameraPosition> {
         return Binding<MapCameraPosition>(
-            get: { [weak self] in
-                self?.position ?? .automatic
-            },
-            set: { [weak self] newValue in
-                self?.setPosition(newValue)
-            }
+            get: { self.position },
+            set: { self.setPosition($0) }
         )
     }
     
@@ -130,11 +126,14 @@ extension MapViewModel {
         positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
     }
     
+    /// Registers a cleanup action to help clear memory related to map styles.
+    /// When triggered by a memory warning, it cycles through three map styles
+    /// with short delays between each change to release cached map resources.
     func clearMemoryByMapStyles() {
         memoryWarningsHandler.registerCleanupAction {
-            Task { @MainActor [weak self] in
+            Task { @MainActor in
                 for _ in 1...3 {
-                    self?.setNextMapStyle()
+                    self.setNextMapStyle()
                     try? await Task.sleep(nanoseconds: 100_000_000)
                 }
             }

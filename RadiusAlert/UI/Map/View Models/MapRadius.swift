@@ -12,13 +12,14 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return Binding { [weak self] in
-            self?.selectedRadius ?? MapValues.minimumRadius
-        } set: { newValue in
-            withAnimation { [weak self] in
-                self?.setSelectedRadius(newValue)
+        return Binding(
+            get: { self.selectedRadius },
+            set: { newValue in
+                withAnimation {
+                    self.setSelectedRadius(newValue)
+                }
             }
-        }
+        )
     }
     
     func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
@@ -71,8 +72,8 @@ extension MapViewModel {
     func onRadiusSliderTipAction() {
         withAnimation {
             setSelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
-        } completion: { [weak self] in
-            self?.radiusSliderTip.invalidate(reason: .actionPerformed)
+        } completion: {
+            self.radiusSliderTip.invalidate(reason: .actionPerformed)
         }
     }
     

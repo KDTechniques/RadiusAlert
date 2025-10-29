@@ -36,12 +36,10 @@ extension MapViewModel {
     /// - Parameter item: The selected search completion item representing the new alert location.
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         alertManager.showAlert(
-            .stopAlertOnSubmit { [weak self] in
-                guard let self else { return }
-                
-                stopAlert()
-                setSearchFieldFocused(false)
-                prepareSelectedSearchResultCoordinateOnMap(item)
+            .stopAlertOnSubmit {
+                self.stopAlert()
+                self.setSearchFieldFocused(false)
+                self.prepareSelectedSearchResultCoordinateOnMap(item)
                 
             }
         )
@@ -210,34 +208,16 @@ extension MapViewModel {
     
     /// Define actions to execute when the user enters the monitored region.
     private func startAlert_OnRegionEntry() {
-        locationManager.onRegionEntry = { [weak self] in
-            guard let self else {
-                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription)
-                return
-            }
-            
-            onRegionEntry()
-        }
+        locationManager.onRegionEntry = { self.onRegionEntry() }
     }
     
     private func startAlert_OnRegionEntryFailure() {
-        locationManager.onRegionEntryFailure = { [weak self] in
-            guard let self else {
-                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntryFailure.errorDescription)
-                return
-            }
-            
-            handleOnRegionEntryAlertFailure()
-        }
+        locationManager.onRegionEntryFailure = { self.handleOnRegionEntryAlertFailure() }
     }
     
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation() {
-        alertManager.showAlert(
-            .stopAlertHereConfirmation { [weak self] in
-                self?.stopAlert()
-            }
-        )
+        alertManager.showAlert(.stopAlertHereConfirmation { self.stopAlert() })
     }
 }

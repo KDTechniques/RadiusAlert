@@ -14,6 +14,7 @@ struct UpdateTypes: Identifiable {
     
     static let whatsNew: [Self] = [
         .init(emoji: "🌍", description: "Location-based search filtering (results relevant to your region only)"),
+        .init(emoji: "🎚️", description: "After the selected duration, the alert tone automatically fades to 50% of the iPhone’s volume.")
     ]
     
     static let futureUpdates: [Self] = [

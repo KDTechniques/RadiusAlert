@@ -1,5 +1,5 @@
 //
-//  Array+EXT.swift
+//  Array.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-08-03.

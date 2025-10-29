@@ -60,6 +60,7 @@ extension DebugView {
         notification
         alert
         readMe
+        clearUserDefaults
     }
     
     private var tone: some View {
@@ -163,6 +164,12 @@ extension DebugView {
             Button("Show Read Me") {
                 isPresentedReadMe = true
             }
+        }
+    }
+    
+    private var clearUserDefaults: some View {
+        Button("Clear User Defaults") {
+            UserDefaultsManager.clearAllUserDefaults()
         }
     }
 }

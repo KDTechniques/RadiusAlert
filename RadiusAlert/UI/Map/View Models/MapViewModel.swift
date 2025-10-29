@@ -54,15 +54,14 @@ final class MapViewModel {
         locationManager.$authorizationStatus$
             .dropFirst()
             .removeDuplicates()
-            .sink { [weak self] in
-                guard let self else { return }
-                isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
+            .sink {
+                self.isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
                 
-                guard isAuthorizedToGetMapCameraUpdate else { return }
+                guard self.isAuthorizedToGetMapCameraUpdate else { return }
                 
-                Task { @MainActor  [weak self] in
+                Task { @MainActor in
                     try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self?.positionToInitialUserLocation()
+                    self.positionToInitialUserLocation()
                 }
             }
             .store(in: &cancellables)

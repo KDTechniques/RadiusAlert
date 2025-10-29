@@ -1,5 +1,5 @@
 //
-//  Color+EXT.swift
+//  Color.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-08-04.

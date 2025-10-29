@@ -10,7 +10,13 @@ import Foundation
 struct UserDefaultsManager {
     let defaults: UserDefaults = .init()
     
-    // MARK: Dark Mode
+    /// Clears all values stored in User Defaults.
+    static func clearAllUserDefaults() {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return }
+        UserDefaults.standard.removePersistentDomain(forName: bundleID)
+    }
+    
+    // MARK: - Dark Mode
     func saveDarkMode(_ value: String) {
         defaults.set(value, forKey: UserDefaultKeys.darkMode.rawValue)
     }
@@ -23,7 +29,7 @@ struct UserDefaultsManager {
         return colorSchemeType
     }
     
-    // MARK: Tone
+    // MARK: - Tone
     func saveTone(_ value: String) {
         defaults.set(value, forKey: UserDefaultKeys.tone.rawValue)
     }
@@ -36,7 +42,8 @@ struct UserDefaultsManager {
         return tone
     }
     
-    // MARK: Map Style
+    // MARK: - Map Style
+    
     func getMapStyle() -> MapStyleTypes {
         guard
             let mapStyleRawValue: String = defaults.string(forKey: UserDefaultKeys.mapStyle.rawValue),
@@ -49,7 +56,7 @@ struct UserDefaultsManager {
         defaults.set(value, forKey: UserDefaultKeys.mapStyle.rawValue)
     }
     
-    // MARK: Map Style Button
+    // MARK: - Map Style Button
     
     func getMapStyleButtonVisibility() -> Bool {
         if defaults.object(forKey: UserDefaultKeys.mapStyleButton.rawValue) == nil {
@@ -79,7 +86,7 @@ struct UserDefaultsManager {
     
     func getToneFadeDuration() -> Double {
         let duration: Double = defaults.double(forKey: UserDefaultKeys.toneFadeDuration.rawValue)
-        return duration == 0 ? 3 : duration
+        return duration == 0 ? ToneValues.defaultDuration : duration
     }
     
     func saveFadeDuration(_ value: Double) {

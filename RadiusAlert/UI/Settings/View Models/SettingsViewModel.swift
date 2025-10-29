@@ -54,27 +54,20 @@ final class SettingsViewModel {
         toneFadeDuration = value
     }
     
-    
-    // MARK: - PUBLIC FUNCTIONS
+    // MARK: - BINDINGS
     func mapStyleButtonVisibilityBinding() -> Binding<Bool> {
         return Binding<Bool>(
-            get: { [weak self] in
-                self?.showMapStyleButton ?? true
-            },
-            set: { [weak self] newValue in
-                self?.setShowMapStyleButton(newValue)
-            }
+            get: { self.showMapStyleButton },
+            set: { self.setShowMapStyleButton($0) }
         )
     }
     
     func toneFadeToggleBinding() -> Binding<Bool> {
         return Binding<Bool>(
-            get: { [weak self] in
-                self?.isEnabledToneFade ?? false
-            },
-            set: { [weak self] newValue in
+            get: { self.isEnabledToneFade },
+            set: { newValue in
                 withAnimation {
-                    self?.setIsEnabledToneFade(newValue)
+                    self.setIsEnabledToneFade(newValue)
                 }
             }
         )
@@ -82,25 +75,46 @@ final class SettingsViewModel {
     
     func toneFadeDurationBinding() -> Binding<Double> {
         return Binding<Double>(
-            get: { [weak self] in
-                self?.toneFadeDuration ?? 0
-            },
-            set: { [weak self] newValue in
-                self?.setToneFadeDuration(newValue)
-            }
+            get: { self.toneFadeDuration },
+            set: { self.setToneFadeDuration($0) }
         )
     }
     
+    // MARK: - SUBSCRIBERS
+    private func toneFadeDurationSubscriber() {
+        $toneFadeDuration$
+            .removeDuplicates()
+            .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
+            .sink { self.userDefaultsManager.saveFadeDuration($0) }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - PUBLIC FUNCTIONS
+    
     func setToneVolumeToFade() {
         guard isEnabledToneFade else { return }
+        
         Task {
-            try? await Task.sleep(nanoseconds: .seconds(toneFadeDuration))
-            alertManager.setToneVolume(0.5)
+            do {
+                try await Task.sleep(nanoseconds: .seconds(toneFadeDuration))
+                alertManager.setAbsoluteToneVolume(0.5)
+            }
         }
+    }
+    
+    func getToneFadeDurationString() -> String {
+        let defaultText: String = "Duration: "
+        let secondaryText: String = "\(toneFadeDuration.int()) sec."
+        
+        return defaultText + secondaryText
     }
     
     // MARK: - PRIVATE FUNCTIONS
     private func initializeSettingsVM() {
+        initializeFromUserDefaults()
+    }
+    
+    private func initializeFromUserDefaults() {
         selectedColorScheme = userDefaultsManager.getDarkMode()
         selectedTone = userDefaultsManager.getTone()
         selectedMapStyle = userDefaultsManager.getMapStyle()
@@ -134,15 +148,5 @@ final class SettingsViewModel {
     private func onMapStyleButtonVisibilityChange(_ boolean: Bool) {
         userDefaultsManager.saveMapStyleButtonVisibility(showMapStyleButton)
         MapStyleButtonTipModel.isMapStyleButtonVisible = boolean
-    }
-    
-    private func toneFadeDurationSubscriber() {
-        $toneFadeDuration$
-            .removeDuplicates()
-            .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
-            .sink { [weak self] value in
-                self?.userDefaultsManager.saveFadeDuration(value)
-            }
-            .store(in: &cancellables)
     }
 }

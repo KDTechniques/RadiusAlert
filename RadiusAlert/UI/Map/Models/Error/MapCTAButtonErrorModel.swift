@@ -11,9 +11,7 @@ enum MapCTAButtonErrorModel {
     case userAlreadyInRadius
     case failedToStartMonitoringRegion
     case failedToGetDistance
-    case failedToExecuteOnRegionEntry
-    case failedToExecuteOnRegionEntryFailure
-    
+   
     var errorDescription: String {
         switch self {
         case .userAlreadyInRadius:
@@ -22,10 +20,6 @@ enum MapCTAButtonErrorModel {
             return "❌: Failed to start monitoring region due to marker coordinate being nil."
         case .failedToGetDistance:
             return "❌: Failed to get distance due to current user location being nil."
-        case .failedToExecuteOnRegionEntry:
-            return "❌: Failed to execute on region entry due to self is bing nil."
-        case .failedToExecuteOnRegionEntryFailure:
-            return "❌: Failed to execute on region entry failure."
         }
     }
 }

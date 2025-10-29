@@ -14,12 +14,13 @@ extension MapViewModel {
     /// Returns a `Binding<String>` that keeps the search bar text in sync with the view model's `searchText`.
     /// Useful for connecting the SwiftUI TextField directly to the view model.
     func searchTextBinding() -> Binding<String> {
-        return Binding { [weak self] in
-            self?.searchText ?? ""
-        } set: { [weak self] in
-            guard let self, searchText != $0 else { return }
-            setSearchText($0)
-        }
+        return Binding(
+            get: { self.searchText },
+            set: {
+                guard self.searchText != $0 else { return }
+                self.setSearchText($0)
+            }
+        )
     }
     
     /// Handles tapping a search result from the list.
@@ -74,6 +75,12 @@ extension MapViewModel {
         }
     }
     
+    /// Called when the selected search result changes.
+    /// Updates the radius slider tip rule based on the new selection.
+    func onSelectedSearchResultChange(_ result: SearchResultModel?) {
+        setRadiusSliderTipRule_IsSetRadius(result)
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     private func onNotEmptySearchText(_ text: String) {
@@ -117,9 +124,5 @@ extension MapViewModel {
                 setSelectedSearchResult(nil)
             }
         }
-    }
-    
-    func onSelectedSearchResultChange(_ result: SearchResultModel?) {
-        setRadiusSliderTipRule_IsSetRadius(result)
     }
 }

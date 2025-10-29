@@ -40,14 +40,12 @@ final class NetworkManager {
     private func connectionStatusSubscriber() {
         $connectionState$
             .removeDuplicates()
-            .sink { [weak self] status in
-                guard let self else { return }
-                
-                switch status {
+            .sink {
+                switch $0 {
                 case .connected:
-                    handleConnectedStatus()
+                    self.handleConnectedStatus()
                 case .noConnection:
-                    handleNoConnectionStatus()
+                    self.handleNoConnectionStatus()
                 }
             }
             .store(in: &cancellables)
@@ -55,23 +53,16 @@ final class NetworkManager {
     
     /// Starts monitoring the network path for changes in connectivity.
     private func startNetworkMonitor() {
-        monitor.pathUpdateHandler = { [weak self] path in
-            guard let self else { return }
-            
-            if path.status == .satisfied {
-                Task { @MainActor in
-                    if self.connectionState != .connected {
-                        self.connectionState = .connected
-                    }
-                }
-            } else {
-                Task { @MainActor in
-                    if self.connectionState != .noConnection {
-                        self.connectionState = .noConnection
-                    }
+        monitor.pathUpdateHandler = { value in
+            Task { @MainActor in
+                if value.status == .satisfied {
+                    self.connectionState = .connected
+                } else {
+                    self.connectionState = .noConnection
                 }
             }
         }
+        
         monitor.start(queue: networkManagerQueue)
     }
     

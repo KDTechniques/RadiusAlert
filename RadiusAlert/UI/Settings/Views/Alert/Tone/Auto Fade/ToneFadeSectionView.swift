@@ -14,24 +14,12 @@ struct ToneFadeSectionView: View {
     // MARK: - BODY
     var body: some View {
         Section {
-            Toggle("Alert Tone Fade", isOn: settingsVM.toneFadeToggleBinding())
-            
-            if settingsVM.isEnabledToneFade {
-                VStack(alignment: .leading) {
-                    Text(getFadeDurationText())
-                    
-                    Slider(value: settingsVM.toneFadeDurationBinding(), in: 5...10) { }
-                    minimumValueLabel: {
-                        Text("\(ToneValues.minDuration.int())s")
-                    } maximumValueLabel: {
-                        Text("\(ToneValues.maxDuration.int())s")
-                    }
-                }
-            }
+            toggle
+            slider
         } header: {
-            Text("Select Alert Tone Fade Duration")
+            header
         } footer: {
-            Text("Once you reach your destination radius, the alert tone will fade to 50% of your iPhone’s volume when Auto Fade is on.")
+            footer
         }
     }
 }
@@ -41,14 +29,36 @@ struct ToneFadeSectionView: View {
     List {
         ToneFadeSectionView()
     }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
 extension ToneFadeSectionView {
-    private func getFadeDurationText() -> String {
-        let defaultText: String = "Duration: "
-        let secondaryText: String = "\(Int(settingsVM.toneFadeDuration)) sec."
-        
-        return defaultText + secondaryText
+    private var header: some View {
+        Text("Select Alert Tone Fade Duration")
+    }
+    
+    private var toggle: some View {
+        Toggle("Auto Alert Tone Fade", isOn: settingsVM.toneFadeToggleBinding())
+    }
+    
+    @ViewBuilder
+    private var slider: some View {
+        if settingsVM.isEnabledToneFade {
+            VStack(alignment: .leading) {
+                Text(settingsVM.getToneFadeDurationString())
+                
+                Slider(value: settingsVM.toneFadeDurationBinding(), in: 5...10, step: 1) { }
+                minimumValueLabel: {
+                    Text("\(ToneValues.minDuration.int())s")
+                } maximumValueLabel: {
+                    Text("\(ToneValues.maxDuration.int())s")
+                }
+            }
+        }
+    }
+    
+    private var footer: some View {
+        Text("Once you reach your destination radius, the alert tone will fade to 50% of your iPhone’s volume when Auto Alert Tone Fade is on.")
     }
 }

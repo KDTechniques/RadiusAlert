@@ -34,9 +34,9 @@ final class AlertManager {
     // 3 - Haptic Feedback
     // 4 - Alert Popup
     
-    // MARK: - PUBLIC FUNCTIONS
+    // MARK: PUBLIC FUNCTIONS
     
-    // Local Push Notifications Related
+    // MARK: - Local Push Notifications Related
     func requestNotificationPermission() {
         notificationsManager.requestAuthorizationIfNeeded()
     }
@@ -45,7 +45,7 @@ final class AlertManager {
         notificationsManager.scheduleNotification(after: seconds)
     }
     
-    // MARK: Tone Related
+    // MARK: - Tone Related
     func playTone(_ fileName: String, loopCount: Int = -1) {
         Task {
             await toneManager.playTone(fileName, loopCount: loopCount)
@@ -65,13 +65,31 @@ final class AlertManager {
         }
     }
     
+    /// Sets the player volume to achieve a target absolute volume level.
+    /// The absolute volume represents the combined loudness of both
+    /// the system and the player.
+    ///
+    /// Example:
+    /// If the system volume is 80% and the target absolute volume is 50%,
+    /// the player volume will be set to 30% (80% - 50% = 30%).
+    ///
+    /// In short: playerVolume = systemVolume - absoluteVolume
+    func setAbsoluteToneVolume(_ absVolume: Float, fadeDuration: Double = 0.8) {
+        let systemVolume: Float = Utilities.getSystemVolume()
+        let playerVolume: Float = systemVolume - absVolume
+        
+        Task {
+            await toneManager.setToneVolume(playerVolume, fadeDuration: fadeDuration)
+        }
+    }
+    
     private func resetToneVolume() {
         Task {
             await toneManager.resetToneVolume(.zero)
         }
     }
     
-    // MARK: Haptics Related
+    // MARK: - Haptics Related
     func playHaptic() {
         Task {
             await hapticManager.playSOSPattern()
@@ -84,7 +102,7 @@ final class AlertManager {
         }
     }
     
-    // MARK: Alert Popup Related
+    // MARK: - Alert Popup Related
     func showAlert(_ type: AlertTypes) {
         alertPopupmanager.showAlert(type)
     }

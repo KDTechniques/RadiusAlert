@@ -1,5 +1,5 @@
 //
-//  View+EXT.swift
+//  View.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-07-27.
@@ -21,6 +21,9 @@ extension View {
             .dynamicTypeSizeViewModifier
     }
     
+    /// A global alert view modifier attached to the `ContentView`.
+    /// Handles and presents all alert popups managed by `AlertManager`
+    /// throughout the entire app lifecycle.
     @ViewBuilder
     var alertViewModifier: some View {
         let alertManager: AlertManager = .shared
