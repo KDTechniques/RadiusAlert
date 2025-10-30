@@ -10,19 +10,21 @@ import SwiftUI
 enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
     case image1, image2, image3, image4
     
-    func imageResource(_ colorScheme: ColorScheme) -> ImageResource {
+    func image(_ colorScheme: ColorScheme) -> Image {
+        let section: CustomImages.ReadMe.Type = Image.custom.ReadMe.self
+        
         switch self {
         case .image1:
-            return colorScheme == .dark ? .readMeHeadingSection2Image1Dark : .readMeHeadingSection2Image1Light
+            return colorScheme == .dark ? section.heading_section2_1_dark.image : section.heading_section2_1_light.image
             
         case .image2:
-            return colorScheme == .dark ? .readMeHeadingSection2Image2Dark : .readMeHeadingSection2Image2Light
+            return colorScheme == .dark ? section.heading_section2_2_dark.image : section.heading_section2_2_light.image
             
         case .image3:
-            return colorScheme == .dark ? .readMeHeadingSection2Image3Dark : .readMeHeadingSection2Image3Light
+            return colorScheme == .dark ? section.heading_section2_3_dark.image : section.heading_section2_3_light.image
             
         case .image4:
-            return colorScheme == .dark ? .readMeHeadingSection2Image4Dark : .readMeHeadingSection2Image4Light
+            return colorScheme == .dark ? section.heading_section2_4_dark.image : section.heading_section2_4_light.image
         }
     }
     

@@ -14,9 +14,9 @@ struct ReadMe_HeadingSection1View: View {
     private let values: ReadMe_Values.Type = ReadMe_Values.self
     private let screenWidth: CGFloat = UIScreen.main.bounds.width
     private let cards: [ReadMe_HeadingSection1CardModel] = [
-        .init(emoji: "😴", text: "Falling asleep during your ride", image: .readMeHeadingSection1Image1),
-        .init(emoji: "😨", text: "Missing your stop", image: .readMeHeadingSection1Image2),
-        .init(emoji: "🚶‍♂️", text: "Having to walk (or pay extra) just to get back", image: .readMeHeadingSection1Image3)
+        .init(emoji: "😴", text: "Falling asleep during your ride", image: .custom.ReadMe.heading_section1_1.image),
+        .init(emoji: "😨", text: "Missing your stop", image: .custom.ReadMe.heading_section1_2.image),
+        .init(emoji: "🚶‍♂️", text: "Having to walk (or pay extra) just to get back", image: .custom.ReadMe.heading_section1_3.image)
     ]
     private var overlayHeight: CGFloat { values.cardHeight / 4.5 }
     
@@ -52,7 +52,7 @@ extension ReadMe_HeadingSection1View {
     
     private var hScrollCards: some View {
         func image(_ card: ReadMe_HeadingSection1CardModel) -> some View {
-            Image(card.image)
+            card.image
                 .resizable()
                 .scaledToFill()
                 .frame(width: values.cardWidth, height: values.cardHeight)

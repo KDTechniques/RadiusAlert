@@ -70,8 +70,14 @@ extension ReadMe_HeadingSection6View {
         .padding(.top, values.padding)
     }
     
+    @ViewBuilder
     private var image: some View {
-        Image(colorScheme == .dark ? .readMeHeadingSection6ImageDark : .readMeHeadingSection6ImageLight)
+        let section6: CustomImages.ReadMe.Type = CustomImages.ReadMe.self
+        let image: Image = colorScheme == .dark
+        ? section6.heading_section6_dark.image
+        : section6.heading_section6_light.image
+        
+        image
             .resizable()
             .scaledToFit()
             .shadow(color: .primary.opacity(0.3), radius: 1)

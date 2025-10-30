@@ -22,7 +22,7 @@ import SwiftUI
 enum CustomColors {
     
     /// Custom colors related to the map UI components.
-    enum Map {
+    enum Map: CustomColorsProtocol {
         case mapControlButtonBackground
         
         /// Returns the associated `Color` for each map-related case.
@@ -40,7 +40,7 @@ enum CustomColors {
     }
     
     /// Custom colors related to the search bar UI components.
-    enum SearchBar {
+    enum SearchBar: CustomColorsProtocol {
         case searchBarBackground
         case searchBarForeground
         
@@ -60,4 +60,8 @@ enum CustomColors {
             }
         }
     }
+}
+
+protocol CustomColorsProtocol {
+    var color: Color { get }
 }

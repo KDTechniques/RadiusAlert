@@ -10,7 +10,7 @@ import SwiftUI
 struct ReadMe_HeadingSection2View: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
-
+    
     // MARK: - ASSIGNED PROPERTIES
     private let values: ReadMe_Values.Type = ReadMe_Values.self
     
@@ -52,7 +52,7 @@ extension ReadMe_HeadingSection2View {
         }
         
         func image(_ type: ReadMe_HeadingSection2CardImageTypes) -> some View {
-            Image(type.imageResource(colorScheme))
+            type.image(colorScheme)
                 .resizable()
                 .scaledToFill()
                 .frame(width: values.cardWidth - values.padding*3 )

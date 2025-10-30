@@ -26,7 +26,7 @@ struct ReadMe_HighlightsView: View {
     var body: some View {
         HStack(spacing: 0) {
             ForEach(ReadMe_Highlights_ImageResourceTypes.allCases, id: \.self) { type in
-                Image(type.imageResource(colorScheme))
+                type.imageResource(colorScheme)
                     .resizable()
                     .scaledToFit()
                     .frame(width: type.width(values))
