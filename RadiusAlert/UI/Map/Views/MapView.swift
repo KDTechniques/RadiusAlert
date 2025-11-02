@@ -19,7 +19,9 @@ struct MapView: View {
     
     // MARK: - BODY
     var body: some View {
-        //        let _ = Self._printChanges()
+        #if DEBUG
+        let _ = Self._printChanges()
+        #endif
         
         Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location
@@ -63,7 +65,7 @@ struct MapView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Map") {
+#Preview("ContentView") {
     ContentView()
         .previewModifier()
 }

@@ -33,7 +33,7 @@ struct RadiusSliderView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Radius Slider View - SliderView") {
+#Preview("RadiusSliderView - SliderView") {
     VStack {
         SliderView()
         

@@ -21,7 +21,7 @@ struct ToneListRowView: View {
     var body: some View {
         let condition: Bool = settingsVM.selectedTone == tone
         
-        RadioButtonListRowView(isSelected: condition) {
+        Custom_RadioButtonListRowView(isSelected: condition) {
             Text(tone.name)
                 .tint(.primary)
         } action: {
@@ -33,7 +33,7 @@ struct ToneListRowView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Tone List Row") {
+#Preview("ToneListRowView") {
     List {
         ToneListRowView(.defaultTone)
     }

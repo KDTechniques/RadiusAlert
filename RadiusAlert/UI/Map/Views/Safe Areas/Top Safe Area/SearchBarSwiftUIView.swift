@@ -36,7 +36,7 @@ struct SearchBarSwiftUIView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Search Bar") {
+#Preview("SearchBarSwiftUIView") {
     SearchBarSwiftUIView()
         .previewModifier()
 }

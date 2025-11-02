@@ -20,7 +20,7 @@ struct AlertsListSectionView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Alerts List Section") {
+#Preview("AlertsListSectionView") {
     NavigationStack {
         List {
             AlertsListSectionView()

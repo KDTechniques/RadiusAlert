@@ -13,16 +13,23 @@ struct MapPinView: View {
     
     // MARK: - BODY
     var body: some View {
-        Image(systemName: "mappin")
-            .font(.largeTitle)
-            .foregroundStyle(.red.gradient)
+        Content()
             .opacity(mapVM.showMapPin() ? 1 : 0)
             .animation(.default, value: mapVM.showMapPin())
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Map Pin View") {
-    MapPinView()
+#Preview("MapPinView") {
+    Content()
         .previewModifier()
+}
+
+// MARK: - SUB VIEWS
+fileprivate struct Content: View {
+    var body: some View {
+        Image(systemName: "mappin")
+            .font(.largeTitle)
+            .foregroundStyle(.red.gradient)
+    }
 }

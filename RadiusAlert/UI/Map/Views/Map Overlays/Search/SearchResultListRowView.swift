@@ -39,7 +39,7 @@ struct SearchResultListRowView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Search Result List Row") {
+#Preview("SearchResultListRowView") {
     SearchResultListRowView(
         title: "Name: 1234567890 1234567890 ",
         subTitle: "Title: 1234567890 1234567890 1234567890 12345678"

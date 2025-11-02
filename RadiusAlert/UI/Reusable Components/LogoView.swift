@@ -26,12 +26,8 @@ struct LogoView: View {
     // MARK: - BODY
     var body: some View {
         ZStack {
-            Circle()
-                .frame(height: size/defaultFrameSize*defaultBigCircleHeight)
-            
-            Circle()
-                .frame(height: size/defaultFrameSize*defaultSmallCircleHeight)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            bigCircle
+            smallCircle
         }
         .foregroundStyle(color)
         .frame(width: size, height: size)
@@ -42,4 +38,18 @@ struct LogoView: View {
 #Preview("LogoView") {
     LogoView(color: MapViewModel(settingsVM: .init()).getNavigationTitleIconColor(), size: 150)
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension LogoView {
+    private var bigCircle: some View {
+        Circle()
+            .frame(height: size/defaultFrameSize*defaultBigCircleHeight)
+    }
+    
+    private var smallCircle: some View {
+        Circle()
+            .frame(height: size/defaultFrameSize*defaultSmallCircleHeight)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+    }
 }

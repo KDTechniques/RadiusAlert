@@ -26,7 +26,7 @@ struct SearchListBackgroundView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Search List Background") {
+#Preview("SearchListBackgroundView") {
     SearchListBackgroundView()
         .previewModifier()
 }

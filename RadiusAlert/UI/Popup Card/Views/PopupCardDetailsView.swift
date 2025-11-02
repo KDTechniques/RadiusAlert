@@ -37,7 +37,7 @@ struct PopupCardDetailsView: View {
 }
 
 //MARK: - PREVIEWS
-#Preview("Popup Card Details") {
+#Preview("PopupCardDetailsView") {
     PopupCardDetailsView(item: .mockValues)
         .previewModifier()
 }

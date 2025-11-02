@@ -21,7 +21,7 @@ struct AppearanceListRowView: View {
     var body: some View {
         let condition: Bool = settingsVM.selectedColorScheme == type
         
-        RadioButtonListRowView(isSelected: condition) {
+        Custom_RadioButtonListRowView(isSelected: condition) {
             content(type)
         } action: {
             settingsVM.setColorScheme(type)
@@ -30,9 +30,9 @@ struct AppearanceListRowView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Appearance List Row") {
+#Preview("AppearanceListRowView") {
     List {
-        AppearanceListRowView(.allCases.randomElement()!)
+        AppearanceListRowView(.random())
     }
     .previewModifier()
 }

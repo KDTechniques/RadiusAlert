@@ -20,8 +20,13 @@ struct MapStyleButtonView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Map Style Button View") {
+#Preview("MapStyleButtonView") {
     ButtonView()
+        .previewModifier()
+}
+
+#Preview("ContentView") {
+    ContentView()
         .previewModifier()
 }
 

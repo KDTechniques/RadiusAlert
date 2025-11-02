@@ -13,6 +13,8 @@ import UIKit
 import AVFoundation
 
 struct Utilities {
+    static var screenWidth: CGFloat = UIScreen.main.bounds.width
+    
     /// Logs debug info with file name, line number, and calling function.
     /// - Parameters:
     ///   - message: The message to log.
@@ -74,13 +76,20 @@ struct Utilities {
         return "\(version)"
     }
     
+    /// Calculates the user's distance from the edge of a circular area around a marker coordinate.
+    ///
+    /// - Parameters:
+    ///   - userCoordinate: The user's current geographic location.
+    ///   - markerCoordinate: The center coordinate of the circular area (marker).
+    ///   - radius: The radius of the area in meters.
+    /// - Returns: The distance in meters from the user's location to the edge of the radius.
+    ///            Positive if outside the radius, negative if inside, zero if exactly on the edge.
     static func getDistanceToRadius(
         userCoordinate: CLLocationCoordinate2D,
         markerCoordinate:CLLocationCoordinate2D,
         radius: CLLocationDistance
     ) -> CLLocationDistance {
+        // Subtract the radius from the distance to determine how far outside/inside the user is.
         return getDistance(from: userCoordinate, to: markerCoordinate) - radius
     }
-    
-    static var screenWidth: CGFloat = UIScreen.main.bounds.width
 }

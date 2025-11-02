@@ -21,7 +21,7 @@ struct ToneListSectionView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Tone List Section") {
+#Preview("ToneListSectionView") {
     List {
         ToneListSectionView()
     }

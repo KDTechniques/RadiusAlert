@@ -1,5 +1,5 @@
 //
-//  RadioButtonListRowView.swift
+//  Custom_RadioButtonListRowView.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-08-24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RadioButtonListRowView<T: View>: View {
+struct Custom_RadioButtonListRowView<T: View>: View {
     // MARK: - INJECTED PROPERTIES
     let isSelected: Bool
     let content: T
@@ -40,12 +40,12 @@ struct RadioButtonListRowView<T: View>: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Radio Button List Row") {
+#Preview("Custom_RadioButtonListRowView") {
     @Previewable @State var isSelected: Bool = .random()
     
     List {
-        RadioButtonListRowView(isSelected: isSelected) {
-            Text("Label")
+        Custom_RadioButtonListRowView(isSelected: isSelected) {
+            Text("Content goes here...")
                 .tint(.primary)
         } action: {
             isSelected.toggle()

@@ -29,7 +29,7 @@ struct DistanceTextView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Distance Text") {
+#Preview("DistanceTextView") {
     Color.yellow
         .overlay {
             Content(300)

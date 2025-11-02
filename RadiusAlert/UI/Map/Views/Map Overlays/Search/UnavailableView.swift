@@ -29,7 +29,7 @@ struct UnavailableView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Unavailable") {
+#Preview("UnavailableView") {
     UnavailableView("No Results")
         .previewModifier()
 }

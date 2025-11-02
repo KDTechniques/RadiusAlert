@@ -30,14 +30,14 @@ struct KeyboardPreLoaderView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Keyboard Pre-Loader") {
+#Preview("KeyboardPreLoaderView") {
     KeyboardPreLoaderView {
         print("Keyboard Loader is Finished!")
     }
     .previewModifier()
 }
 
-#Preview("Content") {
+#Preview("KeyboardPreLoaderView - Content") {
     ContentView()
         .previewModifier()
 }

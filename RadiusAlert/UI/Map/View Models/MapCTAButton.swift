@@ -105,6 +105,7 @@ extension MapViewModel {
         onAlertStartEnded()
     }
     
+    /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
     private func onAlertStartEnded() {
         Task {
             await HapticManager.shared.vibrate(type: .rigid)

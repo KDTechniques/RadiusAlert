@@ -29,7 +29,7 @@ struct PopupCardCTAButtonView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card CTA Button") {
+#Preview("PopupCardCTAButtonView") {
     PopupCardCTAButtonView()
         .padding(.horizontal, 50)
         .previewModifier()

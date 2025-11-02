@@ -8,23 +8,12 @@
 import TipKit
 
 struct RadiusSliderTipModel: Tip {
-    @Parameter(.transient)
-    static var isSetRadius: Bool = false
+    var title: Text { .init("Adjust Radius") }
+    var message: Text? { .init("Drag the slider to change the alert radius on the map.") }
+    var image: Image? { .init(systemName: "circle") }
     
-    @Parameter(.transient)
-    static var isSliderVisible: Bool = false
-    
-    var title: Text {
-        Text("Adjust Radius")
-    }
-    
-    var message: Text? {
-        Text("Drag the slider to change the alert radius on the map.")
-    }
-    
-    var image: Image? {
-        Image(systemName: "circle")
-    }
+    @Parameter(.transient) static var isSetRadius: Bool = false
+    @Parameter(.transient) static var isSliderVisible: Bool = false
     
     var actions: [Action] { [
         .init(title: "Show me how") {

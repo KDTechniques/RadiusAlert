@@ -32,7 +32,7 @@ struct NavigationTitleButtonView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Navigation Title Button") {
+#Preview("NavigationTitleButtonView") {
     NavigationStack {
         NavigationTitleButtonView()
     }

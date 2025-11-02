@@ -29,7 +29,7 @@ struct CTAButtonView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Call to Action Button View") {
+#Preview("CTAButtonView") {
     CTAButtonView()
         .previewModifier()
 }

@@ -20,7 +20,7 @@ struct MapStyleListRowView: View {
     var body: some View {
         let condition: Bool = settingsVM.selectedMapStyle == style
         
-        RadioButtonListRowView(isSelected: condition) {
+        Custom_RadioButtonListRowView(isSelected: condition) {
             Text(style.rawValue.capitalized)
                 .tint(.primary)
         } action: {
@@ -30,9 +30,9 @@ struct MapStyleListRowView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Map Style List Row") {
+#Preview("MapStyleListRowView") {
     List {
-        MapStyleListRowView(.allCases.randomElement()!)
+        MapStyleListRowView(.random())
     }
     .previewModifier()
 }

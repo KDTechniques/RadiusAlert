@@ -11,18 +11,6 @@ import SwiftUI
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    /// Returns a `Binding<String>` that keeps the search bar text in sync with the view model's `searchText`.
-    /// Useful for connecting the SwiftUI TextField directly to the view model.
-    func searchTextBinding() -> Binding<String> {
-        return Binding(
-            get: { self.searchText },
-            set: {
-                guard self.searchText != $0 else { return }
-                self.setSearchText($0)
-            }
-        )
-    }
-    
     /// Handles tapping a search result from the list.
     /// - If no marker coordinate is set, select the location directly.
     /// - If a marker already exists, show a confirmation to stop the ongoing alert before changing location.
@@ -83,6 +71,7 @@ extension MapViewModel {
     
     // MARK: - PRIVATE FUNCTIONS
     
+    /// Handle when there's text in the search bar
     private func onNotEmptySearchText(_ text: String) {
         locationSearchManager.setIsSearching(true)
         locationSearchManager.setQueryText(searchText: text)

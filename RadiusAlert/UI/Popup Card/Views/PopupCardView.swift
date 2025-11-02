@@ -39,7 +39,7 @@ struct PopupCardView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card") {
+#Preview("PopupCardView") {
     ZStack {
         ContentView()
         PopupCardView(item: .mockValues)

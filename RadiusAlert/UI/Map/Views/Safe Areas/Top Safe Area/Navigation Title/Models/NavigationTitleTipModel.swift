@@ -10,20 +10,15 @@ import Foundation
 import TipKit
 
 struct NavigationTitleTipModel: Tip {
-    static let startAlertEvent: Event = .init(id: "startAlertEvent")
-    
-    var title: Text {
-        Text("Learn More & Settings")
-    }
-    
-    var message: Text? {
-        Text("Tap here to learn more about this app and settings.")
-    }
+    var title: Text { .init("Learn More & Settings") }
+    var message: Text? { .init("Tap here to learn more about this app and settings.") }
     
     var image: Image? {
-        Image(systemName: "hand.rays")
-            .symbolRenderingMode(.hierarchical)
+        .init(systemName: "hand.rays")
+        .symbolRenderingMode(.hierarchical)
     }
+    
+    static let startAlertEvent: Event = .init(id: "startAlertEvent")
     
     var rules: [Rule] { [
         #Rule(Self.startAlertEvent) { $0.donations.count >= 3 }
