@@ -15,8 +15,10 @@ enum MapStyleTypes: String, CaseIterable {
         switch self {
         case .standard:
             return .standard(elevation: .realistic)
+            
         case .imagery:
             return .imagery(elevation: .realistic)
+            
         case .hybrid:
             return .hybrid(elevation: .realistic)
         }
@@ -26,8 +28,10 @@ enum MapStyleTypes: String, CaseIterable {
         switch self {
         case .standard:
             return "square.3.layers.3d.bottom.filled"
+            
         case .imagery:
             return "square.3.layers.3d.top.filled"
+            
         case .hybrid:
             return "square.3.layers.3d.middle.filled"
         }

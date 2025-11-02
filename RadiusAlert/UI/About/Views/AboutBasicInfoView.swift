@@ -13,17 +13,19 @@ struct AboutBasicInfoView: View {
         Section {
             version
             AboutListRowView("Launch", "19th Sep 2025")
-            AboutListRowView("Developer", "Paramsoodi Kavinda Dilshan")
+            connectWithDeveloper
         }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Basic Info About Section") {
-    List {
-        AboutBasicInfoView()
-            .previewModifier()
+    NavigationStack {
+        List {
+            AboutBasicInfoView()
+        }
     }
+    .previewModifier()
 }
 
 // MARK: -  EXTENSIONS
@@ -32,6 +34,14 @@ extension  AboutBasicInfoView {
     private var version: some View {
         if let versionNBuildNumber: String = Utilities.appVersion() {
             AboutListRowView("Version", versionNBuildNumber)
+        }
+    }
+    
+    private var connectWithDeveloper: some View {
+        NavigationLink {
+            AboutConnectWithDeveloperView()
+        } label: {
+            AboutListRowView("Developer", "Kavinda Dilshan")
         }
     }
 }

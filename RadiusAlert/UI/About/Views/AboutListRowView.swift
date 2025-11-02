@@ -30,7 +30,8 @@ struct AboutListRowView: View {
 
 // MARK: - PREVIEWS
 #Preview("About List Row") {
-    AboutListRowView("Version", "1.0.0")
-        .padding()
-        .previewModifier()
+    List {
+        AboutListRowView("Version", "1.0.0")
+    }
+    .previewModifier()
 }

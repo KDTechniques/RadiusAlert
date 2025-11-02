@@ -11,8 +11,9 @@ struct AboutAppImprovementsView: View {
     // MARK: - BODY
     var body: some View {
         Section {
-            AboutWhatsNewView()
-            AboutFutureUpdatesView()
+            ForEach(UpdateTypes.allCases, id: \.self) {
+                AboutUpdatesView(type: $0)
+            }
         } header: {
             Text("App Improvements")
         }

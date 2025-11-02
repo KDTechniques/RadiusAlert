@@ -8,36 +8,25 @@
 import SwiftUI
 
 struct DebugView: View {
-    // MARK: - INJECTED PROPERTIES
-    @Environment(SettingsViewModel.self) private var settingsVM
-    @Environment(MapViewModel.self) private var mapVM
-    
-    // MARK: -  ASSIGNED PROPERTIES
-    let alertManager: AlertManager = .shared
-    let locationManager: LocationManager = .shared
-    @State private var volume: String?
-    @State private var playerVolume: Float = 1.0
-    @State private var isPresentedReadMe: Bool = false
-    
     // MARK: - BODY
     var body: some View {
         NavigationLink {
-            List {
-                content
-            }
-            .sheet(isPresented: $isPresentedReadMe) {
-                ReadMeView($isPresentedReadMe)
-            }
-            .navigationTitle(Text("Debug"))
+            Content()
         } label: {
             Image(systemName: "ladybug.fill")
         }
         .padding(.trailing)
-        
     }
 }
 
 // MARK: - PREVIEWS
+#Preview("Debug - Content") {
+    NavigationStack {
+        Content()
+    }
+    .previewModifier()
+}
+
 #Preview("Debug") {
     NavigationStack {
         DebugView()
@@ -50,19 +39,36 @@ struct DebugView: View {
         .previewModifier()
 }
 
-// MARK: - EXTENSIONS
-extension DebugView {
-    @ViewBuilder
-    private var content: some View {
-        currentDistanceMode
-        tone
-        haptic
-        notification
-        alert
-        readMe
-        clearUserDefaults
-    }
+// MARK: - SUB VIEWS
+private struct Content: View {
+    @Environment(SettingsViewModel.self) private var settingsVM
+    @Environment(MapViewModel.self) private var mapVM
     
+    let alertManager: AlertManager = .shared
+    let locationManager: LocationManager = .shared
+    @State private var volume: String?
+    @State private var playerVolume: Float = 1.0
+    @State private var isPresentedReadMe: Bool = false
+    
+    var body: some View {
+        List {
+            currentDistanceMode
+            tone
+            haptic
+            notification
+            alert
+            readMe
+            clearUserDefaults
+        }
+        .sheet(isPresented: $isPresentedReadMe) {
+            ReadMeView($isPresentedReadMe)
+        }
+        .navigationTitle(Text("Debug"))
+    }
+}
+
+// MARK: - EXTENSIONS
+extension Content {
     private var tone: some View {
         Section {
             Button("Play Tone") {

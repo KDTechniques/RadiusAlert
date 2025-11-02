@@ -8,26 +8,7 @@
 import SwiftUI
 
 struct AboutConnectWithDeveloperView: View {
-    // MARK: - BODY
-    var body: some View {
-        NavigationLink {
-            Content()
-        } label: {
-            Text("Connect with Kavinda 👋")
-        }
-    }
-}
-
-// MARK: - PREVIEWS
-#Preview("About - Connect with Developer") {
-    NavigationStack {
-        Content()
-    }
-    .previewModifier()
-}
-
-// MARK: - SUB VIEWS
-fileprivate struct Content: View {
+    // MARK: - ASSIGNED PROPERTIES
     @State private var showExpandedPhoto: Bool = false
     @Namespace private var photo
     let nameSpaceID: String = "photo"
@@ -40,6 +21,7 @@ fileprivate struct Content: View {
         "Propose improvements or feedback 🔧"
     ]
     
+    // MARK: - BODY
     var body: some View {
         List {
             reasonsSection
@@ -52,7 +34,16 @@ fileprivate struct Content: View {
     }
 }
 
-extension Content {
+// MARK: - PREVIEWS
+#Preview("AboutConnectWithDeveloperView") {
+    NavigationStack {
+        AboutConnectWithDeveloperView()
+    }
+    .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension AboutConnectWithDeveloperView {
     private var developerImage: some View {
         Image(.developer)
             .resizable()

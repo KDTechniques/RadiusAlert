@@ -16,8 +16,10 @@ enum MapCTAButtonErrorModel {
         switch self {
         case .userAlreadyInRadius:
             return "⚠️: User is already in the circular radius range."
+            
         case .failedToStartMonitoringRegion:
             return "❌: Failed to start monitoring region due to marker coordinate being nil."
+            
         case .failedToGetDistance:
             return "❌: Failed to get distance due to current user location being nil."
         }

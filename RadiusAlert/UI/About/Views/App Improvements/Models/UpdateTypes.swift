@@ -7,7 +7,41 @@
 
 import Foundation
 
-struct UpdateTypes: Identifiable {
+enum UpdateTypes: CaseIterable {
+    case future, whatsNew
+    
+    var navigationLinkString: String {
+        switch self {
+        case .future:
+            return "Future Updates 📲"
+            
+        case .whatsNew:
+            return "What's New ✨"
+        }
+    }
+    
+    var navigationTitle: String {
+        switch self {
+        case .future:
+            return "Future Updates"
+            
+        case .whatsNew:
+            return "What's New"
+        }
+    }
+    
+    var values: [UpdateTypeValues] {
+        switch self {
+        case .future:
+            return UpdateTypeValues.futureUpdates
+            
+        case .whatsNew:
+            return UpdateTypeValues.whatsNew
+        }
+    }
+}
+
+struct UpdateTypeValues: Identifiable {
     let id: UUID = .init()
     let emoji: String
     let description: String

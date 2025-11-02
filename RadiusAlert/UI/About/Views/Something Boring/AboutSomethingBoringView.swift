@@ -12,7 +12,6 @@ struct AboutSomethingBoringView: View {
     var body: some View {
         Section {
             AboutOriginView()
-            AboutConnectWithDeveloperView()
             AboutReadMeView()
         } header: {
             Text("Something Boring")

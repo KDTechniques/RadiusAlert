@@ -28,8 +28,10 @@ struct AboutConnectSocialMediaLinkView: View {
 
 // MARK: - PREVIEWS
 #Preview("About - Connect Social Media Link") {
-    AboutConnectSocialMediaLinkView(type: .facebook)
-        .previewModifier()
+    List {
+        AboutConnectSocialMediaLinkView(type: .facebook)
+    }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
