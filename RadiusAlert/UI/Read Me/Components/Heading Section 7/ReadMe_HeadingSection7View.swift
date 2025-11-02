@@ -44,7 +44,7 @@ extension ReadMe_HeadingSection7View {
     }
     
     private var image: some View {
-        Image(.readMeHeadingSection7)
+        Image.custom.ReadMe.heading_section7.image
             .resizable()
             .scaledToFit()
             .clipShape(.rect(cornerRadius: values.cornerRadius))

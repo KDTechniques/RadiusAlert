@@ -21,7 +21,7 @@ struct TopSafeAreaView: View {
             NavigationTitleButtonView()
             SearchBarSwiftUIView()
             Divider()
-            SearchListView()
+            SearchResultsListView()
         }
         .padding(.top, 40)
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
@@ -29,7 +29,7 @@ struct TopSafeAreaView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Top Safe Area Content") {
+#Preview("TopSafeAreaView") {
     NavigationStack {
         VStack {
             TopSafeAreaView()

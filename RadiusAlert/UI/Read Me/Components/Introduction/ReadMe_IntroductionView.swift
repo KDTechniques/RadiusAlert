@@ -33,7 +33,7 @@ struct ReadMe_IntroductionView: View {
 // MARK: - EXTENSIONS
 extension ReadMe_IntroductionView {
     private var image: some View {
-        Image(.readMeIntroduction)
+        Image.custom.ReadMe.introduction.image
             .resizable()
             .scaledToFit()
     }

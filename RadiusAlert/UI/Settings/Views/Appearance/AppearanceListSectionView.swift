@@ -21,7 +21,7 @@ struct AppearanceListSectionView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Appearance List Section") {
+#Preview("AppearanceListSectionView") {
     NavigationStack {
         List {
             AppearanceListSectionView()

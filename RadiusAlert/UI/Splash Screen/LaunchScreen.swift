@@ -31,11 +31,14 @@ struct LaunchScreen: View {
             .background(.background)
             .ignoresSafeArea()
             .onAppear { animate() }
+#if DEBUG
+            .onTapGesture { debug_handleTap() }
+#endif
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Launch Screen") {
+#Preview("LaunchScreen") {
     LaunchScreen()
         .previewModifier()
 }
@@ -60,5 +63,13 @@ extension LaunchScreen {
                 try? await Task.sleep(nanoseconds: 20_000_000)
             }
         }
+    }
+    
+    private func debug_handleTap() {
+        for index in modelArray.indices {
+            modelArray[index].opacity = 0
+        }
+        
+        animate()
     }
 }

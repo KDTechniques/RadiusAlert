@@ -15,6 +15,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     static let shared: LocationManager = .init()
     let manager: CLLocationManager = .init()
     let alertManager: AlertManager = .shared
+    private let errorModel: LocationManagerErrorModel.Type = LocationManagerErrorModel.self
     
     // MARK: - INITIALIZER
     private override init() {
@@ -38,6 +39,16 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private let mapValues: MapValues.Type = MapValues.self
     private let regionIdentifier: String = "radiusAlert"
     private(set) var currentDistanceMode: LocationDistanceModes?
+    private(set) var currentRegionName: String?
+    
+    // MARK: - SETTERS
+    func setCurrentDistanceMode(_ value: LocationDistanceModes) {
+        currentDistanceMode = value
+    }
+    
+    func setCurrentRegionName(_ value: String?) {
+        currentRegionName = value
+    }
     
     // MARK: - DELEGATE FUNCTIONS
     
@@ -74,7 +85,11 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// Called whenever the device gets updated location(s).
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentUserLocation = locations.first?.coordinate
+        // Note: Don't change the following order
+        let currentUserLocation: CLLocationCoordinate2D? = locations.last?.coordinate
+        updateInitialCurrentRegion(currentUserLocation)
+        self.currentUserLocation = currentUserLocation
+        
         setLocationAccuracy()
         onRegionEntryFailure()
     }
@@ -95,7 +110,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// Returns the initial camera position for the map centered on the user’s location
     func getInitialMapCameraPosition() -> MapCameraPosition? {
-        guard let coordinate: CLLocationCoordinate2D =  currentUserLocation else {
+        guard let coordinate: CLLocationCoordinate2D = currentUserLocation else {
             print("Error getting initial current location of the user!")
             return nil
         }
@@ -169,18 +184,21 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         
-        let distance: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: markerCoordinate)
-        let distanceToRadius: CLLocationDistance = distance - selectedRadius
+        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: currentUserLocation,
+            markerCoordinate: markerCoordinate,
+            radius: selectedRadius
+        )
+        
         let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distanceToRadius)
         
         // Only apply if mode actually changed
         guard newMode != currentDistanceMode else { return }
-        currentDistanceMode = newMode
+        setCurrentDistanceMode(newMode)
         
         switch newMode {
         case .close:
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            manager.distanceFilter = 50
             stopSignificantUpdatesNStartLocationUpdates()
             
         case .medium:
@@ -214,6 +232,31 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    func getCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
+        guard let latitude = currentUserLocation?.latitude,
+              let longitude = currentUserLocation?.longitude else { return }
+        
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geoCoder = CLGeocoder()
+        
+        Task {
+            do {
+                let placemarks: [CLPlacemark] = try await geoCoder.reverseGeocodeLocation(location)
+                guard let country: String = placemarks.first?.country else {
+                    Utilities.log(errorModel.failedToGetCountry.errorDescription)
+                    return
+                }
+                
+                await MainActor.run {
+                    self.setCurrentRegionName(country)
+                    print("✅: Assigned current region name: \(country.description)")
+                }
+            } catch let error {
+                Utilities.log(errorModel.failedCLGeoCoderOnRegionFilter(error).errorDescription)
+            }
+        }
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Helper function to stop significant-change updates
@@ -221,5 +264,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private func stopSignificantUpdatesNStartLocationUpdates() {
         manager.stopMonitoringSignificantLocationChanges()
         manager.startUpdatingLocation()
+    }
+    
+    private func updateInitialCurrentRegion(_ currentUserLocation: CLLocationCoordinate2D?) {
+        guard self.currentUserLocation == nil,
+              let currentUserLocation else { return }
+        
+        getCurrentRegionName(currentUserLocation)
     }
 }

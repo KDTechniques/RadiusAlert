@@ -29,8 +29,8 @@ struct PopupCardView: View {
             PopupCardDetailsView(item: item)
             PopupCardCTAButtonView()
         }
-        .padding()
-        .background(.background, in: .rect(cornerRadius: 20))
+        .padding([.horizontal, .bottom])
+        .glassEffectViewModifier
         .padding(.horizontal, 50)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial)
@@ -39,10 +39,24 @@ struct PopupCardView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card") {
-    PopupCardView(item: .mockValues)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.regularMaterial)
-        .ignoresSafeArea()
-        .previewModifier()
+#Preview("PopupCardView") {
+    ZStack {
+        ContentView()
+        PopupCardView(item: .mockValues)
+    }
+    .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+fileprivate extension View {
+    @ViewBuilder
+    var glassEffectViewModifier: some View {
+        if #available(iOS 26.0, *) {
+            self
+                .glassEffect(.clear, in: .rect(cornerRadius: 35))
+        } else {
+            self
+                .background(.background, in: .rect(cornerRadius: 20))
+        }
+    }
 }

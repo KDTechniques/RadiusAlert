@@ -11,5 +11,5 @@ struct ReadMe_HeadingSection1CardModel: Identifiable {
     let id: String = UUID().uuidString
     let emoji: String
     let text: String
-    let image: ImageResource
+    let image: Image
 }

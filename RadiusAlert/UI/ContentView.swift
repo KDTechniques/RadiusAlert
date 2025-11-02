@@ -44,7 +44,7 @@ struct ContentView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Content View") {
+#Preview("ContentView") {
     ContentView()
         .previewModifier()
 }

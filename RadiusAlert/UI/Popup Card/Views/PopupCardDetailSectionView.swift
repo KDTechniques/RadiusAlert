@@ -25,28 +25,14 @@ struct PopupCardDetailSectionView: View {
     // MARK: - BODY
     var body: some View {
         VStack(alignment: .leading) {
-            Text(title.uppercased())
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
-            
-            HStack(spacing: 5) {
-                Image(systemName: systemImageName)
-                
-                Text(value)
-                    .font(.footnote)
-                    .bold()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    
-            }
-            .foregroundStyle(foregroundColor)
+            heading
+            label
         }
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card Detail Section") {
+#Preview("PopupCardDetailSectionView") {
     PopupCardDetailSectionView(
         title: "Radius",
         systemImageName: "circle.circle.fill",
@@ -54,4 +40,27 @@ struct PopupCardDetailSectionView: View {
         foregroundColor: .red
     )
     .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension PopupCardDetailSectionView {
+    private var heading: some View {
+        Text(title.uppercased())
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .foregroundStyle(.secondary)
+    }
+    
+    private var label: some View {
+        HStack(spacing: 5) {
+            Image(systemName: systemImageName)
+            
+            Text(value)
+                .bold()
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .font(.footnote)
+        .foregroundStyle(foregroundColor)
+    }
 }

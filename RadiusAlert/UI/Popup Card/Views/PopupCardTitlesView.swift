@@ -11,24 +11,32 @@ struct PopupCardTitlesView: View {
     // MARK: - BODY
     var body: some View {
         VStack {
-            // Title
-            Text("It's time!")
-                .font(.title)
-                .bold()
-            
-            // Subtitle
-            Text("You've arrived to your destination radius")
-                .foregroundStyle(.secondary)
-                .font(.callout)
-                .multilineTextAlignment(.center)
+            title
+            subTitle
         }
         .padding(.bottom)
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card Titles") {
+#Preview("PopupCardTitlesView") {
     PopupCardTitlesView()
         .padding(.horizontal, 100)
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension PopupCardTitlesView {
+    private var title: some View {
+        Text("It's time!")
+            .font(.title)
+            .bold()
+    }
+    
+    private var subTitle: some View {
+        Text("You've arrived at your destination radius")
+            .foregroundStyle(.secondary)
+            .font(.callout)
+            .multilineTextAlignment(.center)
+    }
 }

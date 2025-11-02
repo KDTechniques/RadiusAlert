@@ -14,6 +14,10 @@ extension MapViewModel {
         locationManager.markerCoordinate = marker
     }
     
+    /// Updates the marker’s position on the map.
+    /// - Sets the marker at the current center coordinate (if available).
+    /// - Adjusts the map region bounds so that the marker and the user's current location
+    ///   are both visible, without animation.
     func setMarkerCoordinate() {
         guard
             let currentLocation = locationManager.currentUserLocation,
@@ -31,10 +35,3 @@ extension MapViewModel {
         setMarkerCoordinate(nil)
     }
 }
-
-
-
-
-
-
-

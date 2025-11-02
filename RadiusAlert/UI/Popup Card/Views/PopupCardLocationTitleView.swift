@@ -26,11 +26,12 @@ struct PopupCardLocationTitleView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Popup Card Location Title") {
+#Preview("PopupCardLocationTitleView") {
     PopupCardLocationTitleView(title: "OneMac")
         .previewModifier()
 }
 
+// MARK: - EXTENSIONS
 extension PopupCardLocationTitleView {
     private var icon: some View {
         Image(systemName: "mappin.and.ellipse")

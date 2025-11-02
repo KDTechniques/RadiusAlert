@@ -23,11 +23,11 @@ struct ReadMeView: View {
     // MARK: - BODY
     var body: some View {
         ScrollView(.vertical) {
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ReadMe_IntroductionView(animate: $animate)
                 ReadMe_HighlightsView(hPadding: padding, animate: animate)
                 
-                VStack(alignment: .leading, spacing: 10) {
+                LazyVStack(alignment: .leading, spacing: 10) {
                     ReadMe_HeadingSection1View()
                     ReadMe_HeadingSection2View()
                     ReadMe_HeadingSection3View()

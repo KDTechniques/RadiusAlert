@@ -12,6 +12,7 @@ import SwiftUI
 final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     // MARK: - ASSIGNED PROPERTIES
     private let completer = MKLocalSearchCompleter()
+    private let locationManager: LocationManager = .shared
     private let resultListingAnimationDuration: Double = 0.3
     private let errorModel: LocationSearchManagerErrorModel.Type = LocationSearchManagerErrorModel.self
     private(set) var results: [LocationSearchModel] = []
@@ -29,7 +30,6 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     /// Updates the search query for the completer.
     /// - Parameter query: The text input from the user.
     func setQueryText(searchText query: String) {
-        isSearching = true
         completer.queryFragment = query
     }
     
@@ -44,6 +44,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     }
     
     func clearResults() {
+        completer.cancel()
         results = []
     }
     
@@ -62,28 +63,36 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     /// - After the animation duration, sets `isSearching` back to `false`.
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         // Convert search completions into our custom `LocationSearchModel`
-        let tempArray: [LocationSearchModel] = completer.results.compactMap({ LocationSearchModel(result: $0) })
+        let tempArray: [MKLocalSearchCompletion] = completer.results
+        var filteredByRegionResults: [MKLocalSearchCompletion] = []
+        
+        if let country: String = locationManager.currentRegionName {
+            filteredByRegionResults = tempArray.filter({ $0.subtitle.contains(country) })
+        } else {
+            filteredByRegionResults = tempArray
+        }
+        
+        let mappedResults: [LocationSearchModel] = filteredByRegionResults.compactMap({ LocationSearchModel(result: $0) })
         
         // Animate the results update in the UI
-        withAnimation(.smooth(duration: resultListingAnimationDuration)) { results = tempArray }
-        
-        // Reset the searching flag once the animation completes
-        Task {
-            try? await Task.sleep(nanoseconds: UInt64(resultListingAnimationDuration))
-            isSearching = false
+        withAnimation(.smooth(duration: resultListingAnimationDuration)) {
+            results = mappedResults
+        } completion: {
+            self.setIsSearching(false)
         }
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        isNetworkFailureError(error) ? clearResults() : ()
+        setIsSearching(false)
+        Utilities.log(errorModel.failedMKLocalSearchCompleter(error).errorDescription)
+    }
+    
+    private func isNetworkFailureError(_ error: Error) -> Bool {
         // First, try to cast the error to NSError to access error codes
         let nsError = error as NSError
         
         // Check if it's a network-related timeout
-        if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorTimedOut {
-            setIsSearching(false)
-            clearResults()
-        }
-        
-        Utilities.log(errorModel.failedMKLocalSearchCompleter(error).errorDescription)
+        return nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorTimedOut
     }
 }

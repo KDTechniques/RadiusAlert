@@ -37,7 +37,7 @@ struct PopupCardDetailsView: View {
 }
 
 //MARK: - PREVIEWS
-#Preview("Popup Card Details") {
+#Preview("PopupCardDetailsView") {
     PopupCardDetailsView(item: .mockValues)
         .previewModifier()
 }
@@ -46,7 +46,7 @@ struct PopupCardDetailsView: View {
 extension PopupCardDetailsView {
     private var verticalSeparator: some View {
         Rectangle()
-            .fill(Color(uiColor: .separator))
+            .fill(.secondary)
             .frame(width: 1,  height: 30)
     }
 }

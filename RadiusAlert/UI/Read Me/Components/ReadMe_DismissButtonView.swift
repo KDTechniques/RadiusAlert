@@ -22,16 +22,8 @@ struct ReadMe_DismissButtonView: View {
         Button {
             action()
         } label: {
-            Image(systemName: "xmark.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .foregroundStyle(colorScheme == .dark
-                                 ? Color.white
-                                 : Color(uiColor: .lightGray)
-                )
-                .frame(width: 40, height: 40)
+            image
         }
-        .buttonStyle(.plain)
     }
 }
 
@@ -45,4 +37,29 @@ struct ReadMe_DismissButtonView: View {
             }
         }
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension ReadMe_DismissButtonView {
+    @ViewBuilder
+    private var image: some View {
+        if #available(iOS 26.0, *) {
+            Image(systemName: "xmark")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundStyle(Color(uiColor: .lightGray))
+                .padding(12)
+                .glassEffect(.clear, in: .circle)
+                .shadow(radius: 1)
+        } else {
+            Image(systemName: "xmark.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(colorScheme == .dark
+                                 ? Color.white
+                                 : Color(uiColor: .lightGray)
+                )
+                .frame(width: 40, height: 40)
+        }
+    }
 }

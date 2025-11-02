@@ -27,7 +27,7 @@ struct BottomSafeAreaView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("Bottom Safe Area Views") {
+#Preview("BottomSafeAreaView") {
     BottomSafeAreaView()
         .previewModifier()
 }

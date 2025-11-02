@@ -11,7 +11,7 @@ struct ReadMe_HeadingSection5View: View {
     // MARK: - BODY
     var body: some View {
         heading
-        descrioption1
+        description1
         description2
         description3
     }
@@ -34,7 +34,7 @@ extension ReadMe_HeadingSection5View {
             .readMeHeadingSectionToSectionPadding
     }
     
-    private var descrioption1: some View {
+    private var description1: some View {
         Text("No ads. No in-app purchases. It's free!")
             .readMeBodyViewModifier
     }

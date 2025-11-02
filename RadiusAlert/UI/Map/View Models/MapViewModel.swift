@@ -18,56 +18,44 @@ final class MapViewModel {
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
         selectedRadius = mapValues.minimumRadius
-        authorizationStatusPublisher()
+        authorizationStatusSubscriber()
         clearMemoryByMapStyles()
     }
     
     // MARK: - ASSIGNED PROPERTIES
+    let mapValues: MapValues.Type = MapValues.self
+    let radiusSliderTip: RadiusSliderTipModel = .init()
+    @ObservationIgnored var cancellables: Set<AnyCancellable> = []
+    
+    // Managers/Services
     let locationManager: LocationManager = .shared
     let networkManager: NetworkManager = .shared
     let memoryWarningsHandler: MemoryWarningHandler = .shared
-    private(set) var locationSearchManager: LocationSearchManager = .init()
     let alertManager: AlertManager = .shared
-    let mapValues: MapValues.Type = MapValues.self
+    private(set) var locationSearchManager: LocationSearchManager = .init()
     
+    // Map state
     private(set) var position: MapCameraPosition = .automatic
     private(set) var interactionModes: MapInteractionModes = [.all]
     private(set) var centerCoordinate: CLLocationCoordinate2D?
     private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange(selectedRadius) } }
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
     private(set) var route: MKRoute?
+    @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
+    
+    // Search and UI state
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
     private(set) var isCameraDragging: Bool = false
     private(set) var sliderHeight: CGFloat?
+    @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     
-    @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
-    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
-    @ObservationIgnored private(set) var selectedSearchResult: MKMapItem?
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
-    
-    // MARK: - PUBLISHERS
-    func authorizationStatusPublisher() {
-        locationManager.$authorizationStatus$
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] in
-                guard let self else { return }
-                isAuthorizedToGetMapCameraUpdate = ($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
-                
-                guard isAuthorizedToGetMapCameraUpdate else { return }
-                
-                Task { @MainActor  [weak self] in
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self?.positionToInitialUserLocation()
-                }
-            }
-            .store(in: &cancellables)
-    }
-    
+ 
     // MARK: - SETTERS
+    
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
     }
@@ -118,7 +106,7 @@ final class MapViewModel {
         radiusAlertItem = item
     }
     
-    func setSelectedSearchResult(_ item: MKMapItem?) {
+    func setSelectedSearchResult(_ item: SearchResultModel?) {
         selectedSearchResult = item
     }
     
@@ -130,10 +118,28 @@ final class MapViewModel {
         sliderHeight = value
     }
     
+    func set_IsAuthorizedToGetMapCameraUpdate(_ value: Bool) {
+        isAuthorizedToGetMapCameraUpdate = value
+    }
+    
+    func set_cancellables(_ value: Set<AnyCancellable>) {
+        cancellables = value
+    }
+    
     // MARK: - PUBLIC FUNCTIONS
+    
     func getNavigationTitleIconColor() -> Color {
         networkManager.connectionState == .connected
         ? .primary
         : .init(uiColor: .systemGray5)
     }
+    
+    func onMapViewAppear() {
+        MapStyleButtonTipModel.isOnMapView = true
+    }
+    
+    func onMapViewDisappear() {
+        MapStyleButtonTipModel.isOnMapView = false
+    }
 }
+

@@ -10,29 +10,23 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
-    func clearPopupCardItem() {
-        setPopupCardItem(nil)
-    }
-    
+    /// Generates a PopupCardModel with updated radius, duration, and distance
+    /// values for the current alert and sets it for display in the UI.
     func generateNSetPopupCardItem() {
-        guard let item: RadiusAlertModel = radiusAlertItem else { return }
+        guard let item: RadiusAlertModel = radiusAlertItem else { return } // Ensure a valid alert item is available
         
-        let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false)
-        let duration: String = generateDurationText(item.firstDate)
+        let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false) // Format the alert radius for display
+        let duration: String = generateDurationText(item.firstDate) // Compute the duration since the alert's first recorded date
         
-        let coordinate1: CLLocation = .init(
-            latitude: item.firstUserLocation.latitude,
-            longitude: item.firstUserLocation.longitude
-        )
+        // Calculate the user's distance to the alert's radius
+        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: item.firstUserLocation,
+            markerCoordinate: item.markerCoordinate,
+            radius: item.setRadius)
         
-        let coordinate2: CLLocation = .init(
-            latitude: item.markerCoordinate.latitude,
-            longitude: item.markerCoordinate.longitude
-        )
+        let distanceText: String = getRadiusTextString(distanceToRadius, withAlertRadiusText: false) // Format the calculated distance
         
-        let actualDistance: CLLocationDistance = coordinate1.distance(from: coordinate2) - item.setRadius
-        let distanceText: String = getRadiusTextString(actualDistance, withAlertRadiusText: false)
-        
+        // Prepare a popup card model with the collected display values
         let popupCardItem: PopupCardModel = .init(
             typeNValue: [
                 (.radius, radiusText),
@@ -42,30 +36,30 @@ extension MapViewModel {
             locationTitle: item.locationTitle
         )
         
-        setPopupCardItem(popupCardItem)
+        setPopupCardItem(popupCardItem) // Set the popup card item for display in the UI
+    }
+    
+    func clearPopupCardItem() {
+        setPopupCardItem(nil)
     }
     
     func reduceAlertToneVolumeOnScenePhaseChange() {
         guard popupCardItem != nil else { return }
         
-        // set the player volume to absolute 50%. That means the total volume of both system and the player must equal to 50%.
-        // To do so: if system volume is 80%, we set the player volume to 30%.
-        // So player volume = system volume - Absolute Volume
         let absoluteVolume: Float = 0.5
-        let systemVolume: Float = Utilities.getSystemVolume()
-        let playerVolume: Float = systemVolume - absoluteVolume
-        
-        alertManager.setToneVolume(playerVolume)
+        alertManager.setAbsoluteToneVolume(absoluteVolume)
     }
     
     // MARK: - PRIVATE FUNCTIONS
+    /// Returns a human-readable duration string (e.g., "1h 5min.") for the elapsed time since the given date.
     private func generateDurationText(_ date: Date) -> String {
-        let interval = Date.now.timeIntervalSince(date)
-        let totalMinutes = Int(interval / 60)
-        let hours = totalMinutes / 60
-        let minutes = totalMinutes % 60
+        let interval = Date.now.timeIntervalSince(date) // Calculate seconds since the provided date
+        let totalMinutes = Int(interval / 60) // Convert the interval to total minutes
+        let hours = totalMinutes / 60 // Extract the hour component
+        let minutes = totalMinutes % 60 // Extract the remaining minutes
         
         var duration: String {
+            // Build a formatted string with hours and minutes as appropriate
             if hours > 0 {
                 if minutes > 0 {
                     return "\(hours)h \(minutes)min."
@@ -80,3 +74,4 @@ extension MapViewModel {
         return duration
     }
 }
+

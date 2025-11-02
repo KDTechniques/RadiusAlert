@@ -128,8 +128,8 @@ actor HapticManager {
             
             // Automatically restart engine if it stops
             hapticEngine?.resetHandler = {
-                Task { @MainActor [weak self] in
-                    try await self?.hapticEngine?.start()
+                Task {
+                    try await self.hapticEngine?.start()
                 }
             }
         } catch {

@@ -14,7 +14,7 @@ struct ReadMe_HeadingSection3View: View {
     // MARK: - BODY
     var body: some View {
         heading
-        descrioption1
+        description1
         image
         description2
     }
@@ -37,13 +37,13 @@ extension ReadMe_HeadingSection3View {
             .readMeHeadingSectionToSectionPadding
     }
     
-    private var descrioption1: some View {
+    private var description1: some View {
         Text("Nap, read, listen to music, or scroll TikTok worry-free.")
             .readMeBodyViewModifier
     }
     
     private var image: some View {
-        Image(.readMeHeadingSection3)
+        Image.custom.ReadMe.heading_section3.image
             .resizable()
             .scaledToFit()
             .clipShape(.rect(cornerRadius: values.cornerRadius))

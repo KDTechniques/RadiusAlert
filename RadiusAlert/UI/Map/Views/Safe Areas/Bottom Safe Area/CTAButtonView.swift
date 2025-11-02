@@ -19,19 +19,31 @@ struct CTAButtonView: View {
             Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop Alert")
                 .fontWeight(.semibold)
                 .foregroundStyle(mapVM.getCTAButtonForegroundColor())
-                .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                .background(mapVM.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
-                .padding(.horizontal)
+                .frame(width: Utilities.screenWidth * 0.7)
+                .buttonBackgroundViewModifier(mapVM)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 20)
-        .padding(.horizontal, 45)
     }
 }
 
 // MARK: - PREVIEWS
-#Preview("Call to Action Button View") {
+#Preview("CTAButtonView") {
     CTAButtonView()
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+fileprivate extension View {
+    @ViewBuilder
+    func buttonBackgroundViewModifier(_ vm: MapViewModel) -> some View {
+        if #available(iOS 26.0, *) {
+            self
+                .glassEffect(.regular.tint(vm.getCTAButtonBackgroundColor()), in: .capsule)
+        } else {
+            self
+                .background(vm.getCTAButtonBackgroundColor(), in: .rect(cornerRadius: 12))
+        }
+    }
 }

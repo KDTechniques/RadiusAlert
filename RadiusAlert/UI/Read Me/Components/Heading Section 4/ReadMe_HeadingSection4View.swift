@@ -11,7 +11,7 @@ struct ReadMe_HeadingSection4View: View {
     // MARK: - BODY
     var body: some View {
         heading
-        descrioption1
+        description1
         description2
     }
 }
@@ -33,7 +33,7 @@ extension ReadMe_HeadingSection4View {
             .readMeHeadingSectionToSectionPadding
     }
     
-    private var descrioption1: some View {
+    private var description1: some View {
         Text("Location updates are optimized for minimal battery drain.")
             .readMeBodyViewModifier
     }

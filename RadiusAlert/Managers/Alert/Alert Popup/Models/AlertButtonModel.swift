@@ -30,7 +30,6 @@ struct AlertButtonModel: Identifiable {
         self.action = action
     }
     
-    
     var button: some View {
         switch role {
         case .custom(let label):

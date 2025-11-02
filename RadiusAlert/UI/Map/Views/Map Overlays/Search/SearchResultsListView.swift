@@ -14,25 +14,34 @@ struct SearchResultsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        switch mapVM.networkManager.connectionState {
-        case .connected:
-            if mapVM.showNoSearchResultsText() {
-                UnavailableView("No Results")
-            } else {
-                searchResultList
-            }
-        case .noConnection:
-            if mapVM.showNoInternetConnectionText() {
-                UnavailableView("No Internet Connection")
+        Group {
+            switch mapVM.networkManager.connectionState {
+            case .connected:
+                if mapVM.showNoSearchResultsText() {
+                    UnavailableView("No Results")
+                } else {
+                    searchResultList
+                }
+            case .noConnection:
+                if mapVM.showNoInternetConnectionText() {
+                    UnavailableView("No Internet Connection", foregroundColor: .red)
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 //  MARK: - PREVIEWS
-#Preview("Searc Results List View") {
-    SearchResultsListView()
-        .previewModifier()
+#Preview("SearchResultsListView") {
+    Group {
+        if Bool.random() {
+            UnavailableView("No Results")
+        } else {
+            UnavailableView("No Internet Connection", foregroundColor: .red)
+        }
+    }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS

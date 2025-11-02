@@ -36,12 +36,10 @@ extension MapViewModel {
     /// - Parameter item: The selected search completion item representing the new alert location.
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         alertManager.showAlert(
-            .stopAlertOnSubmit { [weak self] in
-                guard let self else { return }
-                
-                stopAlert()
-                setSearchFieldFocused(false)
-                setSelectedSearchResultCoordinate(item)
+            .stopAlertOnSubmit {
+                self.stopAlert()
+                self.setSearchFieldFocused(false)
+                self.prepareSelectedSearchResultCoordinateOnMap(item)
                 
             }
         )
@@ -68,6 +66,7 @@ extension MapViewModel {
         alertManager.playTone(settingsVM.selectedTone.fileName)
         alertManager.playHaptic()
         generateNSetPopupCardItem()
+        settingsVM.setToneVolumeToFade()
     }
     
     // MARK: - PRIVATE FUNCTIONS
@@ -103,7 +102,16 @@ extension MapViewModel {
         startAlert_OnRegionEntry()
         startAlert_OnRegionEntryFailure()
         locationManager.setLocationAccuracy()
-        Task { await HapticManager.shared.vibrate(type: .rigid) }
+        onAlertStartEnded()
+    }
+    
+    /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
+    private func onAlertStartEnded() {
+        Task {
+            await HapticManager.shared.vibrate(type: .rigid)
+            await NavigationTitleTipModel.startAlertEvent.donate()
+            await MapStyleButtonTipModel.startAlertEvent.donate()
+        }
     }
     
     /// Checks whether the app has `Always Allow` location permission.
@@ -127,11 +135,11 @@ extension MapViewModel {
         return true
     }
     
-    /// Calculate the distance between the center coordinate and the current user location.
+    /// Calculate the distance between the map pin { center coordinate } and the current user location.
     /// - Returns: A tuple containing the distance and current user location, or nil if unavailable.
     private func startAlert_GetDistanceNUserLocation() -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
         guard
-            let centerCoordinate,
+            let mapPinCoordinate: CLLocationCoordinate2D = centerCoordinate,
             let currentUserLocation = locationManager.currentUserLocation
         else {
             Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
@@ -139,7 +147,7 @@ extension MapViewModel {
         }
         
         let distance: CLLocationDistance = Utilities.getDistance(
-            from: centerCoordinate,
+            from: mapPinCoordinate,
             to: currentUserLocation
         )
         
@@ -167,9 +175,9 @@ extension MapViewModel {
             var coordinateCheck: Bool =  false
             var locationTitle: String?
             
-            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.placemark.coordinate {
+            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
                 coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
-                locationTitle = coordinateCheck ? selectedSearchResult?.name : nil
+                locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
             }
             
             // Create the RadiusAlertModel:
@@ -201,34 +209,16 @@ extension MapViewModel {
     
     /// Define actions to execute when the user enters the monitored region.
     private func startAlert_OnRegionEntry() {
-        locationManager.onRegionEntry = { [weak self] in
-            guard let self else {
-                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntry.errorDescription)
-                return
-            }
-            
-            onRegionEntry()
-        }
+        locationManager.onRegionEntry = { self.onRegionEntry() }
     }
     
     private func startAlert_OnRegionEntryFailure() {
-        locationManager.onRegionEntryFailure = { [weak self] in
-            guard let self else {
-                Utilities.log(MapCTAButtonErrorModel.failedToExecuteOnRegionEntryFailure.errorDescription)
-                return
-            }
-            
-            handleOnRegionEntryAlertFailure()
-        }
+        locationManager.onRegionEntryFailure = { self.handleOnRegionEntryAlertFailure() }
     }
     
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation() {
-        alertManager.showAlert(
-            .stopAlertHereConfirmation { [weak self] in
-                self?.stopAlert()
-            }
-        )
+        alertManager.showAlert(.stopAlertHereConfirmation { self.stopAlert() })
     }
 }

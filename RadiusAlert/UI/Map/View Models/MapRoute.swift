@@ -9,6 +9,7 @@ import MapKit
 
 extension MapViewModel {
     // MARK: -  PUBLIC FUNCTIONS
+    
     func getRoute() {
         Task {
             let route: MKRoute? = await locationManager.getRoute()
