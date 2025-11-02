@@ -60,8 +60,6 @@ struct HorizontalPinView: View {
                         .clipShape(.capsule)
                         .font(.subheadline.weight(.semibold))
                         .shadow(color: .black.opacity(0.2), radius: 1)
-                        .padding(.leading)
-                        
                 }
                 
                 Button {

@@ -38,6 +38,14 @@ struct ContentView: View {
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
+        .sheet(isPresented: .constant(true)) {
+            Text("All the Pins goes here.\nMax is 10.\nUse a list to select and order them.")
+                .presentationDetents([.fraction(0.3)])
+                .presentationCornerRadius(30)
+                .presentationDragIndicator(.visible)
+                .padding()
+                .multilineTextAlignment(.center)
+        }
         .onAppear { mapVM.positionToInitialUserLocation() }
         .onChange(of: scenePhase) { onScenePhaseChange($1) }
     }
