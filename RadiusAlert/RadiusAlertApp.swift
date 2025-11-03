@@ -14,6 +14,7 @@ struct RadiusAlertApp: App {
     @State private var settingsVM: SettingsViewModel
     @State private var mapVM: MapViewModel
     @State private var aboutVM: AboutViewModel = .init()
+    @State private var savedPinsVM: SavedPinsViewModel = .init()
     
     init() {
         try? Tips.configure()
@@ -36,6 +37,7 @@ struct RadiusAlertApp: App {
                 .environment(settingsVM)
                 .environment(mapVM)
                 .environment(aboutVM)
+                .environment(savedPinsVM)
                 .preferredColorScheme(settingsVM.selectedColorScheme?.colorScheme)
                 .dynamicTypeSizeViewModifier
         }

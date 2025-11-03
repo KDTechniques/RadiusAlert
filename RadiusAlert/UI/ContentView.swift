@@ -38,8 +38,8 @@ struct ContentView: View {
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
-        .sheet(isPresented: .constant(true)) {
-            Text("All the Pins goes here.\nMax is 10.\nUse a list to select and order them.")
+        .sheet(isPresented: .constant(!true)) {
+            Text("All the Pins go here.\nMax is 10.\nUse a list to select and order them.")
                 .presentationDetents([.fraction(0.3)])
                 .presentationCornerRadius(30)
                 .presentationDragIndicator(.visible)
