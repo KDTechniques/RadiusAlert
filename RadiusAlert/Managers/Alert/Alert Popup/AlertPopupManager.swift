@@ -24,7 +24,7 @@ final class AlertPopupManager {
     ///
     /// Automatically updates the alert queue when the current alert is dismissed.
     func alertIsPresentedBinding() -> Binding<Bool> {
-        Binding {
+        .init {
             return !self.alertItems.isEmpty
         } set: { newValue in
             guard newValue != self.isAlertPresented else { return }

@@ -12,10 +12,7 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return Binding(
-            get: { self.selectedRadius },
-            set: { newValue in withAnimation { self.setSelectedRadius(newValue) } }
-        )
+        return .init(get: { self.selectedRadius }, set: withAnimation { setSelectedRadius })
     }
     
     /// Formats the radius value as a string, optionally including alert text and a name.

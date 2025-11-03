@@ -20,7 +20,7 @@ struct HorizontalPinView: View {
                 }
                 .onPreferenceChange(savedPinsVM)
                 
-                moreButton
+                MoreSavedPinsButtonView()
             }
             .padding([.horizontal, .bottom])
             .padding(.top, 1)
@@ -32,6 +32,11 @@ struct HorizontalPinView: View {
 // MARK: - PREVIEWS
 #Preview("HorizontalPinView") {
     HorizontalPinView()
+        .previewModifier()
+}
+
+#Preview("ContentView") {
+    ContentView()
         .previewModifier()
 }
 
@@ -48,36 +53,5 @@ fileprivate extension View {
                         }
                 }
             }
-    }
-}
-
-extension HorizontalPinView {
-    private var moreButton: some View {
-        Button {
-            /// present the sheet here...
-        } label: {
-            if #available(iOS 26.0, *) {
-                Image(systemName: "ellipsis")
-                    .frame(width: savedPinsVM.horizontalPinButtonsHeight, height: savedPinsVM.horizontalPinButtonsHeight)
-                    .background(.regularMaterial)
-                    .clipShape(.circle)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
-                    .glassEffect()
-            } else {
-                Label("More", systemImage: "ellipsis")
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial)
-                    .clipShape(.capsule)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
-                    .overlay {
-                        Capsule()
-                            .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
-                    }
-            }
-        }
-        .buttonStyle(.plain)
     }
 }

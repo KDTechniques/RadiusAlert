@@ -12,6 +12,7 @@ import MapKit
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SavedPinsViewModel.self) private var savedPinsVM
     @Environment(\.scenePhase) private var scenePhase
     
     // MARK: - ASSIGNED PROPERTIES
@@ -38,10 +39,10 @@ struct ContentView: View {
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
-        .sheet(isPresented: .constant(!true)) {
+        .sheet(isPresented: savedPinsVM.isPresentedSheetBinding()) {
             Text("All the Pins go here.\nMax is 10.\nUse a list to select and order them.")
                 .presentationDetents([.fraction(0.3)])
-                .presentationCornerRadius(30)
+//                .presentationCornerRadius(30)
                 .presentationDragIndicator(.visible)
                 .padding()
                 .multilineTextAlignment(.center)

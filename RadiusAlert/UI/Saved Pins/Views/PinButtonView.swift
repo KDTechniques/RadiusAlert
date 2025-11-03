@@ -24,12 +24,12 @@ struct PinButtonView: View {
             action()
         } label: {
             Text(title)
+                .font(.subheadline)
+                .foregroundStyle(.primary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(.regularMaterial)
                 .clipShape(.capsule)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
                 .pinButtonGlassEffect
         }
         .buttonStyle(.plain)
@@ -41,6 +41,7 @@ struct PinButtonView: View {
     PinButtonView(title: PinModel.mock.first!.getLabel()) {
         print("Action Triggered!")
     }
+    .previewModifier()
 }
 
 // MARK: - EXTENSIONS
@@ -49,7 +50,7 @@ fileprivate extension View {
     var pinButtonGlassEffect: some View {
         if #available(iOS  26.0, *) {
             self
-                .glassEffect()
+                .glassEffect(.clear)
         } else {
             self
                 .overlay {
