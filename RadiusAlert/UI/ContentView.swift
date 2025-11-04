@@ -26,7 +26,7 @@ struct ContentView: View {
                 .overlay {
                     MapPinView()
                     CircularRadiusTextView()
-                    MapStyleButtonView()
+                    MapBottomTrailingButtonsView()
                     RadiusSliderView()
                 }
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
@@ -42,7 +42,7 @@ struct ContentView: View {
         .sheet(isPresented: savedPinsVM.isPresentedSheetBinding()) {
             Text("All the Pins go here.\nMax is 10.\nUse a list to select and order them.")
                 .presentationDetents([.fraction(0.3)])
-//                .presentationCornerRadius(30)
+                .presentationCornerRadius
                 .presentationDragIndicator(.visible)
                 .padding()
                 .multilineTextAlignment(.center)
@@ -90,5 +90,14 @@ fileprivate extension View  {
                     PopupCardView(item: popupCardItem)
                 }
             }
+    }
+    
+    @ViewBuilder
+    var presentationCornerRadius: some View {
+        if #available(iOS 26.0, *) {
+            self
+        } else {
+            self.presentationCornerRadius(30)
+        }
     }
 }

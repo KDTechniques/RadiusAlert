@@ -38,7 +38,7 @@ struct PinButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("PinButtonView") {
-    PinButtonView(title: PinModel.mock.first!.getLabel()) {
+    PinButtonView(title: PinModel.mock.randomElement()!.getLabel()) {
         print("Action Triggered!")
     }
     .previewModifier()

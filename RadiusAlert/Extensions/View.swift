@@ -78,4 +78,34 @@ extension View {
         self
             .dynamicTypeSize(.large)
     }
+    
+    @ViewBuilder
+    var mapControlButtonBackground: some View {
+        if #available(iOS 26.0, *) {
+            self
+                .background(
+                    Color.primary.opacity(0.001),
+                    in: .circle
+                )
+        } else {
+            self
+                .background(
+                    Color.custom.Map.mapControlButtonBackground.color,
+                    in: .rect(cornerRadius: 7)
+                )
+        }
+    }
+    
+    var mapControlButtonShadow: some View {
+        self
+            .background {
+                Color.clear
+                    .mapControlButtonBackground
+                    .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
+            }
+    }
 }
+
+
+
+

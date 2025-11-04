@@ -53,14 +53,11 @@ extension ButtonView {
             Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
                 .foregroundStyle(Color.accentColor)
                 .padding(11.5)
-                .buttonBackground
+                .mapControlButtonBackground
                 .defaultTypeSizeViewModifier
                 .popoverTip(settingsVM.mapStyleButtonTip)
         }
-        .buttonBackground
-        .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-        .padding(.trailing, 5)
-        .padding(.bottom, 40)
+        .mapControlButtonShadow
         .buttonStyle(.plain)
     }
     
@@ -73,33 +70,12 @@ extension ButtonView {
                 Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
                     .foregroundStyle(Color.accentColor)
                     .padding(11.5)
-                    .glassButtonBackground
+                    .mapControlButtonBackground
                     .glassEffect(.regular)
                     .defaultTypeSizeViewModifier
                     .popoverTip(settingsVM.mapStyleButtonTip)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-            .padding(.trailing)
-            .padding(.bottom, 40)
             .buttonStyle(.plain)
         }
-    }
-}
-
-fileprivate extension View {
-    var buttonBackground: some View {
-        self
-            .background(
-                Color.custom.Map.mapControlButtonBackground.color,
-                in: .rect(cornerRadius: 7)
-            )
-    }
-    
-    var glassButtonBackground: some View {
-        self
-            .background(
-                Color.primary.opacity(0.001),
-                in: .circle
-            )
     }
 }
