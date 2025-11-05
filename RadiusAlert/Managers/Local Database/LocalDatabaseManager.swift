@@ -23,7 +23,7 @@ actor LocalDatabaseManager {
     // MARK: - INITIALIZER
     private init() {
         do {
-            container = try ModelContainer(for: SavedLocationPinsModel.self)
+            container = try ModelContainer(for: LocationPinsModel.self)
             Utilities.log("✅: Initialized `LocalDatabaseManager`.")
         } catch {
             Utilities.log(LocalDatabaseManagerErrorModel.failedToInitializeModelContainer(error).localizedDescription)

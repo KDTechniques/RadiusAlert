@@ -38,7 +38,7 @@ struct LocationPinButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("LocationPinButtonView") {
-    LocationPinButtonView(title: LocationPinModel.mock.randomElement()!.getLabel()) {
+    LocationPinButtonView(title: LocationPinsModel.mock.randomElement()!.title) {
         print("Action Triggered!")
     }
     .previewModifier()

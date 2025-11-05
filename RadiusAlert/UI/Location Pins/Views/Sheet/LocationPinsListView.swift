@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct LocationPinsListView: View {
-    @State var mockArray: [LocationPinModel] = LocationPinModel.mock
+    @State var mockArray: [LocationPinsModel] = LocationPinsModel.mock
     
     // MARK: - BODY
     var body: some View {
         NavigationStack {
             List {
                 ForEach(mockArray) {
-                    Text($0.getLabel())
+                    Text($0.title)
                 }
                 .onDelete(perform: onDelete)
                 .onMove(perform: onMove)

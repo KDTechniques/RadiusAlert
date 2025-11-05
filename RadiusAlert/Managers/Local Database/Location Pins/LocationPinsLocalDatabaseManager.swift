@@ -19,7 +19,7 @@ actor LocationPinsLocalDatabaseManager {
     // MARK: - PUBLIC FUNCTIONS
     
     @MainActor
-    func addLocationPins(_ newItems: [SavedLocationPinsModel]) throws {
+    func addLocationPins(_ newItems: [LocationPinsModel]) throws {
         for item in newItems {
             localDatabaseManager.insertToContext(item)
         }
@@ -33,10 +33,11 @@ actor LocationPinsLocalDatabaseManager {
     }
     
     @MainActor
-    func fetchSavedLocationPins() throws -> [SavedLocationPinsModel] {
+    func fetchLocationPins() throws -> [LocationPinsModel] {
         do {
-            let descriptor: FetchDescriptor = FetchDescriptor<SavedLocationPinsModel>()
-            let savedLocationPinsArray: [SavedLocationPinsModel] = try localDatabaseManager.fetchFromContext(descriptor)
+            var descriptor: FetchDescriptor = FetchDescriptor<LocationPinsModel>()
+            descriptor.sortBy = [SortDescriptor(\.order, order: .forward)]
+            let savedLocationPinsArray: [LocationPinsModel] = try localDatabaseManager.fetchFromContext(descriptor)
             
             return savedLocationPinsArray
         } catch {
@@ -56,7 +57,7 @@ actor LocationPinsLocalDatabaseManager {
     }
     
     @MainActor
-    func deleteSavedLocationPin(at item: SavedLocationPinsModel) throws {
+    func deleteLocationPin(at item: LocationPinsModel) throws {
         localDatabaseManager.deleteFromContext(item)
         do {
             try localDatabaseManager.saveContext()

@@ -17,8 +17,8 @@ struct HorizontalLocationPinsView: View {
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(LocationPinModel.mock) {
-                    LocationPinButtonView(title: $0.getLabel()) {
+                ForEach(LocationPinsModel.mock) {
+                    LocationPinButtonView(title: $0.title) {
                         
                     }
                 }
