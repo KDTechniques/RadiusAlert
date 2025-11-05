@@ -238,53 +238,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>32</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>31</string>
-					<key>Timestamp</key>
-					<string>784032299.829203</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
-</string>
-				<key>leading</key>
-				<string>    /// Sets the selected search result’s coordinate and updates the map.
-    /// Also resets search text and results, then animates map to the new location.
-</string>
-				<key>trailing</key>
-				<string>        setSelectedMapItem(item)
-        resetSearchResults()
-        resetSearchText()
-</string>
-			</dict>
-			<key>title</key>
-			<string>use a function like this to set the location on the map when user clicks on a saved location pin</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>65</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -319,6 +272,52 @@
                 //                } else {
 </string>
 			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>57</string>
+					<key>EndingLineNumber</key>
+					<string>76</string>
+					<key>StartingColumnNumber</key>
+					<string>57</string>
+					<key>StartingLineNumber</key>
+					<string>76</string>
+					<key>Timestamp</key>
+					<string>784053675.671276</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>    ///
+    /// - Parameter item: The `MKMapItem` representing the location to focus on.
+    func prepareSelectedSearchResultCoordinateOnMap(_ ite</string>
+				<key>trailing</key>
+				<string>m: MKMapItem) {
+        // Optimistically set the selection so the UI can reflect the choice right away
+        setSelectedSearchResult(.init(result: item))
+</string>
+			</dict>
+			<key>title</key>
+			<string>Use this function to configure the map according to the selected location pin when the user taps on it.</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
