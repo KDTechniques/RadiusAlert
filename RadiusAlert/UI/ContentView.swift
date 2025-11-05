@@ -12,7 +12,6 @@ import MapKit
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
-    @Environment(SavedPinsViewModel.self) private var savedPinsVM
     @Environment(\.scenePhase) private var scenePhase
     
     // MARK: - ASSIGNED PROPERTIES
@@ -40,13 +39,6 @@ struct ContentView: View {
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
-        .sheet(isPresented: savedPinsVM.isPresentedSheetBinding()) {
-            SavedPinsListView()
-                .presentationDetents([.medium])
-                .presentationCornerRadius
-                .presentationDragIndicator(.visible)
-                .presentationBackground(Color.init(uiColor: .systemGray6))
-        }
         .onAppear { mapVM.positionToInitialUserLocation() }
         .onChange(of: scenePhase) { onScenePhaseChange($1) }
     }
@@ -90,14 +82,5 @@ fileprivate extension View  {
                     PopupCardView(item: popupCardItem)
                 }
             }
-    }
-    
-    @ViewBuilder
-    var presentationCornerRadius: some View {
-        if #available(iOS 26.0, *) {
-            self
-        } else {
-            self.presentationCornerRadius(30)
-        }
     }
 }

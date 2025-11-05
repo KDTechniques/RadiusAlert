@@ -104,6 +104,15 @@ extension View {
                     .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
             }
     }
+    
+    @ViewBuilder
+    var presentationCornerRadius: some View {
+        if #available(iOS 26.0, *) {
+            self
+        } else {
+            self.presentationCornerRadius(30)
+        }
+    }
 }
 
 

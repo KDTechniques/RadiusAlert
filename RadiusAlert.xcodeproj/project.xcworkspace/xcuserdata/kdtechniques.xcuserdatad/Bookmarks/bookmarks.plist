@@ -230,6 +230,98 @@
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>32</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>31</string>
+					<key>Timestamp</key>
+					<string>784032299.829203</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
+</string>
+				<key>leading</key>
+				<string>    /// Sets the selected search result’s coordinate and updates the map.
+    /// Also resets search text and results, then animates map to the new location.
+</string>
+				<key>trailing</key>
+				<string>        setSelectedMapItem(item)
+        resetSearchResults()
+        resetSearchText()
+</string>
+			</dict>
+			<key>title</key>
+			<string>use a function like this to set the location on the map when user clicks on a saved location pin</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>65</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>64</string>
+					<key>Timestamp</key>
+					<string>784044518.35894</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Saved Pins/Views/AddPinButtonView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                //                    print(result.result.name)
+</string>
+				<key>leading</key>
+				<string>                
+                //                if let result = mapVM.selectedSearchResult {
+</string>
+				<key>trailing</key>
+				<string>                //                    print(result.result.location.coordinate)
+                //                    print(mapVM.selectedRadius.description)
+                //                } else {
+</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
 	</array>
 </dict>
 </plist>

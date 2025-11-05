@@ -46,16 +46,20 @@ fileprivate struct ButtonView: View {
 
 // MARK: - EXTENSIONS
 extension ButtonView {
+    private var buttonLabel: some View {
+        Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
+            .foregroundStyle(Color.accentColor)
+            .frame(width: 44, height: 44)
+            .mapControlButtonBackground
+            .defaultTypeSizeViewModifier
+            .popoverTip(settingsVM.mapStyleButtonTip)
+    }
+    
     private var nonGlassButton: some View {
         Button {
             mapVM.setNextMapStyle()
         } label: {
-            Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 44, height: 44)
-                .mapControlButtonBackground
-                .defaultTypeSizeViewModifier
-                .popoverTip(settingsVM.mapStyleButtonTip)
+            buttonLabel
         }
         .mapControlButtonShadow
     }
@@ -66,13 +70,8 @@ extension ButtonView {
             Button {
                 mapVM.setNextMapStyle()
             } label: {
-                Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 44, height: 44)
-                    .mapControlButtonBackground
+                buttonLabel
                     .glassEffect(.regular)
-                    .defaultTypeSizeViewModifier
-                    .popoverTip(settingsVM.mapStyleButtonTip)
             }
             .buttonStyle(.plain)
         }

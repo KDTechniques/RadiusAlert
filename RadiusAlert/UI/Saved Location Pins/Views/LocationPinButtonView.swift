@@ -1,5 +1,5 @@
 //
-//  PinButtonView.swift
+//  LocationPinButtonView.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-11-03.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PinButtonView: View {
+struct LocationPinButtonView: View {
     // MARK: - INJECTED PROPERTIES
     let title: String
     let action: () -> Void
@@ -37,8 +37,8 @@ struct PinButtonView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("PinButtonView") {
-    PinButtonView(title: PinModel.mock.randomElement()!.getLabel()) {
+#Preview("LocationPinButtonView") {
+    LocationPinButtonView(title: PinModel.mock.randomElement()!.getLabel()) {
         print("Action Triggered!")
     }
     .previewModifier()

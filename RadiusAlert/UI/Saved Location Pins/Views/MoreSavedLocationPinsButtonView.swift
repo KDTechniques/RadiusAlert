@@ -1,5 +1,5 @@
 //
-//  MoreSavedPinsButtonView.swift
+//  MoreSavedLocationPinsButtonView.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-11-03.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct MoreSavedPinsButtonView: View {
+struct MoreSavedLocationPinsButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(SavedPinsViewModel.self) private var savedPinsVM
     
     // MARK: - BODY
     var body: some View {
         Button {
-            savedPinsVM.setIsPresentedSheet(true)
+            savedPinsVM.setIsPresentedSavedLocationsSheet(true)
         } label: {
             if #available(iOS 26.0, *) {
                 Image(systemName: "ellipsis")
@@ -36,9 +36,16 @@ struct MoreSavedPinsButtonView: View {
                         Capsule()
                             .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
                     }
-                    
+                
             }
         }
         .buttonStyle(.plain)
+        .sheet(isPresented: savedPinsVM.isPresentedSavedLocationsSheetBinding()) {
+            SavedLocationPinsListView()
+                .presentationDetents([.medium])
+                .presentationCornerRadius
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Color.init(uiColor: .systemGray6))
+        }
     }
 }

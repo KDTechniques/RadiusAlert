@@ -20,7 +20,7 @@ struct TopSafeAreaView: View {
         VStack(spacing: 0) {
             NavigationTitleButtonView()
             SearchBarSwiftUIView()
-            HorizontalPinView()
+            HorizontalLocationPinsView()
             Divider()
             SearchResultsListView()
         }

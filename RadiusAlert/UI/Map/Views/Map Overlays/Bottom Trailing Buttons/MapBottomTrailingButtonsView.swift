@@ -42,7 +42,7 @@ fileprivate extension View {
 
 extension MapBottomTrailingButtonsView {
     private var addPinButton: some View {
-        AddPinButtonView()
+        AddLocationPinButtonView()
 #if !DEBUG
             .opacity(mapVM.isBeyondMinimumDistance() ? 1 : 0)
             .disabled(!mapVM.isBeyondMinimumDistance())

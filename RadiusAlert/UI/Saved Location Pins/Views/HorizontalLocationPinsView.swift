@@ -1,26 +1,30 @@
 //
-//  HorizontalPinView.swift
+//  HorizontalLocationPinsView.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-11-03.
 //
 
 import SwiftUI
+import MapKit
 
-struct HorizontalPinView: View {
+struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(SavedPinsViewModel.self) private var savedPinsVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
                 ForEach(PinModel.mock) {
-                    PinButtonView(title: $0.getLabel(), action: { })
+                    LocationPinButtonView(title: $0.getLabel()) {
+                        
+                    }
                 }
                 .onPreferenceChange(savedPinsVM)
                 
-                MoreSavedPinsButtonView()
+                MoreSavedLocationPinsButtonView()
             }
             .padding([.horizontal, .bottom])
             .padding(.top, 1)
@@ -30,8 +34,8 @@ struct HorizontalPinView: View {
 }
 
 // MARK: - PREVIEWS
-#Preview("HorizontalPinView") {
-    HorizontalPinView()
+#Preview("HorizontalLocationPinsView") {
+    HorizontalLocationPinsView()
         .previewModifier()
 }
 
