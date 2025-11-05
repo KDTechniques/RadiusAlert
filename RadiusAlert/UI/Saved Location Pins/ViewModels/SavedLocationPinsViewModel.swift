@@ -1,5 +1,5 @@
 //
-//  SavedPinsViewModel.swift
+//  SavedLocationPinsViewModel.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-11-03.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-final class SavedPinsViewModel {
+final class SavedLocationPinsViewModel {
     // MARK: - ASSIGNED PROPERTIES
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var isPresentedSavedLocationsSheet: Bool = false

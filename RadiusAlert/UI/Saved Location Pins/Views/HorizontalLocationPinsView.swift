@@ -10,14 +10,14 @@ import MapKit
 
 struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(SavedPinsViewModel.self) private var savedPinsVM
+    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(PinModel.mock) {
+                ForEach(LocationPinModel.mock) {
                     LocationPinButtonView(title: $0.getLabel()) {
                         
                     }
@@ -46,7 +46,7 @@ struct HorizontalLocationPinsView: View {
 
 // MARK: - EXTENSIONS
 fileprivate extension View {
-    func onPreferenceChange(_ savedPinsVM: SavedPinsViewModel) -> some View {
+    func onPreferenceChange(_ savedPinsVM: SavedLocationPinsViewModel) -> some View {
         self
             .background {
                 GeometryReader { geo in

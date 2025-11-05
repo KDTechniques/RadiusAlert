@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddLocationPinButtonView: View {
     @Environment(MapViewModel.self) private var mapVM
-    @Environment(SavedPinsViewModel.self) private var savedPinsVM
+    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
     
     // MARK: - BODY
     var body: some View {

@@ -14,7 +14,7 @@ struct RadiusAlertApp: App {
     @State private var settingsVM: SettingsViewModel
     @State private var mapVM: MapViewModel
     @State private var aboutVM: AboutViewModel = .init()
-    @State private var savedPinsVM: SavedPinsViewModel = .init()
+    @State private var savedPinsVM: SavedLocationPinsViewModel = .init()
     
     init() {
         try? Tips.configure()

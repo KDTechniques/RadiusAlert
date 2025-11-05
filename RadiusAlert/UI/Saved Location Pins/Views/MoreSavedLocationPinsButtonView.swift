@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MoreSavedLocationPinsButtonView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(SavedPinsViewModel.self) private var savedPinsVM
+    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
     
     // MARK: - BODY
     var body: some View {

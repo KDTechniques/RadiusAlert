@@ -1,5 +1,5 @@
 //
-//  PinModel.swift
+//  LocationPinModel.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-11-03.
@@ -7,7 +7,7 @@
 
 import CoreLocation
 
-struct PinModel: Identifiable {
+struct LocationPinModel: Identifiable {
     let id: String = UUID().uuidString
     let title: String
     let emoji: String?

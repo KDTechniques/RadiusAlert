@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SavedLocationPinsListView: View {
-    @State var mockArray: [PinModel] = PinModel.mock
+    @State var mockArray: [LocationPinModel] = LocationPinModel.mock
     
     // MARK: - BODY
     var body: some View {

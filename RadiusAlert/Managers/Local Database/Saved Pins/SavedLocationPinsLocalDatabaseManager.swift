@@ -35,22 +35,34 @@ actor SavedLocationPinsLocalDatabaseManager {
     @MainActor
     func fetchSavedLocationPins() throws -> [SavedLocationPinsModel] {
         do {
-            let descriptor: FetchDescriptor = FetchDescriptor<SavedLocationPinsModel>(
-                sortBy: [SortDescriptor(\.timestamp, order: .forward)] // Ascending order
-            )
-            let collectionsArray: [Collection] = try localDatabaseManager.fetchFromContext(descriptor)
+            let descriptor: FetchDescriptor = FetchDescriptor<SavedLocationPinsModel>()
+            let savedLocationPinsArray: [SavedLocationPinsModel] = try localDatabaseManager.fetchFromContext(descriptor)
             
-            return collectionsArray
+            return savedLocationPinsArray
         } catch {
-            Logger.log(CollectionLocalDatabaseManagerError.failedToFetchCollections(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToFetchSavedLocationPins(error).localizedDescription)
             throw error
         }
     }
     
+    @MainActor
+    func updateLocationPins() throws {
+        do {
+            try localDatabaseManager.saveContext()
+        } catch {
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToUpdateLocationPins(error).localizedDescription)
+            throw error
+        }
+    }
     
-    
-    
-    
-    
-    
+    @MainActor
+    func deleteSavedLocationPin(at item: SavedLocationPinsModel) throws {
+        localDatabaseManager.deleteFromContext(item)
+        do {
+            try localDatabaseManager.saveContext()
+        } catch {
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).localizedDescription)
+            throw error
+        }
+    }
 }
