@@ -91,7 +91,7 @@ extension View {
             self
                 .background(
                     Color.custom.Map.mapControlButtonBackground.color,
-                    in: .rect(cornerRadius: 7)
+                    in: .rect(cornerRadius: 8)
                 )
         }
     }

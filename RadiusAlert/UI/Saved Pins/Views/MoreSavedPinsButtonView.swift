@@ -19,7 +19,7 @@ struct MoreSavedPinsButtonView: View {
             if #available(iOS 26.0, *) {
                 Image(systemName: "ellipsis")
                     .font(.subheadline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.accentColor)
                     .frame(width: savedPinsVM.horizontalPinButtonsHeight, height: savedPinsVM.horizontalPinButtonsHeight)
                     .background(.regularMaterial)
                     .clipShape(.circle)
@@ -27,7 +27,7 @@ struct MoreSavedPinsButtonView: View {
             } else {
                 Label("More", systemImage: "ellipsis")
                     .font(.subheadline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.accentColor)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 10)
                     .background(.regularMaterial)
@@ -36,7 +36,9 @@ struct MoreSavedPinsButtonView: View {
                         Capsule()
                             .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
                     }
+                    
             }
         }
+        .buttonStyle(.plain)
     }
 }

@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct SavedPinsListView: View {
+    @State var mockArray: [PinModel] = PinModel.mock
+    
     // MARK: - BODY
     var body: some View {
-        List(PinModel.mock) { item in
-            Text(item.title)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                EditButton()
+        NavigationStack {
+            List {
+                ForEach(mockArray) {
+                    Text($0.getLabel())
+                }
+                .onDelete(perform: onDelete)
+                .onMove(perform: onMove)
             }
+            .toolbar { EditButton() }
+            .navigationTitle(.init("Pined Locations"))
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
@@ -26,6 +32,19 @@ struct SavedPinsListView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             SavedPinsListView()
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Color.init(uiColor: .systemGray6))
         }
         .previewModifier()
+}
+
+extension SavedPinsListView {
+    func onDelete(_ indexSet: IndexSet) {
+        mockArray.remove(atOffsets: indexSet)
+    }
+    
+    func onMove(_ from: IndexSet, to: Int) {
+        mockArray.move(fromOffsets: from, toOffset: to)
+    }
 }

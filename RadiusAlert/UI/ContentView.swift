@@ -29,6 +29,7 @@ struct ContentView: View {
                     MapBottomTrailingButtonsView()
                     RadiusSliderView()
                 }
+                
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
                 .overlay { SearchListBackgroundView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
@@ -40,12 +41,11 @@ struct ContentView: View {
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
         .sheet(isPresented: savedPinsVM.isPresentedSheetBinding()) {
-            Text("All the Pins go here.\nMax is 10.\nUse a list to select and order them.")
-                .presentationDetents([.fraction(0.3)])
+            SavedPinsListView()
+                .presentationDetents([.medium])
                 .presentationCornerRadius
                 .presentationDragIndicator(.visible)
-                .padding()
-                .multilineTextAlignment(.center)
+                .presentationBackground(Color.init(uiColor: .systemGray6))
         }
         .onAppear { mapVM.positionToInitialUserLocation() }
         .onChange(of: scenePhase) { onScenePhaseChange($1) }

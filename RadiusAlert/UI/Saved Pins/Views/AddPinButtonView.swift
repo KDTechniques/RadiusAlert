@@ -33,12 +33,11 @@ extension AddPinButtonView {
             Image(systemName: "plus")
                 .fontWeight(.medium)
                 .foregroundStyle(Color.accentColor)
-                .padding(11.5)
+                .frame(width: 44, height: 44)
                 .mapControlButtonBackground
                 .defaultTypeSizeViewModifier
         }
         .mapControlButtonShadow
-        .buttonStyle(.plain)
     }
     
     @ViewBuilder
@@ -50,7 +49,7 @@ extension AddPinButtonView {
                 Image(systemName: "plus")
                     .fontWeight(.medium)
                     .foregroundStyle(Color.accentColor)
-                    .padding(11.5)
+                    .frame(width: 44, height: 44)
                     .mapControlButtonBackground
                     .glassEffect(.regular)
                     .defaultTypeSizeViewModifier
