@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MoreSavedLocationPinsButtonView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
+    @Environment(LocationPinsViewModel.self) private var savedPinsVM
     
     // MARK: - BODY
     var body: some View {
@@ -41,7 +41,7 @@ struct MoreSavedLocationPinsButtonView: View {
         }
         .buttonStyle(.plain)
         .sheet(isPresented: savedPinsVM.isPresentedSavedLocationsSheetBinding()) {
-            SavedLocationPinsListView()
+            LocationPinsListView()
                 .presentationDetents([.medium])
                 .presentationCornerRadius
                 .presentationDragIndicator(.visible)

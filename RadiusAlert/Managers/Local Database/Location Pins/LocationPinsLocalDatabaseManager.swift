@@ -1,5 +1,5 @@
 //
-//  SavedLocationPinsLocalDatabaseManager.swift
+//  LocationPinsLocalDatabaseManager.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-11-05.
@@ -8,9 +8,9 @@
 import Foundation
 import SwiftData
 
-actor SavedLocationPinsLocalDatabaseManager {
+actor LocationPinsLocalDatabaseManager {
     // MARK: - ASSIGNED PROPERTIES
-    static let shared: SavedLocationPinsLocalDatabaseManager = .init()
+    static let shared: LocationPinsLocalDatabaseManager = .init()
     let localDatabaseManager: LocalDatabaseManager = .shared
     
     // MARK: - INITIALIZER

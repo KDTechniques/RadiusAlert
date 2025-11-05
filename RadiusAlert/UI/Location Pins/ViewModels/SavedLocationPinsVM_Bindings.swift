@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension SavedLocationPinsViewModel {
+extension LocationPinsViewModel {
     func isPresentedSavedLocationsSheetBinding() -> Binding<Bool> {
         .init(get: { self.isPresentedSavedLocationsSheet }, set: setIsPresentedSavedLocationsSheet)
     }

@@ -1,5 +1,5 @@
 //
-//  SavedLocationPinsListView.swift
+//  LocationPinsListView.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2025-11-04.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SavedLocationPinsListView: View {
+struct LocationPinsListView: View {
     @State var mockArray: [LocationPinModel] = LocationPinModel.mock
     
     // MARK: - BODY
@@ -28,10 +28,10 @@ struct SavedLocationPinsListView: View {
 }
 
 //MARK: - PREVIEWS
-#Preview("SavedLocationPinsListView") {
+#Preview("LocationPinsListView") {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            SavedLocationPinsListView()
+            LocationPinsListView()
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color.init(uiColor: .systemGray6))
@@ -39,7 +39,7 @@ struct SavedLocationPinsListView: View {
         .previewModifier()
 }
 
-extension SavedLocationPinsListView {
+extension LocationPinsListView {
     func onDelete(_ indexSet: IndexSet) {
         mockArray.remove(atOffsets: indexSet)
     }

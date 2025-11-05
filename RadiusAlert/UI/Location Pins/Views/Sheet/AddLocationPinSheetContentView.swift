@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct AddLocationPinSheetContentView: View {
-    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
+    @Environment(LocationPinsViewModel.self) private var savedPinsVM
     @State var titleText: String = ""
     @State var radius: CLLocationDistance = MapValues.minimumRadius
     

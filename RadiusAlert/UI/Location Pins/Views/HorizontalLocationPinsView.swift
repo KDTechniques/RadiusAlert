@@ -10,7 +10,7 @@ import MapKit
 
 struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(SavedLocationPinsViewModel.self) private var savedPinsVM
+    @Environment(LocationPinsViewModel.self) private var savedPinsVM
     @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
@@ -46,7 +46,7 @@ struct HorizontalLocationPinsView: View {
 
 // MARK: - EXTENSIONS
 fileprivate extension View {
-    func onPreferenceChange(_ savedPinsVM: SavedLocationPinsViewModel) -> some View {
+    func onPreferenceChange(_ savedPinsVM: LocationPinsViewModel) -> some View {
         self
             .background {
                 GeometryReader { geo in
