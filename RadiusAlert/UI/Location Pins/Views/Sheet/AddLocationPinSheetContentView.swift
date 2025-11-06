@@ -44,7 +44,10 @@ struct AddLocationPinSheetContentView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        // action goes here...
+                        Task {
+                            await locationPinsVM.createNewLocationPin()
+                            print("Successfully added a new location pin.")
+                        }
                     }
                     .disabled(locationPinsVM.newLocationPinTextFieldText.isEmpty)
                     

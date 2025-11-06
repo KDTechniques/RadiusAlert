@@ -46,12 +46,7 @@ extension AddLocationPinButtonView {
     }
     
     private func buttonAction() {
-        guard let item: LocationPinsModel = locationPinsVM.createLocationPin() else {
-            print("Marker Coordinate is Nil or something.")
-            return
-        }
-        
-        locationPinsVM.setIsPresentedLocationSavingSheet(true)
+        locationPinsVM.onAddNewLocationPinButtonTapped()
     }
     
     private var nonGlassButton: some View {

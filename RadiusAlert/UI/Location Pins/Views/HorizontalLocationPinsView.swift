@@ -10,19 +10,18 @@ import MapKit
 
 struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(LocationPinsViewModel.self) private var savedPinsVM
-    @Environment(MapViewModel.self) private var mapVM
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
     // MARK: - BODY
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(LocationPinsModel.mock) {
+                ForEach(locationPinsVM.locationPinsArray) {
                     LocationPinButtonView(title: $0.title) {
                         
                     }
                 }
-                .onPreferenceChange(savedPinsVM)
+                .onPreferenceChange(locationPinsVM)
                 
                 MoreSavedLocationPinsButtonView()
             }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LocationPinsListView: View {
-    @State var mockArray: [LocationPinsModel] = LocationPinsModel.mock
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     @State private var mode: EditMode = .inactive
     @State private var canRename: Bool = false
     
@@ -16,7 +16,7 @@ struct LocationPinsListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(mockArray) { item in
+                ForEach(locationPinsVM.locationPinsArray) { item in
                     if canRename {
                         NavigationLink(item.title) {
                             UpdateLocationPinSheetContentView(renameTitleText: item.title, radius: item.radius)
@@ -68,10 +68,14 @@ struct LocationPinsListView: View {
 
 extension LocationPinsListView {
     func onDelete(_ indexSet: IndexSet) {
-        mockArray.remove(atOffsets: indexSet)
+        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
+        tempArray.remove(atOffsets: indexSet)
+        locationPinsVM.setLocationPinsArray(tempArray)
     }
     
     func onMove(_ from: IndexSet, to: Int) {
-        mockArray.move(fromOffsets: from, toOffset: to)
+        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
+        tempArray.move(fromOffsets: from, toOffset: to)
+        locationPinsVM.setLocationPinsArray(tempArray)
     }
 }

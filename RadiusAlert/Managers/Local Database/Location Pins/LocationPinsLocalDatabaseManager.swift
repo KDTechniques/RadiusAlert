@@ -66,4 +66,19 @@ actor LocationPinsLocalDatabaseManager {
             throw error
         }
     }
+    
+    @MainActor
+    func deleteAllLocationPins() throws {
+        let fetchedLocationPins: [LocationPinsModel] = try fetchLocationPins()
+        for item in fetchedLocationPins {
+            localDatabaseManager.deleteFromContext(item)
+        }
+        
+        do {
+            try localDatabaseManager.saveContext()
+        } catch {
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).localizedDescription)
+            throw error
+        }
+    }
 }

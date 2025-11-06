@@ -15,13 +15,14 @@ final class LocationPinsViewModel {
     
     // MARK: - ASSIGNED PROPERTIES
     let locationPinsManager: LocationPinsManager = .shared
-
+    
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var isPresentedSavedLocationsSheet: Bool = false
     private(set) var isPresentedLocationSavingSheet: Bool = false
     private(set) var locationPinsArray: [LocationPinsModel] = []
     private(set) var newLocationPinTextFieldText: String = ""
     private(set) var newLocationPinRadius: CLLocationDistance = .zero
+    private(set) var newLocationCoordinate: CLLocationCoordinate2D?
     
     // MARK: - INITIALIZER
     init(mapVM: MapViewModel) {
@@ -54,42 +55,51 @@ final class LocationPinsViewModel {
         newLocationPinRadius = value
     }
     
+    func setNewLocationCoordinate(_ value: CLLocationCoordinate2D?) {
+        newLocationCoordinate = value
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func initializeLocationPinsVM() async {
         // Fetch saved location pins from local database
         do {
             let locationPinsArray: [LocationPinsModel] = try await locationPinsManager.fetchLocationPins()
             setLocationPinsArray(locationPinsArray)
-            print("location pins array: \(locationPinsArray)")
+            
+            for item in locationPinsArray {
+                print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.getCoordinate())" )
+            }
+            
         } catch let error {
             print("Error Initializing Location Pins View Model. \(error.localizedDescription)")
         }
     }
     
     // MARK: - PUBLIC FUNCTIONS
-    func addNewLocationPin(_ items: [LocationPinsModel]) async {
-        do {
-            try await locationPinsManager.addLocationPins(items)
-        } catch {
-            print("Error adding new location pin. \(error.localizedDescription)")
-        }
+    
+    func onAddNewLocationPinButtonTapped() {
+        guard mapVM.isBeyondMinimumDistance(),
+              let centerCoordinate = mapVM.centerCoordinate else { return }
+        
+        setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
+        setNewLocationPinRadius(mapVM.selectedRadius)
+        setNewLocationCoordinate(centerCoordinate)
+        setIsPresentedLocationSavingSheet(true)
     }
     
-    func createLocationPin() -> LocationPinsModel? {
-        guard let markerCoordinate = mapVM.markerCoordinate else { return nil }
+    func createNewLocationPin() async {
+        guard let coordinate = newLocationCoordinate else { return }
         
-        if let result = mapVM.selectedSearchResult {
-            return .init(
-                title: result.result.name ?? "",
-                radius: mapVM.selectedRadius,
-                coordinate: markerCoordinate
-            )
-        } else {
-            return .init(
-                title: "",
-                radius: mapVM.selectedRadius,
-                coordinate: markerCoordinate
-            )
+        let item: LocationPinsModel = .init(
+            title: newLocationPinTextFieldText,
+            radius: newLocationPinRadius,
+            coordinate: coordinate
+        )
+        
+        do {
+            try await locationPinsManager.addLocationPins([item])
+        } catch let error {
+            print("Error creating a new location pin. \(error.localizedDescription)")
         }
     }
 }
