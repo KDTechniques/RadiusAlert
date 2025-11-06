@@ -19,7 +19,7 @@ struct LocationPinsListView: View {
                 ForEach(mockArray) { item in
                     if canRename {
                         NavigationLink(item.title) {
-                            Text("// Rename the location pin and set new radius here...")
+                            UpdateLocationPinSheetContentView(renameTitleText: item.title, radius: item.radius)
                         }
                     } else {
                         Text(item.title)
@@ -34,12 +34,14 @@ struct LocationPinsListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
+                        .disabled(canRename)
                 }
                 
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(canRename ? "Cancel" : "Rename") {
+                    Button(canRename ? "Cancel" : "Update") {
                         canRename.toggle()
                     }
+                    .disabled(mode == .active)
                 }
             }
             .environment(\.editMode, $mode)

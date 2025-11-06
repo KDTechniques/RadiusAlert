@@ -20,10 +20,9 @@ struct AddLocationPinButtonView: View {
                 nonGlassButton
             }
         }
-        .sheet(isPresented: .constant(true)/*savedPinsVM.isPresentedLocationSavingSheetBinding()*/) {
+        .sheet(isPresented: savedPinsVM.isPresentedLocationSavingSheetBinding()) {
             AddLocationPinSheetContentView()
                 .presentationDetents([.fraction(0.4)])
-                .presentationCornerRadius
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color.init(uiColor: .systemGray6))
         }

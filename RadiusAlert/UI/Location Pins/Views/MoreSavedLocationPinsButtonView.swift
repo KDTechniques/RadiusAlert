@@ -43,7 +43,6 @@ struct MoreSavedLocationPinsButtonView: View {
         .sheet(isPresented: savedPinsVM.isPresentedSavedLocationsSheetBinding()) {
             LocationPinsListView()
                 .presentationDetents([.medium])
-                .presentationCornerRadius
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color.init(uiColor: .systemGray6))
         }

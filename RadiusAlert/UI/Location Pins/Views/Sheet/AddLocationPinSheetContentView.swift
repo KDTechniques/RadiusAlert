@@ -10,6 +10,7 @@ import CoreLocation
 
 struct AddLocationPinSheetContentView: View {
     @Environment(LocationPinsViewModel.self) private var savedPinsVM
+    @Environment(MapViewModel.self) private var mapVM
     @State var titleText: String = ""
     @State var radius: CLLocationDistance = MapValues.minimumRadius
     
@@ -27,12 +28,12 @@ struct AddLocationPinSheetContentView: View {
                         value: $radius,
                         in: MapValues.minimumRadius...MapValues.maximumRadius,
                         step: 100) { } minimumValueLabel: {
-                            Text("700m")
+                            Text(MapValues.minimumRadiusString)
                         } maximumValueLabel: {
-                            Text("3km")
+                            Text(MapValues.maximumRadiusString)
                         }
                 } header: {
-                    Text("Radius: \(radius.int())m")
+                    Text("Radius: \(mapVM.getRadiusTextString(radius, withAlertRadiusText: false))")
                         .padding(.top)
                 }
                 .listRowBackground(Color.clear)
