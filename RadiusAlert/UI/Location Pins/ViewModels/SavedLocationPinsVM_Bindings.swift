@@ -6,13 +6,22 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 extension LocationPinsViewModel {
     func isPresentedSavedLocationsSheetBinding() -> Binding<Bool> {
-        .init(get: { self.isPresentedSavedLocationsSheet }, set: setIsPresentedSavedLocationsSheet)
+        return .init(get: { self.isPresentedSavedLocationsSheet }, set: setIsPresentedSavedLocationsSheet)
     }
     
     func isPresentedLocationSavingSheetBinding() -> Binding<Bool> {
-        .init(get: { self.isPresentedLocationSavingSheet }, set: setIsPresentedLocationSavingSheet)
+        return .init(get: { self.isPresentedLocationSavingSheet }, set: setIsPresentedLocationSavingSheet)
+    }
+    
+    func newLocationPinTextFieldTextBinding() -> Binding<String> {
+        return .init(get: { self.newLocationPinTextFieldText }, set: setNewLocationPinTextFieldText)
+    }
+    
+    func newLocationPinRadiusBinding() -> Binding<CLLocationDistance> {
+        return .init(get: { self.newLocationPinRadius }, set: setNewLocationPinRadius)
     }
 }

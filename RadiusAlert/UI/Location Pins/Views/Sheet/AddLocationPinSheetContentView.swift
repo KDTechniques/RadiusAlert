@@ -9,23 +9,23 @@ import SwiftUI
 import CoreLocation
 
 struct AddLocationPinSheetContentView: View {
-    @Environment(LocationPinsViewModel.self) private var savedPinsVM
+    // MARK: - INJECTED PROPERTIES
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     @Environment(MapViewModel.self) private var mapVM
-    @State var titleText: String = ""
-    @State var radius: CLLocationDistance = MapValues.minimumRadius
     
+    // MARK: - BODY
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("", text: $titleText, prompt: .init("Title"))
+                    TextField("", text: locationPinsVM.newLocationPinTextFieldTextBinding(), prompt: .init("Title"))
                 } footer: {
                     Text("This title appears as a button under the search bar. You may use emojis for easier identification, e.g. 💼 Work.")
                 }
                 
                 Section {
                     Slider(
-                        value: $radius,
+                        value: locationPinsVM.newLocationPinRadiusBinding(),
                         in: MapValues.minimumRadius...MapValues.maximumRadius,
                         step: 100) { } minimumValueLabel: {
                             Text(MapValues.minimumRadiusString)
@@ -33,7 +33,7 @@ struct AddLocationPinSheetContentView: View {
                             Text(MapValues.maximumRadiusString)
                         }
                 } header: {
-                    Text("Radius: \(mapVM.getRadiusTextString(radius, withAlertRadiusText: false))")
+                    Text("Radius: \(mapVM.getRadiusTextString(locationPinsVM.newLocationPinRadius, withAlertRadiusText: false))")
                         .padding(.top)
                 }
                 .listRowBackground(Color.clear)
@@ -46,7 +46,7 @@ struct AddLocationPinSheetContentView: View {
                     Button("Save") {
                         // action goes here...
                     }
-                    .disabled(titleText.isEmpty)
+                    .disabled(locationPinsVM.newLocationPinTextFieldText.isEmpty)
                     
                     //                        Image(systemName: "checkmark.circle.fill")
                     //                            .foregroundStyle(.green.gradient)

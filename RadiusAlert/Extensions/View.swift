@@ -18,7 +18,7 @@ extension View {
             .environment(MapViewModel(settingsVM: .init()))
             .environment(SettingsViewModel())
             .environment(AboutViewModel())
-            .environment(LocationPinsViewModel())
+            .environment(LocationPinsViewModel(mapVM: .init(settingsVM: .init())))
             .dynamicTypeSizeViewModifier
     }
     

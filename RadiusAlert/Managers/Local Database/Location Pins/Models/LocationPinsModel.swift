@@ -27,7 +27,7 @@ final class LocationPinsModel {
     }
     
     // MARK: - INITIALIZER
-    init(order: Int, title: String, radius: CLLocationDistance, coordinate: CLLocationCoordinate2D) {
+    init(order: Int = 0, title: String, radius: CLLocationDistance, coordinate: CLLocationCoordinate2D) {
         self.order = order
         self.title = title
         self.radius = radius

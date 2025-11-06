@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddLocationPinButtonView: View {
     @Environment(MapViewModel.self) private var mapVM
-    @Environment(LocationPinsViewModel.self) private var savedPinsVM
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
     // MARK: - BODY
     var body: some View {
@@ -20,7 +20,7 @@ struct AddLocationPinButtonView: View {
                 nonGlassButton
             }
         }
-        .sheet(isPresented: savedPinsVM.isPresentedLocationSavingSheetBinding()) {
+        .sheet(isPresented: locationPinsVM.isPresentedLocationSavingSheetBinding()) {
             AddLocationPinSheetContentView()
                 .presentationDetents([.fraction(0.4)])
                 .presentationDragIndicator(.visible)
@@ -45,9 +45,18 @@ extension AddLocationPinButtonView {
             .defaultTypeSizeViewModifier
     }
     
+    private func buttonAction() {
+        guard let item: LocationPinsModel = locationPinsVM.createLocationPin() else {
+            print("Marker Coordinate is Nil or something.")
+            return
+        }
+        
+        locationPinsVM.setIsPresentedLocationSavingSheet(true)
+    }
+    
     private var nonGlassButton: some View {
         Button {
-            savedPinsVM.setIsPresentedLocationSavingSheet(true)
+            buttonAction()
         } label: {
             buttonLabel
         }
@@ -58,18 +67,7 @@ extension AddLocationPinButtonView {
     private var glassButton: some View {
         if #available(iOS 26.0, *) {
             Button {
-                savedPinsVM.setIsPresentedLocationSavingSheet(true)
-                
-                //                if let result = mapVM.selectedSearchResult {
-                //                    print(result.result.name)
-                //                    print(result.result.location.coordinate)
-                //                    print(mapVM.selectedRadius.description)
-                //                } else {
-                //                    print(mapVM.centerCoordinate.debugDescription)
-                //                    print(mapVM.selectedRadius.description)
-                //                    print(mapVM.getRadiusTextString(mapVM.selectedRadius, withAlertRadiusText: false))
-                //                }
-                
+                buttonAction()
             } label: {
                 buttonLabel
                     .glassEffect(.regular)
