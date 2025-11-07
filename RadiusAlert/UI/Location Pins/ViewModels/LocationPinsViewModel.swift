@@ -15,14 +15,15 @@ final class LocationPinsViewModel {
     
     // MARK: - ASSIGNED PROPERTIES
     let locationPinsManager: LocationPinsManager = .shared
-    
+    let errorModel = LocationPinsVMErrorModel.self
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var isPresentedSavedLocationsSheet: Bool = false
     private(set) var isPresentedLocationSavingSheet: Bool = false
     private(set) var locationPinsArray: [LocationPinsModel] = []
     private(set) var newLocationPinTextFieldText: String = ""
-    private(set) var newLocationPinRadius: CLLocationDistance = .zero
+    private(set) var newLocationPinRadius: CLLocationDistance = MapValues.minimumRadius
     private(set) var newLocationCoordinate: CLLocationCoordinate2D?
+    private(set) var createNewLocationPinState: NavigationTopTrailingButtonExecutionStateModel = .none
     
     // MARK: - INITIALIZER
     init(mapVM: MapViewModel) {
@@ -59,6 +60,10 @@ final class LocationPinsViewModel {
         newLocationCoordinate = value
     }
     
+    func setCreateNewLocationPinState(_ value: NavigationTopTrailingButtonExecutionStateModel) {
+        createNewLocationPinState = value
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func initializeLocationPinsVM() async {
         // Fetch saved location pins from local database
@@ -66,12 +71,14 @@ final class LocationPinsViewModel {
             let locationPinsArray: [LocationPinsModel] = try await locationPinsManager.fetchLocationPins()
             setLocationPinsArray(locationPinsArray)
             
+#if DEBUG
             for item in locationPinsArray {
                 print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.getCoordinate())" )
             }
+#endif
             
         } catch let error {
-            print("Error Initializing Location Pins View Model. \(error.localizedDescription)")
+            Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).localizedDescription)
         }
     }
     
@@ -87,7 +94,7 @@ final class LocationPinsViewModel {
         setIsPresentedLocationSavingSheet(true)
     }
     
-    func createNewLocationPin() async {
+    func createNewLocationPin() async throws {
         guard let coordinate = newLocationCoordinate else { return }
         
         let item: LocationPinsModel = .init(
@@ -99,7 +106,8 @@ final class LocationPinsViewModel {
         do {
             try await locationPinsManager.addLocationPins([item])
         } catch let error {
-            print("Error creating a new location pin. \(error.localizedDescription)")
+            Utilities.log(errorModel.failedToCreateNewLocationPin(error).localizedDescription)
+            throw error
         }
     }
 }

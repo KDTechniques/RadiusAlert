@@ -23,7 +23,7 @@ struct HorizontalLocationPinsView: View {
                 }
                 .onPreferenceChange(locationPinsVM)
                 
-                MoreSavedLocationPinsButtonView()
+                moreButton
             }
             .padding([.horizontal, .bottom])
             .padding(.top, 1)
@@ -56,5 +56,14 @@ fileprivate extension View {
                         }
                 }
             }
+    }
+}
+
+extension HorizontalLocationPinsView  {
+    @ViewBuilder
+    private var moreButton: some View {
+        if locationPinsVM.showMoreButton() {
+            MoreSavedLocationPinsButtonView()
+        }
     }
 }

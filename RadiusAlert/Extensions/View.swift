@@ -12,13 +12,19 @@ extension View {
     /// consistency in testing environments.
     ///
     /// - Returns: A modified view with light color scheme and injected dependencies.
+    @ViewBuilder
     func previewModifier() ->  some View {
+        @Previewable @State var settingsVM: SettingsViewModel = .init()
+        @Previewable @State var mapVM: MapViewModel = .init(settingsVM: settingsVM)
+        @Previewable @State var aboutVM: AboutViewModel = .init()
+        @Previewable @State var locationPinsVM: LocationPinsViewModel = .init(mapVM: mapVM)
+        
         self
             .preferredColorScheme(.light)
-            .environment(MapViewModel(settingsVM: .init()))
-            .environment(SettingsViewModel())
-            .environment(AboutViewModel())
-            .environment(LocationPinsViewModel(mapVM: .init(settingsVM: .init())))
+            .environment(mapVM)
+            .environment(settingsVM)
+            .environment(aboutVM)
+            .environment(locationPinsVM)
             .dynamicTypeSizeViewModifier
     }
     

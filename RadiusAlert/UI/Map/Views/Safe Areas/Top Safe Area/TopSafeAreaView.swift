@@ -11,6 +11,7 @@ struct TopSafeAreaView: View {
     // MARK: - INNJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
     // MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
@@ -20,7 +21,7 @@ struct TopSafeAreaView: View {
         VStack(spacing: 0) {
             NavigationTitleButtonView()
             SearchBarSwiftUIView()
-            HorizontalLocationPinsView()
+            horizontalLocationPins
             Divider()
             SearchResultsListView()
         }
@@ -38,4 +39,14 @@ struct TopSafeAreaView: View {
         }
     }
     .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension TopSafeAreaView {
+    @ViewBuilder
+    private var horizontalLocationPins: some View {
+        if locationPinsVM.showScrollableHorizontalLocationPinsContent() {
+            HorizontalLocationPinsView()
+        }
+    }
 }

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddLocationPinButtonView: View {
-    @Environment(MapViewModel.self) private var mapVM
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
     // MARK: - BODY
@@ -22,7 +21,7 @@ struct AddLocationPinButtonView: View {
         }
         .sheet(isPresented: locationPinsVM.isPresentedLocationSavingSheetBinding()) {
             AddLocationPinSheetContentView()
-                .presentationDetents([.fraction(0.4)])
+                .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color.init(uiColor: .systemGray6))
         }
