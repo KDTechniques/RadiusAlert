@@ -45,7 +45,7 @@ extension AddLocationPinButtonView {
     }
     
     private func buttonAction() {
-        locationPinsVM.onAddNewLocationPinButtonTapped()
+        locationPinsVM.onAddNewLocationPinButtonTap()
     }
     
     private var nonGlassButton: some View {

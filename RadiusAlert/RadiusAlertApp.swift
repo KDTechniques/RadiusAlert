@@ -20,7 +20,7 @@ struct RadiusAlertApp: App {
         try? Tips.configure()
         
 #if DEBUG
-        try? Tips.resetDatastore()
+//        try? Tips.resetDatastore()
 #endif
         
         let settingsVM: SettingsViewModel =  .init()

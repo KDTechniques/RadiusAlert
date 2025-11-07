@@ -17,4 +17,12 @@ extension LocationPinsViewModel {
     func showMoreButton() -> Bool {
         return locationPinsArray.count >= 1
     }
+    
+    func isDisabledLocationPinListSheetEditButton() -> Bool {
+        return canRenameLocationPin
+    }
+    
+    func isDisabledLocationPinListSheetTopLeadingButtons() -> Bool {
+       return editMode == .active
+    }
 }

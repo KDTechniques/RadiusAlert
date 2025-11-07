@@ -14,21 +14,26 @@ struct HorizontalLocationPinsView: View {
     
     // MARK: - BODY
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack {
-                ForEach(locationPinsVM.locationPinsArray) {
-                    LocationPinButtonView(title: $0.title) {
-                        
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(locationPinsVM.locationPinsArray) {
+                        LocationPinButtonView(title: $0.title) {
+                            // action goes here...
+                        }
                     }
+                    .onPreferenceChange(locationPinsVM)
+                    
+                    moreButton
                 }
-                .onPreferenceChange(locationPinsVM)
-                
-                moreButton
+                .padding([.horizontal, .bottom])
+                .padding(.top, 1)
+                .id(locationPinsVM.scrollableHorizontalLocationPinsContentID)
             }
-            .padding([.horizontal, .bottom])
-            .padding(.top, 1)
+            .scrollIndicators(.never)
+            .scrollPosition(id: locationPinsVM.scrollPositionIDBinding(), anchor: .trailing)
         }
-        .scrollIndicators(.never)
+        
     }
 }
 

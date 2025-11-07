@@ -64,45 +64,9 @@ extension AddLocationPinSheetContentView {
     }
     
     private var saveButton: some View {
-        Button {
-            Task {
-                locationPinsVM.setCreateNewLocationPinState(.inProgress)
-                
-                do {
-                    try await locationPinsVM.createNewLocationPin()
-                } catch {
-                    locationPinsVM.setCreateNewLocationPinState(.failed)
-                }
-                
-                locationPinsVM.setCreateNewLocationPinState(.success)
-                
-                try? await Task.sleep(nanoseconds: 500_000_000)
-                locationPinsVM.setIsPresentedLocationSavingSheet(false)
-            }
-        } label: {
-            buttonLabelOnStateChange
+        Button("Save") {
+            locationPinsVM.onAddNewLocationPinSaveButtonTap()
         }
         .disabled(locationPinsVM.newLocationPinTextFieldText.isEmpty)
-    }
-    
-    @ViewBuilder
-    private var buttonLabelOnStateChange: some View {
-        switch locationPinsVM.createNewLocationPinState {
-        case .none:
-            Text("Save")
-            
-        case .inProgress:
-            Image(systemName: "progress.indicator")
-                .symbolEffect(.variableColor.iterative.dimInactiveLayers)
-                .font(.footnote.weight(.semibold))
-            
-        case .success:
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green.gradient)
-            
-        case .failed:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.yellow)
-        }
     }
 }

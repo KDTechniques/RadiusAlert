@@ -10,6 +10,7 @@ import Foundation
 enum LocationPinsVMErrorModel: LocalizedError {
     case failedToInitializeLocationPinsVM(_: Error)
     case failedToCreateNewLocationPin(_: Error)
+    case failedToFetchNSetLocationPinArray(_: Error)
     
     var errorDescription: String? {
         switch self {
@@ -18,6 +19,9 @@ enum LocationPinsVMErrorModel: LocalizedError {
 
         case .failedToCreateNewLocationPin(let error):
             return "❌: Error creating a new location pin. \(error.localizedDescription)"
+            
+        case.failedToFetchNSetLocationPinArray(let error):
+            return "❌: Error fetching and setting location pins array from database. \(error.localizedDescription)"
         }
     }
 }

@@ -24,4 +24,12 @@ extension LocationPinsViewModel {
     func newLocationPinRadiusBinding() -> Binding<CLLocationDistance> {
         return .init(get: { self.newLocationPinRadius }, set: setNewLocationPinRadius)
     }
+    
+    func scrollPositionIDBinding() -> Binding<String?> {
+        return .init(get: { self.scrollPositionID }, set: setScrollPositionID)
+    }
+    
+    func editModeBinding() -> Binding<EditMode> {
+        return .init(get: { self.editMode }, set: setEditMode)
+    }
 }

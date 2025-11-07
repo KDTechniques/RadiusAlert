@@ -9,15 +9,13 @@ import SwiftUI
 
 struct LocationPinsListView: View {
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
-    @State private var mode: EditMode = .inactive
-    @State private var canRename: Bool = false
     
     // MARK: - BODY
     var body: some View {
         NavigationStack {
             List {
-                ForEach(locationPinsVM.locationPinsArray) { item in
-                    if canRename {
+                ForEach(/*locationPinsVM.locationPinsArray*/LocationPinsModel.mock) { item in
+                    if locationPinsVM.canRenameLocationPin {
                         NavigationLink(item.title) {
                             UpdateLocationPinSheetContentView(renameTitleText: item.title, radius: item.radius)
                         }
@@ -28,26 +26,24 @@ struct LocationPinsListView: View {
                 .onDelete(perform: onDelete)
                 .onMove(perform: onMove)
             }
-            .onDisappear {
-                canRename = false
-            }
+            .onDisappear { handleOnDisappear() }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
-                        .disabled(canRename)
+                        .disabled(locationPinsVM.isDisabledLocationPinListSheetEditButton())
                 }
                 
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(canRename ? "Cancel" : "Update") {
-                        canRename.toggle()
+                    Button(locationPinsVM.getLocationPinListSheetTopBarLeadingButtonText()) {
+                        handleTopLeadingButtonAction()
                     }
-                    .disabled(mode == .active)
+                    .disabled(locationPinsVM.isDisabledLocationPinListSheetTopLeadingButtons())
                 }
             }
-            .environment(\.editMode, $mode)
+            .environment(\.editMode, locationPinsVM.editModeBinding())
             .navigationTitle(.init("Pined Locations"))
             .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: mode.isEditing) {
+            .onChange(of: locationPinsVM.editMode.isEditing) {
                 // use this closure to update the new order of the location pins or try to use `movePins` function if possible.
             }
         }
@@ -66,6 +62,7 @@ struct LocationPinsListView: View {
         .previewModifier()
 }
 
+// MARK: - EXTENSIONS
 extension LocationPinsListView {
     func onDelete(_ indexSet: IndexSet) {
         var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
@@ -74,8 +71,23 @@ extension LocationPinsListView {
     }
     
     func onMove(_ from: IndexSet, to: Int) {
-        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
-        tempArray.move(fromOffsets: from, toOffset: to)
-        locationPinsVM.setLocationPinsArray(tempArray)
+//        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
+//        tempArray.move(fromOffsets: from, toOffset: to)
+//        locationPinsVM.setLocationPinsArray(tempArray)
+        
+        
+        try? locationPinsVM.locationPinsManager.moveLocationPins(items: &locationPinsVM.locationPinsArray, fromOffsets: from, toOffset: to)
+        
+        Task { try? await locationPinsVM.fetchNSetLocationPins() }
+    }
+    
+    private func handleOnDisappear() {
+        locationPinsVM.setCanRenameLocationPin(false)
+    }
+    
+    private func handleTopLeadingButtonAction() {
+        var temp: Bool = locationPinsVM.canRenameLocationPin
+        temp.toggle()
+        locationPinsVM.setCanRenameLocationPin(temp)
     }
 }
