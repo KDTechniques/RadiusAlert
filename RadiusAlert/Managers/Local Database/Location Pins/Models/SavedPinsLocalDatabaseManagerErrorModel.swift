@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum SavedPinsLocalDatabaseManagerErrorModel: LocalizedError {
+enum SavedPinsLocalDatabaseManagerErrorModel {
     case failedToCreateNewLocationPin(_ error: Error)
     case failedToFetchSavedLocationPins(_ error: Error)
     case failedToUpdateLocationPins(_ error: Error)
     case failedToDeleteSavedLocationPin(_ error: Error)
     
-    var errorDescription: String? {
+    var errorDescription: String {
         switch self {
         case .failedToCreateNewLocationPin(let error):
             return "❌: Failed to create new location pin. \(error.localizedDescription)"

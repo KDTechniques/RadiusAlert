@@ -30,7 +30,7 @@ extension LocationPinsViewModel {
         do {
             try await locationPinsManager.addLocationPins([item])
         } catch let error {
-            Utilities.log(errorModel.failedToCreateNewLocationPin(error).localizedDescription)
+            Utilities.log(errorModel.failedToCreateNewLocationPin(error).errorDescription)
         }
     }
     
@@ -39,6 +39,7 @@ extension LocationPinsViewModel {
             await createNewLocationPin()
             setIsPresentedLocationSavingSheet(false)
             try? await fetchNSetLocationPins()
+            try? await Task.sleep(nanoseconds: 500_000_000)
             setScrollPositionID(scrollableHorizontalLocationPinsContentID)
         }
     }

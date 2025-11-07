@@ -44,18 +44,6 @@ actor LocationPinsManager {
     }
     
     @MainActor
-    func moveLocationPins(items: inout [LocationPinsModel], fromOffsets: IndexSet, toOffset: Int) throws {
-        items.move(fromOffsets: fromOffsets, toOffset: toOffset)
-        
-        // After mutating the array, persist the new order
-        for (index, item) in items.enumerated() {
-            item.order = index
-        }
-        
-        try locationPinsDatabaseManager.updateLocationPins()
-    }
-    
-    @MainActor
     func renameLocationPin(item: LocationPinsModel, newTitle: String) throws {
         item.title = newTitle
         try locationPinsDatabaseManager.updateLocationPins()

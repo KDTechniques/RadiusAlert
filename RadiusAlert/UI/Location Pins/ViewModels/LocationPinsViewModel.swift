@@ -22,7 +22,9 @@ final class LocationPinsViewModel {
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var isPresentedSavedLocationsSheet: Bool = false
     private(set) var isPresentedLocationSavingSheet: Bool = false
-    /*private(set)*/ var locationPinsArray: [LocationPinsModel] = []
+    private(set) var locationPinsArray: [LocationPinsModel] = [] {
+        didSet { onLocationPinsArrayChange() }
+    }
     
     // New Location Pin:
     private(set) var newLocationPinTextFieldText: String = ""
@@ -91,9 +93,17 @@ final class LocationPinsViewModel {
             for item in locationPinsArray {
                 print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.getCoordinate())" )
             }
+            print("\n\n")
 #endif
         } catch let error {
-            Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).localizedDescription)
+            Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).errorDescription)
+        }
+    }
+    
+    private func onLocationPinsArrayChange() {
+        if locationPinsArray.isEmpty {
+            setIsPresentedSavedLocationsSheet(false)
+            setEditMode(.inactive)
         }
     }
     
@@ -102,9 +112,9 @@ final class LocationPinsViewModel {
     func fetchNSetLocationPins() async throws {
         do {
             let locationPinsArray: [LocationPinsModel] = try await locationPinsManager.fetchLocationPins()
-            setLocationPinsArray(locationPinsArray)
+            withAnimation { setLocationPinsArray(locationPinsArray) }
         } catch let error {
-            Utilities.log(errorModel.failedToFetchNSetLocationPinArray(error).localizedDescription)
+            Utilities.log(errorModel.failedToFetchNSetLocationPinArray(error).errorDescription)
             throw error
         }
     }

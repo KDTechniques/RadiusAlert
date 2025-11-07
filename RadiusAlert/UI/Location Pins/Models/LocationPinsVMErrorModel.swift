@@ -7,12 +7,14 @@
 
 import Foundation
 
-enum LocationPinsVMErrorModel: LocalizedError {
-    case failedToInitializeLocationPinsVM(_: Error)
-    case failedToCreateNewLocationPin(_: Error)
-    case failedToFetchNSetLocationPinArray(_: Error)
+enum LocationPinsVMErrorModel {
+    case failedToInitializeLocationPinsVM(Error)
+    case failedToCreateNewLocationPin(Error)
+    case failedToFetchNSetLocationPinArray(Error)
+    case failedToMoveLocationPinListItem(Error)
+    case failedToDeleteLocationPinListItem(Error)
     
-    var errorDescription: String? {
+    var errorDescription: String {
         switch self {
         case .failedToInitializeLocationPinsVM(let error):
             return "❌: Error initializing Location Pins View Model. \(error.localizedDescription)"
@@ -22,6 +24,12 @@ enum LocationPinsVMErrorModel: LocalizedError {
             
         case.failedToFetchNSetLocationPinArray(let error):
             return "❌: Error fetching and setting location pins array from database. \(error.localizedDescription)"
+            
+        case .failedToMoveLocationPinListItem(let error):
+            return "❌: Error moving location pin item in the list. \(error.localizedDescription)"
+            
+        case .failedToDeleteLocationPinListItem(let error):
+            return "❌: Error deleting location pin item in the list. \(error.localizedDescription)"
         }
     }
 }

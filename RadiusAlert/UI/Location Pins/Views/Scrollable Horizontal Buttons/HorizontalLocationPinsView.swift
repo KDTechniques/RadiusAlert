@@ -31,7 +31,11 @@ struct HorizontalLocationPinsView: View {
                 .id(locationPinsVM.scrollableHorizontalLocationPinsContentID)
             }
             .scrollIndicators(.never)
-            .scrollPosition(id: locationPinsVM.scrollPositionIDBinding(), anchor: .trailing)
+            .onChange(of: locationPinsVM.scrollPositionID) { _, newValue in
+                withAnimation {
+                    proxy.scrollTo(newValue, anchor: .trailing)
+                }
+            }
         }
         
     }

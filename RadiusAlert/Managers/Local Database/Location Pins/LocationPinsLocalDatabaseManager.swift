@@ -27,7 +27,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToCreateNewLocationPin(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToCreateNewLocationPin(error).errorDescription)
             throw error
         }
     }
@@ -41,7 +41,7 @@ actor LocationPinsLocalDatabaseManager {
             
             return savedLocationPinsArray
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToFetchSavedLocationPins(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToFetchSavedLocationPins(error).errorDescription)
             throw error
         }
     }
@@ -51,7 +51,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToUpdateLocationPins(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToUpdateLocationPins(error).errorDescription)
             throw error
         }
     }
@@ -62,7 +62,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).errorDescription)
             throw error
         }
     }
@@ -77,7 +77,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).localizedDescription)
+            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).errorDescription)
             throw error
         }
     }

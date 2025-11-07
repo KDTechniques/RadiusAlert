@@ -9,12 +9,19 @@ import SwiftUI
 
 struct LocationPinsListView: View {
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
+    let isMock: Bool
+    
+    init(isMock: Bool = false) {
+        self.isMock = isMock
+    }
     
     // MARK: - BODY
     var body: some View {
         NavigationStack {
+            let array: [LocationPinsModel] = getArray()
+            
             List {
-                ForEach(/*locationPinsVM.locationPinsArray*/LocationPinsModel.mock) { item in
+                ForEach(array) { item in
                     if locationPinsVM.canRenameLocationPin {
                         NavigationLink(item.title) {
                             UpdateLocationPinSheetContentView(renameTitleText: item.title, radius: item.radius)
@@ -23,10 +30,10 @@ struct LocationPinsListView: View {
                         Text(item.title)
                     }
                 }
-                .onDelete(perform: onDelete)
-                .onMove(perform: onMove)
+                .onDelete(perform: locationPinsVM.onLocationPinListItemDelete)
+                .onMove(perform: locationPinsVM.onLocationPinListItemMove)
             }
-            .onDisappear { handleOnDisappear() }
+            .onDisappear { locationPinsVM.onLocationPinListDisappear() }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
@@ -35,7 +42,7 @@ struct LocationPinsListView: View {
                 
                 ToolbarItem(placement: .topBarLeading) {
                     Button(locationPinsVM.getLocationPinListSheetTopBarLeadingButtonText()) {
-                        handleTopLeadingButtonAction()
+                        locationPinsVM.locationPinListTopleadingButtonAction()
                     }
                     .disabled(locationPinsVM.isDisabledLocationPinListSheetTopLeadingButtons())
                 }
@@ -54,7 +61,7 @@ struct LocationPinsListView: View {
 #Preview("LocationPinsListView") {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            LocationPinsListView()
+            LocationPinsListView(isMock: true)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Color.init(uiColor: .systemGray6))
@@ -64,30 +71,7 @@ struct LocationPinsListView: View {
 
 // MARK: - EXTENSIONS
 extension LocationPinsListView {
-    func onDelete(_ indexSet: IndexSet) {
-        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
-        tempArray.remove(atOffsets: indexSet)
-        locationPinsVM.setLocationPinsArray(tempArray)
-    }
-    
-    func onMove(_ from: IndexSet, to: Int) {
-//        var tempArray: [LocationPinsModel] = locationPinsVM.locationPinsArray
-//        tempArray.move(fromOffsets: from, toOffset: to)
-//        locationPinsVM.setLocationPinsArray(tempArray)
-        
-        
-        try? locationPinsVM.locationPinsManager.moveLocationPins(items: &locationPinsVM.locationPinsArray, fromOffsets: from, toOffset: to)
-        
-        Task { try? await locationPinsVM.fetchNSetLocationPins() }
-    }
-    
-    private func handleOnDisappear() {
-        locationPinsVM.setCanRenameLocationPin(false)
-    }
-    
-    private func handleTopLeadingButtonAction() {
-        var temp: Bool = locationPinsVM.canRenameLocationPin
-        temp.toggle()
-        locationPinsVM.setCanRenameLocationPin(temp)
+    private func getArray() -> [LocationPinsModel] {
+        return isMock ? LocationPinsModel.mock : locationPinsVM.locationPinsArray
     }
 }
