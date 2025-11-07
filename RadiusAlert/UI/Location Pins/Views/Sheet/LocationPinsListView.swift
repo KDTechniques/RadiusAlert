@@ -23,11 +23,9 @@ struct LocationPinsListView: View {
             List {
                 ForEach(array) { item in
                     if locationPinsVM.canRenameLocationPin {
-                        NavigationLink(item.title) {
-                            UpdateLocationPinSheetContentView(renameTitleText: item.title, radius: item.radius)
-                        }
+                        titleOnUpdate(item)
                     } else {
-                        Text(item.title)
+                        justTitle(item)
                     }
                 }
                 .onDelete(perform: locationPinsVM.onLocationPinListItemDelete)
@@ -50,9 +48,6 @@ struct LocationPinsListView: View {
             .environment(\.editMode, locationPinsVM.editModeBinding())
             .navigationTitle(.init("Pined Locations"))
             .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: locationPinsVM.editMode.isEditing) {
-                // use this closure to update the new order of the location pins or try to use `movePins` function if possible.
-            }
         }
     }
 }
@@ -71,6 +66,16 @@ struct LocationPinsListView: View {
 
 // MARK: - EXTENSIONS
 extension LocationPinsListView {
+    private func justTitle(_ item: LocationPinsModel) -> some View {
+        Text(item.title)
+    }
+    
+    private func titleOnUpdate(_ item: LocationPinsModel) -> some View {
+        NavigationLink(item.title) {
+            UpdateLocationPinSheetContentView(item)
+        }
+    }
+    
     private func getArray() -> [LocationPinsModel] {
         return isMock ? LocationPinsModel.mock : locationPinsVM.locationPinsArray
     }

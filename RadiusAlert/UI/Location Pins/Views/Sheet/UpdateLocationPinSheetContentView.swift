@@ -9,10 +9,23 @@ import SwiftUI
 import CoreLocation
 
 struct UpdateLocationPinSheetContentView: View {
+    // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
-    @State var renameTitleText: String
-    @State var radius: CLLocationDistance
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
+    @Environment(\.dismiss) private var dismiss
     
+    let item: LocationPinsModel
+    @State private var renameText: String
+    @State private var radius: CLLocationDistance
+    
+    // MARK: - INITIALIZER
+    init(_ item: LocationPinsModel) {
+        self.item = item
+        _renameText = State(initialValue: item.title)
+        _radius = State(initialValue: item.radius)
+    }
+    
+    // MARK: - ASSIGNED PROPERTIES
     @FocusState var isFocused: Bool
     
     // MARK: - BODY
@@ -24,25 +37,20 @@ struct UpdateLocationPinSheetContentView: View {
         .scrollDisabled(true)
         .navigationTitle(.init("Update Pined Location"))
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: isFocused) {
-            $1 ? renameTitleText = "" : ()
-        }
+        .onChange(of: isFocused) { onRenameTitleTextFildFocus($1) }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done") {
-                    
-                }
-                .foregroundStyle(Color.accentColor)
+                Button("Done") { onUpdateDoneTap() }
+                    .foregroundStyle(Color.accentColor)
             }
         }
     }
-    
 }
 
 // MARK: - PREVIEWS
 #Preview("UpdateLocationPinSheetContentView") {
     NavigationStack {
-        UpdateLocationPinSheetContentView(renameTitleText: "💼 Work", radius: 1200)
+        UpdateLocationPinSheetContentView(.mock.first!)
     }
     .previewModifier()
 }
@@ -51,7 +59,7 @@ struct UpdateLocationPinSheetContentView: View {
 extension UpdateLocationPinSheetContentView {
     private var textfield: some View {
         Section {
-            TextField("", text: $renameTitleText, prompt: .init("Title"))
+            TextField("", text: $renameText, prompt: .init("Title"))
                 .focused($isFocused)
         }
     }
@@ -71,5 +79,21 @@ extension UpdateLocationPinSheetContentView {
                 .padding(.top)
         }
         .listRowBackground(Color.clear)
+    }
+    
+    private func onRenameTitleTextFildFocus(_ state: Bool) {
+        state ? renameText = "" : ()
+    }
+    
+    private func onUpdateDoneTap() {
+        Task {
+            await locationPinsVM.onLocationPinUpdateDoneButtonAction(
+                item,
+                title: renameText,
+                radius: radius
+            )
+            
+            dismiss()
+        }
     }
 }

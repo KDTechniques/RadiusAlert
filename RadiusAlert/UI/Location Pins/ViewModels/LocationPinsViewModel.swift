@@ -36,7 +36,7 @@ final class LocationPinsViewModel {
     // Location Pin List:
     private(set) var editMode: EditMode = .inactive
     private(set) var canRenameLocationPin: Bool = false
-    
+
     // MARK: - INITIALIZER
     init(mapVM: MapViewModel) {
         self.mapVM = mapVM
@@ -58,6 +58,10 @@ final class LocationPinsViewModel {
     
     func setLocationPinsArray(_ value: [LocationPinsModel]) {
         locationPinsArray = value
+    }
+    
+    func insertToLocationPinsArray(index: Int, with value: LocationPinsModel) {
+        locationPinsArray[index] = value
     }
     
     func setNewLocationPinTextFieldText(_ value: String) {
@@ -119,3 +123,4 @@ final class LocationPinsViewModel {
         }
     }
 }
+

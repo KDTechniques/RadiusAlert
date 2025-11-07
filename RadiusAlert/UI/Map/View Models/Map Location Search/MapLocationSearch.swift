@@ -74,9 +74,14 @@ extension MapViewModel {
     /// to complete in sequence, improving perceived smoothness.
     ///
     /// - Parameter item: The `MKMapItem` representing the location to focus on.
-    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKMapItem) {
+    func prepareSelectedSearchResultCoordinateOnMap(_ item: LocationPinsModel) {
+        setSelectedRadius(item.radius)
+        
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.getCoordinate()))
+        mkMapItem.name = item.title
+        
         // Optimistically set the selection so the UI can reflect the choice right away
-        setSelectedSearchResult(.init(result: item))
+        setSelectedSearchResult(.init(result: mkMapItem))
         
         // Clear any existing search UI state
         resetSearchResults()
@@ -90,7 +95,7 @@ extension MapViewModel {
             
             // Define a region centered on the selected item using our default bounds
             let region: MKCoordinateRegion = .init(
-                center: item.placemark.coordinate,
+                center: mkMapItem.placemark.coordinate,
                 latitudinalMeters: boundsMeters,
                 longitudinalMeters: boundsMeters
             )
@@ -106,7 +111,7 @@ extension MapViewModel {
             
             // Wait for the bounds animation to complete, then mark as fully set
             try? await Task.sleep(nanoseconds: 500_000_000)
-            setSelectedSearchResult(.init(result: item, doneSetting: true))
+            setSelectedSearchResult(.init(result: mkMapItem, doneSetting: true))
         }
     }
     

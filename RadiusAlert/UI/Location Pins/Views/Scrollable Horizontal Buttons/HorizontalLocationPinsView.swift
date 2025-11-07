@@ -11,15 +11,16 @@ import MapKit
 struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
+    @Environment(MapViewModel.self) private var mapVM
     
     // MARK: - BODY
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 HStack {
-                    ForEach(locationPinsVM.locationPinsArray) {
-                        LocationPinButtonView(title: $0.title) {
-                            // action goes here...
+                    ForEach(locationPinsVM.locationPinsArray) { item in
+                        LocationPinButtonView(title: item.title) {
+                            mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
                         }
                     }
                     .onPreferenceChange(locationPinsVM)
