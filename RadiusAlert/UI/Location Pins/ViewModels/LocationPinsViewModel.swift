@@ -17,6 +17,7 @@ final class LocationPinsViewModel {
     
     // Managers/Services/Models:
     let locationPinsManager: LocationPinsManager = .shared
+    let alertManager: AlertManager = .shared
     let errorModel = LocationPinsVMErrorModel.self
     
     private(set) var horizontalPinButtonsHeight: CGFloat?

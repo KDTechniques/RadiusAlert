@@ -11,7 +11,7 @@ extension LocationPinsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func showScrollableHorizontalLocationPinsContent() -> Bool {
-        return !locationPinsArray.isEmpty
+        return !locationPinsArray.isEmpty && mapVM.isMarkerCoordinateNil()
     }
     
     func showMoreButton() -> Bool {
@@ -24,5 +24,9 @@ extension LocationPinsViewModel {
     
     func isDisabledLocationPinListSheetTopLeadingButtons() -> Bool {
        return editMode == .active
+    }
+    
+    func enableSwipeGestures() -> Bool {
+        return editMode == .active
     }
 }

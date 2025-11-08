@@ -37,7 +37,7 @@ struct UpdateLocationPinSheetContentView: View {
         .scrollDisabled(true)
         .navigationTitle(.init("Update Pined Location"))
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: isFocused) { onRenameTitleTextFildFocus($1) }
+        .onChange(of: isFocused) { onRenameTitleTextFieldFocus($1) }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Done") { onUpdateDoneTap() }
@@ -81,7 +81,7 @@ extension UpdateLocationPinSheetContentView {
         .listRowBackground(Color.clear)
     }
     
-    private func onRenameTitleTextFildFocus(_ state: Bool) {
+    private func onRenameTitleTextFieldFocus(_ state: Bool) {
         state ? renameText = "" : ()
     }
     

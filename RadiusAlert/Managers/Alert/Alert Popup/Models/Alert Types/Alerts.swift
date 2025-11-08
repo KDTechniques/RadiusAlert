@@ -76,6 +76,14 @@ extension AlertTypes {
                     .init(role: .cancel)
                 ]
             )
+            
+        case .locationPinAlreadyExist:
+            return .init(
+                title: "Location Already Pinned",
+                message: "You may update the existing pin if needed.",
+                hapticType: .warning,
+                actions: [.init(role: .ok)]
+            )
         }
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LocationPinsListView: View {
+    @Environment(MapViewModel.self) private var mapVM
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     let isMock: Bool
     
@@ -28,8 +29,8 @@ struct LocationPinsListView: View {
                         justTitle(item)
                     }
                 }
-                .onDelete(perform: locationPinsVM.onLocationPinListItemDelete)
-                .onMove(perform: locationPinsVM.onLocationPinListItemMove)
+                .onDelete(perform: locationPinsVM.enableSwipeGestures() ? locationPinsVM.onLocationPinListItemDelete : nil)
+                .onMove(perform: locationPinsVM.enableSwipeGestures() ? locationPinsVM.onLocationPinListItemMove : nil)
             }
             .onDisappear { locationPinsVM.onLocationPinListDisappear() }
             .toolbar {
@@ -40,7 +41,7 @@ struct LocationPinsListView: View {
                 
                 ToolbarItem(placement: .topBarLeading) {
                     Button(locationPinsVM.getLocationPinListSheetTopBarLeadingButtonText()) {
-                        locationPinsVM.locationPinListTopleadingButtonAction()
+                        locationPinsVM.locationPinListTopLeadingButtonAction()
                     }
                     .disabled(locationPinsVM.isDisabledLocationPinListSheetTopLeadingButtons())
                 }
@@ -67,7 +68,9 @@ struct LocationPinsListView: View {
 // MARK: - EXTENSIONS
 extension LocationPinsListView {
     private func justTitle(_ item: LocationPinsModel) -> some View {
-        Text(item.title)
+        Button(item.title) {
+            locationPinsVM.onLocationPinsListRowItemTap(item)
+        }
     }
     
     private func titleOnUpdate(_ item: LocationPinsModel) -> some View {

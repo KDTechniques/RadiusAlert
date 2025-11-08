@@ -10,7 +10,12 @@ import Foundation
 extension LocationPinsViewModel {
     func onAddNewLocationPinButtonTap() {
         guard mapVM.isBeyondMinimumDistance(),
-              let centerCoordinate = mapVM.centerCoordinate else { return }
+              let centerCoordinate = mapVM.centerCoordinate,
+              !locationPinsArray.contains(where: { $0.isSameCoordinate(centerCoordinate) }) else {
+            // show an alert here  saying that the location pin already exist!
+            alertManager.showAlert(.locationPinAlreadyExist)
+            return
+        }
         
         setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
         setNewLocationPinRadius(mapVM.selectedRadius)

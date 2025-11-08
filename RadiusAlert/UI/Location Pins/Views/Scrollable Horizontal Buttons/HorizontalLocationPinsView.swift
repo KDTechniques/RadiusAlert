@@ -18,7 +18,9 @@ struct HorizontalLocationPinsView: View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 HStack {
-                    ForEach(locationPinsVM.locationPinsArray) { item in
+                    let limitedLocationPinsArray: [LocationPinsModel] = Array(locationPinsVM.locationPinsArray.prefix(5))
+                    
+                    ForEach(limitedLocationPinsArray) { item in
                         LocationPinButtonView(title: item.title) {
                             mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
                         }

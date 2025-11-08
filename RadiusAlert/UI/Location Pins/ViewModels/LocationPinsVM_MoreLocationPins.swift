@@ -49,9 +49,14 @@ extension LocationPinsViewModel {
         setCanRenameLocationPin(false)
     }
     
-    func locationPinListTopleadingButtonAction() {
+    func locationPinListTopLeadingButtonAction() {
         var temp: Bool = canRenameLocationPin
         temp.toggle()
         setCanRenameLocationPin(temp)
+    }
+    
+    func onLocationPinsListRowItemTap(_ item: LocationPinsModel) {
+        setIsPresentedSavedLocationsSheet(false)
+        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
     }
 }

@@ -25,14 +25,13 @@ struct LocationPinButtonView: View {
         } label: {
             Text(title)
                 .font(.subheadline)
-                .foregroundStyle(.primary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(.regularMaterial)
                 .clipShape(.capsule)
                 .pinButtonGlassEffect
         }
-        .buttonStyle(.plain)
+        .foregroundStyle(.primary)
     }
 }
 

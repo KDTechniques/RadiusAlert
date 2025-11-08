@@ -39,4 +39,8 @@ final class LocationPinsModel {
     func getCoordinate() -> CLLocationCoordinate2D {
         return .init(latitude: latitude, longitude: longitude)
     }
+    
+    func isSameCoordinate(_ coordinate:CLLocationCoordinate2D) -> Bool{
+        return latitude == coordinate.latitude && longitude == coordinate.longitude
+    }
 }
