@@ -35,6 +35,7 @@ final class LocationPinsViewModel {
     let scrollableHorizontalLocationPinsContentID: String = "last"
     
     // Location Pin List:
+    private(set) var locationPinNavigationPathsArray: [LocationPinsModel] = []
     private(set) var editMode: EditMode = .inactive
     private(set) var canRenameLocationPin: Bool = false
 
@@ -87,6 +88,10 @@ final class LocationPinsViewModel {
     
     func setCanRenameLocationPin(_ value: Bool) {
         canRenameLocationPin = value
+    }
+    
+    func setLocationPinNavigationPathsArray(_ value: [LocationPinsModel]) {
+        locationPinNavigationPathsArray = value
     }
     
     // MARK: - PRIVATE FUNCTIONS

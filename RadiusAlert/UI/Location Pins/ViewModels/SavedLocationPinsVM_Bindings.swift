@@ -28,4 +28,8 @@ extension LocationPinsViewModel {
     func editModeBinding() -> Binding<EditMode> {
         return .init(get: { self.editMode }, set: setEditMode)
     }
+    
+    func locationPinNavigationPathsArrayBinding() -> Binding<[LocationPinsModel]> {
+        return .init(get: { self.locationPinNavigationPathsArray }, set: setLocationPinNavigationPathsArray)
+    }
 }

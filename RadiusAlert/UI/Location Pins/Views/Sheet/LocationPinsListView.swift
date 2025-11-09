@@ -18,10 +18,14 @@ struct LocationPinsListView: View {
     
     // MARK: - BODY
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: locationPinsVM.locationPinNavigationPathsArrayBinding()) {
             let array: [LocationPinsModel] = getArray()
             
             List {
+                Button("check123") {
+                    locationPinsVM.setLocationPinNavigationPathsArray([LocationPinsModel.mock[2]])
+                }
+                
                 ForEach(array) { item in
                     if locationPinsVM.canRenameLocationPin {
                         titleOnUpdate(item)
@@ -49,6 +53,9 @@ struct LocationPinsListView: View {
             .environment(\.editMode, locationPinsVM.editModeBinding())
             .navigationTitle(.init("Pined Locations"))
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: LocationPinsModel.self) { item in
+                UpdateLocationPinSheetContentView(item)
+            }
         }
     }
 }
@@ -74,8 +81,8 @@ extension LocationPinsListView {
     }
     
     private func titleOnUpdate(_ item: LocationPinsModel) -> some View {
-        NavigationLink(item.title) {
-            UpdateLocationPinSheetContentView(item)
+        NavigationLink(value: item) {
+            Text(item.title)
         }
     }
     
