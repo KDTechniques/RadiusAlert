@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 extension LocationPinsViewModel {
+    // MARK: - PUBLIC FUNCTIONS
+    
     func isPresentedSavedLocationsSheetBinding() -> Binding<Bool> {
         return .init(get: { self.isPresentedSavedLocationsSheet }, set: setIsPresentedSavedLocationsSheet)
     }

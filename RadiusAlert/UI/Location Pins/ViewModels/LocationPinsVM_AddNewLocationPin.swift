@@ -8,19 +8,28 @@
 import Foundation
 
 extension LocationPinsViewModel {
+    // MARK: - PUBLIC FUNCTIONS
+    
     func onAddNewLocationPinButtonTap() {
+        // Basic Validations
         guard mapVM.isBeyondMinimumDistance(),
-              let centerCoordinate = mapVM.centerCoordinate,
-              !locationPinsArray.contains(where: { $0.isSameCoordinate(centerCoordinate) }) else {
-            // show an alert here  saying that the location pin already exist!
-            alertManager.showAlert(.locationPinAlreadyExist)
-            return
-        }
+              let centerCoordinate = mapVM.centerCoordinate else { return }
         
-        setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
-        setNewLocationPinRadius(mapVM.selectedRadius)
-        setNewLocationCoordinate(centerCoordinate)
-        setIsPresentedLocationSavingSheet(true)
+        // Get Existing Item If Available
+        let existingItem: LocationPinsModel? = locationPinsArray.first(where: { $0.isSameCoordinate(centerCoordinate) })
+        
+        if let item: LocationPinsModel = existingItem { // If Item Already Exist, Show An Alert
+            alertManager.showAlert(.locationPinAlreadyExist {
+                self.setLocationPinNavigationPathsArray([item])
+                self.setIsPresentedSavedLocationsSheet(true)
+            })
+        } else {  // If No Item Available, Prepare a Sheet for Adding a New Location Pin
+            
+            setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
+            setNewLocationPinRadius(mapVM.selectedRadius)
+            setNewLocationCoordinate(centerCoordinate)
+            setIsPresentedLocationSavingSheet(true)
+        }
     }
     
     func createNewLocationPin() async {

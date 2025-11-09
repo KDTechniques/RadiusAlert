@@ -8,6 +8,8 @@
 import CoreLocation
 
 extension LocationPinsViewModel {
+    // MARK: - PUBLIC FUNCTIONS
+    
     func onLocationPinUpdateDoneButtonAction(_ item: LocationPinsModel, title: String, radius: CLLocationDistance) async {
         guard let itemIndex: Int = locationPinsArray.firstIndex(of: item) else { return }
         

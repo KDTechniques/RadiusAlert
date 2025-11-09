@@ -8,8 +8,9 @@
 import SwiftUI
 
 extension LocationPinsViewModel {
+    // MARK: - PUBLIC FUNCTIONS
     func getLocationPinListSheetTopBarLeadingButtonText() -> String {
-        canRenameLocationPin ? "Cancel" : "Update"
+        canUpdateLocationPin ? "Cancel" : "Update"
     }
     
     func onLocationPinListItemMove(_ from: IndexSet, to: Int) {
@@ -46,17 +47,31 @@ extension LocationPinsViewModel {
     }
     
     func onLocationPinListDisappear() {
-        setCanRenameLocationPin(false)
+        setCanUpdateLocationPin(false)
     }
     
     func locationPinListTopLeadingButtonAction() {
-        var temp: Bool = canRenameLocationPin
+        var temp: Bool = canUpdateLocationPin
         temp.toggle()
-        setCanRenameLocationPin(temp)
+        setCanUpdateLocationPin(temp)
     }
     
     func onLocationPinsListRowItemTap(_ item: LocationPinsModel) {
         setIsPresentedSavedLocationsSheet(false)
         mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+    }
+    
+    func onSavedLocationSheetAppearance(_ isPresented: Bool) {
+        guard !isPresented else { return }
+        
+        resetSavedLocationPinsSheet()
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
+    private func resetSavedLocationPinsSheet() {
+        setEditMode(.inactive)
+        setCanUpdateLocationPin(false)
+        setLocationPinNavigationPathsArray([])
     }
 }

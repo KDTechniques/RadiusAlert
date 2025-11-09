@@ -27,7 +27,6 @@ struct TopSafeAreaView: View {
         }
         .padding(.top, 40)
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
-        .animation(.smooth(duration: 0.3), value: locationPinsVM.showScrollableHorizontalLocationPinsContent())
     }
 }
 
@@ -44,12 +43,10 @@ struct TopSafeAreaView: View {
 
 // MARK: - EXTENSIONS
 extension TopSafeAreaView {
+    @ViewBuilder
     private var horizontalLocationPins: some View {
-        Group {
-            if locationPinsVM.showScrollableHorizontalLocationPinsContent() {
-                HorizontalLocationPinsView()
-            }
+        if locationPinsVM.showScrollableHorizontalLocationPins() {
+            HorizontalLocationPinsView()
         }
-        .animation(.none, value: locationPinsVM.showScrollableHorizontalLocationPinsContent())
     }
 }

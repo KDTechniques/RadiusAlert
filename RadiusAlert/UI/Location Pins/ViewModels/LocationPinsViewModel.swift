@@ -21,13 +21,10 @@ final class LocationPinsViewModel {
     let errorModel = LocationPinsVMErrorModel.self
     
     private(set) var horizontalPinButtonsHeight: CGFloat?
-    private(set) var isPresentedSavedLocationsSheet: Bool = false
-    private(set) var isPresentedLocationSavingSheet: Bool = false
-    private(set) var locationPinsArray: [LocationPinsModel] = [] {
-        didSet { onLocationPinsArrayChange() }
-    }
+    private(set) var locationPinsArray: [LocationPinsModel] = [] { didSet { onLocationPinsArrayChange() } }
     
     // New Location Pin:
+    private(set) var isPresentedLocationSavingSheet: Bool = false
     private(set) var newLocationPinTextFieldText: String = ""
     private(set) var newLocationPinRadius: CLLocationDistance = MapValues.minimumRadius
     private(set) var newLocationCoordinate: CLLocationCoordinate2D?
@@ -35,10 +32,11 @@ final class LocationPinsViewModel {
     let scrollableHorizontalLocationPinsContentID: String = "last"
     
     // Location Pin List:
+    private(set) var isPresentedSavedLocationsSheet: Bool = false { didSet { onSavedLocationSheetAppearance(isPresentedSavedLocationsSheet) } }
     private(set) var locationPinNavigationPathsArray: [LocationPinsModel] = []
     private(set) var editMode: EditMode = .inactive
-    private(set) var canRenameLocationPin: Bool = false
-
+    private(set) var canUpdateLocationPin: Bool = false
+    
     // MARK: - INITIALIZER
     init(mapVM: MapViewModel) {
         self.mapVM = mapVM
@@ -86,8 +84,8 @@ final class LocationPinsViewModel {
         editMode = value
     }
     
-    func setCanRenameLocationPin(_ value: Bool) {
-        canRenameLocationPin = value
+    func setCanUpdateLocationPin(_ value: Bool) {
+        canUpdateLocationPin = value
     }
     
     func setLocationPinNavigationPathsArray(_ value: [LocationPinsModel]) {
@@ -127,6 +125,18 @@ final class LocationPinsViewModel {
             Utilities.log(errorModel.failedToFetchNSetLocationPinArray(error).errorDescription)
             throw error
         }
+    }
+    
+    func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
+        guard mapVM.isMarkerCoordinateNil() else {
+            alertManager.showAlert(.stopAlertOnSubmit {
+                self.mapVM.stopAlert()
+                self.mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+            })
+            return
+        }
+        
+        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
     }
 }
 

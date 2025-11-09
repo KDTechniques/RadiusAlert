@@ -22,7 +22,7 @@ struct HorizontalLocationPinsView: View {
                     
                     ForEach(limitedLocationPinsArray) { item in
                         LocationPinButtonView(title: item.title) {
-                            mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+                            locationPinsVM.onScrollableHorizontalLocationPinButtonTap(item)
                         }
                     }
                     .onPreferenceChange(locationPinsVM)

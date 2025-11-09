@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MapBottomTrailingButtonsView: View {
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
     @Environment(MapViewModel.self) private var mapVM
     // MARK: - BODY
     var body: some View {
@@ -43,8 +44,8 @@ fileprivate extension View {
 extension MapBottomTrailingButtonsView {
     private var addPinButton: some View {
         AddLocationPinButtonView()
-            .opacity(mapVM.isBeyondMinimumDistance() ? 1 : 0)
-            .disabled(!mapVM.isBeyondMinimumDistance())
+            .opacity(locationPinsVM.showAddNewLocationPinButton() ? 1 : 0)
+            .disabled(!locationPinsVM.showAddNewLocationPinButton())
             .animation(.default, value: mapVM.isBeyondMinimumDistance())
     }
 }

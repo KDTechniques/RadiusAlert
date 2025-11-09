@@ -22,12 +22,8 @@ struct LocationPinsListView: View {
             let array: [LocationPinsModel] = getArray()
             
             List {
-                Button("check123") {
-                    locationPinsVM.setLocationPinNavigationPathsArray([LocationPinsModel.mock[2]])
-                }
-                
                 ForEach(array) { item in
-                    if locationPinsVM.canRenameLocationPin {
+                    if locationPinsVM.canUpdateLocationPin {
                         titleOnUpdate(item)
                     } else {
                         justTitle(item)
