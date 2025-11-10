@@ -8,7 +8,7 @@
 import Foundation
 
 enum UpdateTypes: CaseIterable {
-    case future, whatsNew
+    case whatsNew, future
     
     var navigationLinkString: String {
         switch self {
