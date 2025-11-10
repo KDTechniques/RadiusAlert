@@ -11,3 +11,4 @@ struct SearchResultModel: Equatable {
     var result: MKMapItem
     var doneSetting: Bool = false
 }
+

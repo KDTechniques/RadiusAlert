@@ -58,10 +58,7 @@ extension MapViewModel {
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func positionBinding() -> Binding<MapCameraPosition> {
-        return Binding<MapCameraPosition>(
-            get: { self.position },
-            set: { self.setPosition($0) }
-        )
+        return .init(get: { self.position }, set: setPosition)
     }
     
     /// Resets the map to the initial region bounds, removing markers and routes.

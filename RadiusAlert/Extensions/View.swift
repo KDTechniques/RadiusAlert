@@ -12,12 +12,19 @@ extension View {
     /// consistency in testing environments.
     ///
     /// - Returns: A modified view with light color scheme and injected dependencies.
+    @ViewBuilder
     func previewModifier() ->  some View {
+        @Previewable @State var settingsVM: SettingsViewModel = .init()
+        @Previewable @State var mapVM: MapViewModel = .init(settingsVM: settingsVM)
+        @Previewable @State var aboutVM: AboutViewModel = .init()
+        @Previewable @State var locationPinsVM: LocationPinsViewModel = .init(mapVM: mapVM)
+        
         self
             .preferredColorScheme(.light)
-            .environment(MapViewModel(settingsVM: .init()))
-            .environment(SettingsViewModel())
-            .environment(AboutViewModel())
+            .environment(mapVM)
+            .environment(settingsVM)
+            .environment(aboutVM)
+            .environment(locationPinsVM)
             .dynamicTypeSizeViewModifier
     }
     
@@ -77,4 +84,43 @@ extension View {
         self
             .dynamicTypeSize(.large)
     }
+    
+    @ViewBuilder
+    var mapControlButtonBackground: some View {
+        if #available(iOS 26.0, *) {
+            self
+                .background(
+                    Color.primary.opacity(0.001),
+                    in: .circle
+                )
+        } else {
+            self
+                .background(
+                    Color.custom.Map.mapControlButtonBackground.color,
+                    in: .rect(cornerRadius: 8)
+                )
+        }
+    }
+    
+    var mapControlButtonShadow: some View {
+        self
+            .background {
+                Color.clear
+                    .mapControlButtonBackground
+                    .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
+            }
+    }
+    
+    func limitInputLength(_ binding: Binding<String>, to length: Int) -> some View {
+        self
+            .onChange(of: binding.wrappedValue) { _, newValue in
+                if newValue.count > length {
+                    binding.wrappedValue = String(newValue.prefix(length))
+                }
+            }
+    }
 }
+
+
+
+

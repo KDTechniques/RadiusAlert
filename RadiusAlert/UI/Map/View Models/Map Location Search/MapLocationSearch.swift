@@ -63,6 +63,58 @@ extension MapViewModel {
         }
     }
     
+    /// Prepares the map for a user-selected `MKMapItem` comes from a location pin.
+    ///
+    /// - Sets the selected search result immediately for UI feedback.
+    /// - Clears search results and text.
+    /// - Animates the map to center on the item's coordinate with a sensible default span.
+    /// - After animations complete, marks the selection as fully set (`doneSetting = true`).
+    ///
+    /// This method uses small delays to allow state changes and default map animations
+    /// to complete in sequence, improving perceived smoothness.
+    ///
+    /// - Parameter item: The `MKMapItem` representing the location to focus on.
+    func prepareSelectedSearchResultCoordinateOnMap(_ item: LocationPinsModel) {
+        setSelectedRadius(item.radius)
+        
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.getCoordinate()))
+        mkMapItem.name = item.title
+        
+        // Optimistically set the selection so the UI can reflect the choice right away
+        setSelectedSearchResult(.init(result: mkMapItem))
+        
+        // Clear any existing search UI state
+        resetSearchResults()
+        resetSearchText()
+        
+        Task {
+            // Allow state updates to propagate before moving the map
+            try? await Task.sleep(nanoseconds: 500_000_000) // ~0.5s
+            
+            let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+            
+            // Define a region centered on the selected item using our default bounds
+            let region: MKCoordinateRegion = .init(
+                center: mkMapItem.placemark.coordinate,
+                latitudinalMeters: boundsMeters,
+                longitudinalMeters: boundsMeters
+            )
+            
+            // Move the marker/viewport to the new region with animation
+            setPosition(region: region, animate: true)
+            
+            // Wait for the default position animation to complete
+            try? await Task.sleep(nanoseconds: 800_000_000)
+            
+            // Tighten the visible region around the current radius for a better UX
+            setRegionBoundsOnRadius()
+            
+            // Wait for the bounds animation to complete, then mark as fully set
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            setSelectedSearchResult(.init(result: mkMapItem, doneSetting: true))
+        }
+    }
+    
     /// Called when the selected search result changes.
     /// Updates the radius slider tip rule based on the new selection.
     func onSelectedSearchResultChange(_ result: SearchResultModel?) {
@@ -115,3 +167,4 @@ extension MapViewModel {
         }
     }
 }
+
