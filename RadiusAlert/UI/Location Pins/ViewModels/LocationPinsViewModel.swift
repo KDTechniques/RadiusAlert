@@ -22,6 +22,7 @@ final class LocationPinsViewModel {
     
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var locationPinsArray: [LocationPinsModel] = [] { didSet { onLocationPinsArrayChange() } }
+    let locationPinTitleMaxCharacterCount: Int = 20
     
     // New Location Pin:
     private(set) var isPresentedLocationSavingSheet: Bool = false

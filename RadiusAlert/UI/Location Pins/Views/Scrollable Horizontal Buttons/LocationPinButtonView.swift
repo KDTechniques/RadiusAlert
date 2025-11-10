@@ -27,6 +27,7 @@ struct LocationPinButtonView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
+                .frame(maxWidth: Utilities.screenWidth/2)
                 .background(.regularMaterial)
                 .clipShape(.capsule)
                 .pinButtonGlassEffect

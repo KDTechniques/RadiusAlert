@@ -110,6 +110,15 @@ extension View {
                     .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
             }
     }
+    
+    func limitInputLength(_ binding: Binding<String>, to length: Int) -> some View {
+        self
+            .onChange(of: binding.wrappedValue) { _, newValue in
+                if newValue.count > length {
+                    binding.wrappedValue = String(newValue.prefix(length))
+                }
+            }
+    }
 }
 
 

@@ -11,7 +11,8 @@ extension LocationPinsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func onLocationPinUpdateDoneButtonAction(_ item: LocationPinsModel, title: String, radius: CLLocationDistance) async {
-        guard let itemIndex: Int = locationPinsArray.firstIndex(of: item) else { return }
+        guard !title.isEmpty,
+              let itemIndex: Int = locationPinsArray.firstIndex(of: item) else { return }
         
         let tempItem: LocationPinsModel = item
         tempItem.title = title

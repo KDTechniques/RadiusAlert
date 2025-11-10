@@ -38,12 +38,7 @@ struct UpdateLocationPinSheetContentView: View {
         .navigationTitle(.init("Update Pined Location"))
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: isFocused) { onRenameTitleTextFieldFocus($1) }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Done") { onUpdateDoneTap() }
-                    .foregroundStyle(Color.accentColor)
-            }
-        }
+        .toolbar { ToolbarItem(placement: .confirmationAction) { doneButton } }
     }
 }
 
@@ -61,6 +56,10 @@ extension UpdateLocationPinSheetContentView {
         Section {
             TextField("", text: $renameText, prompt: .init("Title"))
                 .focused($isFocused)
+                .limitInputLength(
+                    $renameText,
+                    to: locationPinsVM.locationPinTitleMaxCharacterCount
+                )
         }
     }
     
@@ -95,5 +94,13 @@ extension UpdateLocationPinSheetContentView {
             
             dismiss()
         }
+    }
+    
+    private var doneButton: some View {
+        Button("Done") {
+            onUpdateDoneTap()
+        }
+        .foregroundStyle(Color.accentColor)
+        .disabled(renameText.isEmpty)
     }
 }

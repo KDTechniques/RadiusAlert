@@ -41,6 +41,10 @@ extension AddLocationPinSheetContentView {
     private var textField: some View {
         Section {
             TextField("", text: locationPinsVM.newLocationPinTextFieldTextBinding(), prompt: .init("Title"))
+                .limitInputLength(
+                    locationPinsVM.newLocationPinTextFieldTextBinding(),
+                    to: locationPinsVM.locationPinTitleMaxCharacterCount
+                )
         } footer: {
             Text("This title appears as a button under the search bar. You may use emojis for easier identification, e.g. 💼 Work.")
         }
