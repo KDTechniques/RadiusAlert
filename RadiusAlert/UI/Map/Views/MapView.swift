@@ -14,14 +14,16 @@ struct MapView: View {
     @Environment(MapViewModel.self) private var mapVM
     @Environment(SettingsViewModel.self) private var settingsVM
     
+    @State var maxHorizontalContentWidth: CGFloat = .zero
+    
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace
     
     // MARK: - BODY
     var body: some View {
-        #if DEBUG
-        let _ = Self._printChanges()
-        #endif
+#if DEBUG
+        //        let _ = Self._printChanges()
+#endif
         
         Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
             // User's Current Location
@@ -77,6 +79,5 @@ extension MapView {
         MapUserLocationButton(scope: mapSpace)
         MapPitchToggle(scope: mapSpace)
         MapCompass(scope: mapSpace)
-        MapScaleView(scope: mapSpace)
     }
 }

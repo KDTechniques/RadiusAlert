@@ -12,10 +12,7 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return Binding(
-            get: { self.selectedRadius },
-            set: { newValue in withAnimation { self.setSelectedRadius(newValue) } }
-        )
+        return .init(get: { self.selectedRadius }, set: withAnimation { setSelectedRadius })
     }
     
     /// Formats the radius value as a string, optionally including alert text and a name.
@@ -23,11 +20,11 @@ extension MapViewModel {
         /// Round the radius to the nearest whole number
         let radius: Double = radius.rounded()
         /// Convert the radius from meters to kilometers
-        let radiusInkilo: Double = radius/1000
+        let radiusInKilo: Double = radius/1000
         /// Determine if the kilometer value has decimal points
-        let hasDecimalPoints: Bool = radiusInkilo.truncatingRemainder(dividingBy: 1) != 0
+        let hasDecimalPoints: Bool = radiusInKilo.truncatingRemainder(dividingBy: 1) != 0
         /// Format the kilometer string with one decimal place if needed, otherwise no decimals
-        let inKiloMeters: String = String(format: hasDecimalPoints ? "%.1fkm" : "%.0fkm", radiusInkilo)
+        let inKiloMeters: String = String(format: hasDecimalPoints ? "%.1fkm" : "%.0fkm", radiusInKilo)
         /// Format the radius as meters string
         let inMeters: String = "\(Int(radius))m"
         

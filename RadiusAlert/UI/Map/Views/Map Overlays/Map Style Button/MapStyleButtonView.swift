@@ -46,22 +46,22 @@ fileprivate struct ButtonView: View {
 
 // MARK: - EXTENSIONS
 extension ButtonView {
+    private var buttonLabel: some View {
+        Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
+            .foregroundStyle(Color.accentColor)
+            .frame(width: 44, height: 44)
+            .mapControlButtonBackground
+            .defaultTypeSizeViewModifier
+            .popoverTip(settingsVM.mapStyleButtonTip)
+    }
+    
     private var nonGlassButton: some View {
         Button {
             mapVM.setNextMapStyle()
         } label: {
-            Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-                .foregroundStyle(Color.accentColor)
-                .padding(11.5)
-                .buttonBackground
-                .defaultTypeSizeViewModifier
-                .popoverTip(settingsVM.mapStyleButtonTip)
+            buttonLabel
         }
-        .buttonBackground
-        .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-        .padding(.trailing, 5)
-        .padding(.bottom, 40)
-        .buttonStyle(.plain)
+        .mapControlButtonShadow
     }
     
     @ViewBuilder
@@ -70,36 +70,10 @@ extension ButtonView {
             Button {
                 mapVM.setNextMapStyle()
             } label: {
-                Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-                    .foregroundStyle(Color.accentColor)
-                    .padding(11.5)
-                    .glassButtonBackground
+                buttonLabel
                     .glassEffect(.regular)
-                    .defaultTypeSizeViewModifier
-                    .popoverTip(settingsVM.mapStyleButtonTip)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
-            .padding(.trailing)
-            .padding(.bottom, 40)
             .buttonStyle(.plain)
         }
-    }
-}
-
-fileprivate extension View {
-    var buttonBackground: some View {
-        self
-            .background(
-                Color.custom.Map.mapControlButtonBackground.color,
-                in: .rect(cornerRadius: 7)
-            )
-    }
-    
-    var glassButtonBackground: some View {
-        self
-            .background(
-                Color.primary.opacity(0.001),
-                in: .circle
-            )
     }
 }

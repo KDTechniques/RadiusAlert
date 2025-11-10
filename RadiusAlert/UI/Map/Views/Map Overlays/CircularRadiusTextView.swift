@@ -35,6 +35,8 @@ fileprivate struct Content: View {
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)
+            .frame(maxWidth: Utilities.screenWidth/4)
+            .lineLimit(4)
             .offset(y: 40)
             .animation(.none, value: mapVM.selectedRadius)
     }
