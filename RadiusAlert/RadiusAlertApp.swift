@@ -13,7 +13,6 @@ struct RadiusAlertApp: App {
     // MARK: - PROPERTIES
     @State private var settingsVM: SettingsViewModel
     @State private var mapVM: MapViewModel
-    @State private var aboutVM: AboutViewModel = .init()
     @State private var locationPinsVM: LocationPinsViewModel
     
     init() {
@@ -39,7 +38,6 @@ struct RadiusAlertApp: App {
             ContentView()
                 .environment(settingsVM)
                 .environment(mapVM)
-                .environment(aboutVM)
                 .environment(locationPinsVM)
                 .preferredColorScheme(settingsVM.selectedColorScheme?.colorScheme)
                 .dynamicTypeSizeViewModifier

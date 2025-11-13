@@ -15,7 +15,7 @@ struct DebugView: View {
         } label: {
             Image(systemName: "ladybug.fill")
         }
-        .padding(.trailing)
+        .padding(.leading)
     }
 }
 

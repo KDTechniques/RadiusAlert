@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AboutView: View {
-    @Environment(AboutViewModel.self) var aboutVM: AboutViewModel
+    @Environment(SettingsViewModel.self) var settingsVM
     
     // MARK: - BODY
     var body: some View {
@@ -18,10 +18,9 @@ struct AboutView: View {
             AboutAppStoreRateView()
             AboutSomethingBoringView()
         }
-        .toolbar { settingsNavigationLink }
         .navigationTitle(Text("About"))
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { aboutVM.handleOnAppear() }
+        .onAppear { settingsVM.handleOnAppear() }
     }
 }
 
@@ -36,20 +35,4 @@ struct AboutView: View {
 #Preview("Content") {
     ContentView()
         .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-extension AboutView {
-    private var settingsNavigationLink: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            NavigationLink {
-                SettingsView()
-            } label: {
-                Image(systemName: "gear")
-                    .resizable()
-                    .scaledToFit()
-                    .defaultTypeSizeViewModifier
-            }
-        }
-    }
 }

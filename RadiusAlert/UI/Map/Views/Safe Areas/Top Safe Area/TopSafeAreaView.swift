@@ -19,7 +19,7 @@ struct TopSafeAreaView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
-            NavigationTitleButtonView()
+            CustomTopNavigationBarView()
             SearchBarSwiftUIView()
             horizontalLocationPins
             Divider()
