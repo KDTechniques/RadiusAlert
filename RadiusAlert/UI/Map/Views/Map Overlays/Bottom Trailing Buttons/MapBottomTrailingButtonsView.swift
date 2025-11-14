@@ -46,6 +46,6 @@ extension MapBottomTrailingButtonsView {
         AddLocationPinButtonView()
             .opacity(locationPinsVM.showAddNewLocationPinButton() ? 1 : 0)
             .disabled(!locationPinsVM.showAddNewLocationPinButton())
-            .animation(.default, value: mapVM.isBeyondMinimumDistance())
+            .animation(.default, value: locationPinsVM.showAddNewLocationPinButton())
     }
 }
