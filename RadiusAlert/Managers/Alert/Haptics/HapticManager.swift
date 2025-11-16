@@ -17,7 +17,7 @@ actor HapticManager {
     private var player: CHHapticAdvancedPatternPlayer?
     
     // MARK: - INITIALIZER
-    init() { Task { await setupHaptics() } }
+    private init() { Task { await setupHaptics() } }
     
     // MARK: - PUBLIC FUNCTIONS
     

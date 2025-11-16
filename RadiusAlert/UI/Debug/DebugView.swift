@@ -15,6 +15,7 @@ struct DebugView: View {
         } label: {
             Image(systemName: "ladybug.fill")
         }
+        .buttonStyle(.plain)
     }
 }
 
@@ -45,13 +46,17 @@ private struct Content: View {
     
     let alertManager: AlertManager = .shared
     let locationManager: LocationManager = .shared
+    let textToSpeechManager: TextToSpeechManager = .shared
     @State private var volume: String?
     @State private var playerVolume: Float = 1.0
     @State private var isPresentedReadMe: Bool = false
+    @State private var availableVoices: [String] = []
+    @State private var selectedVoice: String = "Samantha"
     
     var body: some View {
         List {
             currentDistanceMode
+            textToSpeech
             tone
             haptic
             notification
@@ -63,6 +68,7 @@ private struct Content: View {
             ReadMeView($isPresentedReadMe)
         }
         .navigationTitle(Text("Debug"))
+        .task { availableVoices = await textToSpeechManager.getAvailableVoiceNames() }
     }
 }
 
@@ -169,6 +175,27 @@ extension Content {
             Button("Show Read Me") {
                 isPresentedReadMe = true
             }
+        }
+    }
+    
+    private var textToSpeech: some View {
+        Section {
+            Picker("Voice", selection: $selectedVoice) {
+                ForEach(availableVoices, id: \.self) { voice in
+                    Text(voice)
+                }
+            }
+            
+            let text: String = TextToSpeechValues.defaultText(userName: "Kavinda", locationTitle: "OneMac")
+            Text("Text: \(text)")
+            
+            Button("Speak") {
+                Task {
+                    await textToSpeechManager.speak(text: text, voice: selectedVoice)
+                }
+            }
+        } header: {
+            Text("Text-to-Speech")
         }
     }
     

@@ -35,7 +35,7 @@ struct ContentView: View {
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { settingsNavigationLink } }
+                .toolbar { ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons } }
         }
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
@@ -94,6 +94,19 @@ extension ContentView {
         }
         .popoverTip(settingsVM.settingsTip)
         .tipImageStyle(.secondary)
+    }
+    
+    private var topTrailingNavigationButtons: some View {
+        HStack(spacing: 20) {
+            settingsNavigationLink
+            debug
+        }
+    }
+    
+    private var debug: some View {
+#if DEBUG
+        DebugView()
+#endif
     }
 }
 

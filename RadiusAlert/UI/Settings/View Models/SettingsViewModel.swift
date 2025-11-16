@@ -18,8 +18,9 @@ final class SettingsViewModel {
     let userDefaultsManager: UserDefaultsManager = .init()
     let alertManager: AlertManager = .shared
     
+    
     // Appearance:
-    private(set) var selectedColorScheme: ColorSchemeTypes? = .light { didSet { onColorSchemeChange() } }
+    private(set) var selectedColorScheme: ColorSchemeTypes? = .system { didSet { onColorSchemeChange() } }
     
     // Tone settings:
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
@@ -30,6 +31,8 @@ final class SettingsViewModel {
     // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
+    
+    // Text to Speech:
     
     // About:
     let settingsTip: SettingsTipModel = .init()
