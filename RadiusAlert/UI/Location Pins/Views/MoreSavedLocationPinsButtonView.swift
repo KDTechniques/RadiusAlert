@@ -16,28 +16,25 @@ struct MoreSavedLocationPinsButtonView: View {
         Button {
             savedPinsVM.setIsPresentedSavedLocationsSheet(true)
         } label: {
-            if #available(iOS 26.0, *) {
-                Image(systemName: "ellipsis")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: savedPinsVM.horizontalPinButtonsHeight, height: savedPinsVM.horizontalPinButtonsHeight)
-                    .background(.regularMaterial)
-                    .clipShape(.circle)
-                    .glassEffect(.clear)
-            } else {
-                Label("More", systemImage: "ellipsis")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.accentColor)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(.regularMaterial)
-                    .clipShape(.capsule)
-                    .overlay {
-                        Capsule()
-                            .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
-                    }
-                
+            Group {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(.primary)
+                        .frame(width: savedPinsVM.horizontalPinButtonsHeight, height: savedPinsVM.horizontalPinButtonsHeight)
+                        .background(.regularMaterial)
+                        .clipShape(.circle)
+                        .glassEffect(.clear)
+                } else {
+                    Label("More", systemImage: "ellipsis")
+                        .foregroundStyle(Color.accentColor)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(.regularMaterial)
+                        .clipShape(.capsule)
+                        .overlay { Capsule().strokeBorder(.primary.opacity(0.2), lineWidth: 0.6) }
+                }
             }
+            .font(.subheadline)
         }
         .buttonStyle(.plain)
         .sheet(isPresented: savedPinsVM.isPresentedSavedLocationsSheetBinding()) {
