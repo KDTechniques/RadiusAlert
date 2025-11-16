@@ -14,22 +14,25 @@ final class SettingsViewModel {
     let mapStyleButtonTip: MapStyleButtonTipModel = .init()
     var cancellables: Set<AnyCancellable> = []
     
-    // Managers/Services
+    // Managers/Services:
     let userDefaultsManager: UserDefaultsManager = .init()
     let alertManager: AlertManager = .shared
     
-    // Appearance
+    // Appearance:
     private(set) var selectedColorScheme: ColorSchemeTypes? = .light { didSet { onColorSchemeChange() } }
     
-    // Tone settings
+    // Tone settings:
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
     private(set) var isEnabledToneFade: Bool = false { didSet { onToneFadeToggleChange() } }
     private(set) var toneFadeDuration: Double = ToneValues.defaultDuration { didSet { toneFadeDuration$ = toneFadeDuration } }
     @ObservationIgnored @Published private(set) var toneFadeDuration$: Double = ToneValues.defaultDuration
     
-    // Map settings
+    // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
+    
+    // About:
+    let settingsTip: SettingsTipModel = .init()
     
     // MARK: - INITIALIZER
     init() {

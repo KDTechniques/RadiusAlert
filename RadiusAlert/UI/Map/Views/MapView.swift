@@ -10,11 +10,8 @@ import MapKit
 
 struct MapView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     @Environment(SettingsViewModel.self) private var settingsVM
-    
-    @State var maxHorizontalContentWidth: CGFloat = .zero
     
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace

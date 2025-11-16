@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AddLocationPinButtonView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
     // MARK: - BODY
@@ -37,8 +39,7 @@ struct AddLocationPinButtonView: View {
 // MARK: - EXTENSIONS
 extension AddLocationPinButtonView {
     private var buttonLabel: some View {
-        Image(systemName: "pin.fill")
-            .foregroundStyle(Color.accentColor)
+        Image(systemName: "pin")
             .frame(width: 44, height: 44)
             .mapControlButtonBackground
             .defaultTypeSizeViewModifier
@@ -53,6 +54,7 @@ extension AddLocationPinButtonView {
             buttonAction()
         } label: {
             buttonLabel
+                .foregroundStyle(Color.accentColor)
         }
         .mapControlButtonShadow
     }
@@ -64,6 +66,8 @@ extension AddLocationPinButtonView {
                 buttonAction()
             } label: {
                 buttonLabel
+                    .bold()
+                    .foregroundStyle(colorScheme == .dark ? .white : Color.accentColor)
                     .glassEffect(.regular)
             }
             .buttonStyle(.plain)

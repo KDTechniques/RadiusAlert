@@ -1,5 +1,5 @@
 //
-//  NavigationTitleTipModel.swift
+//  SettingsTipModel.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-09-24.
@@ -9,7 +9,7 @@ import Foundation
 
 import TipKit
 
-struct NavigationTitleTipModel: Tip {
+struct SettingsTipModel: Tip {
     var title: Text { .init("Learn More & Settings") }
     var message: Text? { .init("Tap here to learn more about this app and settings.") }
     
@@ -21,7 +21,7 @@ struct NavigationTitleTipModel: Tip {
     static let startAlertEvent: Event = .init(id: "startAlertEvent")
     
     var rules: [Rule] { [
-        #Rule(Self.startAlertEvent) { $0.donations.count >= 3 }
+        #Rule(Self.startAlertEvent) { $0.donations.count > 2 }
     ] }
 }
 

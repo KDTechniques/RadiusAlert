@@ -27,10 +27,7 @@ extension LocationPinsViewModel {
     }
     
     func showAddNewLocationPinButton() -> Bool {
-        let condition1: Bool = mapVM.isBeyondMinimumDistance()
-        let condition2: Bool = mapVM.isMarkerCoordinateNil()
-        
-        return condition1 && condition2
+        return mapVM.isMarkerCoordinateNil()
     }
     
     func showScrollableHorizontalLocationPins() -> Bool {

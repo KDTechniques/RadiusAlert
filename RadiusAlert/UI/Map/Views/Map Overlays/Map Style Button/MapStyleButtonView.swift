@@ -32,6 +32,7 @@ struct MapStyleButtonView: View {
 
 //  MARK: - SUB VIEWS
 fileprivate struct ButtonView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     @Environment(SettingsViewModel.self) private var settingsVM
     
@@ -48,7 +49,6 @@ fileprivate struct ButtonView: View {
 extension ButtonView {
     private var buttonLabel: some View {
         Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
-            .foregroundStyle(Color.accentColor)
             .frame(width: 44, height: 44)
             .mapControlButtonBackground
             .defaultTypeSizeViewModifier
@@ -60,6 +60,7 @@ extension ButtonView {
             mapVM.setNextMapStyle()
         } label: {
             buttonLabel
+                .foregroundStyle(Color.accentColor)
         }
         .mapControlButtonShadow
     }
@@ -71,6 +72,7 @@ extension ButtonView {
                 mapVM.setNextMapStyle()
             } label: {
                 buttonLabel
+                    .foregroundStyle(colorScheme == .dark ? .white : Color.accentColor)
                     .glassEffect(.regular)
             }
             .buttonStyle(.plain)

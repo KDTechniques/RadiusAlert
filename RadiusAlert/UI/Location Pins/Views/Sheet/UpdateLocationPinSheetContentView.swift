@@ -37,7 +37,6 @@ struct UpdateLocationPinSheetContentView: View {
         .scrollDisabled(true)
         .navigationTitle(.init("Update Pined Location"))
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: isFocused) { onRenameTitleTextFieldFocus($1) }
         .toolbar { ToolbarItem(placement: .confirmationAction) { doneButton } }
     }
 }
@@ -55,7 +54,6 @@ extension UpdateLocationPinSheetContentView {
     private var textfield: some View {
         Section {
             TextField("", text: $renameText, prompt: .init("Title"))
-                .focused($isFocused)
                 .limitInputLength(
                     $renameText,
                     to: locationPinsVM.locationPinTitleMaxCharacterCount
@@ -78,10 +76,6 @@ extension UpdateLocationPinSheetContentView {
                 .padding(.top)
         }
         .listRowBackground(Color.clear)
-    }
-    
-    private func onRenameTitleTextFieldFocus(_ state: Bool) {
-        state ? renameText = "" : ()
     }
     
     private func onUpdateDoneTap() {
