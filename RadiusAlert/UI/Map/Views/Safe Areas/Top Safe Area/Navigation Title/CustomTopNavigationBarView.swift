@@ -10,7 +10,6 @@ import SwiftUI
 struct CustomTopNavigationBarView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
-    @Environment(SettingsViewModel.self) private var settingsVM
     
     // MARK: - BODY
     var body: some View {
@@ -18,8 +17,8 @@ struct CustomTopNavigationBarView: View {
             titleText
             LogoView(color: mapVM.getNavigationTitleIconColor(), size: 35)
             Spacer()
-            settingsNavigationLink
-            debug
+            SettingsNavigationLinkView()
+//            debug
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
@@ -48,15 +47,5 @@ extension CustomTopNavigationBarView {
 #if DEBUG
         DebugView()
 #endif
-    }
-    
-    private var settingsNavigationLink: some View {
-        NavigationLink {
-            SettingsView()
-        } label: {
-            Text("Settings")
-        }
-        .popoverTip(settingsVM.navigationTitleTip)
-        .tipImageStyle(.secondary)
     }
 }
