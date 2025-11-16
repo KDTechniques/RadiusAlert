@@ -12,6 +12,7 @@ import MapKit
 struct ContentView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
     @Environment(\.scenePhase) private var scenePhase
     
     // MARK: - ASSIGNED PROPERTIES
@@ -28,13 +29,13 @@ struct ContentView: View {
                     MapBottomTrailingButtonsView()
                     RadiusSliderView()
                 }
-                
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
                 .overlay { SearchListBackgroundView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
-                .toolbarVisibility(.hidden, for: .navigationBar)
                 .ignoresSafeArea(.keyboard)
-                .navigationTitle(Text("Map"))
+                .navigationTitle(Text("Radius Alert"))
+                .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+                .toolbar { ToolbarItem(placement: .topBarTrailing) { settingsNavigationLink } }
         }
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
@@ -71,6 +72,28 @@ extension ContentView {
         guard condition1, condition2 else { return }
         
         mapVM.reduceAlertToneVolumeOnScenePhaseChange()
+    }
+    
+    private var settingsNavigationLink: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .buttonStyle(.plain)
+                
+            } else { // iOS 18.6
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Text("Settings")
+                }
+            }
+        }
+        .popoverTip(settingsVM.settingsTip)
+        .tipImageStyle(.secondary)
     }
 }
 

@@ -19,13 +19,11 @@ struct TopSafeAreaView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
-            NavigationTitleButtonView()
             SearchBarSwiftUIView()
             horizontalLocationPins
             Divider()
             SearchResultsListView()
         }
-        .padding(.top, 40)
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
 }

@@ -74,6 +74,7 @@ extension LocationPinsListView {
         Button(item.title) {
             locationPinsVM.onLocationPinsListRowItemTap(item)
         }
+        .foregroundStyle(.primary)
     }
     
     private func titleOnUpdate(_ item: LocationPinsModel) -> some View {

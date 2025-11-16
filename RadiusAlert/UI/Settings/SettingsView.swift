@@ -14,6 +14,7 @@ struct SettingsView: View {
             AppearanceListSectionView()
             AlertsListSectionView()
             MapStyleListSectionView()
+            AboutListSectionView()
         }
         .navigationTitle(Text("Settings"))
         .navigationBarTitleDisplayMode(.inline)

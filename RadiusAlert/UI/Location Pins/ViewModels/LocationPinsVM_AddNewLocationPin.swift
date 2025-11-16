@@ -12,8 +12,7 @@ extension LocationPinsViewModel {
     
     func onAddNewLocationPinButtonTap() {
         // Basic Validations
-        guard mapVM.isBeyondMinimumDistance(),
-              let centerCoordinate = mapVM.centerCoordinate else { return }
+        guard let centerCoordinate = mapVM.centerCoordinate else { return }
         
         // Get Existing Item If Available
         let existingItem: LocationPinsModel? = locationPinsArray.first(where: { $0.isSameCoordinate(centerCoordinate) })

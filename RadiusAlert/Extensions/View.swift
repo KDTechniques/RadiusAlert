@@ -16,14 +16,12 @@ extension View {
     func previewModifier() ->  some View {
         @Previewable @State var settingsVM: SettingsViewModel = .init()
         @Previewable @State var mapVM: MapViewModel = .init(settingsVM: settingsVM)
-        @Previewable @State var aboutVM: AboutViewModel = .init()
         @Previewable @State var locationPinsVM: LocationPinsViewModel = .init(mapVM: mapVM)
         
         self
             .preferredColorScheme(.light)
             .environment(mapVM)
             .environment(settingsVM)
-            .environment(aboutVM)
             .environment(locationPinsVM)
             .dynamicTypeSizeViewModifier
     }
