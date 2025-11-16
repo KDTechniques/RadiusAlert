@@ -32,7 +32,7 @@ final class SettingsViewModel {
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
     
     // About:
-    let navigationTitleTip: NavigationTitleTipModel = .init()
+    let settingsTip: SettingsTipModel = .init()
     
     // MARK: - INITIALIZER
     init() {

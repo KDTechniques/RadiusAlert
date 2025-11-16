@@ -28,8 +28,7 @@ struct SearchBarSwiftUIView: View {
         )
         .focused($isFocused)
         .submitLabel(.search)
-        .padding(.bottom, 14)
-        .padding(.top, 8)
+        .padding(.bottom)
         .onChange(of: isFocused) { mapVM.setSearchFieldFocused($1) }
         .onChange(of: mapVM.isSearchFieldFocused) { isFocused = $1 }
     }

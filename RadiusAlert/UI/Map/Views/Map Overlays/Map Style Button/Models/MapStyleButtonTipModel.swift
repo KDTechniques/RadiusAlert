@@ -17,7 +17,7 @@ struct MapStyleButtonTipModel: Tip {
     static let startAlertEvent: Event = .init(id: "startAlertEvent")
     
     var rules: [Rule] { [
-        #Rule(Self.startAlertEvent) { $0.donations.count >= 5 },
+        #Rule(Self.startAlertEvent) { $0.donations.count > 4 },
         #Rule(Self.$isMapStyleButtonVisible) { $0 },
         #Rule(Self.$isOnMapView) { $0 }
     ] }

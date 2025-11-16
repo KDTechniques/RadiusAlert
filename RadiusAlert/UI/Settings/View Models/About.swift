@@ -10,6 +10,6 @@ import Foundation
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func handleOnAppear() {
-        navigationTitleTip.invalidate(reason: .actionPerformed)
+        settingsTip.invalidate(reason: .actionPerformed)
     }
 }
