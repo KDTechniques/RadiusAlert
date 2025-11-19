@@ -186,7 +186,7 @@ extension Content {
                 }
             }
             
-            let text: String = TextToSpeechValues.defaultText(userName: "Kavinda", locationTitle: "OneMac")
+            let text: String = SpokenAlertValues.getPhrase(userName: "Kavinda", locationTitle: "OneMac")
             Text("Text: \(text)")
             
             Button("Speak") {

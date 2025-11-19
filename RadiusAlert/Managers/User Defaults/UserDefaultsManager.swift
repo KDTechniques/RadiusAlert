@@ -92,5 +92,28 @@ struct UserDefaultsManager {
     func saveFadeDuration(_ value: Double) {
         defaults.set(value, forKey: UserDefaultKeys.toneFadeDuration.rawValue)
     }
+    
+    // MARK: - Spken Alert
+    
+    func getSpokenAlert() -> SpokenAlertModel? {
+        guard let data: Data = defaults.data(forKey: UserDefaultKeys.spokenAlert.rawValue) else { return nil }
+        
+        do {
+            let model: SpokenAlertModel = try JSONDecoder().decode(SpokenAlertModel.self, from: data)
+            return model
+        } catch let error {
+            print("❌: Error getting spoken alert from user defaults. \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    func saveSpokenAlert(_ value: SpokenAlertModel) {
+        do {
+            let data: Data = try JSONEncoder().encode(value)
+            defaults.set(data, forKey: UserDefaultKeys.spokenAlert.rawValue)
+        } catch let error {
+            print("❌: Error saving spoken alert to user defaults. \(error.localizedDescription)")
+        }
+    }
 }
 

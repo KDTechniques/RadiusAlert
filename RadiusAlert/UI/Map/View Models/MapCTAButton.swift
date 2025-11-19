@@ -57,13 +57,19 @@ extension MapViewModel {
         setRadiusAlertItem(nil)
         setPopupCardItem(nil)
         setSelectedSearchResult(nil)
+        Task { await textToSpeechManager.stopSpeak() }
     }
     
     func onRegionEntry() {
         locationManager.onRegionEntryFailure = { }
         locationManager.onRegionEntry = { }
         alertManager.sendNotification()
-        alertManager.playTone(settingsVM.selectedTone.fileName)
+        
+        Task {
+            await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
+            alertManager.playTone(settingsVM.selectedTone.fileName)
+        }
+        
         alertManager.playHaptic()
         generateNSetPopupCardItem()
         settingsVM.setToneVolumeToFade()

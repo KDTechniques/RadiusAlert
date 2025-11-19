@@ -99,7 +99,7 @@ extension ContentView {
     private var topTrailingNavigationButtons: some View {
         HStack(spacing: 20) {
             settingsNavigationLink
-            debug
+//            debug
         }
     }
     

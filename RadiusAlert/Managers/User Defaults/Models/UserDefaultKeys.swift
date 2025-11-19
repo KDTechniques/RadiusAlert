@@ -14,4 +14,5 @@ enum UserDefaultKeys: String {
     case mapStyleButton
     case toneFade
     case toneFadeDuration
+    case spokenAlert
 }

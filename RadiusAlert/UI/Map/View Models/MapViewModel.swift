@@ -32,6 +32,7 @@ final class MapViewModel {
     let networkManager: NetworkManager = .shared
     let memoryWarningsHandler: MemoryWarningHandler = .shared
     let alertManager: AlertManager = .shared
+    let textToSpeechManager: TextToSpeechManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     
     // Map state

@@ -17,7 +17,7 @@ final class SettingsViewModel {
     // Managers/Services:
     let userDefaultsManager: UserDefaultsManager = .init()
     let alertManager: AlertManager = .shared
-    
+    let textToSpeechManager: TextToSpeechManager = .shared
     
     // Appearance:
     private(set) var selectedColorScheme: ColorSchemeTypes? = .system { didSet { onColorSchemeChange() } }
@@ -28,17 +28,21 @@ final class SettingsViewModel {
     private(set) var toneFadeDuration: Double = ToneValues.defaultDuration { didSet { toneFadeDuration$ = toneFadeDuration } }
     @ObservationIgnored @Published private(set) var toneFadeDuration$: Double = ToneValues.defaultDuration
     
+    // Text to Speech Spoken Alert:
+    private(set) var voiceNamesArray: [String] = []
+    private(set) var spokenAlertValues: SpokenAlertModel = .initialValues { didSet { spokenAlertValues$ = spokenAlertValues } }
+    @ObservationIgnored @Published private var spokenAlertValues$: SpokenAlertModel = .initialValues
+    
     // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
     private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
-    
-    // Text to Speech:
     
     // About:
     let settingsTip: SettingsTipModel = .init()
     
     // MARK: - INITIALIZER
     init() {
+        spokenAlertValuesSubscriber()
         initializeSettingsVM()
         toneFadeDurationSubscriber()
     }
@@ -67,10 +71,42 @@ final class SettingsViewModel {
     func setToneFadeDuration(_ value: Double) {
         toneFadeDuration = value
     }
- 
+    
+    func setVoiceNamesArray(_ value: [String]) {
+        voiceNamesArray = value
+    }
+    
+    func setSpokenUserNameTextFieldText(_ value: String) {
+        spokenAlertValues.userName = value
+    }
+    
+    func setSelectedVoiceName(_ value: String) {
+        spokenAlertValues.voice = value
+    }
+    
+    func setSpeakingRate(_ value: CGFloat) {
+        spokenAlertValues.speakingRate = value
+    }
+    
+    func setPitchRate(_ value: CGFloat) {
+        spokenAlertValues.pitchRate = value
+    }
+    
+    func SetIsOnSpokenAlert(_ value: Bool) {
+        spokenAlertValues.isOnSpokenAlert = value
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func initializeSettingsVM() {
         initializeFromUserDefaults()
+    }
+    
+    private func spokenAlertValuesSubscriber() {
+        $spokenAlertValues$
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .removeDuplicates(by: { $0 == $1 })
+            .sink { self.userDefaultsManager.saveSpokenAlert($0) }
+            .store(in: &cancellables)
     }
     
     private func initializeFromUserDefaults() {
@@ -80,6 +116,7 @@ final class SettingsViewModel {
         showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
         isEnabledToneFade = userDefaultsManager.getToneFade()
         toneFadeDuration =  userDefaultsManager.getToneFadeDuration()
+        spokenAlertValues = userDefaultsManager.getSpokenAlert() ?? .initialValues
     }
     
     private func onColorSchemeChange() {
@@ -87,4 +124,3 @@ final class SettingsViewModel {
         userDefaultsManager.saveDarkMode(selectedColorScheme.rawValue)
     }
 }
-

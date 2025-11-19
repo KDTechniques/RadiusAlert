@@ -12,6 +12,7 @@ struct AlertsListSectionView: View {
     var body: some View {
         Section {
             tone
+            textToSpeech
             notifications
         } header: {
             Text("Alerts")
@@ -36,6 +37,14 @@ extension AlertsListSectionView {
             ToneSettingsView()
         } label: {
             Text("Tone")
+        }
+    }
+    
+    private var textToSpeech: some View {
+        NavigationLink {
+            SpokenAlertView()
+        } label: {
+            Text("Spoken Alert")
         }
     }
     

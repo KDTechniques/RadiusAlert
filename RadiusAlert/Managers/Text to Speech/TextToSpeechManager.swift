@@ -11,13 +11,17 @@ import AVFoundation
 ///
 /// This actor isolates speech operations and exposes convenience APIs
 /// for speaking text and enumerating available system voices.
-actor TextToSpeechManager {
+actor TextToSpeechManager: NSObject {
     // MARK: - ASSIGNED PROPERTIES
     static let shared = TextToSpeechManager()
-    let synthesizer = AVSpeechSynthesizer()
+    private let synthesizer = AVSpeechSynthesizer()
+    private var continuation: CheckedContinuation<Void, Never>?
     
     // MARK: - INITIALIZER
-    private init() { }
+    private override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
     
     // MARK: - PUBLIC FUNCTIONS
     
@@ -36,14 +40,15 @@ actor TextToSpeechManager {
     ///
     /// - Note: Speech begins asynchronously and this call does not block until
     ///   completion.
-    func speak(text: String, voice: String) async {
-        synthesizer.stopSpeaking(at: .immediate)
+    func speak(text: String, voice: String, spokenRate: Float = 0.5, pitchRate: Float = 1.0) async {
+        finishSpeech()
+        stopSpeak()
         
         let voiceIdentifier: String? = getVoiceIdentifier(for: voice)
         let utterance = AVSpeechUtterance(string: text)
         
-        utterance.rate = 0.5  // Range: 0.0 (slow) → 1.0 (fast)
-        utterance.pitchMultiplier = 1.0  // Range: 0.5 (low) → 2.0 (high)
+        utterance.rate = spokenRate  // Range: 0.0 (slow) → 1.0 (fast)
+        utterance.pitchMultiplier = pitchRate  // Range: 0.5 (low) → 2.0 (high)
         
         // Use selected voice if provided, otherwise default system language voice
         if let voiceIdentifier,
@@ -51,8 +56,15 @@ actor TextToSpeechManager {
             utterance.voice = voice
         }
         
-        synthesizer.speak(utterance)
-        
+        // Wait for speech to finish
+        await withCheckedContinuation { continuation in
+            self.continuation = continuation
+            synthesizer.speak(utterance)
+        }
+    }
+    
+    func stopSpeak() {
+        synthesizer.stopSpeaking(at: .immediate)
     }
     
     /// Returns the display names of all available system speech voices.
@@ -74,5 +86,19 @@ actor TextToSpeechManager {
         return AVSpeechSynthesisVoice.speechVoices()
             .first(where: { $0.name.contains(name) })?
             .identifier
+    }
+    
+    private func finishSpeech() {
+        continuation?.resume()
+        continuation = nil
+    }
+}
+
+// MARK: - EXTENSIONS
+extension TextToSpeechManager: AVSpeechSynthesizerDelegate {
+    // MARK: DELEGATE FUNCTIONS
+    
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        Task { await finishSpeech() }
     }
 }
