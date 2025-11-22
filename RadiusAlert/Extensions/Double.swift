@@ -19,4 +19,8 @@ extension Double {
     func int() -> Int {
         return Int(self)
     }
+    
+    func rounded(to places: Int) -> String {
+        return .init(format: "%.\(places)f", self)
+    }
 }

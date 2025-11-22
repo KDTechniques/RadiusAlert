@@ -28,10 +28,3 @@ struct SettingsView: View {
     }
     .previewModifier()
 }
-
-#Preview("About") {
-    NavigationStack {
-        AboutView()
-    }
-    .previewModifier()
-}

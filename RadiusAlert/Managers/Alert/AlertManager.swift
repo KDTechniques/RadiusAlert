@@ -27,7 +27,7 @@ final class AlertManager {
     private let alertPopupmanager: AlertPopupManager = .shared
     
     //  MARK: -  INITIALIZER
-    private  init() { }
+    private init() { }
     
     // 1 - Local Push Notifications
     // 2 - Tone
