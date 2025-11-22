@@ -21,4 +21,24 @@ extension SettingsViewModel {
     func toneFadeDurationBinding() -> Binding<Double> {
         return .init(get: { self.toneFadeDuration }, set: setToneFadeDuration)
     }
+    
+    func spokenUserNameTextFieldTextBinding() -> Binding<String> {
+        return .init(get: { self.spokenAlertValues.userName }, set: setSpokenUserNameTextFieldText)
+    }
+    
+    func selectedVoiceNameBinding() -> Binding<String> {
+        return .init(get: { self.spokenAlertValues.voice }, set: setSelectedVoiceName)
+    }
+    
+    func speakingRateBinding() -> Binding<CGFloat> {
+        return .init(get: { self.spokenAlertValues.speakingRate }, set: setSpeakingRate)
+    }
+    
+    func pitchRateBinding() -> Binding<CGFloat> {
+        return .init(get: { self.spokenAlertValues.pitchRate }, set: setPitchRate)
+    }
+    
+    func isOnSpokenAlertBinding() -> Binding<Bool> {
+        return .init(get: { self.spokenAlertValues.isOnSpokenAlert }, set: SetIsOnSpokenAlert)
+    }
 }

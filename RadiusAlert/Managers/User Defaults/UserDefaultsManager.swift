@@ -24,7 +24,7 @@ struct UserDefaultsManager {
     func getDarkMode() -> ColorSchemeTypes {
         guard
             let modeRawValue: String = defaults.string(forKey: UserDefaultKeys.darkMode.rawValue),
-            let colorSchemeType: ColorSchemeTypes = ColorSchemeTypes.allCases.first(where: { $0.rawValue == modeRawValue }) else { return .light }
+            let colorSchemeType: ColorSchemeTypes = ColorSchemeTypes.allCases.first(where: { $0.rawValue == modeRawValue }) else { return .system }
         
         return colorSchemeType
     }
@@ -74,7 +74,7 @@ struct UserDefaultsManager {
     
     func getToneFade() -> Bool {
         if defaults.object(forKey: UserDefaultKeys.toneFade.rawValue) == nil {
-            return false
+            return true
         } else {
             return defaults.bool(forKey: UserDefaultKeys.toneFade.rawValue)
         }
@@ -91,6 +91,29 @@ struct UserDefaultsManager {
     
     func saveFadeDuration(_ value: Double) {
         defaults.set(value, forKey: UserDefaultKeys.toneFadeDuration.rawValue)
+    }
+    
+    // MARK: - Spken Alert
+    
+    func getSpokenAlert() -> SpokenAlertModel {
+        guard let data: Data = defaults.data(forKey: UserDefaultKeys.spokenAlert.rawValue) else { return .initialValues }
+        
+        do {
+            let model: SpokenAlertModel = try JSONDecoder().decode(SpokenAlertModel.self, from: data)
+            return model
+        } catch let error {
+            print("❌: Error getting spoken alert from user defaults. \(error.localizedDescription)")
+            return .initialValues
+        }
+    }
+    
+    func saveSpokenAlert(_ value: SpokenAlertModel) {
+        do {
+            let data: Data = try JSONEncoder().encode(value)
+            defaults.set(data, forKey: UserDefaultKeys.spokenAlert.rawValue)
+        } catch let error {
+            print("❌: Error saving spoken alert to user defaults. \(error.localizedDescription)")
+        }
     }
 }
 
