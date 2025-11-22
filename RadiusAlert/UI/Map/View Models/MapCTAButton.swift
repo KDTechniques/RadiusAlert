@@ -64,15 +64,18 @@ extension MapViewModel {
         locationManager.onRegionEntryFailure = { }
         locationManager.onRegionEntry = { }
         alertManager.sendNotification()
-        
-        Task {
-            await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
-            alertManager.playTone(settingsVM.selectedTone.fileName)
-        }
-        
-        alertManager.playHaptic()
         generateNSetPopupCardItem()
-        settingsVM.setToneVolumeToFade()
+        alertManager.playHaptic()
+        Task {
+            if settingsVM.spokenAlertValues.isOnSpokenAlert {
+                await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
+                alertManager.playTone(settingsVM.selectedTone.fileName)
+                settingsVM.setToneVolumeToFade()
+            } else {
+                alertManager.playTone(settingsVM.selectedTone.fileName)
+                settingsVM.setToneVolumeToFade()
+            }
+        }
     }
     
     // MARK: - PRIVATE FUNCTIONS

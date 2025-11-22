@@ -24,7 +24,7 @@ final class SettingsViewModel {
     
     // Tone settings:
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
-    private(set) var isEnabledToneFade: Bool = false { didSet { onToneFadeToggleChange() } }
+    private(set) var isEnabledToneFade: Bool = true { didSet { onToneFadeToggleChange() } }
     private(set) var toneFadeDuration: Double = ToneValues.defaultDuration { didSet { toneFadeDuration$ = toneFadeDuration } }
     @ObservationIgnored @Published private(set) var toneFadeDuration$: Double = ToneValues.defaultDuration
     
@@ -116,7 +116,7 @@ final class SettingsViewModel {
         showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
         isEnabledToneFade = userDefaultsManager.getToneFade()
         toneFadeDuration =  userDefaultsManager.getToneFadeDuration()
-        spokenAlertValues = userDefaultsManager.getSpokenAlert() ?? .initialValues
+        spokenAlertValues = userDefaultsManager.getSpokenAlert()
     }
     
     private func onColorSchemeChange() {

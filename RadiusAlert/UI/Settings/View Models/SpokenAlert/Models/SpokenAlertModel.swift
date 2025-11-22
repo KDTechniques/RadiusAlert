@@ -19,6 +19,6 @@ struct SpokenAlertModel: Equatable, Codable {
         voice: "Samantha",
         speakingRate: 0.5,
         pitchRate: 0.5,
-        isOnSpokenAlert: false
+        isOnSpokenAlert: true
     )
 }
