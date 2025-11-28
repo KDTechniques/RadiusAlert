@@ -121,6 +121,15 @@ extension MapViewModel {
         setRadiusSliderTipRule_IsSetRadius(result)
     }
     
+    func onRecentsArrayChange(_ value: [RecentsModel]) {
+        userDefaultsManager.saveRecents(value)
+    }
+    
+    func getRecentsNAssignFromUserDefaults() {
+        let recentsArray: [RecentsModel] = userDefaultsManager.getRecents()
+        setRecentsArray(recentsArray)
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Handle when there's text in the search bar

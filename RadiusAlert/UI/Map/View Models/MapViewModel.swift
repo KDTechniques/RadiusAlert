@@ -18,8 +18,7 @@ final class MapViewModel {
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
         selectedRadius = mapValues.minimumRadius
-        authorizationStatusSubscriber()
-        clearMemoryByMapStyles()
+        initializeMapVM()
     }
     
     // MARK: - ASSIGNED PROPERTIES
@@ -30,6 +29,7 @@ final class MapViewModel {
     // Managers/Services
     let locationManager: LocationManager = .shared
     let networkManager: NetworkManager = .shared
+    let userDefaultsManager: UserDefaultsManager = .init()
     let memoryWarningsHandler: MemoryWarningHandler = .shared
     let alertManager: AlertManager = .shared
     let textToSpeechManager: TextToSpeechManager = .shared
@@ -51,10 +51,11 @@ final class MapViewModel {
     private(set) var isCameraDragging: Bool = false
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
+    private(set) var recentsArray: [RecentsModel] = RecentsModel.mock/*[]*/ { didSet { onRecentsArrayChange(recentsArray) } }
     
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
- 
+    
     // MARK: - SETTERS
     
     func setInteractionModes(_ modes: MapInteractionModes) {
@@ -119,12 +120,12 @@ final class MapViewModel {
         sliderHeight = value
     }
     
-    func set_IsAuthorizedToGetMapCameraUpdate(_ value: Bool) {
+    func setIsAuthorizedToGetMapCameraUpdate(_ value: Bool) {
         isAuthorizedToGetMapCameraUpdate = value
     }
     
-    func set_cancellables(_ value: Set<AnyCancellable>) {
-        cancellables = value
+    func setRecentsArray(_ value: [RecentsModel]) {
+        recentsArray = value
     }
     
     // MARK: - PUBLIC FUNCTIONS
@@ -141,6 +142,14 @@ final class MapViewModel {
     
     func onMapViewDisappear() {
         MapStyleButtonTipModel.isOnMapView = false
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
+    private func initializeMapVM() {
+        authorizationStatusSubscriber()
+        clearMemoryByMapStyles()
+        getRecentsNAssignFromUserDefaults()
     }
 }
 

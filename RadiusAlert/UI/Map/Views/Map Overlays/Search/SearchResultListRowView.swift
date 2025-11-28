@@ -34,7 +34,7 @@ struct SearchResultListRowView: View {
             Divider()
                 .opacity(showSeparator ? 1 : 0)
         }
-        .background(.red.opacity(0.001))
+        .background(.primary.opacity(0.001))
     }
 }
 
