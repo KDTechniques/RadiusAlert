@@ -20,8 +20,8 @@ struct SearchResultsListView: View {
                 if mapVM.showNoSearchResultsText() {
                     UnavailableView("No Results")
                 } else {
-//                    searchResultList
-                    SearchRecentsView()
+                    searchResultList
+//                    SearchRecentsView()
                 }
             case .noConnection:
                 if mapVM.showNoInternetConnectionText() {
