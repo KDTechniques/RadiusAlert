@@ -23,6 +23,7 @@ actor RecentSearchLocalDatabaseManager {
         localDatabaseManager.insertToContext(newItem)
         
         do {
+            try limitRecentSearches()
             try localDatabaseManager.saveContext()
         } catch {
             Utilities.log(RecentSearchLocalDatabaseManagerErrorModel.failedToCreateRecentSearch(error).errorDescription)
@@ -34,7 +35,7 @@ actor RecentSearchLocalDatabaseManager {
     func fetchRecentSearches() throws -> [RecentSearchModel] {
         do {
             var descriptor: FetchDescriptor = FetchDescriptor<RecentSearchModel>()
-            descriptor.sortBy = [SortDescriptor(\.timestamp, order: .forward)]
+            descriptor.sortBy = [SortDescriptor(\.timestamp, order: .reverse)]
             let savedRecentSearches: [RecentSearchModel] = try localDatabaseManager.fetchFromContext(descriptor)
             
             return savedRecentSearches
@@ -67,6 +68,24 @@ actor RecentSearchLocalDatabaseManager {
         } catch {
             Utilities.log(RecentSearchLocalDatabaseManagerErrorModel.failedToDeleteRecentSearch(error).errorDescription)
             throw error
+        }
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
+    @MainActor
+    private func limitRecentSearches() throws {
+        // Fetch all items sorted by most recent first
+        let allItems: [RecentSearchModel] = try fetchRecentSearches()
+        
+        // Determine overflow items beyond the max allowed
+        let maxCount: Int = RecentSearchModel.maxRecentSearchesCount
+        if allItems.count > maxCount {
+            let overflow = allItems.suffix(from: maxCount)
+            // Delete overflow items
+            for item in overflow {
+                try deleteRecentSearch(at: item)
+            }
         }
     }
 }

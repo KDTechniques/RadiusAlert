@@ -22,7 +22,7 @@ struct TopSafeAreaView: View {
             SearchBarSwiftUIView()
             horizontalLocationPins
             Divider()
-            SearchResultsListView()
+            SearchListContentView()
         }
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
