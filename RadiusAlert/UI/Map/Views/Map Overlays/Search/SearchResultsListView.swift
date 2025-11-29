@@ -81,18 +81,39 @@ extension SearchResultsListView {
     @ViewBuilder
     private var recentSearchesList: some View {
         if let lastItemID: String = mapVM.recentSearches.last?.id {
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    Section {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Recent Searches")
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+                    
+                    Spacer()
+                    
+                    NavigationLink {
+                        Text("Hello there...")
+                    } label: {
+                        Text("See All")
+                    }
+                }
+                .font(.subheadline)
+                .padding()
+                
+                Divider()
+                
+                ScrollView(.vertical) {
+                    VStack(spacing: 0) {
                         ForEach(mapVM.recentSearches) {
                             forEachRecentSearchItem(item: $0, lastItemID: lastItemID)
                         }
-                    } header: {
-                        Text("Recent Searches")
+                        
+                        Button("Clear All") {
+                            
+                        }
+                        .font(.subheadline)
+                        .padding(.vertical)
                     }
                 }
             }
-            
         }
     }
     
