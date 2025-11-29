@@ -15,5 +15,4 @@ enum UserDefaultKeys: String {
     case toneFade
     case toneFadeDuration
     case spokenAlert
-    case recents
 }

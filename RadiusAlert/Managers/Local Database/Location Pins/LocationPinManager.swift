@@ -1,5 +1,5 @@
 //
-//  LocationPinsManager.swift
+//  LocationPinManager.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-11-05.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-actor LocationPinsManager {
+actor LocationPinManager {
     // MARK: - ASSIGNED PROPERTIES
-    static let shared: LocationPinsManager = .init()
-    let locationPinsDatabaseManager: LocationPinsLocalDatabaseManager = .shared
+    static let shared: LocationPinManager = .init()
+    let locationPinDatabaseManager: LocationPinLocalDatabaseManager = .shared
     
     // MARK: - INITILAIZER
     private init() { }
@@ -19,7 +19,7 @@ actor LocationPinsManager {
     
     @MainActor
     func fetchLocationPins() throws -> [LocationPinsModel] {
-        return try locationPinsDatabaseManager.fetchLocationPins()
+        return try locationPinDatabaseManager.fetchLocationPins()
     }
     
     @MainActor
@@ -31,7 +31,7 @@ actor LocationPinsManager {
             item.order = startOrder + offset
         }
         
-        try locationPinsDatabaseManager.addLocationPins(newItems)
+        try locationPinDatabaseManager.addLocationPins(newItems)
     }
     
     @MainActor
@@ -40,17 +40,17 @@ actor LocationPinsManager {
             item.order = index
         }
         
-        try locationPinsDatabaseManager.updateLocationPins()
+        try locationPinDatabaseManager.updateLocationPins()
     }
     
     @MainActor
     func renameLocationPin(item: LocationPinsModel, newTitle: String) throws {
         item.title = newTitle
-        try locationPinsDatabaseManager.updateLocationPins()
+        try locationPinDatabaseManager.updateLocationPins()
     }
     
     @MainActor
     func deleteLocationPin(item: LocationPinsModel) throws {
-        try locationPinsDatabaseManager.deleteLocationPin(at: item)
+        try locationPinDatabaseManager.deleteLocationPin(at: item)
     }
 }

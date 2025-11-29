@@ -6,7 +6,6 @@
 //
 
 import MapKit
-import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
@@ -15,6 +14,8 @@ extension MapViewModel {
     /// - If no marker coordinate is set, select the location directly.
     /// - If a marker already exists, show a confirmation to stop the ongoing alert before changing location.
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
+        createRecentSearch(on: item)
+        
         isMarkerCoordinateNil()
         ? onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
@@ -77,7 +78,7 @@ extension MapViewModel {
     func prepareSelectedSearchResultCoordinateOnMap(_ item: LocationPinsModel) {
         setSelectedRadius(item.radius)
         
-        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.getCoordinate()))
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
         // Optimistically set the selection so the UI can reflect the choice right away
@@ -119,15 +120,6 @@ extension MapViewModel {
     /// Updates the radius slider tip rule based on the new selection.
     func onSelectedSearchResultChange(_ result: SearchResultModel?) {
         setRadiusSliderTipRule_IsSetRadius(result)
-    }
-    
-    func onRecentsArrayChange(_ value: [RecentsModel]) {
-        userDefaultsManager.saveRecents(value)
-    }
-    
-    func getRecentsNAssignFromUserDefaults() {
-        let recentsArray: [RecentsModel] = userDefaultsManager.getRecents()
-        setRecentsArray(recentsArray)
     }
     
     // MARK: - PRIVATE FUNCTIONS

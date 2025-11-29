@@ -20,8 +20,11 @@ struct SearchResultsListView: View {
                 if mapVM.showNoSearchResultsText() {
                     UnavailableView("No Results")
                 } else {
-                    searchResultList
-//                    SearchRecentsView()
+                    if mapVM.searchText.isEmpty && mapVM.isSearchFieldFocused {
+                        recentSearchesList
+                    } else {
+                        searchResultList
+                    }
                 }
             case .noConnection:
                 if mapVM.showNoInternetConnectionText() {
@@ -69,6 +72,38 @@ extension SearchResultsListView {
             SearchResultListRowView(
                 title: item.result.title,
                 subTitle: item.result.subtitle,
+                showSeparator: lastItemID != item.id
+            )
+        }
+        .buttonStyle(.plain)
+    }
+    
+    @ViewBuilder
+    private var recentSearchesList: some View {
+        if let lastItemID: String = mapVM.recentSearches.last?.id {
+            ScrollView(.vertical) {
+                VStack(spacing: 0) {
+                    Section {
+                        ForEach(mapVM.recentSearches) {
+                            forEachRecentSearchItem(item: $0, lastItemID: lastItemID)
+                        }
+                    } header: {
+                        Text("Recent Searches")
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    @ViewBuilder
+    private func forEachRecentSearchItem(item: RecentSearchModel, lastItemID: String) ->  some View {
+        Button {
+            print("Tapped!")
+        } label: {
+            SearchResultListRowView(
+                title: item.title,
+                subTitle: item.subtitle,
                 showSeparator: lastItemID != item.id
             )
         }

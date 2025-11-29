@@ -20,7 +20,7 @@ extension LocationPinsViewModel {
         
         insertToLocationPinsArray(index: itemIndex, with: tempItem)
         
-        try? await locationPinsManager.updateLocationPins(locationPinsArray)
+        try? await locationPinManager.updateLocationPins(locationPinsArray)
         try? await fetchNSetLocationPins()
     }
 }

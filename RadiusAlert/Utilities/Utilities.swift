@@ -93,3 +93,4 @@ struct Utilities {
         return getDistance(from: userCoordinate, to: markerCoordinate) - radius
     }
 }
+

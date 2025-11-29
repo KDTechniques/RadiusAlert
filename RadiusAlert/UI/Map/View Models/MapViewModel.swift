@@ -34,6 +34,7 @@ final class MapViewModel {
     let alertManager: AlertManager = .shared
     let textToSpeechManager: TextToSpeechManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
+    let recentSearchManager: RecentSearchManager = .shared
     
     // Map state
     private(set) var position: MapCameraPosition = .automatic
@@ -51,10 +52,9 @@ final class MapViewModel {
     private(set) var isCameraDragging: Bool = false
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
-    private(set) var recentsArray: [RecentsModel] = RecentsModel.mock/*[]*/ { didSet { onRecentsArrayChange(recentsArray) } }
-    
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
+    private(set) var recentSearches: [RecentSearchModel] = []
     
     // MARK: - SETTERS
     
@@ -124,8 +124,8 @@ final class MapViewModel {
         isAuthorizedToGetMapCameraUpdate = value
     }
     
-    func setRecentsArray(_ value: [RecentsModel]) {
-        recentsArray = value
+    func setRecentSearches(_ value: [RecentSearchModel]) {
+        recentSearches = value
     }
     
     // MARK: - PUBLIC FUNCTIONS
@@ -149,7 +149,7 @@ final class MapViewModel {
     private func initializeMapVM() {
         authorizationStatusSubscriber()
         clearMemoryByMapStyles()
-        getRecentsNAssignFromUserDefaults()
+        fetchNAssignRecentSearches()
     }
 }
 
