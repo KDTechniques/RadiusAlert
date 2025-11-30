@@ -68,7 +68,7 @@ fileprivate struct SliderView: View {
             mapVM.onRadiusSliderEditingChanged($0)
         }
         .popoverTip(mapVM.radiusSliderTip)
-        .tipImageStyle(.primary.opacity(0.3))
+        .tipImageStyle(colorScheme == .dark ? .secondary : Color(uiColor: .systemGray3))
         .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
             mapVM.onRadiusSliderTipAction()
         }
