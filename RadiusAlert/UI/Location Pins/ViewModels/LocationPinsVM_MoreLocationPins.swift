@@ -58,7 +58,7 @@ extension LocationPinsViewModel {
     
     func onLocationPinsListRowItemTap(_ item: LocationPinsModel) {
         setIsPresentedSavedLocationsSheet(false)
-        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
     
     func onSavedLocationSheetAppearance(_ isPresented: Bool) {

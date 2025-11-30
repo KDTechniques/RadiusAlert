@@ -15,16 +15,16 @@ struct RecentSearchesListView: View {
     var body: some View {
         if let lastItemID: String = mapVM.recentSearches.last?.id {
             ScrollViewContent {
-                ForEach(mapVM.recentSearches) {
+                ForEach(mapVM.recentSearches) { item in
                     SearchResultListRowView(
-                        title: $0.title,
-                        subTitle: $0.subtitle,
-                        showSeparator: lastItemID != $0.id
-                    ) {
-                        // action goes here...
-                    }
+                        title: item.title,
+                        subTitle: item.subtitle,
+                        showSeparator: lastItemID != item.id
+                    ) { mapVM.onRecentSearchListRowTap(item) }
                 }
             }
+        } else {
+            UnavailableView("No Recent Searches")
         }
     }
 }
@@ -84,13 +84,6 @@ extension ScrollViewContent {
         List {
             Group {
                 content
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            print("Delete Swiped!")
-                        } label: {
-                            Image(systemName: "trash.fill")
-                        }
-                    }
                 
                 Color.clear
                     .frame(height: Utilities.screenHeight/3)

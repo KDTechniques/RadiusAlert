@@ -132,12 +132,12 @@ final class LocationPinsViewModel {
         guard mapVM.isMarkerCoordinateNil() else {
             alertManager.showAlert(.stopAlertOnSubmit {
                 self.mapVM.stopAlert()
-                self.mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
             })
             return
         }
         
-        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
 }
 

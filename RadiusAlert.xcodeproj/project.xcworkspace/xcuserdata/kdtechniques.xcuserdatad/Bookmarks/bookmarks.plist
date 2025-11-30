@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>24</string>
+					<string>61</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>23</string>
+					<string>59</string>
 					<key>Timestamp</key>
-					<string>786138876.7544661</string>
+					<string>786205198.2452739</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -27,23 +27,24 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/Views/Map Overlays/Search/Recent Searches/RecentSearchesListView.swift</string>
+						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                        // action goes here...
+				<string>        // Clear any existing search UI state
+        resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
 </string>
 				<key>leading</key>
-				<string>                        showSeparator: lastItemID != $0.id
-                    ) {
+				<string>        setSelectedMapItem(item)
+        
 </string>
 				<key>trailing</key>
-				<string>                    }
-                }
-            }
+				<string>        
+        Task {
+            guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
 </string>
 			</dict>
 			<key>type</key>
