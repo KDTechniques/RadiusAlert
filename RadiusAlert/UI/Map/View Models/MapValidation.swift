@@ -115,4 +115,8 @@ extension MapViewModel {
     func getMapSearchType() -> MapSearchTypes {
         return searchText.isEmpty && isSearchFieldFocused ? .recentSearches : .searchResults
     }
+    
+    func showTopSafeAreaDivider() -> Bool {
+        return getMapSearchType() == .searchResults
+    }
 }
