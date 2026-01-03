@@ -13,6 +13,7 @@ struct MapBottomTrailingButtonsView: View {
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 10) {
+            AddMultipleStopsButtonView()
             addPinButton
             MapStyleButtonView()
         }
