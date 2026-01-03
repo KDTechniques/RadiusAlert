@@ -42,7 +42,7 @@ final class MapViewModel {
     private(set) var centerCoordinate: CLLocationCoordinate2D?
     private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange(selectedRadius) } }
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
-    private(set) var route: MKRoute?
+    private(set) var routes: [MKRoute] = []
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     
     // Search and UI state
@@ -92,8 +92,8 @@ final class MapViewModel {
         markerCoordinate =  marker
     }
     
-    func setRoute(_ route: MKRoute?) {
-        self.route = route
+    func setRoute(_ route: MKRoute) {
+        routes.append(route)
     }
     
     func setSearchText(_ text: String) {
@@ -142,6 +142,10 @@ final class MapViewModel {
     
     func onMapViewDisappear() {
         MapStyleButtonTipModel.isOnMapView = false
+    }
+    
+    func clearRoutes() {
+        routes = []
     }
     
     // MARK: - PRIVATE FUNCTIONS

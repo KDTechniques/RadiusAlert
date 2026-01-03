@@ -21,6 +21,9 @@ struct AddLocationPinButtonView: View {
                 nonGlassButton
             }
         }
+        .opacity(locationPinsVM.showAddNewLocationPinButton() ? 1 : 0)
+        .disabled(!locationPinsVM.showAddNewLocationPinButton())
+        .animation(.default, value: locationPinsVM.showAddNewLocationPinButton())
         .sheet(isPresented: locationPinsVM.isPresentedLocationSavingSheetBinding()) {
             AddLocationPinSheetContentView()
                 .presentationDetents([.medium])

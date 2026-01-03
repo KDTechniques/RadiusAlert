@@ -14,7 +14,7 @@ struct MapBottomTrailingButtonsView: View {
     var body: some View {
         VStack(spacing: 10) {
             AddMultipleStopsButtonView()
-            addPinButton
+            AddLocationPinButtonView()
             MapStyleButtonView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
@@ -39,14 +39,5 @@ fileprivate extension View {
             self
                 .padding(.trailing, 5)
         }
-    }
-}
-
-extension MapBottomTrailingButtonsView {
-    private var addPinButton: some View {
-        AddLocationPinButtonView()
-            .opacity(locationPinsVM.showAddNewLocationPinButton() ? 1 : 0)
-            .disabled(!locationPinsVM.showAddNewLocationPinButton())
-            .animation(.default, value: locationPinsVM.showAddNewLocationPinButton())
     }
 }

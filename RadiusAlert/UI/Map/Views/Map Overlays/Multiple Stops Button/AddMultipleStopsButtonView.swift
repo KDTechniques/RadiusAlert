@@ -11,6 +11,9 @@ struct AddMultipleStopsButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     
+    @Environment(MapViewModel.self) private var mapVM
+    let locationManager: LocationManager = .shared
+    
     // MARK: - BODY
     var body: some View {
         Group {
@@ -40,6 +43,16 @@ extension AddMultipleStopsButtonView {
     
     private func buttonAction() {
         
+        #if DEBUG
+        Task {
+            guard
+                let currentUserLocation = locationManager.markerCoordinate,
+                let centerCoordinate = mapVM.centerCoordinate,
+                let route = await locationManager.getRoute(pointA: currentUserLocation, pointB: centerCoordinate) else { return }
+            
+            mapVM.setRoute(route)
+        }
+        #endif
     }
     
     private var nonGlassButton: some View {

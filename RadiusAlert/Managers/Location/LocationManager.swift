@@ -146,6 +146,35 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Calculates a driving route between two coordinates.
+    ///
+    /// This async method requests directions from MapKit between the provided
+    /// start (`pointA`) and end (`pointB`) coordinates using automobile transport.
+    /// It returns the first available `MKRoute` from the response, or `nil` if
+    /// the directions request fails or no routes are available.
+    ///
+    /// - Parameters:
+    ///   - coordinate1: The starting coordinate for the route (point A).
+    ///   - coordinate2: The destination coordinate for the route (point B).
+    /// - Returns: The first `MKRoute` if available; otherwise `nil`.
+    /// - Note: This method is `async` and must be awaited. Errors during route
+    ///   calculation are caught and logged, and `nil` is returned.
+    func getRoute(pointA coordinate1: CLLocationCoordinate2D, pointB coordinate2: CLLocationCoordinate2D) async -> MKRoute? {
+        let request: MKDirections.Request = .init()
+        request.source = .init(placemark: .init(coordinate: coordinate1))
+        request.destination = .init(placemark: .init(coordinate: coordinate2))
+        request.transportType = .automobile
+        
+        do {
+            let directions = try await MKDirections(request: request).calculate()
+            let route: MKRoute? = directions.routes.first
+            return  route
+        } catch {
+            print("Error getting directions: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     /// Starts monitoring a circular region around the marker coordinate.
     /// Returns `false` if marker coordinate is not set.
     func startMonitoringRegion(radius: Double) -> Bool {
@@ -273,3 +302,4 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         getCurrentRegionName(currentUserLocation)
     }
 }
+

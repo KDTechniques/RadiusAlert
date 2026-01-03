@@ -37,7 +37,7 @@ struct MapView: View {
             }
             
             // Marker
-            if let markerCoordinate = mapVM.markerCoordinate {
+            if let markerCoordinate: CLLocationCoordinate2D = mapVM.markerCoordinate {
                 Marker(
                     mapVM.getRadiusTextString(
                         mapVM.selectedRadius,
@@ -48,9 +48,11 @@ struct MapView: View {
             }
             
             // Route
-            if let route = mapVM.route {
+            ForEach(mapVM.routes, id: \.self) { route in
+                let isFirst: Bool = mapVM.routes.first == route
+                
                 MapPolyline(route)
-                    .stroke(Color.pink.gradient, lineWidth: 3)
+                    .stroke(isFirst ? .pink : Color.debug, lineWidth: 3)
             }
         }
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)

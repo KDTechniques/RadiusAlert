@@ -12,12 +12,12 @@ extension MapViewModel {
     
     func getRoute() {
         Task {
-            let route: MKRoute? = await locationManager.getRoute()
+            guard let route: MKRoute = await locationManager.getRoute() else { return }
             setRoute(route)
         }
     }
     
     func removeDirections() {
-        setRoute(nil)
+        clearRoutes()
     }
 }
