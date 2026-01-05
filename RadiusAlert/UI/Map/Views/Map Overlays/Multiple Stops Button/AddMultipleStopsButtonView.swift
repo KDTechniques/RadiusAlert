@@ -42,7 +42,6 @@ extension AddMultipleStopsButtonView {
     }
     
     private func buttonAction() {
-        
         #if DEBUG
         Task {
             guard
