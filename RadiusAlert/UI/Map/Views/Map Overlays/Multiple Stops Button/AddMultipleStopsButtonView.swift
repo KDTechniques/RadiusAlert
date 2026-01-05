@@ -23,6 +23,9 @@ struct AddMultipleStopsButtonView: View {
                 nonGlassButton
             }
         }
+        .opacity(mapVM.showMultipleStopsButton() ? 1 : 0)
+        .disabled(!mapVM.showMultipleStopsButton())
+        .animation(.default, value: mapVM.showMultipleStopsButton())
     }
 }
 
