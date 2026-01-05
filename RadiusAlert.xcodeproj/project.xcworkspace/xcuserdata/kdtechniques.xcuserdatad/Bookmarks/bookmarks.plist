@@ -56,15 +56,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>33</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>43</string>
+					<string>48</string>
 					<key>StartingColumnNumber</key>
-					<string>33</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>43</string>
+					<string>47</string>
 					<key>Timestamp</key>
-					<string>789158522.7769229</string>
+					<string>789323693.488098</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -80,15 +80,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string></string>
+				<string>        #if DEBUG
+</string>
 				<key>leading</key>
-				<string>    }
-    
-    private func buttonAction() {</string>
+				<string>    
+    private func buttonAction() {
+</string>
 				<key>trailing</key>
-				<string>
-        #if DEBUG
-        Task {
+				<string>        Task {
+            guard
+                let currentUserLocation = locationManager.markerCoordinate,
 </string>
 			</dict>
 			<key>title</key>
