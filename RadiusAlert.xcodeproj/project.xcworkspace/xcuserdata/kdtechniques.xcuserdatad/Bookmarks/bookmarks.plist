@@ -58,13 +58,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>48</string>
+					<string>86</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>47</string>
+					<string>85</string>
 					<key>Timestamp</key>
-					<string>789323693.488098</string>
+					<string>789586692.550391</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -73,23 +73,23 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/Views/Map Overlays/Multiple Stops Button/AddMultipleStopsButtonView.swift</string>
+						<string>RadiusAlert/UI/Map/Views/Map Overlays/Bottom Trailing Buttons/Animated Map Bottom Trailing Button/AddPinOrAddMultipleStopsMapBottomTrailingButtonView.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        #if DEBUG
+				<string>#if DEBUG
 </string>
 				<key>leading</key>
-				<string>    
-    private func buttonAction() {
+				<string>            
+        case .addMultipleStops:
 </string>
 				<key>trailing</key>
-				<string>        Task {
-            guard
-                let currentUserLocation = locationManager.markerCoordinate,
+				<string>            Task {
+                guard
+                    let currentUserLocation = locationManager.markerCoordinate,
 </string>
 			</dict>
 			<key>title</key>

@@ -12,6 +12,8 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func onMarkerCoordinateChange(_ marker: CLLocationCoordinate2D?)  {
         locationManager.markerCoordinate = marker
+        
+        setAddPinOrAddMultipleStops(marker == nil ? .addPin : .addMultipleStops)
     }
     
     /// Updates the marker’s position on the map.

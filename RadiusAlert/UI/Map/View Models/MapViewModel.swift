@@ -44,6 +44,7 @@ final class MapViewModel {
     private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
     private(set) var routes: [MKRoute] = []
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
+    private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
     
     // Search and UI state
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -126,6 +127,10 @@ final class MapViewModel {
     
     func setRecentSearches(_ value: [RecentSearchModel]) {
         recentSearches = value
+    }
+    
+    func setAddPinOrAddMultipleStops(_ value: AddPinOrAddMultipleStops) {
+        addPinOrAddMultipleStops = value
     }
     
     // MARK: - PUBLIC FUNCTIONS

@@ -8,7 +8,5 @@
 import Foundation
 
 extension MapViewModel {
-    func showMultipleStopsButton() -> Bool {
-        return !isMarkerCoordinateNil()
-    }
+    
 }
