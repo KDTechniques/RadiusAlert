@@ -87,6 +87,17 @@ extension AlertTypes {
                     .init(role: .cancel)
                 ]
             )
+            
+        case .addMultipleStops(let searchAction, let manualAction):
+            return .init(
+                title: "Add Another Stop By:",
+                hapticType: .light,
+                actions: [
+                    .init(role: .custom("Searching for a Location")) { searchAction() },
+                    .init(role: .custom("Setting a Pin Manually")) { manualAction() },
+                    .init(role: .cancel)
+                ]
+            )
         }
     }
 }

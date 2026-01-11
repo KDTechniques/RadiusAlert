@@ -87,9 +87,9 @@
         case .addMultipleStops:
 </string>
 				<key>trailing</key>
-				<string>            Task {
-                guard
-                    let currentUserLocation = locationManager.markerCoordinate,
+				<string>//            Task {
+//                guard
+//                    let currentUserLocation = locationManager.markerCoordinate,
 </string>
 			</dict>
 			<key>title</key>

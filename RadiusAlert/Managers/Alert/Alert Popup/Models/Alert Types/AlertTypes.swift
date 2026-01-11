@@ -29,6 +29,7 @@ enum AlertTypes: CaseIterable, Hashable {
     case stopAlertHereConfirmation(() -> Void)
     case stopAlertOnSubmit(() -> Void)
     case locationPinAlreadyExist(() -> Void)
+    case addMultipleStops(search: () -> Void, manual: () -> Void)
     
     static var allCases: [AlertTypes] = [
         .alreadyInRadius,
@@ -38,7 +39,8 @@ enum AlertTypes: CaseIterable, Hashable {
         .radiusNotBeyondMinimumDistance,
         .stopAlertHereConfirmation({}),
         .stopAlertOnSubmit({}),
-        .locationPinAlreadyExist({})
+        .locationPinAlreadyExist({}),
+        .addMultipleStops(search: {}, manual: {})
     ]
     
     // Implement Hashable manually
@@ -76,6 +78,9 @@ enum AlertTypes: CaseIterable, Hashable {
             
         case .locationPinAlreadyExist:
             return "Location Already Pinned"
+            
+        case .addMultipleStops:
+            return "Add Multiple Stops"
         }
     }
 }
