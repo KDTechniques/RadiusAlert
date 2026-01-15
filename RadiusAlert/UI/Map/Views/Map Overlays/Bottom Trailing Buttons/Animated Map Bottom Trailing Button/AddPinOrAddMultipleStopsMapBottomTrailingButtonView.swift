@@ -94,20 +94,9 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
 //            }
             alertManager.showAlert(
                 .addMultipleStops {
-                    mapVM.setSearchFieldFocused(true)
-                    // If user going through the search bar, disable asking the permission alert to cancel the existing alert as we're trying to set another stop, and not just trying to replace the existing one.
-                    // No need too disable the restrictions on map interactions as it automatically moves the map to the correct coordinates, not manually moving the map around.
-                    // Once the center coordinate pin is set,  let the user tap on + button to finalize adding the next stop.
+                    mapVM.handleAddAnotherStopBySearchOnAlert()
                 } manual: {
-                    print("manual action is working")
-                    /// Once the restrictions on Map Interactions are disabled, the use may able to move the map around.
-                    /// If not, fix that. If it works, check whether the center coordinate notation on the map is visible or not.
-                    mapVM.setInteractionModes(.all)
-                    // Move the map around to counting to the next step here...
-                    
-                    
-                    
-                    // If everything works as expected!, let the user set another coordinates using center coordinate by tapping on the + button.
+                    mapVM.handleAddAnotherStopManuallyOnAlert()
                 }
             )
             

@@ -69,6 +69,7 @@ extension MapViewModel {
         setPopupCardItem(nil)
         setSelectedSearchResult(nil)
         Task { await textToSpeechManager.stopSpeak() }
+        clearMultipleStops()
     }
     
     func onRegionEntry() {

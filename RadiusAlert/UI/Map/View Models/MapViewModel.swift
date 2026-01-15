@@ -45,6 +45,7 @@ final class MapViewModel {
     private(set) var routes: [MKRoute] = []
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
+    private(set) var multipleStopsMedium: MultipleStopMediums?
     
     // Search and UI state
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -131,6 +132,10 @@ final class MapViewModel {
     
     func setAddPinOrAddMultipleStops(_ value: AddPinOrAddMultipleStops) {
         addPinOrAddMultipleStops = value
+    }
+    
+    func setMultipleStopsMedium(_ value: MultipleStopMediums?) {
+        multipleStopsMedium = value
     }
     
     // MARK: - PUBLIC FUNCTIONS

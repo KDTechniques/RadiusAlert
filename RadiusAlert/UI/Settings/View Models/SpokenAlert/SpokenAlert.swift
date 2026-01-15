@@ -16,6 +16,7 @@ extension SettingsViewModel {
     }
     
     func spokenAlertSpeakAction(_ item: RadiusAlertModel? = nil) async {
+        print(item?.locationTitle)
         let text: String = SpokenAlertValues.getPhrase(
             userName: spokenAlertValues.userName,
             locationTitle: item?.locationTitle ?? nil

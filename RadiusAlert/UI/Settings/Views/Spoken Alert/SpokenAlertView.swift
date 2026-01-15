@@ -13,8 +13,8 @@ struct SpokenAlertView: View {
     
     // MARK: - BODY
     var body: some View {
+        SpokenAlertToggleView()
         List {
-            SpokenAlertToggleView()
             SpokenAlertUserNameTextFieldView()
             SpokenAlertVoicePickerView()
             SpokenAlertSpeakingRateSliderView()

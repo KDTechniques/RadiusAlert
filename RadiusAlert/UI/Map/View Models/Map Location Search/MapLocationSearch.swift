@@ -20,9 +20,13 @@ extension MapViewModel {
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         createRecentSearch(on: item)
         
-        isMarkerCoordinateNil()
-        ? prepareSelectedSearchResultCoordinateOnMap(item)
-        : stopAlertOnSearchResultListRowTapConfirmation(item)
+        if multipleStopsMedium == .search {
+            prepareSelectedSearchResultCoordinateOnMap(item)
+        } else {
+            isMarkerCoordinateNil()
+            ? prepareSelectedSearchResultCoordinateOnMap(item)
+            : stopAlertOnSearchResultListRowTapConfirmation(item)
+        }
     }
     
     /// Handles a tap on an item from the recent searches list.
@@ -32,9 +36,13 @@ extension MapViewModel {
     ///
     /// - Parameter item: The `RecentSearchModel` the user tapped.
     func onRecentSearchListRowTap(_ item: RecentSearchModel) {
-        isMarkerCoordinateNil()
-        ? prepareSelectedRecentSearchCoordinateOnMap(item)
-        : stopAlertOnRecentSearchListRowTapConfirmation(item)
+        if multipleStopsMedium == .search {
+            prepareSelectedRecentSearchCoordinateOnMap(item)
+        } else {
+            isMarkerCoordinateNil()
+            ? prepareSelectedRecentSearchCoordinateOnMap(item)
+            : stopAlertOnRecentSearchListRowTapConfirmation(item)
+        }
     }
     
     /// Responds to changes in the search bar text.
