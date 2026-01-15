@@ -114,9 +114,6 @@ extension MapViewModel {
         setMarkerCoordinate()
         getRoute()
         
-        // Adjust the camera to show both the marker and user location for better UX.
-        centerRegionBoundsForMarkerNUserLocation()
-        
         startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
         guard startAlert_StartMonitoringRegion() else { return }
         
@@ -193,12 +190,15 @@ extension MapViewModel {
     private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D) {
         if let markerCoordinate {
             // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
-            var coordinateCheck: Bool =  false
+            var coordinateCheck: Bool
             var locationTitle: String?
             
-            if let selectedSearchResultCoordinate:  CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
+            if let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
                 coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
                 locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
+                
+                print("Match?: ", coordinateCheck)
+                print("\n\n")
             }
             
             // Create the RadiusAlertModel:

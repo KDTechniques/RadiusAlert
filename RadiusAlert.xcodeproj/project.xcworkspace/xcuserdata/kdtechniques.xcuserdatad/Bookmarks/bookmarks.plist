@@ -34,17 +34,17 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        // Clear any existing search UI state
-        resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
+				<string>    /// - Sets the selected search result as soon as resolution begins for responsive UI.
+    /// - Clears the search UI (results, text, focus) to dismiss the keyboard and cancel button.
 </string>
 				<key>leading</key>
-				<string>        setSelectedMapItem(item)
-        
+				<string>    /// Resolves a tapped search completion to a full `MKMapItem`, updates selection, and repositions the map.
+    ///
 </string>
 				<key>trailing</key>
-				<string>        
-        Task {
-            guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
+				<string>    /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
+    ///
+    /// - Parameter item: The completion result to resolve and focus.
 </string>
 			</dict>
 			<key>type</key>
@@ -94,6 +94,52 @@
 			</dict>
 			<key>title</key>
 			<string>remove the body after debug</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>72</string>
+					<key>EndingLineNumber</key>
+					<string>190</string>
+					<key>StartingColumnNumber</key>
+					<string>72</string>
+					<key>StartingLineNumber</key>
+					<string>190</string>
+					<key>Timestamp</key>
+					<string>790154234.701233</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>    ///
+    /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
+    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {</string>
+				<key>trailing</key>
+				<string>
+        // 1) Allow state updates to propagate before moving the map.
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+</string>
+			</dict>
+			<key>title</key>
+			<string>There's a problem with the sequence nd timing, too smooth everything we have to wait for the animations to end before executing the next block of code. SO avoid hard coding animation delays using Task.sleep</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

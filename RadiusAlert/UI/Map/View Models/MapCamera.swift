@@ -112,17 +112,6 @@ extension MapViewModel {
         setPosition(region: region, animate: true)
     }
     
-    /// Centers the map region to fit both the marker and the user's location.
-    /// If either is unavailable, logs an error instead.
-    func centerRegionBoundsForMarkerNUserLocation() {
-        guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else {
-            Utilities.log(MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription)
-            return
-        }
-        
-        positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
-    }
-    
     /// Registers a cleanup action to help clear memory related to map styles.
     /// When triggered by a memory warning, it cycles through three map styles
     /// with short delays between each change to release cached map resources.
