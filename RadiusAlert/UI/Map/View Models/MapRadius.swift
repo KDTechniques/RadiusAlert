@@ -54,7 +54,7 @@ extension MapViewModel {
     func setRegionBoundsOnRadius() {
         guard let centerCoordinate else { return }
         
-        let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor
+        let regionBoundMeters: CLLocationDistance = selectedRadius * mapValues.radiusToRegionBoundsMetersFactor
         setRegionBoundMeters(center: centerCoordinate, meters: regionBoundMeters)
     }
     

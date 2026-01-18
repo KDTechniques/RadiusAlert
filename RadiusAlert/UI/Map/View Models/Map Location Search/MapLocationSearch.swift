@@ -192,7 +192,7 @@ extension MapViewModel {
         // 1) Allow state updates to propagate before moving the map.
         try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
         
-        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let boundsMeters: CLLocationDistance = 0//mapValues.initialUserLocationBoundsMeters
         
         let region: MKCoordinateRegion = .init(
             center: mapItem.placemark.coordinate,
@@ -201,13 +201,13 @@ extension MapViewModel {
         )
         
         // 2) Animate to the new position.
-        setPosition(region: region, animate: true)
+//        setPosition(region: region, animate: true)
         
         // Wait for the default animation on setting marker position above
         try? await Task.sleep(nanoseconds: 800_000_000)
         
         // 3) After the position animation, apply region bounds for better UX.
-        setRegionBoundsOnRadius()
+//        setRegionBoundsOnRadius()
         
         // 4) After bounds animation, mark selection as fully set.
         try? await Task.sleep(nanoseconds: 500_000_000)

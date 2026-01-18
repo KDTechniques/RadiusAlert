@@ -12,52 +12,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>61</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>59</string>
-					<key>Timestamp</key>
-					<string>786205198.2452739</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    /// - Sets the selected search result as soon as resolution begins for responsive UI.
-    /// - Clears the search UI (results, text, focus) to dismiss the keyboard and cancel button.
-</string>
-				<key>leading</key>
-				<string>    /// Resolves a tapped search completion to a full `MKMapItem`, updates selection, and repositions the map.
-    ///
-</string>
-				<key>trailing</key>
-				<string>    /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
-    ///
-    /// - Parameter item: The completion result to resolve and focus.
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>86</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -140,6 +94,50 @@
 			</dict>
 			<key>title</key>
 			<string>There's a problem with the sequence nd timing, too smooth everything we have to wait for the animations to end before executing the next block of code. SO avoid hard coding animation delays using Task.sleep</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>25</string>
+					<key>EndingLineNumber</key>
+					<string>87</string>
+					<key>StartingColumnNumber</key>
+					<string>25</string>
+					<key>StartingLineNumber</key>
+					<string>87</string>
+					<key>Timestamp</key>
+					<string>790447686.215499</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string>        resetSearchable()
+        
+        setSelectedRadius</string>
+				<key>trailing</key>
+				<string>(item.radius)
+        
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
+</string>
+			</dict>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
