@@ -47,7 +47,6 @@ extension MapViewModel {
     }
     
     func onRadiusChange(_ radius: CLLocationDistance) {
-        setRegionBoundsOnRadius()
         locationManager.selectedRadius = radius
     }
     

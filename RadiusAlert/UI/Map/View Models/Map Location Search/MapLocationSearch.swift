@@ -189,29 +189,30 @@ extension MapViewModel {
     ///
     /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
     private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
-        // 1) Allow state updates to propagate before moving the map.
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+        guard let centerCoordinate else { return }
         
-        let boundsMeters: CLLocationDistance = 0//mapValues.initialUserLocationBoundsMeters
+        // 1) Zoom out to Initial Region Bounds
+        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let initialRegion: MKCoordinateRegion = .init(
+            center: centerCoordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        await setPosition(region: initialRegion, animate: true)
         
-        let region: MKCoordinateRegion = .init(
+        // 2) Position Camera to New Coordinates
+        let newRegion: MKCoordinateRegion = .init(
             center: mapItem.placemark.coordinate,
             latitudinalMeters: boundsMeters,
             longitudinalMeters: boundsMeters
         )
+       
+        await setPosition(region: newRegion, animate: true)
         
-        // 2) Animate to the new position.
-//        setPosition(region: region, animate: true)
-        
-        // Wait for the default animation on setting marker position above
+        // 3) Zoom in or out to region bounds based on radius
+        setRegionBoundsOnRadius()
         try? await Task.sleep(nanoseconds: 800_000_000)
         
-        // 3) After the position animation, apply region bounds for better UX.
-//        setRegionBoundsOnRadius()
-        
-        // 4) After bounds animation, mark selection as fully set.
-        try? await Task.sleep(nanoseconds: 500_000_000)
         setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
     }
 }
-

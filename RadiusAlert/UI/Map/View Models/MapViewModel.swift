@@ -68,10 +68,12 @@ final class MapViewModel {
         isCameraDragging = boolean
     }
     
-    func setPosition(region: MKCoordinateRegion, animate: Bool) {
+    func setPosition(region: MKCoordinateRegion, animate: Bool) async {
         withAnimation(animate ? .default : .none) {
             position = .region(region)
         }
+        
+        try? await Task.sleep(nanoseconds: 800_000_000)
     }
     
     func setPosition(_ position: MapCameraPosition) {

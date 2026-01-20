@@ -22,7 +22,7 @@ extension MapViewModel {
             return
         }
         
-        setPosition(region: region, animate: true)
+        Task { await setPosition(region: region, animate: true) }
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -52,7 +52,7 @@ extension MapViewModel {
         )
         
         // Update the map position with optional animation.
-        setPosition(region: region, animate: animate)
+        Task { await setPosition(region: region, animate: animate) }
     }
     
     /// Returns a binding to the current map camera position.
@@ -109,7 +109,7 @@ extension MapViewModel {
     ///   - meters: The distance in meters for both latitude and longitude bounds.
     func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
         let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
-        setPosition(region: region, animate: true)
+        Task { await setPosition(region: region, animate: true) }
     }
     
     /// Registers a cleanup action to help clear memory related to map styles.
