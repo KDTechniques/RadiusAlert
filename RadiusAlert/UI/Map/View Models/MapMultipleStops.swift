@@ -34,4 +34,8 @@ extension MapViewModel {
         
         // If everything works as expected!, let the user set another coordinates using center coordinate by tapping on the + button.
     }
+    
+    func resetMultipleStopsMedium() {
+       setMultipleStopsMedium(nil)
+    }
 }

@@ -43,7 +43,13 @@ extension MapViewModel {
     
     func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
         guard let centerCoordinate else { return nil }
-        return isMarkerCoordinateNil() ? centerCoordinate : markerCoordinate!
+        
+        let condition1: Bool = isMarkerCoordinateNil()
+        let condition2: Bool = multipleStopsMedium == .manual
+        
+        let coordinate: CLLocationCoordinate2D = condition1 ? centerCoordinate : markerCoordinate!
+        
+        return condition2 ? centerCoordinate : coordinate
     }
     
     func onRadiusChange(_ radius: CLLocationDistance) {

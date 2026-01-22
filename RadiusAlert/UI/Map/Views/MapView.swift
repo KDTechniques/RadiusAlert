@@ -57,7 +57,7 @@ struct MapView: View {
         }
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
-        .mapControlVisibility(mapVM.isMarkerCoordinateNil() ? .visible : .hidden)
+        .mapControlVisibility(mapVM.showMapControls() ? .visible : .hidden)
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
         .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
         .onAppear { mapVM.onMapViewAppear() }

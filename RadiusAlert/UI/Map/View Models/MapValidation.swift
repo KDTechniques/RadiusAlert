@@ -33,15 +33,18 @@ extension MapViewModel {
         ? true
         : isMarkerCoordinateNil() ? !isCameraDragging : true
         
-        return condition1 && condition2
+        let condition3: Bool = (multipleStopsMedium == .manual) && isBeyondMinimumDistance() && !isCameraDragging
+        
+        return (condition1 && condition2) || (condition3)
     }
     
     /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
     func showMapPin() -> Bool {
         let condition1: Bool = isBeyondMinimumDistance()
         let condition2: Bool = isMarkerCoordinateNil()
+        let condition3: Bool = multipleStopsMedium == .manual
         
-        return condition1 && condition2
+        return (condition1 && condition2) || (condition1 && condition3)
     }
     
     /// Returns true if the radius slider should be visible, based on marker coordinate and user distance. Also triggers slider visibility change callback.
@@ -118,5 +121,12 @@ extension MapViewModel {
     
     func showTopSafeAreaDivider() -> Bool {
         return getMapSearchType() == .searchResults
+    }
+    
+    func showMapControls() -> Bool {
+        let condition1: Bool = isMarkerCoordinateNil()
+        let condition2: Bool = multipleStopsMedium == .manual
+        
+        return condition1 || condition2
     }
 }

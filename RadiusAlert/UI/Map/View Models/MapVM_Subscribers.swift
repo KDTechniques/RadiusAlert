@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 extension MapViewModel {
     /// Subscribes to changes in the location authorization status and repositions the map if authorized.
@@ -26,6 +27,18 @@ extension MapViewModel {
                     try? await Task.sleep(nanoseconds: 1_000_000_000)
                     self.positionToInitialUserLocation()
                 }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func multipleStopsMedium_IsCameraDraggingSubscriber() {
+        $multipleStopsMedium$.removeDuplicates()
+            .combineLatest($isCameraDragging$.removeDuplicates())
+            .dropFirst()
+            .debounce(for: .nanoseconds(/*60*/3_000_000_000), scheduler: DispatchQueue.main) // 1 min.
+            .sink { medium, isDragging in
+                guard medium == .manual && !isDragging else { return }
+                self.resetMultipleStopsMedium()
             }
             .store(in: &cancellables)
     }

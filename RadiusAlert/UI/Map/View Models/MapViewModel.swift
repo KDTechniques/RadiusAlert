@@ -45,13 +45,15 @@ final class MapViewModel {
     private(set) var routes: [MKRoute] = []
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
-    private(set) var multipleStopsMedium: MultipleStopMediums?
+    private(set) var multipleStopsMedium: MultipleStopMediums? { didSet { multipleStopsMedium$ = multipleStopsMedium } }
+    @ObservationIgnored @Published private(set) var multipleStopsMedium$: MultipleStopMediums?
     
     // Search and UI state
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
-    private(set) var isCameraDragging: Bool = false
+    private(set) var isCameraDragging: Bool = false { didSet { isCameraDragging$ = isCameraDragging } }
+    @ObservationIgnored @Published private(set) var isCameraDragging$: Bool = false
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
@@ -166,6 +168,7 @@ final class MapViewModel {
         authorizationStatusSubscriber()
         clearMemoryByMapStyles()
         fetchNAssignRecentSearches()
+        multipleStopsMedium_IsCameraDraggingSubscriber()
     }
 }
 
