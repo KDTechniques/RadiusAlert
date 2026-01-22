@@ -10,43 +10,16 @@ import CoreLocation
 
 struct DistanceTextView: View {
     // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
-    
-    // MARK: - BODY
-    var body: some View {
-        if let markerCoordinate: CLLocationCoordinate2D = mapVM.markerCoordinate,
-           let userCoordinate: CLLocationCoordinate2D = mapVM.locationManager.currentUserLocation {
-            
-            let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
-                userCoordinate: userCoordinate,
-                markerCoordinate: markerCoordinate,
-                radius: mapVM.selectedRadius
-            )
-            
-            Content(distanceToRadius)
-        }
-    }
-}
-
-// MARK: - PREVIEWS
-#Preview("DistanceTextView") {
-    Color.yellow
-        .overlay {
-            Content(300)
-        }
-        .previewModifier()
-}
-
-// MARK: - SUB VIEWS
-fileprivate struct Content:  View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     let distance: CLLocationDistance
     
+    // MARK: - INITIALIZER
     init(_ distance: CLLocationDistance) {
         self.distance = distance
     }
     
+    // MARK: - BODY
     var body: some View {
         let distanceString: String = mapVM.getRadiusTextString(distance, withAlertRadiusText: false)
         
@@ -63,4 +36,13 @@ fileprivate struct Content:  View {
             .contentTransition(.numericText(countsDown: true))
             .animation(.default, value: distance)
     }
+}
+
+// MARK: - PREVIEWS
+#Preview("DistanceTextView") {
+    Color.yellow
+        .overlay {
+            DistanceTextView(300)
+        }
+        .previewModifier()
 }

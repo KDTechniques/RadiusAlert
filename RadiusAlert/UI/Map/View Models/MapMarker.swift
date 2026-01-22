@@ -8,6 +8,8 @@
 import CoreLocation
 import MapKit
 
+// MARK: MAP MARKER
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func onMarkerCoordinateChange(_ marker: CLLocationCoordinate2D?)  {
@@ -20,12 +22,16 @@ extension MapViewModel {
     /// - Adjusts the map region bounds so that the marker and the user's current location
     ///   are both visible, without animation.
     func setMarkerCoordinate() {
+        guard let centerCoordinate = centerCoordinate else { return }
+        setMarkerCoordinate(centerCoordinate)
+    }
+    
+    func setRegionBoundsToUserLocationNMarkerCoordinate(animate: Bool = false) {
         guard
             let currentLocation = locationManager.currentUserLocation,
-            let centerCoordinate = centerCoordinate else { return }
+            let markerCoordinate else { return }
         
-        setMarkerCoordinate(centerCoordinate)
-        positionRegionBoundsToMidCoordinate(coordinate1: centerCoordinate, coordinate2: currentLocation, animate: false)
+        positionRegionBoundsToMidCoordinate(coordinate1: currentLocation, coordinate2: markerCoordinate, animate: animate)
     }
     
     func isMarkerCoordinateNil() -> Bool {

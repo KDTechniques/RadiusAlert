@@ -9,6 +9,8 @@ import MapKit
 import CoreLocation
 import SwiftUI
 
+// MARK: CAMERA
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     

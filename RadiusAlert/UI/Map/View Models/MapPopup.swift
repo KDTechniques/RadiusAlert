@@ -8,6 +8,8 @@
 import CoreLocation
 import SwiftUI
 
+// MARK: POPUP
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     /// Generates a PopupCardModel with updated radius, duration, and distance

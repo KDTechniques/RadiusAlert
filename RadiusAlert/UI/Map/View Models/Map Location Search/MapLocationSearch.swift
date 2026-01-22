@@ -7,6 +7,8 @@
 
 import MapKit
 
+// MARK: LOCATION SEARCH
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     

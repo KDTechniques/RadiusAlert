@@ -8,6 +8,8 @@
 import CoreLocation
 import SwiftUI
 
+// MARK: RADIUS
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
@@ -104,6 +106,20 @@ extension MapViewModel {
     /// Sets the visibility state of the radius slider tip.
     func onRadiusSliderVisibilityChange(_ boolean: Bool) {
         RadiusSliderTipModel.isSliderVisible = boolean
+    }
+    
+    func getDistanceToRadius(coordinate1: CLLocationCoordinate2D?, coordinate2: CLLocationCoordinate2D?, radius: CLLocationDistance) -> CLLocationDistance? {
+        guard
+            let coordinate1,
+            let coordinate2 else { return nil }
+        
+        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: coordinate1,
+            markerCoordinate: coordinate2,
+            radius: radius
+        )
+        
+        return distanceToRadius
     }
 }
 

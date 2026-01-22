@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+// MARK: SUBSCRIBERS
+
 extension MapViewModel {
     /// Subscribes to changes in the location authorization status and repositions the map if authorized.
     func authorizationStatusSubscriber() {

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: BINDINGS
+
 extension MapViewModel {
     /// Returns a `Binding<String>` that keeps the search bar text in sync with the view model's `searchText`.
     /// Useful for connecting the SwiftUI TextField directly to the view model.

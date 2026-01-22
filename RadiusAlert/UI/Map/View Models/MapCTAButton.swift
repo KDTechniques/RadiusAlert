@@ -8,6 +8,8 @@
 import SwiftUI
 import MapKit
 
+// MARK: CALL-TO-ACTION BUTTON
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
@@ -110,8 +112,9 @@ extension MapViewModel {
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
-        // Set the marker coordinate and attempt to retrieve directions.
+        // Set the marker coordinate and set encapsulated region bounds and then attempt to retrieve directions.
         setMarkerCoordinate()
+        setRegionBoundsToUserLocationNMarkerCoordinate()
         getRoute()
         
         startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)

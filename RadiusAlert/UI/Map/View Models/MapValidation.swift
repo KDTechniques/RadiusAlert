@@ -7,6 +7,8 @@
 
 import CoreLocation
 
+// MARK: VALIDATION
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
@@ -51,11 +53,19 @@ extension MapViewModel {
     func showRadiusSlider() -> Bool {
         let condition1: Bool = isMarkerCoordinateNil()
         let condition2: Bool = isBeyondMinimumDistance()
+        let condition3: Bool = multipleStopsMedium == .manual
         
-        let boolean: Bool = condition1 && condition2
+        let boolean: Bool = (condition1 && condition2) || condition3
         onRadiusSliderVisibilityChange(boolean)
         
         return boolean
+    }
+    
+    func showDistanceText() -> Bool {
+        let condition1: Bool = showRadiusSlider()
+        let condition2: Bool = multipleStopsMedium == .manual
+        
+        return !condition1 && condition2
     }
     
     /// Returns true if the floating alert radius text should be shown, based on radius circle visibility and marker coordinate state.

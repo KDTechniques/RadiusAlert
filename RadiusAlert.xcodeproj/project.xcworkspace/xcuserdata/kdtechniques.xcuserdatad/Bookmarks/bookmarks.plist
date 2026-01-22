@@ -57,15 +57,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>72</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>190</string>
+					<string>193</string>
 					<key>StartingColumnNumber</key>
-					<string>72</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>190</string>
+					<string>192</string>
 					<key>Timestamp</key>
-					<string>790154234.701233</string>
+					<string>790758295.212039</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -81,15 +81,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string></string>
+				<string>    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
+</string>
 				<key>leading</key>
 				<string>    ///
     /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
-    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {</string>
+</string>
 				<key>trailing</key>
-				<string>
-        // 1) Allow state updates to propagate before moving the map.
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+				<string>        guard let centerCoordinate else { return }
+        
+        // 1) Zoom out to Initial Region Bounds
 </string>
 			</dict>
 			<key>title</key>
@@ -103,15 +104,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>25</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>87</string>
+					<string>90</string>
 					<key>StartingColumnNumber</key>
-					<string>25</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>87</string>
+					<string>89</string>
 					<key>Timestamp</key>
-					<string>790447686.215499</string>
+					<string>790758295.212085</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -127,15 +128,61 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string></string>
+				<string>        setSelectedRadius(item.radius)
+</string>
 				<key>leading</key>
 				<string>        resetSearchable()
         
-        setSelectedRadius</string>
+</string>
 				<key>trailing</key>
-				<string>(item.radius)
-        
+				<string>        
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
+        mkMapItem.name = item.title
+</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>18</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>17</string>
+					<key>Timestamp</key>
+					<string>790804182.776574</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/Views/Map Overlays/Radius Slider/RadiusSliderView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>struct RadiusSliderView: View {
+</string>
+				<key>leading</key>
+				<string>/// The `RadiusSliderOrDistanceTextView` must be controlled within a ZStack and opacity and disabled modifiers by `showRadiusSlider`, and `showDistanceText`validation functions.
+
+</string>
+				<key>trailing</key>
+				<string>    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    
 </string>
 			</dict>
 			<key>type</key>

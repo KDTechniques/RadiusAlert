@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: MULTIPLE STOPS
+
 extension MapViewModel {
     func clearMultipleStops() {
         setMultipleStopsMedium(nil)
@@ -19,7 +21,7 @@ extension MapViewModel {
         // Focus on search field, and show the search list
         setSearchFieldFocused(true)
         
-       
+        
         // Once the center coordinate pin is set,  let the user tap on + button to finalize adding the next stop.
     }
     
@@ -36,6 +38,7 @@ extension MapViewModel {
     }
     
     func resetMultipleStopsMedium() {
-       setMultipleStopsMedium(nil)
+        setMultipleStopsMedium(nil)
+        setRegionBoundsToUserLocationNMarkerCoordinate(animate: true)
     }
 }

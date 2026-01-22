@@ -7,6 +7,13 @@
 
 import SwiftUI
 import TipKit
+import CoreLocation
+
+
+// MARK: - TODO:
+/// Note: Take the slider from sub view and create a separate for that, and same goes for the distance text view as well.
+/// Then create another view/ or keep this view by renaming it to `RadiusSliderOrDistanceTextView` and provide each parameter to each view.
+/// The `RadiusSliderOrDistanceTextView` must be controlled within a ZStack and opacity and disabled modifiers by `showRadiusSlider`, and `showDistanceText`validation functions.
 
 struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
@@ -23,7 +30,11 @@ struct RadiusSliderView: View {
                 .opacity(mapVM.showRadiusSlider() ? 1 : 0)
                 .disabled(!mapVM.showRadiusSlider())
             
-            DistanceTextView()
+            if let distance: CLLocationDistance = mapVM.getDistanceToRadius(
+                coordinate1: mapVM.locationManager.currentUserLocation,
+                coordinate2: mapVM.markerCoordinate, radius: mapVM.selectedRadius) {
+                DistanceTextView(distance)
+            }
         }
         .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
