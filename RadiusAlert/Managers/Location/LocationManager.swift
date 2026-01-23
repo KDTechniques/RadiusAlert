@@ -26,7 +26,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - ASSIGNED PROPERTIES
-    var currentUserLocation: CLLocationCoordinate2D?
+    var currentUserLocation: CLLocationCoordinate2D? { didSet { currentUserLocation$ = currentUserLocation } }
+    @ObservationIgnored @Published private(set) var currentUserLocation$: CLLocationCoordinate2D?
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
     
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined

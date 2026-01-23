@@ -59,6 +59,7 @@ final class MapViewModel {
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
     @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     private(set) var recentSearches: [RecentSearchModel] = []
+    private(set) var distanceText: CLLocationDistance = .zero
     
     // MARK: - SETTERS
     
@@ -142,6 +143,10 @@ final class MapViewModel {
         multipleStopsMedium = value
     }
     
+    func setDistanceText(_ value: CLLocationDistance) {
+        distanceText = value
+    }
+    
     // MARK: - PUBLIC FUNCTIONS
     
     func getNavigationTitleIconColor() -> Color {
@@ -169,6 +174,7 @@ final class MapViewModel {
         clearMemoryByMapStyles()
         fetchNAssignRecentSearches()
         multipleStopsMedium_IsCameraDraggingSubscriber()
+        currentUserLocationSubscriber()
     }
 }
 

@@ -121,5 +121,23 @@ extension MapViewModel {
         
         return distanceToRadius
     }
+    
+    func setInitialDistanceText() {
+        guard
+            let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
+            let markerCoordinate else { return }
+        
+        let distance: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: userCoordinate,
+            markerCoordinate: markerCoordinate,
+            radius: selectedRadius
+        )
+        
+        setDistanceText(distance)
+    }
+    
+    func resetDistanceText() {
+        setDistanceText(.zero)
+    }
 }
 

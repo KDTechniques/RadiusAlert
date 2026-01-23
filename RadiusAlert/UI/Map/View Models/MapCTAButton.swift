@@ -72,6 +72,7 @@ extension MapViewModel {
         setSelectedSearchResult(nil)
         Task { await textToSpeechManager.stopSpeak() }
         clearMultipleStops()
+        resetDistanceText()
     }
     
     func onRegionEntry() {
@@ -114,6 +115,7 @@ extension MapViewModel {
         
         // Set the marker coordinate and set encapsulated region bounds and then attempt to retrieve directions.
         setMarkerCoordinate()
+        setInitialDistanceText()
         setRegionBoundsToUserLocationNMarkerCoordinate()
         getRoute()
         

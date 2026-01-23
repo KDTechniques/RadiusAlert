@@ -27,7 +27,7 @@ struct ContentView: View {
                     MapPinView()
                     CircularRadiusTextView()
                     MapBottomTrailingButtonsView()
-                    RadiusSliderView()
+                    RadiusSliderOrDistanceTextView()
                 }
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
                 .overlay { SearchListBackgroundView() }

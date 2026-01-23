@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import CoreLocation
 
 // MARK: SUBSCRIBERS
 
@@ -16,7 +17,7 @@ extension MapViewModel {
         locationManager.$authorizationStatus$
             .dropFirst()
             .removeDuplicates()
-            // Updates authorization state and may reposition the map if authorized.
+        // Updates authorization state and may reposition the map if authorized.
             .sink {
                 // Updates internal state based on current authorization status.
                 self.setIsAuthorizedToGetMapCameraUpdate($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
@@ -41,6 +42,24 @@ extension MapViewModel {
             .sink { medium, isDragging in
                 guard medium == .manual && !isDragging else { return }
                 self.resetMultipleStopsMedium()
+            }
+            .store(in: &cancellables)
+    }
+    
+    func currentUserLocationSubscriber() {
+        locationManager.$currentUserLocation$
+            .compactMap { $0 } // Returns non-optional values because of `Compact Map`. So, no need of `guard let` statements
+            .sink { location in
+                /// listen for marker coordinate changes and update distance text based on that, so no need to use statement closure in the view level for the distance text view.
+                guard let markerCoordinate: CLLocationCoordinate2D = self.markerCoordinate else { return }
+                
+                let distance: CLLocationDistance = Utilities.getDistanceToRadius(
+                    userCoordinate: location,
+                    markerCoordinate: markerCoordinate,
+                    radius: self.selectedRadius
+                )
+                
+                self.setDistanceText(distance)
             }
             .store(in: &cancellables)
     }
