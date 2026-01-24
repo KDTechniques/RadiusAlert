@@ -36,6 +36,7 @@ extension MapViewModel {
         : isMarkerCoordinateNil() ? !isCameraDragging : true
         
         let condition3: Bool = (multipleStopsMedium == .manual) && isBeyondMinimumDistance() && !isCameraDragging
+        // MARK: NOTE: We need another condition to control the visibility of the radius circle when the medium is equal to manual just to hide the circle when the camera is moving. For now it's mainly controlled by the `isCameraDragging` property. so when in initial state the camera is not dragging so it stops there and when the map start moving again it just stops where the isCameraDragging was false. For example is we could hide the radius circle whenever the map camera starts moving and show when it stops just like it does when we try to set the map pin for the first time.
         
         return (condition1 && condition2) || (condition3)
     }

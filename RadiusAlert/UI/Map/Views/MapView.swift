@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import CoreLocation
 
 struct MapView: View {
     // MARK: - INJECTED PROPERTIES
@@ -26,7 +27,7 @@ struct MapView: View {
             // User's Current Location
             UserAnnotation()
             
-            // Radius Circle
+            // MARK: - Radius Circle
             if let centerCoordinate: CLLocationCoordinate2D = mapVM.getRadiusCircleCoordinate(),
                mapVM.showRadiusCircle() {
                 MapCircle(
@@ -36,7 +37,7 @@ struct MapView: View {
                 .foregroundStyle(.primary.opacity(0.3))
             }
             
-            // Marker
+            // MARK: - Marker
             if let markerCoordinate: CLLocationCoordinate2D = mapVM.markerCoordinate {
                 Marker(
                     mapVM.getRadiusTextString(
@@ -47,7 +48,7 @@ struct MapView: View {
                 )
             }
             
-            // Route
+            // MARK: - Route
             ForEach(mapVM.routes, id: \.self) { route in
                 let isFirst: Bool = mapVM.routes.first == route
                 
