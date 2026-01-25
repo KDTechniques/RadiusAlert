@@ -12,14 +12,14 @@ import MapKit
 extension MapViewModel {
     // MARK: -  PUBLIC FUNCTIONS
     
-    func getRoute() {
-        Task {
-            guard let route: MKRoute = await locationManager.getRoute() else { return }
-            setRoute(route)
-        }
-    }
-    
-    func removeDirections() {
-        clearRoutes()
-    }
+//    func getRoute() {
+//        Task {
+//            guard let route: MKRoute = await locationManager.getRoute() else { return }
+//            setRoute(route)
+//        }
+//    }
+//    
+//    func removeDirections() {
+//        clearRoutes()
+//    }
 }

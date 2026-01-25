@@ -16,7 +16,8 @@ struct CTAButtonView: View {
         Button {
             mapVM.triggerCTAButtonAction()
         } label: {
-            Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop Alert")
+//            Text(mapVM.isMarkerCoordinateNil() ? "Alert Me Here" : "Stop Alert")
+            Text("Under Construction")
                 .fontWeight(.semibold)
                 .foregroundStyle(mapVM.getCTAButtonForegroundColor())
                 .padding(.vertical)

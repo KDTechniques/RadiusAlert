@@ -24,6 +24,9 @@ struct MapValues {
     static let radiusSliderWidthFactor: CGFloat = 2
     static let radiusToRegionBoundsMetersFactor: Double = 5
     
+    // MARK: - Pin Related
+    static let pinHeight: CGFloat = Utilities.screenHeight * 0.04
+    
     // MARK: - Safe Area Related
     static func safeAreaBackgroundColor(_ colorScheme: ColorScheme) -> Color {
         return colorScheme == .dark ? .init(uiColor: .systemGray4) : .white

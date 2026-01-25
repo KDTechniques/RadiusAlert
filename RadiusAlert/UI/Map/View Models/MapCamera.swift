@@ -24,7 +24,7 @@ extension MapViewModel {
             return
         }
         
-        Task { await setPosition(region: region, animate: true) }
+        Task { await setPrimaryPosition(region: region, animate: true) }
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -54,23 +54,29 @@ extension MapViewModel {
         )
         
         // Update the map position with optional animation.
-        Task { await setPosition(region: region, animate: animate) }
+        Task { await setPrimaryPosition(region: region, animate: animate) }
     }
     
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
-    func positionBinding() -> Binding<MapCameraPosition> {
-        return .init(get: { self.position }, set: setPosition)
+    func primaryPositionBinding() -> Binding<MapCameraPosition> {
+        return .init(get: { self.primaryPosition }, set: setPrimaryPosition)
+    }
+    
+    /// Returns a binding to the secondary map camera position.
+    /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
+    func secondaryPositionBinding() -> Binding<MapCameraPosition> {
+        return .init(get: { self.secondaryPosition }, set: setSecondaryPosition)
     }
     
     /// Resets the map to the initial region bounds, removing markers and routes.
     /// The map animates smoothly back to the initial view.
     func resetMapToCurrentUserLocation() {
         // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
-        removeMarkerCoordinate()
+        clearAllMarkers()
         
         // Then, remove route paths from the map if available.
-        removeDirections()
+//        removeDirections()
         
         // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
         withAnimation { positionToInitialUserLocation() }
@@ -80,16 +86,16 @@ extension MapViewModel {
     /// - Parameter context: The camera update context containing the latest camera state.
     func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
         guard isAuthorizedToGetMapCameraUpdate else { return }
-        setCameraDragging(true)
-        setCenterCoordinate(context.camera.centerCoordinate)
+        setPrimaryCameraDragging(true)
+        setPrimaryCenterCoordinate(context.camera.centerCoordinate)
     }
     
     /// Handles logic when the map camera stops moving.
     /// - Parameter context: The camera update context containing the final camera state.
     func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
         guard isAuthorizedToGetMapCameraUpdate else { return }
-        setCameraDragging(false)
-        setCenterCoordinate(context.camera.centerCoordinate)
+        setPrimaryCameraDragging(false)
+        setPrimaryCenterCoordinate(context.camera.centerCoordinate)
         clearSelectedSearchResultItemOnMapCameraChangeByUser()
     }
     
@@ -111,7 +117,7 @@ extension MapViewModel {
     ///   - meters: The distance in meters for both latitude and longitude bounds.
     func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
         let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
-        Task { await setPosition(region: region, animate: true) }
+        Task { await setPrimaryPosition(region: region, animate: true) }
     }
     
     /// Registers a cleanup action to help clear memory related to map styles.
@@ -140,9 +146,9 @@ extension MapViewModel {
         guard
             let selectedSearchResult,
             selectedSearchResult.doneSetting,
-            let centerCoordinate,
+            let primaryCenterCoordinate,
             radiusAlertItem == nil,
-            !centerCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
+            !primaryCenterCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
         
         // Clear the selected search result because the user moved the map away from it
         setSelectedSearchResult(nil)

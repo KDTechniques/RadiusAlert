@@ -17,7 +17,8 @@ final class MapViewModel {
     // MARK: - INITIALIZER
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
-        selectedRadius = mapValues.minimumRadius
+        primarySelectedRadius = mapValues.minimumRadius
+        secondarySelectedRadius = mapValues.minimumRadius
         initializeMapVM()
     }
     
@@ -36,24 +37,19 @@ final class MapViewModel {
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let recentSearchManager: RecentSearchManager = .shared
     
-    // Map state
-    private(set) var position: MapCameraPosition = .automatic
+    // Main Map Related
+    private(set) var primaryPosition: MapCameraPosition = .automatic
+    private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
+    private(set) var primarySelectedRadius: CLLocationDistance { didSet { onRadiusChange(primarySelectedRadius) } }
+    private(set) var isPrimaryCameraDragging: Bool = false { didSet { isPrimaryCameraDragging$ = isPrimaryCameraDragging } }
+    @ObservationIgnored @Published private(set) var isPrimaryCameraDragging$: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
-    private(set) var centerCoordinate: CLLocationCoordinate2D?
-    private(set) var selectedRadius: CLLocationDistance { didSet { onRadiusChange(selectedRadius) } }
-    private(set) var markerCoordinate: CLLocationCoordinate2D? { didSet { onMarkerCoordinateChange(markerCoordinate) } }
-    private(set) var routes: [MKRoute] = []
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
-    private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
-    private(set) var multipleStopsMedium: MultipleStopMediums? { didSet { multipleStopsMedium$ = multipleStopsMedium } }
-    @ObservationIgnored @Published private(set) var multipleStopsMedium$: MultipleStopMediums?
     
-    // Search and UI state
+    // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
     private(set) var popupCardItem: PopupCardModel?
-    private(set) var isCameraDragging: Bool = false { didSet { isCameraDragging$ = isCameraDragging } }
-    @ObservationIgnored @Published private(set) var isCameraDragging$: Bool = false
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
@@ -61,46 +57,72 @@ final class MapViewModel {
     private(set) var recentSearches: [RecentSearchModel] = []
     private(set) var distanceText: CLLocationDistance = .zero
     
+    // Multiple Stops Map Related
+    private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
+    private(set) var multipleStopsMedium: MultipleStopMediums? { didSet { multipleStopsMedium$ = multipleStopsMedium } }
+    @ObservationIgnored @Published private(set) var multipleStopsMedium$: MultipleStopMediums?
+    private(set) var markers: [MarkerModel] = []
+    private(set) var secondaryPosition: MapCameraPosition = .automatic
+    private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
+    private(set) var secondarySelectedRadius: CLLocationDistance
+    private(set) var isSecondaryCameraDragging: Bool = false
+    
     // MARK: - SETTERS
     
     func setInteractionModes(_ modes: MapInteractionModes) {
         interactionModes = modes
     }
     
-    func setCameraDragging(_ boolean: Bool) {
-        isCameraDragging = boolean
+    func setPrimaryCameraDragging(_ boolean: Bool) {
+        isPrimaryCameraDragging = boolean
     }
     
-    func setPosition(region: MKCoordinateRegion, animate: Bool) async {
+    func setSecondaryCameraDragging(_ boolean: Bool) {
+        isSecondaryCameraDragging = boolean
+    }
+    
+    func setPrimaryPosition(_ position: MapCameraPosition) {
+        primaryPosition = position
+    }
+    
+    func setSecondaryPosition(_ position: MapCameraPosition) {
+        secondaryPosition = position
+    }
+    
+    func setPrimaryPosition(region: MKCoordinateRegion, animate: Bool) async {
         withAnimation(animate ? .default : .none) {
-            position = .region(region)
+            primaryPosition = .region(region)
         }
         
         try? await Task.sleep(nanoseconds: 800_000_000)
     }
     
-    func setPosition(_ position: MapCameraPosition) {
-        self.position = position
+    func setSecondaryPosition(region: MKCoordinateRegion, animate: Bool) async {
+        withAnimation(animate ? .default : .none) {
+            secondaryPosition = .region(region)
+        }
+        
+        try? await Task.sleep(nanoseconds: 800_000_000)
     }
     
     func setSearchFieldFocused(_ boolean: Bool) {
         isSearchFieldFocused = boolean
     }
     
-    func setCenterCoordinate(_ center: CLLocationCoordinate2D) {
-        centerCoordinate = center
+    func setPrimaryCenterCoordinate(_ center: CLLocationCoordinate2D) {
+        primaryCenterCoordinate = center
     }
     
-    func setSelectedRadius(_ radius: CLLocationDistance) {
-        selectedRadius = radius
+    func setSecondaryCenterCoordinate(_ center: CLLocationCoordinate2D) {
+        secondaryCenterCoordinate = center
     }
     
-    func setMarkerCoordinate(_ marker: CLLocationCoordinate2D?) {
-        markerCoordinate =  marker
+    func setPrimarySelectedRadius(_ radius: CLLocationDistance) {
+        primarySelectedRadius = radius
     }
     
-    func setRoute(_ route: MKRoute) {
-        routes.append(route)
+    func setSecondarySelectedRadius(_ radius: CLLocationDistance) {
+        secondarySelectedRadius = radius
     }
     
     func setSearchText(_ text: String) {
@@ -147,6 +169,23 @@ final class MapViewModel {
         distanceText = value
     }
     
+    func setMarker(_ value: MarkerModel) {
+        // Following logic must be isolated to another function except the setter.
+        guard !markers.contains(where: { $0.id == value.id }) else { return }
+        
+        var marker = value
+        
+        if markers.isEmpty {
+            marker.color = .pink
+        }
+        
+        markers.append(marker)
+    }
+    
+    func clearAllMarkers() {
+        markers.removeAll()
+    }
+    
     // MARK: - PUBLIC FUNCTIONS
     
     func getNavigationTitleIconColor() -> Color {
@@ -161,10 +200,6 @@ final class MapViewModel {
     
     func onMapViewDisappear() {
         MapStyleButtonTipModel.isOnMapView = false
-    }
-    
-    func clearRoutes() {
-        routes = []
     }
     
     // MARK: - PRIVATE FUNCTIONS

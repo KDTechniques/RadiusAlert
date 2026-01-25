@@ -87,7 +87,7 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
 //            Task {
 //                guard
 //                    let currentUserLocation = locationManager.markerCoordinate,
-//                    let centerCoordinate = mapVM.centerCoordinate,
+//                    let centerCoordinate = mapVM.primaryCenterCoordinate,
 //                    let route = await locationManager.getRoute(pointA: currentUserLocation, pointB: centerCoordinate) else { return }
 //                
 //                mapVM.setRoute(route)

@@ -15,6 +15,7 @@ import CoreLocation
 
 struct RadiusSliderOrDistanceTextView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
     //  MARK: - ASSIGNED PROPERTIES
@@ -24,9 +25,14 @@ struct RadiusSliderOrDistanceTextView: View {
     // MARK: - BODY
     var body: some View {
         ZStack(alignment: .trailing) {
-            RadiusSliderView()
+            RadiusSliderView(value: mapVM.primarySelectedRadiusBinding()) { mapVM.onRadiusSliderEditingChanged($0) }
                 .opacity(mapVM.showRadiusSliderOrDistanceText() == .radiusSlider ? 1 : 0)
                 .disabled(mapVM.showRadiusSliderOrDistanceText() != .radiusSlider)
+                .popoverTip(mapVM.radiusSliderTip)
+                .tipImageStyle(colorScheme == .dark ? .secondary : Color(uiColor: .systemGray3))
+                .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
+                    mapVM.onRadiusSliderTipAction()
+                }
             
             DistanceTextView(mapVM.distanceText)
                 .opacity(mapVM.showRadiusSliderOrDistanceText() == .distanceText ? 1 : 0)
@@ -41,8 +47,13 @@ struct RadiusSliderOrDistanceTextView: View {
 
 // MARK: - PREVIEWS
 #Preview("RadiusSliderOrDistanceTextView - RadiusSliderView") {
+    @Previewable @State var sliderValue: Double = MapValues.minimumRadius
+    @Previewable @State var mapVM: MapViewModel = .init(settingsVM: .init())
+    
     VStack {
-        RadiusSliderView()
+        RadiusSliderView(value: $sliderValue) { print($0) }
+            .popoverTip(mapVM.radiusSliderTip)
+            .padding()
         
         Button("Show Tip") {
             RadiusSliderTipModel.isSetRadius.toggle()
@@ -52,7 +63,6 @@ struct RadiusSliderOrDistanceTextView: View {
     .padding(.horizontal, 50)
     .previewModifier()
 }
-
 
 #Preview("RadiusSliderOrDistanceTextView - DistanceTextView") {
     @Previewable @State var randomNumber: CLLocationDistance = .zero

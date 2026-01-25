@@ -29,18 +29,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var currentUserLocation: CLLocationCoordinate2D? { didSet { currentUserLocation$ = currentUserLocation } }
     @ObservationIgnored @Published private(set) var currentUserLocation$: CLLocationCoordinate2D?
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
-    
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
-    @ObservationIgnored var markerCoordinate: CLLocationCoordinate2D?
-    @ObservationIgnored var selectedRadius: CLLocationDistance = MapValues.minimumRadius
-    @ObservationIgnored var onRegionEntry: (() -> Void) = { }
-    @ObservationIgnored private var monitoredRegion: CLCircularRegion?
-    @ObservationIgnored var onRegionEntryFailure: (() -> Void) = { }
-    
+    @ObservationIgnored private var regions: Set<RegionModel> = []
     private let mapValues: MapValues.Type = MapValues.self
-    private let regionIdentifier: String = "radiusAlert"
     private(set) var currentDistanceMode: LocationDistanceModes?
     private(set) var currentRegionName: String?
+    private(set) var distances: Set<CLLocationDistance> = []
     
     // MARK: - SETTERS
     func setCurrentDistanceMode(_ value: LocationDistanceModes) {
@@ -92,14 +86,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         self.currentUserLocation = currentUserLocation
         
         setLocationAccuracy()
-        onRegionEntryFailure()
     }
     
     /// Triggered when user enters a monitored circular region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        guard region.identifier == monitoredRegion?.identifier else { return }
-        print("✅ Entered region: \(region.identifier)")
-        onRegionEntry()
+        print("✅ Entered region: ", region.identifier)
+        guard let action: () -> Void = regions.first(where: { $0.monitor?.identifier == region.identifier })?.onRegionEntry else { return }
+        action()
     }
     
     /// Called when CoreLocation fails with an error
@@ -111,40 +104,19 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     /// Returns the initial camera position for the map centered on the user’s location
     func getInitialMapCameraPosition() -> MapCameraPosition? {
-        guard let coordinate: CLLocationCoordinate2D = currentUserLocation else {
+        guard let currentUserLocation else {
             print("Error getting initial current location of the user!")
             return nil
         }
         
         let regionBoundMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
         let region: MKCoordinateRegion = .init(
-            center: coordinate,
+            center: currentUserLocation,
             latitudinalMeters: regionBoundMeters,
             longitudinalMeters: regionBoundMeters
         )
         
         return .region(region)
-    }
-    
-    /// Fetches driving route from user’s location to the marker destination
-    func getRoute() async -> MKRoute? {
-        guard
-            let currentUserLocation,
-            let markerCoordinate else { return nil }
-        
-        let request: MKDirections.Request = .init()
-        request.source = .init(placemark: .init(coordinate: currentUserLocation))
-        request.destination = .init(placemark: .init(coordinate: markerCoordinate))
-        request.transportType = .automobile
-        
-        do {
-            let directions = try await MKDirections(request: request).calculate()
-            let route: MKRoute? = directions.routes.first
-            return  route
-        } catch {
-            print("Error getting directions: \(error.localizedDescription)")
-            return nil
-        }
     }
     
     /// Calculates a driving route between two coordinates.
@@ -176,51 +148,54 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    /// Starts monitoring a circular region around the marker coordinate.
-    /// Returns `false` if marker coordinate is not set.
-    func startMonitoringRegion(radius: Double) -> Bool {
-        // Stop monitoring old region if any
-        if let oldRegion = monitoredRegion {
-            manager.stopMonitoring(for: oldRegion)
+    func stopMonitoringAllRegions() {
+        for region in regions {
+            guard let monitor = region.monitor else { return }
+            manager.stopMonitoring(for: monitor)
         }
         
-        guard let markerCoordinate else {
-            return false
-        }
+        regions.removeAll()
+    }
+    
+    func startMonitoringRegion(region: RegionModel) {
+        var region = region
         
-        let region = CLCircularRegion(center: markerCoordinate, radius: radius, identifier: regionIdentifier)
-        region.notifyOnEntry = true
-        region.notifyOnExit = false
+        let monitorRegion: CLCircularRegion = .init(center: region.markerCoordinate, radius: region.radius, identifier: region.id)
+        monitorRegion.notifyOnEntry = true
+        monitorRegion.notifyOnExit = false
         
-        monitoredRegion = region
-        manager.startMonitoring(for: region)
-        return true
+        region.monitor = monitorRegion
+        guard let monitor: CLCircularRegion = region.monitor else { return }
+        manager.startMonitoring(for: monitor)
     }
     
     /// Stops monitoring the currently active circular region.
-    func stopMonitoringRegion() {
-        guard let monitoredRegion else { return }
-        
-        manager.stopMonitoring(for: monitoredRegion)
-        self.monitoredRegion = nil
+    func stopMonitoringRegion(for region: RegionModel) {
+        guard let monitor: CLCircularRegion = region.monitor else { return }
+        manager.stopMonitoring(for: monitor)
+        regions.remove(region)
     }
     
     /// Dynamically adjusts location accuracy and update frequency
     /// based on distance from the marker coordinate.
     func setLocationAccuracy() {
-        guard
-            let currentUserLocation,
-            let markerCoordinate else {
-            return
+        guard let currentUserLocation else { return }
+        
+        var distances: Set<CLLocationDistance> = []
+        for region in regions {
+            let distance: CLLocationDistance = Utilities.getDistanceToRadius(
+                userCoordinate: currentUserLocation,
+                markerCoordinate: region.markerCoordinate,
+                radius: region.radius
+            )
+            
+            distances.insert(distance)
         }
         
-        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
-            userCoordinate: currentUserLocation,
-            markerCoordinate: markerCoordinate,
-            radius: selectedRadius
-        )
+        self.distances = distances
         
-        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: distanceToRadius)
+        guard let minDistance: CLLocationDistance = distances.min() else { return }
+        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: minDistance)
         
         // Only apply if mode actually changed
         guard newMode != currentDistanceMode else { return }
@@ -303,4 +278,3 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         getCurrentRegionName(currentUserLocation)
     }
 }
-

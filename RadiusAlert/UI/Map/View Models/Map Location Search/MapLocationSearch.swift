@@ -22,13 +22,13 @@ extension MapViewModel {
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         createRecentSearch(on: item)
         
-        if multipleStopsMedium == .search {
-            prepareSelectedSearchResultCoordinateOnMap(item)
-        } else {
-            isMarkerCoordinateNil()
-            ? prepareSelectedSearchResultCoordinateOnMap(item)
-            : stopAlertOnSearchResultListRowTapConfirmation(item)
-        }
+//        if multipleStopsMedium == .search {
+//            prepareSelectedSearchResultCoordinateOnMap(item)
+//        } else {
+//            isMarkerCoordinateNil()
+//            ? prepareSelectedSearchResultCoordinateOnMap(item)
+//            : stopAlertOnSearchResultListRowTapConfirmation(item)
+//        }
     }
     
     /// Handles a tap on an item from the recent searches list.
@@ -38,13 +38,13 @@ extension MapViewModel {
     ///
     /// - Parameter item: The `RecentSearchModel` the user tapped.
     func onRecentSearchListRowTap(_ item: RecentSearchModel) {
-        if multipleStopsMedium == .search {
-            prepareSelectedRecentSearchCoordinateOnMap(item)
-        } else {
-            isMarkerCoordinateNil()
-            ? prepareSelectedRecentSearchCoordinateOnMap(item)
-            : stopAlertOnRecentSearchListRowTapConfirmation(item)
-        }
+//        if multipleStopsMedium == .search {
+//            prepareSelectedRecentSearchCoordinateOnMap(item)
+//        } else {
+//            isMarkerCoordinateNil()
+//            ? prepareSelectedRecentSearchCoordinateOnMap(item)
+//            : stopAlertOnRecentSearchListRowTapConfirmation(item)
+//        }
     }
     
     /// Responds to changes in the search bar text.
@@ -87,7 +87,7 @@ extension MapViewModel {
         // Clear any existing search UI state
         resetSearchable()
         
-        setSelectedRadius(item.radius)
+        setPrimarySelectedRadius(item.radius)
         
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
@@ -191,16 +191,16 @@ extension MapViewModel {
     ///
     /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
     private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
-        guard let centerCoordinate else { return }
+        guard let primaryCenterCoordinate else { return }
         
         // 1) Zoom out to Initial Region Bounds
         let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
         let initialRegion: MKCoordinateRegion = .init(
-            center: centerCoordinate,
+            center: primaryCenterCoordinate,
             latitudinalMeters: boundsMeters,
             longitudinalMeters: boundsMeters
         )
-        await setPosition(region: initialRegion, animate: true)
+        await setPrimaryPosition(region: initialRegion, animate: true)
         
         // 2) Position Camera to New Coordinates
         let newRegion: MKCoordinateRegion = .init(
@@ -209,7 +209,7 @@ extension MapViewModel {
             longitudinalMeters: boundsMeters
         )
        
-        await setPosition(region: newRegion, animate: true)
+        await setPrimaryPosition(region: newRegion, animate: true)
         
         // 3) Zoom in or out to region bounds based on radius
         setRegionBoundsOnRadius()

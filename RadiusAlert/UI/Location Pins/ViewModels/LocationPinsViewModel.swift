@@ -129,15 +129,15 @@ final class LocationPinsViewModel {
     }
     
     func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
-        guard mapVM.isMarkerCoordinateNil() else {
-            alertManager.showAlert(.stopAlertOnSubmit {
-                self.mapVM.stopAlert()
-                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
-            })
-            return
-        }
-        
-        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
+//        guard mapVM.isMarkerCoordinateNil() else {
+//            alertManager.showAlert(.stopAlertOnSubmit {
+//                self.mapVM.stopAlert()
+//                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
+//            })
+//            return
+//        }
+//        
+//        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
 }
 

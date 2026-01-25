@@ -12,7 +12,7 @@ extension LocationPinsViewModel {
     
     func onAddNewLocationPinButtonTap() {
         // Basic Validations
-        guard let centerCoordinate = mapVM.centerCoordinate else { return }
+        guard let centerCoordinate = mapVM.primaryCenterCoordinate else { return }
         
         // Get Existing Item If Available
         let existingItem: LocationPinsModel? = locationPinsArray.first(where: { $0.isSameCoordinate(centerCoordinate) })
@@ -25,7 +25,7 @@ extension LocationPinsViewModel {
         } else {  // If No Item Available, Prepare a Sheet for Adding a New Location Pin
             
             setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
-            setNewLocationPinRadius(mapVM.selectedRadius)
+            setNewLocationPinRadius(mapVM.primarySelectedRadius)
             setNewLocationCoordinate(centerCoordinate)
             setIsPresentedLocationSavingSheet(true)
         }

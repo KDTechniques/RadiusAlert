@@ -8,28 +8,23 @@
 import SwiftUI
 
 struct MapPinView: View {
-    // MARK: - INJECTED PROPERTIES
-    @Environment(MapViewModel.self) private var mapVM
+    let mapValues = MapValues.self
     
     // MARK: - BODY
     var body: some View {
-        Content()
-            .opacity(mapVM.showMapPin() ? 1 : 0)
-            .animation(.default, value: mapVM.showMapPin())
+        let frameHeight: CGFloat = mapValues.pinHeight * 2
+        
+        Image(systemName: "mappin")
+            .resizable()
+            .scaledToFit()
+            .foregroundStyle(.red.gradient)
+            .frame(height: mapValues.pinHeight)
+            .frame(height: frameHeight, alignment: .top)
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("MapPinView") {
-    Content()
+    MapPinView()
         .previewModifier()
-}
-
-// MARK: - SUB VIEWS
-fileprivate struct Content: View {
-    var body: some View {
-        Image(systemName: "mappin")
-            .font(.largeTitle)
-            .foregroundStyle(.red.gradient)
-    }
 }

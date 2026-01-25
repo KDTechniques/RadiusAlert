@@ -27,6 +27,15 @@ extension CLLocationCoordinate2D {
         return a.latitude == b.latitude && a.longitude == b.longitude
     }
     
+    func markerID() -> String {
+        let lat = String(format: "%.6f", self.latitude)
+        let lon = String(format: "%.6f", self.longitude)
+        
+        return "\(lat)_\(lon)"
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
     /// Rounds the coordinate's latitude and longitude to the specified number of decimal places.
     ///
     /// - Parameter places: The number of decimal places to round to.

@@ -23,34 +23,34 @@ struct MapView: View {
         //        let _ = Self._printChanges()
 #endif
         
-        Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
-            // User's Current Location
+        Map(position: mapVM.primaryPositionBinding(), interactionModes: mapVM.interactionModes, scope: mapSpace) {
+            // MARK: - User's Current Location
             UserAnnotation()
             
-            // MARK: - Radius Circle
-            if let centerCoordinate: CLLocationCoordinate2D = mapVM.getRadiusCircleCoordinate(),
-               mapVM.showRadiusCircle() {
-                MapCircle(
-                    center: centerCoordinate,
-                    radius: mapVM.selectedRadius
-                )
-                .foregroundStyle(.primary.opacity(0.3))
+            // MARK: - Radius Circles
+            
+            // MARK:  Floating Circle
+            if let centerCoordinate: CLLocationCoordinate2D = mapVM.primaryCenterCoordinate {
+                MapCircle(center: centerCoordinate, radius: mapVM.primarySelectedRadius)
+                    .foregroundStyle(.primary.opacity(0.3))
             }
             
-            // MARK: - Marker
-            if let markerCoordinate: CLLocationCoordinate2D = mapVM.markerCoordinate {
-                Marker(
-                    mapVM.getRadiusTextString(
-                        mapVM.selectedRadius,
-                        withAlertRadiusText: true
-                    ),
-                    coordinate: markerCoordinate
-                )
+            // MARK: Marker Circles
+            ForEach(mapVM.markers) { marker in
+                MapCircle(center: marker.coordinate, radius: marker.radius)
+                    .foregroundStyle(marker.color.opacity(0.3))
             }
             
-            // MARK: - Route
-            ForEach(mapVM.routes, id: \.self) { route in
-                let isFirst: Bool = mapVM.routes.first == route
+            // MARK: - Markers
+            ForEach(mapVM.markers) { marker in
+                let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: true)
+                Marker(radiusText, coordinate: marker.coordinate)
+            }
+            
+            // MARK: - Routes
+            let routes: [MKRoute] = mapVM.markers.compactMap { $0.route }
+            ForEach(routes, id: \.self) { route in
+                let isFirst: Bool = routes.first == route
                 
                 MapPolyline(route)
                     .stroke(isFirst ? .pink : Color.debug, lineWidth: 3)
@@ -63,6 +63,7 @@ struct MapView: View {
         .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
+        .sheet(isPresented: .constant(true)) { MultipleStopsMapSheetView() }
     }
 }
 

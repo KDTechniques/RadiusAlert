@@ -12,13 +12,22 @@ struct RadiusSliderView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
-    // MARK: - ASSIGNEND PROPERTIES
+    @Binding var value: Double
+    let onEditingChanged: (_ boolean: Bool) -> Void
+    
+    // MARK: - INITIALIZER
+    init(value: Binding<Double>, _ onEditingChanged: @escaping (_ boolean: Bool) -> Void) {
+        _value = value
+        self.onEditingChanged = onEditingChanged
+    }
+    
+    // MARK: - ASSIGNED PROPERTIES
     let mapValues: MapValues.Type = MapValues.self
     
     // MARK: - BODY
     var body: some View {
         Slider(
-            value: mapVM.selectedRadiusBinding(),
+            value: $value,
             in: mapValues.minimumRadius...mapValues.maximumRadius,
             step: mapValues.radiusStep) { }
         minimumValueLabel: {
@@ -27,20 +36,16 @@ struct RadiusSliderView: View {
         } maximumValueLabel: {
             Text(mapValues.maximumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
-        } onEditingChanged: {
-            mapVM.onRadiusSliderEditingChanged($0)
-        }
-        .popoverTip(mapVM.radiusSliderTip)
-        .tipImageStyle(colorScheme == .dark ? .secondary : Color(uiColor: .systemGray3))
-        .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
-            mapVM.onRadiusSliderTipAction()
-        }
+        } onEditingChanged: { onEditingChanged($0) }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("RadiusSliderView") {
-    RadiusSliderView()
+    @Previewable @State var sliderValue: Double = MapValues.minimumRadius
+    RadiusSliderView(value: $sliderValue) { print($0) }
+        .padding()
+        .previewModifier()
 }
 
 // MARK: - EXTENSIONS

@@ -5,11 +5,14 @@
 //  Created by Kavinda Dilshan on 2026-01-05.
 //
 
-import Foundation
+import SwiftUI
+import MapKit
 
 // MARK: MULTIPLE STOPS
 
 extension MapViewModel {
+    // MARK: - PUBLIC FUNCTIONS
+    
     func clearMultipleStops() {
         setMultipleStopsMedium(nil)
     }

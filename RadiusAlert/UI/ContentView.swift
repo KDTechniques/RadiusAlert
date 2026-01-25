@@ -25,7 +25,11 @@ struct ContentView: View {
             MapView()
                 .overlay {
                     MapPinView()
-                    CircularRadiusTextView()
+                    
+                    if mapVM.showFloatingAlertRadiusText() {
+                        CircularRadiusTextView(radius: mapVM.primarySelectedRadius)
+                    }
+                    
                     MapBottomTrailingButtonsView()
                     RadiusSliderOrDistanceTextView()
                 }

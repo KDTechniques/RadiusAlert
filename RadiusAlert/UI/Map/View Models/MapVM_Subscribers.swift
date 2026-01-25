@@ -36,7 +36,7 @@ extension MapViewModel {
     
     func multipleStopsMedium_IsCameraDraggingSubscriber() {
         $multipleStopsMedium$.removeDuplicates()
-            .combineLatest($isCameraDragging$.removeDuplicates())
+            .combineLatest($isPrimaryCameraDragging$.removeDuplicates())
             .dropFirst()
             .debounce(for: .nanoseconds(/*60*/3_000_000_000), scheduler: DispatchQueue.main) // 1 min.
             .sink { medium, isDragging in
@@ -50,16 +50,7 @@ extension MapViewModel {
         locationManager.$currentUserLocation$
             .compactMap { $0 } // Returns non-optional values because of `Compact Map`. So, no need of `guard let` statements
             .sink { location in
-                /// listen for marker coordinate changes and update distance text based on that, so no need to use statement closure in the view level for the distance text view.
-                guard let markerCoordinate: CLLocationCoordinate2D = self.markerCoordinate else { return }
-                
-                let distance: CLLocationDistance = Utilities.getDistanceToRadius(
-                    userCoordinate: location,
-                    markerCoordinate: markerCoordinate,
-                    radius: self.selectedRadius
-                )
-                
-                self.setDistanceText(distance)
+                self.setDistanceText(self.locationManager.distances.min() ?? .zero)
             }
             .store(in: &cancellables)
     }
