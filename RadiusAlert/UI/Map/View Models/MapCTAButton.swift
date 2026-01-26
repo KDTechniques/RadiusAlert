@@ -16,8 +16,7 @@ extension MapViewModel {
     /// Returns the foreground color of the CTA button based on marker coordinate availability.
     /// - Returns: Green if no marker is set, red if a marker exists.
     func getCTAButtonForegroundColor() -> Color {
-//        isMarkerCoordinateNil() ? .green : .red
-        .debug
+        isThereAnyMarkerCoordinate() ? .green : .red
     }
     
     /// Returns the background color of the CTA button based on marker coordinate availability.
@@ -67,7 +66,7 @@ extension MapViewModel {
 //        locationManager.stopMonitoringRegion()
         alertManager.stopHaptic()
         alertManager.stopTone()
-        resetMapToCurrentUserLocation()
+        resetMapToCurrentUserLocation(on: .primary)
         clearPopupCardItem()
         setRadiusAlertItem(nil)
         setPopupCardItem(nil)

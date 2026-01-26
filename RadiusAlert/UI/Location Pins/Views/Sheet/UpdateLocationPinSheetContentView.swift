@@ -54,7 +54,7 @@ extension UpdateLocationPinSheetContentView {
     private var textfield: some View {
         Section {
             TextField("", text: $renameText, prompt: .init("Title"))
-                .limitInputLength(
+                .limitInputLengthViewModifier(
                     $renameText,
                     to: locationPinsVM.locationPinTitleMaxCharacterCount
                 )

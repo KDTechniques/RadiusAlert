@@ -15,7 +15,7 @@ struct SpokenAlertUserNameTextFieldView: View {
     var body: some View {
         Section {
             TextField("Your Name", text: settingsVM.spokenUserNameTextFieldTextBinding(), prompt: Text("Optional"))
-                .limitInputLength(settingsVM.spokenUserNameTextFieldTextBinding(), to: SpokenAlertValues.maxUserNameCharacters)
+                .limitInputLengthViewModifier(settingsVM.spokenUserNameTextFieldTextBinding(), to: SpokenAlertValues.maxUserNameCharacters)
         } header: {
             Text("Your Name")
         } footer: {

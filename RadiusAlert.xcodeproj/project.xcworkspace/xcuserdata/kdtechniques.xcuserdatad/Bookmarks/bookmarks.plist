@@ -88,7 +88,7 @@
     /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
 </string>
 				<key>trailing</key>
-				<string>        guard let centerCoordinate else { return }
+				<string>        guard let primaryCenterCoordinate else { return }
         
         // 1) Zoom out to Initial Region Bounds
 </string>
@@ -128,7 +128,7 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        setSelectedRadius(item.radius)
+				<string>        setPrimarySelectedRadius(item.radius)
 </string>
 				<key>leading</key>
 				<string>        resetSearchable()

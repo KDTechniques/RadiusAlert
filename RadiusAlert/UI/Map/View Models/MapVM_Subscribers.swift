@@ -28,7 +28,7 @@ extension MapViewModel {
                 // Delays then repositions the map to the initial user location on the main actor.
                 Task { @MainActor in
                     try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self.positionToInitialUserLocation()
+                    self.positionToInitialUserLocation(on: .primary, animate: true)
                 }
             }
             .store(in: &cancellables)

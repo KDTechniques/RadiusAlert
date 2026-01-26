@@ -63,6 +63,34 @@ struct Utilities {
         return location1.distance(from: location2)
     }
     
+    static func getMaxDistance(from coordinates: [CLLocationCoordinate2D]) -> CLLocationDistance {
+        guard coordinates.count >= 2 else { return 0 }
+        
+        var maxDistance: CLLocationDistance = 0
+        
+        for i in 0..<coordinates.count {
+            let location1 = CLLocation(
+                latitude: coordinates[i].latitude,
+                longitude: coordinates[i].longitude
+            )
+            
+            for j in (i + 1)..<coordinates.count {
+                let location2 = CLLocation(
+                    latitude: coordinates[j].latitude,
+                    longitude: coordinates[j].longitude
+                )
+                
+                let distance = location1.distance(from: location2)
+                
+                if distance > maxDistance {
+                    maxDistance = distance
+                }
+            }
+        }
+        
+        return maxDistance
+    }
+    
     static func getCountryCode() -> String? {
         return Locale.current.region?.identifier // e.g. "US", "LK"
     }

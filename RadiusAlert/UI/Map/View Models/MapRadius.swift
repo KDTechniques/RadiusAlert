@@ -65,7 +65,7 @@ extension MapViewModel {
     
     func setRegionBoundsOnRadius() {
         guard let primaryCenterCoordinate else { return }
-        setRegionBoundMeters(center: primaryCenterCoordinate, meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius))
+        setRegionBoundMeters(to: primaryCenterCoordinate, meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius), on: .primary, animate: true)
     }
     
     func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {

@@ -41,7 +41,7 @@ extension AddLocationPinSheetContentView {
     private var textField: some View {
         Section {
             TextField("", text: locationPinsVM.newLocationPinTextFieldTextBinding(), prompt: .init("Title"))
-                .limitInputLength(
+                .limitInputLengthViewModifier(
                     locationPinsVM.newLocationPinTextFieldTextBinding(),
                     to: locationPinsVM.locationPinTitleMaxCharacterCount
                 )

@@ -84,7 +84,7 @@ extension View {
     }
     
     @ViewBuilder
-    var mapControlButtonBackground: some View {
+    var mapControlButtonBackgroundViewModifier: some View {
         if #available(iOS 26.0, *) {
             self
                 .background(
@@ -100,16 +100,16 @@ extension View {
         }
     }
     
-    var mapControlButtonShadow: some View {
+    var mapControlButtonShadowViewModifier: some View {
         self
             .background {
                 Color.clear
-                    .mapControlButtonBackground
+                    .mapControlButtonBackgroundViewModifier
                     .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
             }
     }
     
-    func limitInputLength(_ binding: Binding<String>, to length: Int) -> some View {
+    func limitInputLengthViewModifier(_ binding: Binding<String>, to length: Int) -> some View {
         self
             .onChange(of: binding.wrappedValue) { _, newValue in
                 if newValue.count > length {
@@ -117,8 +117,25 @@ extension View {
                 }
             }
     }
+    
+    var mapBottomTrailingButtonsViewModifier: some View {
+        self
+            .frame(maxWidth: .infinity, maxHeight: .infinity,  alignment: .bottomTrailing)
+            .padding(.bottom, 40)
+            .mapBottomTrailingButtonsTrailingPadding
+    }
 }
 
-
-
+// MARK: - EXTENSIONS
+fileprivate extension View {
+    var mapBottomTrailingButtonsTrailingPadding: some View {
+        if #available(iOS 26.0, *) {
+            self
+                .padding(.trailing)
+        } else {
+            self
+                .padding(.trailing, 5)
+        }
+    }
+}
 

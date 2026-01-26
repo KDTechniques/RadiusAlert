@@ -44,7 +44,7 @@ struct ContentView: View {
         .alertViewModifier
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
-        .onAppear { mapVM.positionToInitialUserLocation() }
+        .onAppear { mapVM.positionToInitialUserLocation(on: .primary, animate: true) }
         .onChange(of: scenePhase) { onScenePhaseChange($1) }
     }
 }

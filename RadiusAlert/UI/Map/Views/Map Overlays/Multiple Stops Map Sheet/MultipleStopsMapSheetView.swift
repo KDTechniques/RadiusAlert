@@ -12,6 +12,7 @@ import CoreLocation
 struct MultipleStopsMapSheetView: View {
     // MARK: - INJECTED PROPERTIERS
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
     
     // MARK: - ASSIGNED PROPERTIERS
     @Namespace var mapSpace
@@ -55,6 +56,7 @@ struct MultipleStopsMapSheetView: View {
                 }
             }
             .mapControls { mapControls }
+            .mapStyle(settingsVM.selectedMapStyle.mapStyle)
             .onMapCameraChange(frequency: .continuous) {
                 mapVM.setSecondaryCameraDragging(true)
                 mapVM.setSecondaryCenterCoordinate($0.region.center)
@@ -76,6 +78,8 @@ struct MultipleStopsMapSheetView: View {
                 .disabled(!showOverlays())
                 .animation(.default, value: showOverlays())
                 
+                MapStyleButtonView()
+                    .mapBottomTrailingButtonsViewModifier
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -85,6 +89,18 @@ struct MultipleStopsMapSheetView: View {
                         }
                     } else {
                         Button("Done") {
+                            
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    if #available(iOS 26.0, *) {
+                        Button(role: .cancel) {
+                            
+                        }
+                    } else {
+                        Button("Cancel") {
                             
                         }
                     }

@@ -15,8 +15,8 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     /// Sets the initial position on the map focusing on the user's location.
-    /// This is typically called when the user opens the app for the first time.
-    func positionToInitialUserLocation() {
+    /// This is typically called when the user opens the app for the first time or map renders.
+    func positionToInitialUserLocation(on type: MapTypes, animate: Bool) {
         guard
             let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
             let region: MKCoordinateRegion = position.region else {
@@ -24,7 +24,14 @@ extension MapViewModel {
             return
         }
         
-        Task { await setPrimaryPosition(region: region, animate: true) }
+        Task {
+            switch type {
+            case .primary:
+                await setPrimaryPosition(region: region, animate: animate)
+            case .secondary:
+                await setSecondaryPosition(region: region, animate: animate)
+            }
+        }
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -32,16 +39,14 @@ extension MapViewModel {
     ///   - coordinate1: The first location coordinate.
     ///   - coordinate2: The second location coordinate.
     ///   - animate: Whether the map camera movement should be animated.
-    func positionRegionBoundsToMidCoordinate(
-        coordinate1: CLLocationCoordinate2D,
-        coordinate2: CLLocationCoordinate2D,
-        animate: Bool
-    ) {
-        // Calculate the distance between the two coordinates.
-        let distance: CLLocationDistance = Utilities.getDistance(from: coordinate1, to: coordinate2)
+    func positionRegionBoundsToMidCoordinate(from coordinates: [CLLocationCoordinate2D], on type: MapTypes, animate: Bool) {
+        guard coordinates.count >= 2 else { return }
         
-        // Find the midpoint between the two coordinates.
-        let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: [coordinate1, coordinate2])
+        // Find the midpoint between the coordinates.
+        let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: coordinates)
+        
+        // Calculate the max distance between coordinates.
+        let distance: CLLocationDistance = Utilities.getMaxDistance(from: coordinates)
         
         // Determine the bounds size so both annotations are visible.
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
@@ -53,8 +58,15 @@ extension MapViewModel {
             longitudinalMeters: boundsMeters
         )
         
-        // Update the map position with optional animation.
-        Task { await setPrimaryPosition(region: region, animate: animate) }
+        // Update the map position.
+        Task {
+            switch type {
+            case .primary:
+                await setPrimaryPosition(region: region, animate: animate)
+            case .secondary:
+                await setSecondaryPosition(region: region, animate: animate)
+            }
+        }
     }
     
     /// Returns a binding to the current map camera position.
@@ -71,20 +83,17 @@ extension MapViewModel {
     
     /// Resets the map to the initial region bounds, removing markers and routes.
     /// The map animates smoothly back to the initial view.
-    func resetMapToCurrentUserLocation() {
+    func resetMapToCurrentUserLocation(on type: MapTypes) {
         // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
         clearAllMarkers()
         
-        // Then, remove route paths from the map if available.
-//        removeDirections()
-        
         // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
-        withAnimation { positionToInitialUserLocation() }
+        positionToInitialUserLocation(on: type, animate: true)
     }
     
     /// Handles logic when the map camera changes continuously.
     /// - Parameter context: The camera update context containing the latest camera state.
-    func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
+    func onContinuousPrimaryMapCameraChange(_ context: MapCameraUpdateContext) {
         guard isAuthorizedToGetMapCameraUpdate else { return }
         setPrimaryCameraDragging(true)
         setPrimaryCenterCoordinate(context.camera.centerCoordinate)
@@ -92,7 +101,7 @@ extension MapViewModel {
     
     /// Handles logic when the map camera stops moving.
     /// - Parameter context: The camera update context containing the final camera state.
-    func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
+    func onPrimaryMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
         guard isAuthorizedToGetMapCameraUpdate else { return }
         setPrimaryCameraDragging(false)
         setPrimaryCenterCoordinate(context.camera.centerCoordinate)
@@ -115,9 +124,17 @@ extension MapViewModel {
     /// - Parameters:
     ///   - center: The center coordinate for the new region.
     ///   - meters: The distance in meters for both latitude and longitude bounds.
-    func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
-        let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
-        Task { await setPrimaryPosition(region: region, animate: true) }
+    func setRegionBoundMeters(to centerCoordinate: CLLocationCoordinate2D, meters: CLLocationDistance, on type: MapTypes, animate: Bool) {
+        let region: MKCoordinateRegion = .init(center: centerCoordinate, latitudinalMeters: meters, longitudinalMeters: meters)
+        
+        Task {
+            switch type {
+            case .primary:
+                await setPrimaryPosition(region: region, animate: animate)
+            case .secondary:
+                await setSecondaryPosition(region: region, animate: animate)
+            }
+        }
     }
     
     /// Registers a cleanup action to help clear memory related to map styles.

@@ -59,8 +59,8 @@ struct MapView: View {
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
         .mapControlVisibility(mapVM.showMapControls() ? .visible : .hidden)
-        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
-        .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
+        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousPrimaryMapCameraChange($0) }
+        .onMapCameraChange(frequency: .onEnd) { mapVM.onPrimaryMapCameraChangeEnd($0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
         .sheet(isPresented: .constant(true)) { MultipleStopsMapSheetView() }
