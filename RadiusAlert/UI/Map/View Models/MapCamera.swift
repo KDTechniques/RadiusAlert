@@ -46,7 +46,7 @@ extension MapViewModel {
         let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: coordinates)
         
         // Calculate the max distance between coordinates.
-        let distance: CLLocationDistance = Utilities.getMaxDistance(from: coordinates)
+        let distance: CLLocationDistance = Utilities.getDistance(by: .max, from: coordinates)
         
         // Determine the bounds size so both annotations are visible.
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor

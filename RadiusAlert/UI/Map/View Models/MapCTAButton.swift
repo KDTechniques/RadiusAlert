@@ -30,7 +30,7 @@ extension MapViewModel {
     /// Handles the CTA button tap action by deciding whether to start or stop an alert.
     /// Starts an alert if no marker is present; otherwise, prompts user to confirm stopping the alert.
     func triggerCTAButtonAction() {
-        isThereAnyMarkerCoordinate() ? startAlert() : stopAlertConfirmation()
+        isThereAnyMarkerCoordinate() ? stopAlertConfirmation() : startAlert()
     }
     
     /// Prompts the user to confirm stopping the current alert when they select a new search result.
@@ -100,7 +100,7 @@ extension MapViewModel {
         guard
             locationManager.checkLocationPermission(),
             startAlert_ValidateDistance(),
-            let (distance, currentUserLocation): (CLLocationDistance, CLLocationCoordinate2D) = startAlert_GetDistanceNUserLocation(),
+            let distance: CLLocationDistance = startAlert_GetDistance(),
             startAlert_ValidateRadius(distance: distance),
             startAlert_CheckAlwaysAllowPermission() else { return }
         
@@ -108,21 +108,26 @@ extension MapViewModel {
         /// We don't request notification permission at the time of requesting location permission to provide better user experience.
         alertManager.requestNotificationPermission()
         
+        // Set the marker coordinate.
+        guard let markerID: String = addMarkerCoordinate(on: .primary) else { return }
+        
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
-        // Set the marker coordinate and set encapsulated region bounds and then attempt to retrieve directions.
-        addMarkerCoordinate(on: .primary)
-        setInitialDistanceText()
+        // encapsulated region bounds
         setRegionBoundsToUserLocationNMarkers()
+        setInitialDistanceText()
         
-//        startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
-//        guard startAlert_StartMonitoringRegion() else { return }
-//        
-//        startAlert_OnRegionEntry()
-//        startAlert_OnRegionEntryFailure()
-//        locationManager.setLocationAccuracy()
-//        onAlertStartEnded()
+        //Retrieve directions.
+        assignRoute(to: markerID)
+        
+        //        startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
+        //        guard startAlert_StartMonitoringRegion() else { return }
+        //
+        //        startAlert_OnRegionEntry()
+        //        startAlert_OnRegionEntryFailure()
+        //        locationManager.setLocationAccuracy()
+        //        onAlertStartEnded()
     }
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
@@ -157,11 +162,10 @@ extension MapViewModel {
     
     /// Calculate the distance between the map pin { center coordinate } and the current user location.
     /// - Returns: A tuple containing the distance and current user location, or nil if unavailable.
-    private func startAlert_GetDistanceNUserLocation() -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
+    private func startAlert_GetDistance() -> CLLocationDistance? {
         guard
             let mapPinCoordinate: CLLocationCoordinate2D = primaryCenterCoordinate,
-            let currentUserLocation = locationManager.currentUserLocation
-        else {
+            let currentUserLocation = locationManager.currentUserLocation else {
             Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
             return nil
         }
@@ -171,7 +175,7 @@ extension MapViewModel {
             to: currentUserLocation
         )
         
-        return (distance, currentUserLocation)
+        return distance
     }
     
     /// Ensure the selected radius is less than the distance to avoid setting an alert when the user is already inside the radius.

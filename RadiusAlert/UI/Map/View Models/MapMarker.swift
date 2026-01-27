@@ -13,7 +13,7 @@ import MapKit
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    func addMarkerCoordinate(on type: MapTypes) {
+    func addMarkerCoordinate(on type: MapTypes) -> String? {
         let markerCoordinate: CLLocationCoordinate2D? = {
             switch type {
             case .primary:
@@ -32,22 +32,17 @@ extension MapViewModel {
             }
         }()
         
-        guard
-            let markerCoordinate,
-            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        guard let markerCoordinate else { return nil }
         
-        Task {
-            guard let route: MKRoute = await locationManager.getRoute(pointA: userLocation, pointB: markerCoordinate) else { return }
-            
-            let marker: MarkerModel = .init(
-                coordinate: markerCoordinate,
-                radius: radius,
-                route: route,
-                color: .debug
-            )
-            
-            setMarker(marker)
-        }
+        let marker: MarkerModel = .init(
+            coordinate: markerCoordinate,
+            radius: radius,
+            route: nil,
+            color: .debug
+        )
+        
+        addMarker(marker)
+        return marker.id
     }
     
     func setRegionBoundsToUserLocationNMarkers() {

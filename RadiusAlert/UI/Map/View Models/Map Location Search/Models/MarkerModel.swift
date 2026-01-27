@@ -12,6 +12,6 @@ struct MarkerModel: Identifiable {
     var id: String { coordinate.markerID() }
     let coordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
-    let route: MKRoute?
+    var route: MKRoute?
     var color: Color
 }

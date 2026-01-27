@@ -63,10 +63,10 @@ struct Utilities {
         return location1.distance(from: location2)
     }
     
-    static func getMaxDistance(from coordinates: [CLLocationCoordinate2D]) -> CLLocationDistance {
+    static func getDistance(by type: DistanceTypes, from coordinates: [CLLocationCoordinate2D]) -> CLLocationDistance {
         guard coordinates.count >= 2 else { return 0 }
         
-        var maxDistance: CLLocationDistance = 0
+        var result: CLLocationDistance = type == .min ? .greatestFiniteMagnitude : 0
         
         for i in 0..<coordinates.count {
             let location1 = CLLocation(
@@ -82,13 +82,26 @@ struct Utilities {
                 
                 let distance = location1.distance(from: location2)
                 
-                if distance > maxDistance {
-                    maxDistance = distance
+                switch type {
+                case .max:
+                    if distance > result {
+                        result = distance
+                    }
+                    
+                case .min:
+                    if distance < result {
+                        result = distance
+                    }
                 }
             }
         }
         
-        return maxDistance
+        // If min was never updated (should not happen, but safe)
+        if result == .greatestFiniteMagnitude {
+            return 0
+        }
+        
+        return result
     }
     
     static func getCountryCode() -> String? {

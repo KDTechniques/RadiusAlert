@@ -48,19 +48,15 @@ extension MapViewModel {
     }
     
     /// Returns true if the radius slider should be visible, based on marker coordinate and user distance. Also triggers slider visibility change callback.
-    func showRadiusSliderOrDistanceText() -> RadiusSliderOrDistanceTextTypes? {
-        //        let condition1: Bool = isMarkerCoordinateNil()
-        //        let condition2: Bool = isBeyondMinimumDistance()
-        //        let condition3: Bool = multipleStopsMedium == .manual
-        //        let condition4: Bool = distanceText == .zero
-        //
-        //        let boolean: Bool = (condition1 && condition2) || condition3
-        //        onRadiusSliderVisibilityChange(boolean)
-        //
-        //        return boolean
-        //        ? .radiusSlider
-        //        : condition4 ? nil : .distanceText
-        .radiusSlider
+    func showPrimaryRadiusSliderOrDistanceText() -> RadiusSliderOrDistanceTextTypes? {
+        let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition2: Bool = isThereAnyMarkerCoordinate()
+        let condition3: Bool = markers.count == 1
+        
+        let condition4: Bool = condition1 && !condition2 // For Radius Slider
+        let condition5: Bool = condition2 && condition3 // For Distance Text
+        
+        return (condition4 ? .radiusSlider : (condition5 ? .distanceText : nil))
     }
     
     /// Returns true if the floating alert radius text should be shown, based on radius circle visibility.

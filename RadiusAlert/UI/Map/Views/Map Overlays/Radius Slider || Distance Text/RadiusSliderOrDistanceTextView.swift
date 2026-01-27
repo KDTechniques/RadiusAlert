@@ -25,23 +25,13 @@ struct RadiusSliderOrDistanceTextView: View {
     // MARK: - BODY
     var body: some View {
         ZStack(alignment: .trailing) {
-            RadiusSliderView(value: mapVM.primarySelectedRadiusBinding()) { mapVM.onRadiusSliderEditingChanged($0) }
-                .opacity(mapVM.showRadiusSliderOrDistanceText() == .radiusSlider ? 1 : 0)
-                .disabled(mapVM.showRadiusSliderOrDistanceText() != .radiusSlider)
-                .popoverTip(mapVM.radiusSliderTip)
-                .tipImageStyle(colorScheme == .dark ? .secondary : Color(uiColor: .systemGray3))
-                .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
-                    mapVM.onRadiusSliderTipAction()
-                }
-            
-            DistanceTextView(mapVM.distanceText)
-                .opacity(mapVM.showRadiusSliderOrDistanceText() == .distanceText ? 1 : 0)
-                .disabled(mapVM.showRadiusSliderOrDistanceText() != .distanceText)
+            radiusSlider
+            distanceText
         }
         .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
-        .animation(.default, value: mapVM.showRadiusSliderOrDistanceText())
+        .animation(.default, value: mapVM.showPrimaryRadiusSliderOrDistanceText())
     }
 }
 
@@ -72,4 +62,24 @@ struct RadiusSliderOrDistanceTextView: View {
             randomNumber = Double.random(in: 0...300)
         }
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension RadiusSliderOrDistanceTextView {
+    private var radiusSlider: some View {
+        RadiusSliderView(value: mapVM.primarySelectedRadiusBinding()) { mapVM.onRadiusSliderEditingChanged($0) }
+            .opacity(mapVM.showPrimaryRadiusSliderOrDistanceText() == .radiusSlider ? 1 : 0)
+            .disabled(mapVM.showPrimaryRadiusSliderOrDistanceText() != .radiusSlider)
+            .popoverTip(mapVM.radiusSliderTip)
+            .tipImageStyle(colorScheme == .dark ? .secondary : Color(uiColor: .systemGray3))
+            .onReceive(NotificationCenter.default.publisher(for: .radiusSliderTipDidTrigger)) { _ in
+                mapVM.onRadiusSliderTipAction()
+            }
+    }
+    
+    private var distanceText: some View {
+        DistanceTextView(mapVM.distanceText)
+            .opacity(mapVM.showPrimaryRadiusSliderOrDistanceText() == .distanceText ? 1 : 0)
+            .disabled(mapVM.showPrimaryRadiusSliderOrDistanceText() != .distanceText)
+    }
 }

@@ -169,7 +169,7 @@ final class MapViewModel {
         distanceText = value
     }
     
-    func setMarker(_ value: MarkerModel) {
+    func addMarker(_ value: MarkerModel) {
         // Following logic must be isolated to another function except the setter.
         guard !markers.contains(where: { $0.id == value.id }) else { return }
         
@@ -180,6 +180,11 @@ final class MapViewModel {
         }
         
         markers.append(marker)
+    }
+    
+    func updateMarker(at id: String, value: MarkerModel) {
+        guard let index: Int = markers.firstIndex(where: { $0.id == id }) else { return }
+        markers[index] = value
     }
     
     func clearAllMarkers() {
