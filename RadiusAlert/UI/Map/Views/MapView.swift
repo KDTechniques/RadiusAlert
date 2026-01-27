@@ -30,7 +30,7 @@ struct MapView: View {
             // MARK: - Radius Circles
             
             // MARK:  Floating Circle
-            if let centerCoordinate: CLLocationCoordinate2D = mapVM.primaryCenterCoordinate {
+            if let centerCoordinate: CLLocationCoordinate2D = mapVM.primaryCenterCoordinate, mapVM.showPrimaryFloatingCircle() {
                 MapCircle(center: centerCoordinate, radius: mapVM.primarySelectedRadius)
                     .foregroundStyle(.primary.opacity(0.3))
             }
@@ -58,12 +58,12 @@ struct MapView: View {
         }
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
-        .mapControlVisibility(mapVM.showMapControls() ? .visible : .hidden)
+        .mapControlVisibility(mapVM.showPrimaryMapControls() ? .visible : .hidden)
         .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousPrimaryMapCameraChange($0) }
         .onMapCameraChange(frequency: .onEnd) { mapVM.onPrimaryMapCameraChangeEnd($0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
-        .sheet(isPresented: .constant(true)) { MultipleStopsMapSheetView() }
+//        .sheet(isPresented: .constant(true)) { MultipleStopsMapSheetView() }
     }
 }
 

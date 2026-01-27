@@ -25,6 +25,8 @@ struct ContentView: View {
             MapView()
                 .overlay {
                     MapPinView()
+                        .opacity(mapVM.showPrimaryMapPin() ? 1 : 0)
+                        .disabled(!mapVM.showPrimaryMapPin())
                     
                     if mapVM.showFloatingAlertRadiusText() {
                         CircularRadiusTextView(radius: mapVM.primarySelectedRadius)

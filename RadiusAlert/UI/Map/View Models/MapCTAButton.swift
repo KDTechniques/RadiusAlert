@@ -16,22 +16,21 @@ extension MapViewModel {
     /// Returns the foreground color of the CTA button based on marker coordinate availability.
     /// - Returns: Green if no marker is set, red if a marker exists.
     func getCTAButtonForegroundColor() -> Color {
-        isThereAnyMarkerCoordinate() ? .green : .red
+        !isThereAnyMarkerCoordinate() ? .green : .red
     }
     
     /// Returns the background color of the CTA button based on marker coordinate availability.
     /// The color uses a fixed opacity for visual consistency.
     /// - Returns: Semi-transparent green if no marker is set, semi-transparent red if a marker exists.
     func getCTAButtonBackgroundColor() ->  Color {
-//        let opacity: CGFloat = 0.2
-//        return isMarkerCoordinateNil() ? Color.green.opacity(opacity) : Color.red.opacity(opacity)
-            .debug
+        let opacity: CGFloat = 0.2
+        return !isThereAnyMarkerCoordinate() ? Color.green.opacity(opacity) : Color.red.opacity(opacity)
     }
     
     /// Handles the CTA button tap action by deciding whether to start or stop an alert.
     /// Starts an alert if no marker is present; otherwise, prompts user to confirm stopping the alert.
     func triggerCTAButtonAction() {
-//        isMarkerCoordinateNil() ? startAlert() : stopAlertConfirmation()
+        isThereAnyMarkerCoordinate() ? startAlert() : stopAlertConfirmation()
     }
     
     /// Prompts the user to confirm stopping the current alert when they select a new search result.
@@ -113,18 +112,17 @@ extension MapViewModel {
         setInteractionModes([])
         
         // Set the marker coordinate and set encapsulated region bounds and then attempt to retrieve directions.
-//        setMarkerCoordinate()
+        addMarkerCoordinate(on: .primary)
         setInitialDistanceText()
-        setRegionBoundsToUserLocationNMarkerCoordinate()
-//        getRoute()
+        setRegionBoundsToUserLocationNMarkers()
         
-        startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
-        guard startAlert_StartMonitoringRegion() else { return }
-        
-        startAlert_OnRegionEntry()
-        startAlert_OnRegionEntryFailure()
-        locationManager.setLocationAccuracy()
-        onAlertStartEnded()
+//        startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
+//        guard startAlert_StartMonitoringRegion() else { return }
+//        
+//        startAlert_OnRegionEntry()
+//        startAlert_OnRegionEntryFailure()
+//        locationManager.setLocationAccuracy()
+//        onAlertStartEnded()
     }
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.

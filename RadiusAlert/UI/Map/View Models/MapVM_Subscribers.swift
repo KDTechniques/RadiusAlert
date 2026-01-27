@@ -54,4 +54,16 @@ extension MapViewModel {
             }
             .store(in: &cancellables)
     }
+    
+    func primarySelectedRadiusSubscriber() {
+        $primarySelectedRadius$
+            .dropFirst()
+            .map { $0.rounded() }
+            .debounce(for: .nanoseconds(100_000_000), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink { radius in
+                self.setRegionBoundsOnRadius()
+            }
+            .store(in: &cancellables)
+    }
 }

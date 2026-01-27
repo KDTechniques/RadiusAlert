@@ -47,22 +47,6 @@ extension MapViewModel {
         return textWithName
     }
     
-    func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
-//        guard let centerCoordinate else { return nil }
-//        
-//        let condition1: Bool = isMarkerCoordinateNil()
-//        let condition2: Bool = multipleStopsMedium == .manual
-//        
-//        let coordinate: CLLocationCoordinate2D = condition1 ? centerCoordinate : markerCoordinate!
-//        
-//        return condition2 ? centerCoordinate : coordinate
-        primaryCenterCoordinate
-    }
-    
-    func onRadiusChange(_ radius: CLLocationDistance) {
-//        locationManager.selectedRadius = radius
-    }
-    
     func setRegionBoundsOnRadius() {
         guard let primaryCenterCoordinate else { return }
         setRegionBoundMeters(to: primaryCenterCoordinate, meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius), on: .primary, animate: true)
@@ -97,7 +81,6 @@ extension MapViewModel {
     }
     
     func onRadiusSliderEditingChanged(_ isEditing: Bool) {
-        setRadiusSliderActiveState(isEditing)
         invalidateRadiusSliderTip()
     }
     
@@ -115,36 +98,22 @@ extension MapViewModel {
         RadiusSliderTipModel.isSliderVisible = boolean
     }
     
-    func getDistanceToRadius(coordinate1: CLLocationCoordinate2D?, coordinate2: CLLocationCoordinate2D?, radius: CLLocationDistance) -> CLLocationDistance? {
+    func setInitialDistanceText() {
         guard
-            let coordinate1,
-            let coordinate2 else { return nil }
+            let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
+            markers.count == 1,
+            let markerCoordinate: CLLocationCoordinate2D = markers.first?.coordinate else { return }
         
-        let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
-            userCoordinate: coordinate1,
-            markerCoordinate: coordinate2,
-            radius: radius
+        let distance: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: userCoordinate,
+            markerCoordinate: markerCoordinate,
+            radius: primarySelectedRadius
         )
         
-        return distanceToRadius
-    }
-    
-    func setInitialDistanceText() {
-//        guard
-//            let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
-//            let markerCoordinate else { return }
-//        
-//        let distance: CLLocationDistance = Utilities.getDistanceToRadius(
-//            userCoordinate: userCoordinate,
-//            markerCoordinate: markerCoordinate,
-//            radius: selectedRadius
-//        )
-//        
-//        setDistanceText(distance)
+        setDistanceText(distance)
     }
     
     func resetDistanceText() {
         setDistanceText(.zero)
     }
 }
-

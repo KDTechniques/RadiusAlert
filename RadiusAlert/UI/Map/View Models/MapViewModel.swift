@@ -18,6 +18,7 @@ final class MapViewModel {
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
         primarySelectedRadius = mapValues.minimumRadius
+        primarySelectedRadius$ = mapValues.minimumRadius
         secondarySelectedRadius = mapValues.minimumRadius
         initializeMapVM()
     }
@@ -40,9 +41,13 @@ final class MapViewModel {
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
-    private(set) var primarySelectedRadius: CLLocationDistance { didSet { onRadiusChange(primarySelectedRadius) } }
+    
+    private(set) var primarySelectedRadius: CLLocationDistance { didSet { primarySelectedRadius$ = primarySelectedRadius } }
+    @ObservationIgnored @Published private(set) var primarySelectedRadius$: CLLocationDistance
+    
     private(set) var isPrimaryCameraDragging: Bool = false { didSet { isPrimaryCameraDragging$ = isPrimaryCameraDragging } }
     @ObservationIgnored @Published private(set) var isPrimaryCameraDragging$: Bool = false
+    
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     
@@ -53,7 +58,6 @@ final class MapViewModel {
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
-    @ObservationIgnored private(set) var isRadiusSliderActive: Bool = false
     private(set) var recentSearches: [RecentSearchModel] = []
     private(set) var distanceText: CLLocationDistance = .zero
     
@@ -109,11 +113,11 @@ final class MapViewModel {
         isSearchFieldFocused = boolean
     }
     
-    func setPrimaryCenterCoordinate(_ center: CLLocationCoordinate2D) {
+    func setPrimaryCenterCoordinate(_ center: CLLocationCoordinate2D?) {
         primaryCenterCoordinate = center
     }
     
-    func setSecondaryCenterCoordinate(_ center: CLLocationCoordinate2D) {
+    func setSecondaryCenterCoordinate(_ center: CLLocationCoordinate2D?) {
         secondaryCenterCoordinate = center
     }
     
@@ -139,10 +143,6 @@ final class MapViewModel {
     
     func setSelectedSearchResult(_ item: SearchResultModel?) {
         selectedSearchResult = item
-    }
-    
-    func setRadiusSliderActiveState(_ boolean: Bool) {
-        isRadiusSliderActive = boolean
     }
     
     func setSliderHeight(_ value: CGFloat) {
@@ -210,6 +210,7 @@ final class MapViewModel {
         fetchNAssignRecentSearches()
         multipleStopsMedium_IsCameraDraggingSubscriber()
         currentUserLocationSubscriber()
+        primarySelectedRadiusSubscriber()
     }
 }
 

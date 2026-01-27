@@ -13,12 +13,50 @@ import MapKit
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    func setRegionBoundsToUserLocationNMarkerCoordinate(animate: Bool = false) {
-//        guard
-//            let currentLocation = locationManager.currentUserLocation,
-//            let markerCoordinate else { return }
-//        
-//        positionRegionBoundsToMidCoordinate(coordinate1: currentLocation, coordinate2: markerCoordinate, animate: animate)
+    func addMarkerCoordinate(on type: MapTypes) {
+        let markerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
+        guard
+            let markerCoordinate,
+            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        Task {
+            guard let route: MKRoute = await locationManager.getRoute(pointA: userLocation, pointB: markerCoordinate) else { return }
+            
+            let marker: MarkerModel = .init(
+                coordinate: markerCoordinate,
+                radius: radius,
+                route: route,
+                color: .debug
+            )
+            
+            setMarker(marker)
+        }
+    }
+    
+    func setRegionBoundsToUserLocationNMarkers() {
+        guard let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        var coordinates: [CLLocationCoordinate2D] = markers.map({ $0.coordinate })
+        coordinates.append(userLocation)
+        
+        positionRegionBoundsToMidCoordinate(from: coordinates, on: .primary, animate: true)
     }
     
     func isThereAnyMarkerCoordinate() -> Bool {

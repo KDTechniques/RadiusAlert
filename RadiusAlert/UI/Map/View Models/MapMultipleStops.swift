@@ -42,6 +42,5 @@ extension MapViewModel {
     
     func resetMultipleStopsMedium() {
         setMultipleStopsMedium(nil)
-        setRegionBoundsToUserLocationNMarkerCoordinate(animate: true)
     }
 }
