@@ -30,7 +30,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored @Published private(set) var currentUserLocation$: CLLocationCoordinate2D?
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
-    @ObservationIgnored private var regions: Set<RegionModel> = []
+    @ObservationIgnored private(set) var regions: Set<RegionModel> = []
     private let mapValues: MapValues.Type = MapValues.self
     private(set) var currentDistanceMode: LocationDistanceModes?
     private(set) var currentRegionName: String?
@@ -43,6 +43,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func setCurrentRegionName(_ value: String?) {
         currentRegionName = value
+    }
+    
+    func insertRegion(_ value: RegionModel) {
+        regions.insert(value)
     }
     
     // MARK: - DELEGATE FUNCTIONS
@@ -91,7 +95,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     /// Triggered when user enters a monitored circular region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("✅ Entered region: ", region.identifier)
-        guard let action: () -> Void = regions.first(where: { $0.monitor?.identifier == region.identifier })?.onRegionEntry else { return }
+        guard let action: () -> Void = regions.first(where: { $0.id == region.identifier })?.onRegionEntry else { return }
         action()
     }
     
@@ -157,7 +161,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         regions.removeAll()
     }
     
-    func startMonitoringRegion(region: RegionModel) {
+    func startMonitoringRegion(region: RegionModel) -> Bool {
         var region = region
         
         let monitorRegion: CLCircularRegion = .init(center: region.markerCoordinate, radius: region.radius, identifier: region.id)
@@ -165,8 +169,11 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         monitorRegion.notifyOnExit = false
         
         region.monitor = monitorRegion
-        guard let monitor: CLCircularRegion = region.monitor else { return }
+        guard let monitor: CLCircularRegion = region.monitor else { return false }
         manager.startMonitoring(for: monitor)
+        insertRegion(region)
+        
+        return true
     }
     
     /// Stops monitoring the currently active circular region.
@@ -276,5 +283,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
               let currentUserLocation else { return }
         
         getCurrentRegionName(currentUserLocation)
+    }
+    
+    private func removeRegion(for id: String) {
+        guard let region: RegionModel = regions.first(where: { $0.id == id }) else { return }
+        regions.remove(region)
     }
 }

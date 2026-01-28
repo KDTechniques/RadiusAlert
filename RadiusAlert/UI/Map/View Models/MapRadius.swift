@@ -56,21 +56,6 @@ extension MapViewModel {
         return radius * mapValues.radiusToRegionBoundsMetersFactor
     }
     
-    func handleOnRegionEntryAlertFailure() {
-//        // Ensure current distance mode is close, marker coordinate exists, and user location is available
-//        guard
-//            locationManager.currentDistanceMode == .close,
-//            let markerCoordinate,
-//            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
-//        
-//        // Calculate the distance from the user to the marker coordinate
-//        let distance: CLLocationDistance = Utilities.getDistance(from: userLocation, to: markerCoordinate)
-//        // Proceed only if the distance is less than the selected radius
-//        guard distance < selectedRadius else { return }
-//        
-//        onRegionEntry()
-    }
-    
     /// Animates and randomizes the radius slider, then invalidates the tip.
     func onRadiusSliderTipAction() {
         withAnimation {

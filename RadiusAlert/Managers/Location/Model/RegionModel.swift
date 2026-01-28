@@ -8,7 +8,7 @@
 import CoreLocation
 
 struct RegionModel: Hashable {
-    let id: String = UUID().uuidString
+    let id: String
     let markerCoordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
     var monitor: CLCircularRegion?

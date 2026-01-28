@@ -62,7 +62,7 @@ extension MapViewModel {
     /// halting haptics and tones, resetting the map, and clearing alert UI.
     func stopAlert() {
         setInteractionModes([.all])
-//        locationManager.stopMonitoringRegion()
+        //        locationManager.stopMonitoringRegion()
         alertManager.stopHaptic()
         alertManager.stopTone()
         resetMapToCurrentUserLocation(on: .primary)
@@ -75,22 +75,6 @@ extension MapViewModel {
         resetDistanceText()
     }
     
-    func onRegionEntry() {
-        alertManager.sendNotification()
-        generateNSetPopupCardItem()
-        alertManager.playHaptic()
-        Task {
-            if settingsVM.spokenAlertValues.isOnSpokenAlert {
-                await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
-                alertManager.playTone(settingsVM.selectedTone.fileName)
-                settingsVM.setToneVolumeToFade()
-            } else {
-                alertManager.playTone(settingsVM.selectedTone.fileName)
-                settingsVM.setToneVolumeToFade()
-            }
-        }
-    }
-    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Starts and sets a radius alert with all necessary validations and UI updates.
@@ -100,7 +84,7 @@ extension MapViewModel {
         guard
             locationManager.checkLocationPermission(),
             startAlert_ValidateDistance(),
-            let distance: CLLocationDistance = startAlert_GetDistance(),
+            let (distance, userLocation) = startAlert_GetDistance(),
             startAlert_ValidateRadius(distance: distance),
             startAlert_CheckAlwaysAllowPermission() else { return }
         
@@ -121,13 +105,10 @@ extension MapViewModel {
         //Retrieve directions.
         assignRoute(to: markerID)
         
-        //        startAlert_PreparePopupCardItem(currentUserLocation: currentUserLocation)
-        //        guard startAlert_StartMonitoringRegion() else { return }
-        //
-        //        startAlert_OnRegionEntry()
-        //        startAlert_OnRegionEntryFailure()
-        //        locationManager.setLocationAccuracy()
-        //        onAlertStartEnded()
+        startAlert_PreparePopupCardItem(currentUserLocation: userLocation, markerID: markerID)
+        guard startAlert_StartMonitoringRegion(markerID: markerID) else { return }
+        
+        onAlertStartEnded()
     }
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
@@ -162,7 +143,7 @@ extension MapViewModel {
     
     /// Calculate the distance between the map pin { center coordinate } and the current user location.
     /// - Returns: A tuple containing the distance and current user location, or nil if unavailable.
-    private func startAlert_GetDistance() -> CLLocationDistance? {
+    private func startAlert_GetDistance() -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
         guard
             let mapPinCoordinate: CLLocationCoordinate2D = primaryCenterCoordinate,
             let currentUserLocation = locationManager.currentUserLocation else {
@@ -175,7 +156,7 @@ extension MapViewModel {
             to: currentUserLocation
         )
         
-        return distance
+        return (distance, currentUserLocation)
     }
     
     /// Ensure the selected radius is less than the distance to avoid setting an alert when the user is already inside the radius.
@@ -193,55 +174,70 @@ extension MapViewModel {
     /// Prepares and sets up the radius alert card data when the user enters the alert radius.
     /// This method determines the display title and other details for the popup card.
     /// - Parameter currentUserLocation: The user’s current geographic coordinates.
-    private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D) {
-//        if let markerCoordinate {
-//            // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
-//            var coordinateCheck: Bool
-//            var locationTitle: String?
-//            
-//            if let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
-//                coordinateCheck = markerCoordinate.isEqual(to: selectedSearchResultCoordinate)
-//                locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
-//                
-//                print("Match?: ", coordinateCheck)
-//                print("\n\n")
-//            }
-//            
-//            // Create the RadiusAlertModel:
-//            // - If coordinates match, use the search result's name for the title
-//            // - Always store the user's first location, the marker coordinate, and the chosen radius
-//            let radiusAlertItem = RadiusAlertModel(
-//                locationTitle: locationTitle,
-//                firstUserLocation: currentUserLocation,
-//                markerCoordinate: markerCoordinate,
-//                setRadius: selectedRadius
-//            )
-//            
-//            // Save this alert item so it can be displayed when the alert triggers
-//            setRadiusAlertItem(radiusAlertItem)
-//        }
+    private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D, markerID: String) {
+        guard let marker: MarkerModel = markers.first(where: { $0.id == markerID }) else { return }
+        
+        // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
+        var coordinateCheck: Bool
+        var locationTitle: String?
+        
+        if let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
+            coordinateCheck = marker.coordinate.isEqual(to: selectedSearchResultCoordinate)
+            locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
+            
+            print("Match?: ", coordinateCheck)
+            print("\n\n")
+        }
+        
+        // Create the RadiusAlertModel:
+        // - If coordinates match, use the search result's name for the title
+        // - Always store the user's first location, the marker coordinate, and the chosen radius
+        let radiusAlertItem = RadiusAlertModel(
+            locationTitle: locationTitle,
+            firstUserLocation: currentUserLocation,
+            markerCoordinate: marker.coordinate,
+            setRadius: marker.radius
+        )
+        
+        // Save this alert item so it can be displayed when the alert triggers
+        setRadiusAlertItem(radiusAlertItem)
     }
     
     /// Start monitoring the defined region; stops alert if monitoring fails.
     /// - Returns: True if monitoring started successfully; otherwise false.
-    private func startAlert_StartMonitoringRegion() -> Bool {
-//        guard locationManager.startMonitoringRegion(radius: selectedRadius) else {
-//            stopAlert()
-//            Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
-//            return false
-//        }
-//        
-//        return true
-        false
-    }
-    
-    /// Define actions to execute when the user enters the monitored region.
-    private func startAlert_OnRegionEntry() {
+    private func startAlert_StartMonitoringRegion(markerID: String) -> Bool {
+        guard let marker: MarkerModel = getMarkerObject(on: markerID) else { return false}
         
+        let region: RegionModel = .init(
+            id: markerID,
+            markerCoordinate: marker.coordinate,
+            radius: marker.radius) {
+                self.onRegionEntry()
+            }
+        
+        guard locationManager.startMonitoringRegion(region: region) else {
+            stopAlert()
+            Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
+            return false
+        }
+        
+        return true
     }
     
-    private func startAlert_OnRegionEntryFailure() {
-//        locationManager.onRegionEntryFailure = { self.handleOnRegionEntryAlertFailure() }
+    private func onRegionEntry() {
+        alertManager.sendNotification()
+        generateNSetPopupCardItem()
+        alertManager.playHaptic()
+        Task {
+            if settingsVM.spokenAlertValues.isOnSpokenAlert {
+                await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
+                alertManager.playTone(settingsVM.selectedTone.fileName)
+                settingsVM.setToneVolumeToFade()
+            } else {
+                alertManager.playTone(settingsVM.selectedTone.fileName)
+                settingsVM.setToneVolumeToFade()
+            }
+        }
     }
     
     /// Shows a confirmation alert when the user taps the Stop Alert button.

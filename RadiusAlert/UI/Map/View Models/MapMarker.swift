@@ -13,6 +13,10 @@ import MapKit
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
+    func getMarkerObject(on id: String) -> MarkerModel? {
+        return markers.first(where: { $0.id == id })
+    }
+    
     func addMarkerCoordinate(on type: MapTypes) -> String? {
         let markerCoordinate: CLLocationCoordinate2D? = {
             switch type {
@@ -42,6 +46,7 @@ extension MapViewModel {
         )
         
         addMarker(marker)
+        print("Assigned id: ", marker.id)
         return marker.id
     }
     
