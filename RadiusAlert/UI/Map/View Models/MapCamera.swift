@@ -164,7 +164,7 @@ extension MapViewModel {
             let selectedSearchResult,
             selectedSearchResult.doneSetting,
             let primaryCenterCoordinate,
-            radiusAlertItem == nil,
+            radiusAlertItems.isEmpty,
             !primaryCenterCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
         
         // Clear the selected search result because the user moved the map away from it

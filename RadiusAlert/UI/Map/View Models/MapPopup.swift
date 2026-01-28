@@ -14,8 +14,8 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     /// Generates a PopupCardModel with updated radius, duration, and distance
     /// values for the current alert and sets it for display in the UI.
-    func generateNSetPopupCardItem() {
-        guard let item: RadiusAlertModel = radiusAlertItem else { return } // Ensure a valid alert item is available
+    func generateNSetPopupCardItem(for markerID: String) {
+        guard let item: RadiusAlertModel = getRadiusAlertItem(markerID: markerID) else { return } // Ensure the valid alert item is available
         
         let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false) // Format the alert radius for display
         let duration: String = generateDurationText(item.firstDate) // Compute the duration since the alert's first recorded date
@@ -30,6 +30,7 @@ extension MapViewModel {
         
         // Prepare a popup card model with the collected display values
         let popupCardItem: PopupCardModel = .init(
+            markerID: markerID,
             typeNValue: [
                 (.radius, radiusText),
                 (.duration, duration),

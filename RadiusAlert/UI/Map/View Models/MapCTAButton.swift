@@ -30,44 +30,52 @@ extension MapViewModel {
     /// Handles the CTA button tap action by deciding whether to start or stop an alert.
     /// Starts an alert if no marker is present; otherwise, prompts user to confirm stopping the alert.
     func triggerCTAButtonAction() {
-        isThereAnyMarkerCoordinate() ? stopAlertConfirmation() : startAlert()
+        guard isThereAnyMarkerCoordinate() else {
+            startAlert()
+            return
+        }
+        
+        stopAlertConfirmationHandler { stopAlertConfirmation(for: $0) }
     }
     
     /// Prompts the user to confirm stopping the current alert when they select a new search result.
     /// If confirmed, stops the existing alert and sets a new alert at the selected coordinate.
     /// - Parameter item: The selected search completion item representing the new alert location.
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
-        alertManager.showAlert(
-            .stopAlertOnSubmit {
-                self.stopAlert()
-                self.setSearchFieldFocused(false)
-                self.prepareSelectedSearchResultCoordinateOnMap(item)
-                
-            }
-        )
+        stopAlertConfirmationHandler { markerID in
+            alertManager.showAlert(
+                .stopAlertOnSubmit {
+                    self.stopAlert(for: markerID)
+                    self.setSearchFieldFocused(false)
+                    self.prepareSelectedSearchResultCoordinateOnMap(item)
+                }
+            )
+        }
     }
     
     func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
-        alertManager.showAlert(
-            .stopAlertOnSubmit {
-                self.stopAlert()
-                self.setSearchFieldFocused(false)
-                self.prepareSelectedRecentSearchCoordinateOnMap(item)
-                
-            }
-        )
+        stopAlertConfirmationHandler { markerID in
+            alertManager.showAlert(
+                .stopAlertOnSubmit {
+                    self.stopAlert(for: markerID)
+                    self.setSearchFieldFocused(false)
+                    self.prepareSelectedRecentSearchCoordinateOnMap(item)
+                    
+                }
+            )
+        }
     }
     
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
     /// halting haptics and tones, resetting the map, and clearing alert UI.
-    func stopAlert() {
+    func stopAlert(for markerID: String) {
         setInteractionModes([.all])
         //        locationManager.stopMonitoringRegion()
         alertManager.stopHaptic()
         alertManager.stopTone()
         resetMapToCurrentUserLocation(on: .primary)
         clearPopupCardItem()
-        setRadiusAlertItem(nil)
+        stopAlert_RemoveRadiusAlertItem(for: markerID)
         setPopupCardItem(nil)
         setSelectedSearchResult(nil)
         Task { await textToSpeechManager.stopSpeak() }
@@ -193,6 +201,7 @@ extension MapViewModel {
         // - If coordinates match, use the search result's name for the title
         // - Always store the user's first location, the marker coordinate, and the chosen radius
         let radiusAlertItem = RadiusAlertModel(
+            markerID: markerID,
             locationTitle: locationTitle,
             firstUserLocation: currentUserLocation,
             markerCoordinate: marker.coordinate,
@@ -200,7 +209,7 @@ extension MapViewModel {
         )
         
         // Save this alert item so it can be displayed when the alert triggers
-        setRadiusAlertItem(radiusAlertItem)
+        insertRadiusAlertItem(radiusAlertItem)
     }
     
     /// Start monitoring the defined region; stops alert if monitoring fails.
@@ -212,11 +221,11 @@ extension MapViewModel {
             id: markerID,
             markerCoordinate: marker.coordinate,
             radius: marker.radius) {
-                self.onRegionEntry()
+                self.onRegionEntry(markerID: markerID)
             }
         
         guard locationManager.startMonitoringRegion(region: region) else {
-            stopAlert()
+            stopAlert(for: markerID)
             Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
@@ -224,13 +233,14 @@ extension MapViewModel {
         return true
     }
     
-    private func onRegionEntry() {
+    private func onRegionEntry(markerID: String) {
         alertManager.sendNotification()
-        generateNSetPopupCardItem()
+        generateNSetPopupCardItem(for: markerID)
         alertManager.playHaptic()
         Task {
             if settingsVM.spokenAlertValues.isOnSpokenAlert {
-                await settingsVM.spokenAlertSpeakAction(radiusAlertItem)
+                let locationTitle: String? = getRadiusAlertItem(markerID: markerID)?.locationTitle
+                await settingsVM.spokenAlertSpeakAction(with: locationTitle)
                 alertManager.playTone(settingsVM.selectedTone.fileName)
                 settingsVM.setToneVolumeToFade()
             } else {
@@ -242,7 +252,21 @@ extension MapViewModel {
     
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
-    private func stopAlertConfirmation() {
-        alertManager.showAlert(.stopAlertHereConfirmation { self.stopAlert() })
+    private func stopAlertConfirmation(for markerID: String) {
+        alertManager.showAlert(.stopAlertHereConfirmation { self.stopAlert(for: markerID) })
+    }
+    
+    private func stopAlert_RemoveRadiusAlertItem(for markerID: String) {
+        guard let radiusAlertItem: RadiusAlertModel = getRadiusAlertItem(markerID: markerID) else { return }
+        removeRadiusAlertItem(radiusAlertItem)
+    }
+    
+    private func stopAlertConfirmationHandler(_ action: (_ markerID: String) -> Void) {
+        if markers.count == 1 {
+            guard let markerID: String = markers.first?.id else { return }
+            action(markerID)
+        } else {
+            // Present a sheet here to let the user decide which marker to stop!
+        }
     }
 }

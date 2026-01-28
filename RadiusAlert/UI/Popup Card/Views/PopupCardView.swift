@@ -27,7 +27,7 @@ struct PopupCardView: View {
             Divider().padding(.vertical, 10)
             
             PopupCardDetailsView(item: item)
-            PopupCardCTAButtonView()
+            PopupCardCTAButtonView(markerID: item.markerID)
         }
         .padding([.horizontal, .bottom])
         .glassEffectViewModifier

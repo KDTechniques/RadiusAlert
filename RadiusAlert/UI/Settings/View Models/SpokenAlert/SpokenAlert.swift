@@ -15,10 +15,10 @@ extension SettingsViewModel {
         Task { await spokenAlertSpeakAction() }
     }
     
-    func spokenAlertSpeakAction(_ item: RadiusAlertModel? = nil) async {
+    func spokenAlertSpeakAction(with locationTitle: String? = nil) async {
         let text: String = SpokenAlertValues.getPhrase(
             userName: spokenAlertValues.userName,
-            locationTitle: item?.locationTitle ?? nil
+            locationTitle: locationTitle ?? nil
         )
        
         await textToSpeechManager.speak(

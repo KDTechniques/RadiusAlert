@@ -57,7 +57,7 @@ final class MapViewModel {
     private(set) var popupCardItem: PopupCardModel?
     private(set) var sliderHeight: CGFloat?
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
-    @ObservationIgnored private(set) var radiusAlertItem: RadiusAlertModel?
+    @ObservationIgnored private(set) var radiusAlertItems: Set<RadiusAlertModel> = []
     private(set) var recentSearches: [RecentSearchModel] = []
     private(set) var distanceText: CLLocationDistance = .zero
     
@@ -137,8 +137,12 @@ final class MapViewModel {
         popupCardItem = item
     }
     
-    func setRadiusAlertItem(_ item: RadiusAlertModel?) {
-        radiusAlertItem = item
+    func insertRadiusAlertItem(_ item: RadiusAlertModel) {
+        radiusAlertItems.insert(item)
+    }
+    
+    func removeRadiusAlertItem(_ item: RadiusAlertModel) {
+        radiusAlertItems.remove(item)
     }
     
     func setSelectedSearchResult(_ item: SearchResultModel?) {

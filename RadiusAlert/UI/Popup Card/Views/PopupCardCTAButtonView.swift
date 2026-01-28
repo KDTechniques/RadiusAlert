@@ -11,11 +11,17 @@ struct PopupCardCTAButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    let markerID: String
+    
+    // MARK: - INITIALIZER
+    init(markerID: String) {
+        self.markerID = markerID
+    }
     
     // MARK: - BODY
     var body: some View {
         Button {
-            mapVM.stopAlert()
+            mapVM.stopAlert(for: markerID)
         } label: {
             Text("OK")
                 .textTintViewModifier(colorScheme)
@@ -30,7 +36,7 @@ struct PopupCardCTAButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("PopupCardCTAButtonView") {
-    PopupCardCTAButtonView()
+    PopupCardCTAButtonView(markerID: "")
         .padding(.horizontal, 50)
         .previewModifier()
 }
