@@ -17,14 +17,20 @@ struct MarkerModel: Identifiable {
     var color: Color
     
     static var mock: [Self] {
-        let object: Self =  .init(
-            title: UUID().uuidString,
-            coordinate: .init(latitude: .zero, longitude: .zero),
-            radius: Double.random(in: 700...3000),
-            route: nil,
-            color: .debug
-        )
+        var tempArray: [Self] = []
         
-        return .init(repeating: object, count: 10)
+        (0...10).forEach { _ in
+            let object: Self = .init(
+                title: UUID().uuidString,
+                coordinate: .init(latitude: Double.random(in: 0...50), longitude: Double.random(in: 0...50)),
+                radius: Double.random(in: 700...3000),
+                route: nil,
+                color: .debug
+            )
+            
+            tempArray.append(object)
+        }
+        
+        return tempArray
     }
 }

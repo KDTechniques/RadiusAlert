@@ -101,7 +101,7 @@ extension MapViewModel {
         alertManager.requestNotificationPermission()
         
         // Set the marker coordinate.
-        guard let markerID: String = addMarkerCoordinate(on: .primary) else { return }
+        guard let markerID: String = addMarkerCoordinate(from: .primary) else { return }
         
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])

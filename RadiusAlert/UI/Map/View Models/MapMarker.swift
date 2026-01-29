@@ -17,7 +17,7 @@ extension MapViewModel {
         return markers.first(where: { $0.id == id })
     }
     
-    func addMarkerCoordinate(on type: MapTypes) -> String? {
+    func addMarkerCoordinate(from type: MapTypes) -> String? {
         let markerCoordinate: CLLocationCoordinate2D? = {
             switch type {
             case .primary:
@@ -38,7 +38,10 @@ extension MapViewModel {
         
         guard let markerCoordinate else { return nil }
         
+        let title: String? = selectedSearchResult?.result.name
+        
         let marker: MarkerModel = .init(
+            title: title,
             coordinate: markerCoordinate,
             radius: radius,
             route: nil,
@@ -46,7 +49,7 @@ extension MapViewModel {
         )
         
         addMarker(marker)
-        print("Assigned id: ", marker.id)
+        
         return marker.id
     }
     

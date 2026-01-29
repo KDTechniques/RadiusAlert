@@ -59,53 +59,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>193</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>192</string>
-					<key>Timestamp</key>
-					<string>790758295.212039</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/View Models/Map Location Search/MapLocationSearch.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
-</string>
-				<key>leading</key>
-				<string>    ///
-    /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
-</string>
-				<key>trailing</key>
-				<string>        guard let primaryCenterCoordinate else { return }
-        
-        // 1) Zoom out to Initial Region Bounds
-</string>
-			</dict>
-			<key>title</key>
-			<string>There's a problem with the sequence nd timing, too smooth everything we have to wait for the animations to end before executing the next block of code. SO avoid hard coding animation delays using Task.sleep</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>90</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -264,16 +217,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>            // Present a sheet here to let the user decide which marker to stop!
+				<string>    }
 </string>
 				<key>leading</key>
-				<string>            action(markerID)
-        } else {
+				<string>            // Present a sheet here to let the user decide which marker to stop!
+        }
 </string>
 				<key>trailing</key>
-				<string>        }
-    }
-}
+				<string>    
+    private func stopAlert_StopMonitoringRegion(for markerID: String) {
+        guard let region: RegionModel = locationManager.regions.first(where: { $0.markerID == markerID }) else { return }
 </string>
 			</dict>
 			<key>type</key>

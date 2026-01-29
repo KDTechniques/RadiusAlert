@@ -8,27 +8,34 @@
 import SwiftUI
 
 struct MultipleStopsCancellationSheetView: View {
-    // MARKER: INJECTED PROEPRTIES
+    // MARK: INJECTED PROEPRTIES
     @Environment(MapViewModel.self) private var mapVM
     
-    // MARKER: ASSIGNED PROPERTIES
+    // MARK: ASSIGNED PROPERTIES
     let nilTitleText: String = "Unknown Location"
+    
+    let mock: [MarkerModel] =  MarkerModel.mock
     
     // MARK: - BODY
     var body: some View {
         NavigationView {
-            List(MarkerModel.mock) {
-                let radiusText: String = mapVM.getRadiusTextString($0.radius, withAlertRadiusText: false)
-                
-                listRow(color: $0.color, title: $0.title, radius: radiusText)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button("Stop Alert", role: .destructive) {
-                            print("Stop Alert here...")
-                        }
+            Group {
+                if let firstMarkerID: String = mock.first?.id, let lastMarkerID: String = mock.last?.id {
+                    List(mock) { marker in
+                        let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: false)
+                        
+                        listRow(color: marker.color, title: marker.title, radius: radiusText)
+                            .listRowSeparator(marker.id == firstMarkerID ? .hidden : .visible, edges: .top)
+                            .listRowSeparator(marker.id == lastMarkerID ? .hidden : .visible, edges: .bottom)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button("Stop Alert", role: .destructive) {
+                                    print("Stop Alert here...")
+                                }
+                            }
                     }
+                    .listStyle(.plain)
+                }
             }
-            .listStyle(.plain)
-            .presentationDragIndicator(.visible)
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     if #available(iOS 26, *) {
@@ -57,8 +64,11 @@ struct MultipleStopsCancellationSheetView: View {
                     }
                 }
             }
+            .navigationTitle(Text("Your Current Stops"))
+            .navigationBarTitleDisplayMode(.inline)
         }
         .presentationCornerRadius(40)
+        .presentationDragIndicator(.visible)
     }
 }
 
@@ -74,16 +84,20 @@ struct MultipleStopsCancellationSheetView: View {
 extension MultipleStopsCancellationSheetView {
     private func markerCircle(color: Color) -> some View {
         Circle()
-            .fill(color.opacity(0.5))
-            .frame(width: 50, height: 50)
+            .fill(color.opacity(0.2))
+            .frame(width: 60, height: 60)
+            .overlay {
+                Image(systemName: "mappin")
+                    .foregroundStyle(.red)
+            }
     }
     
     private func markerText(title: String, radius: String) -> some View {
         VStack(alignment: .leading) {
-            Text("Homestead High School")
+            Text(title)
                 .fontWeight(.medium)
             
-            Text("700m")
+            Text(radius)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -95,6 +109,5 @@ extension MultipleStopsCancellationSheetView {
             markerText(title: title ?? nilTitleText, radius: radius)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal)
     }
 }
