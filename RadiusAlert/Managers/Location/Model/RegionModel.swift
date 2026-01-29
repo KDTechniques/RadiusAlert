@@ -8,17 +8,17 @@
 import CoreLocation
 
 struct RegionModel: Hashable {
-    let id: String
+    var markerID: String { markerCoordinate.markerID() }
     let markerCoordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
     var monitor: CLCircularRegion?
     let onRegionEntry: () -> Void
     
     static func == (lhs: RegionModel, rhs: RegionModel) -> Bool {
-        lhs.id == rhs.id
+        lhs.markerID == rhs.markerID
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(markerID)
     }
 }

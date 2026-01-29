@@ -95,7 +95,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     /// Triggered when user enters a monitored circular region
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("✅ Entered region: ", region.identifier)
-        guard let action: () -> Void = regions.first(where: { $0.id == region.identifier })?.onRegionEntry else { return }
+        guard let action: () -> Void = regions.first(where: { $0.markerID == region.identifier })?.onRegionEntry else { return }
         action()
     }
     
@@ -164,7 +164,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func startMonitoringRegion(region: RegionModel) -> Bool {
         var region = region
         
-        let monitorRegion: CLCircularRegion = .init(center: region.markerCoordinate, radius: region.radius, identifier: region.id)
+        let monitorRegion: CLCircularRegion = .init(center: region.markerCoordinate, radius: region.radius, identifier: region.markerID)
         monitorRegion.notifyOnEntry = true
         monitorRegion.notifyOnExit = false
         
@@ -285,8 +285,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         getCurrentRegionName(currentUserLocation)
     }
     
-    private func removeRegion(for id: String) {
-        guard let region: RegionModel = regions.first(where: { $0.id == id }) else { return }
+    private func removeRegion(for markerID: String) {
+        guard let region: RegionModel = regions.first(where: { $0.markerID == markerID }) else { return }
         regions.remove(region)
     }
 }

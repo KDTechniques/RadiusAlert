@@ -70,7 +70,7 @@ extension MapViewModel {
     /// halting haptics and tones, resetting the map, and clearing alert UI.
     func stopAlert(for markerID: String) {
         setInteractionModes([.all])
-        //        locationManager.stopMonitoringRegion()
+        stopAlert_StopMonitoringRegion(for: markerID)
         alertManager.stopHaptic()
         alertManager.stopTone()
         resetMapToCurrentUserLocation(on: .primary)
@@ -201,7 +201,6 @@ extension MapViewModel {
         // - If coordinates match, use the search result's name for the title
         // - Always store the user's first location, the marker coordinate, and the chosen radius
         let radiusAlertItem = RadiusAlertModel(
-            markerID: markerID,
             locationTitle: locationTitle,
             firstUserLocation: currentUserLocation,
             markerCoordinate: marker.coordinate,
@@ -218,7 +217,6 @@ extension MapViewModel {
         guard let marker: MarkerModel = getMarkerObject(on: markerID) else { return false}
         
         let region: RegionModel = .init(
-            id: markerID,
             markerCoordinate: marker.coordinate,
             radius: marker.radius) {
                 self.onRegionEntry(markerID: markerID)
@@ -268,5 +266,10 @@ extension MapViewModel {
         } else {
             // Present a sheet here to let the user decide which marker to stop!
         }
+    }
+    
+    private func stopAlert_StopMonitoringRegion(for markerID: String) {
+        guard let region: RegionModel = locationManager.regions.first(where: { $0.markerID == markerID }) else { return }
+        locationManager.stopMonitoringRegion(for: region)
     }
 }
