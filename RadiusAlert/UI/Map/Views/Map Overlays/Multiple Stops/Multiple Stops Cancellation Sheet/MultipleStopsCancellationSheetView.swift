@@ -22,6 +22,7 @@ struct MultipleStopsCancellationSheetView: View {
             Group {
                 if let firstMarkerID: String = mock.first?.id, let lastMarkerID: String = mock.last?.id {
                     List(mock) { marker in
+                        
                         let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: false)
                         
                         listRow(color: marker.color, title: marker.title, radius: radiusText)
@@ -32,7 +33,10 @@ struct MultipleStopsCancellationSheetView: View {
                                     print("Stop Alert here...")
                                 }
                             }
+                        
                     }
+                    .contentMargins(.top, 10, for: .scrollContent)
+                    .contentMargins(.bottom, 80, for: .scrollContent)
                     .listStyle(.plain)
                 }
             }
@@ -43,9 +47,12 @@ struct MultipleStopsCancellationSheetView: View {
                             
                         } label: {
                             Text("Stop All Alerts")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.red)
+                                .padding(.vertical)
+                                .frame(width: Utilities.screenWidth * 0.7)
                         }
-                        .buttonStyle(.glassProminent)
-                        .tint(.red)
+                        .buttonStyle(.plain)
                     } else {
                         Button("Stop All Alerts", role: .destructive) {
                             print("Stops All Alerts here...")

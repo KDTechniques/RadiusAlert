@@ -66,6 +66,17 @@ extension AlertTypes {
                 ]
             )
             
+        case .stopAllAlertsConfirmation(let action):
+            return .init(
+                title: "Are You Sure?",
+                message: "This will stop all the alerts immediately.",
+                hapticType: .warning,
+                actions: [
+                    .init(role: .destructive("OK")) { action() },
+                    .init(role: .cancel)
+                ]
+            )
+            
         case .stopAlertOnSubmit(let action):
             return .init(
                 title: "Stop Existing Radius Alert?",

@@ -27,6 +27,7 @@ enum AlertTypes: CaseIterable, Hashable {
     case alreadyInRadius
     case radiusNotBeyondMinimumDistance
     case stopAlertHereConfirmation(() -> Void)
+    case stopAllAlertsConfirmation(() -> Void)
     case stopAlertOnSubmit(() -> Void)
     case locationPinAlreadyExist(() -> Void)
     case addMultipleStops(search: () -> Void, manual: () -> Void)
@@ -72,6 +73,9 @@ enum AlertTypes: CaseIterable, Hashable {
             
         case .stopAlertHereConfirmation:
             return "Stop Alert Here Confirmation"
+            
+        case .stopAllAlertsConfirmation:
+            return "Stop All Alerts Confirmation"
             
         case .stopAlertOnSubmit:
             return "Stop Alert on Submit"
