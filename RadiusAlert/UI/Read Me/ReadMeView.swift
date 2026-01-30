@@ -49,7 +49,7 @@ struct ReadMeView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             ReadMeView(.constant(true))
-                .presentationCornerRadius(40)
+                .sheetCornerRadiusViewModifier
         }
 }
 

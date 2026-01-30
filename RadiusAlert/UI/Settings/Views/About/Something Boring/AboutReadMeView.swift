@@ -18,7 +18,7 @@ struct AboutReadMeView: View {
         }
         .sheet(isPresented: $isPresented) {
             ReadMeView($isPresented)
-                .presentationCornerRadius(40)
+                .sheetCornerRadiusViewModifier
                 .dynamicTypeSizeViewModifier
         }
     }

@@ -124,6 +124,16 @@ extension View {
             .padding(.bottom, 40)
             .mapBottomTrailingButtonsTrailingPadding
     }
+    
+    @ViewBuilder
+    var sheetCornerRadiusViewModifier: some View {
+        if #available(iOS 26, *) {
+            self
+                .presentationCornerRadius(40)
+        } else {
+            self
+        }
+    }
 }
 
 // MARK: - EXTENSIONS
