@@ -12,53 +12,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>86</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>85</string>
-					<key>Timestamp</key>
-					<string>789586692.550391</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>RadiusAlert/UI/Map/Views/Map Overlays/Bottom Trailing Buttons/Animated Map Bottom Trailing Button/AddPinOrAddMultipleStopsMapBottomTrailingButtonView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>#if DEBUG
-</string>
-				<key>leading</key>
-				<string>            
-        case .addMultipleStops:
-</string>
-				<key>trailing</key>
-				<string>//            Task {
-//                guard
-//                    let currentUserLocation = locationManager.markerCoordinate,
-</string>
-			</dict>
-			<key>title</key>
-			<string>remove the body after debug</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>90</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -149,13 +102,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>146</string>
+					<string>141</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>145</string>
+					<string>140</string>
 					<key>Timestamp</key>
-					<string>791644152.578325</string>
+					<string>791654242.996641</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -196,13 +149,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>269</string>
+					<string>302</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>268</string>
+					<string>301</string>
 					<key>Timestamp</key>
-					<string>791317559.567983</string>
+					<string>791660865.078577</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -221,7 +174,7 @@
 				<string>    }
 </string>
 				<key>leading</key>
-				<string>            // Present a sheet here to let the user decide which marker to stop!
+				<string>            setIsPresentedMultipleStopsCancellationSheet(true)
         }
 </string>
 				<key>trailing</key>

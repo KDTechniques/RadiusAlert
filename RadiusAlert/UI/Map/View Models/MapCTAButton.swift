@@ -31,69 +31,22 @@ extension MapViewModel {
     /// Starts an alert if no marker is present; otherwise, prompts user to confirm stopping the alert.
     func triggerCTAButtonAction() {
         guard isThereAnyMarkerCoordinate() else {
-            startAlert()
+            startAlert(from: .primary)
             return
         }
         
         stopAlertConfirmationHandler { stopAlertConfirmation(for: $0) }
     }
     
-    /// Prompts the user to confirm stopping the current alert when they select a new search result.
-    /// If confirmed, stops the existing alert and sets a new alert at the selected coordinate.
-    /// - Parameter item: The selected search completion item representing the new alert location.
-    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
-        stopAlertConfirmationHandler { markerID in
-            alertManager.showAlert(
-                .stopAlertOnSubmit(viewLevel: .content) {
-                    self.stopAlert(for: markerID)
-                    self.setSearchFieldFocused(false)
-                    self.prepareSelectedSearchResultCoordinateOnMap(item)
-                }
-            )
-        }
-    }
-    
-    func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
-        stopAlertConfirmationHandler { markerID in
-            alertManager.showAlert(
-                .stopAlertOnSubmit(viewLevel: .content) {
-                    self.stopAlert(for: markerID)
-                    self.setSearchFieldFocused(false)
-                    self.prepareSelectedRecentSearchCoordinateOnMap(item)
-                    
-                }
-            )
-        }
-    }
-    
-    /// Stops the active alert by resetting interaction modes, stopping region monitoring,
-    /// halting haptics and tones, resetting the map, and clearing alert UI.
-    func stopAlert(for markerID: String) {
-        setInteractionModes([.all])
-        stopAlert_StopMonitoringRegion(for: markerID)
-        alertManager.stopHaptic()
-        alertManager.stopTone()
-        resetMapToCurrentUserLocation(on: .primary)
-        clearPopupCardItem()
-        stopAlert_RemoveRadiusAlertItem(for: markerID)
-        setPopupCardItem(nil)
-        setSelectedSearchResult(nil)
-        Task { await textToSpeechManager.stopSpeak() }
-        clearMultipleStops()
-        resetDistanceText()
-    }
-    
-    // MARK: - PRIVATE FUNCTIONS
-    
     /// Starts and sets a radius alert with all necessary validations and UI updates.
     /// Performs distance checks, sets marker coordinates, fetches directions, and monitors the region.
-    private func startAlert() {
+    func startAlert(from type: MapTypes) {
         // First go through validations before proceeding.
         guard
             locationManager.checkLocationPermission(),
-            startAlert_ValidateDistance(),
-            let (distance, userLocation) = startAlert_GetDistance(),
-            startAlert_ValidateRadius(distance: distance),
+            startAlert_ValidateDistance(on: type),
+            let (distance, userLocation) = startAlert_GetDistance(on: type),
+            startAlert_ValidateRadius(on: type, distance: distance),
             startAlert_CheckAlwaysAllowPermission() else { return }
         
         // Request local push notification permission if needed
@@ -101,7 +54,7 @@ extension MapViewModel {
         alertManager.requestNotificationPermission()
         
         // Set the marker coordinate.
-        guard let markerID: String = addMarkerCoordinate(from: .primary) else { return }
+        guard let markerID: String = addMarkerCoordinate(from: type) else { return }
         
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
@@ -118,6 +71,56 @@ extension MapViewModel {
         
         onAlertStartEnded()
     }
+    
+    /// Prompts the user to confirm stopping the current alert when they select a new search result.
+    /// If confirmed, stops the existing alert and sets a new alert at the selected coordinate.
+    /// - Parameter item: The selected search completion item representing the new alert location.
+    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
+        stopAlertConfirmationHandler { markerID in
+            alertManager.showAlert(
+                .stopAlertOnSubmit(viewLevel: .content) {
+                    self.stopAlert(for: [markerID])
+                    self.setSearchFieldFocused(false)
+                    self.prepareSelectedSearchResultCoordinateOnMap(item)
+                }
+            )
+        }
+    }
+    
+    func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
+        stopAlertConfirmationHandler { markerID in
+            alertManager.showAlert(
+                .stopAlertOnSubmit(viewLevel: .content) {
+                    self.stopAlert(for: [markerID])
+                    self.setSearchFieldFocused(false)
+                    self.prepareSelectedRecentSearchCoordinateOnMap(item)
+                    
+                }
+            )
+        }
+    }
+    
+    /// Stops the active alert by resetting interaction modes, stopping region monitoring,
+    /// halting haptics and tones, resetting the map, and clearing alert UI.
+    func stopAlert(for markerIDs: [String]) {
+        for id in markerIDs {
+            removeMarker(for: id)
+            stopAlert_StopMonitoringRegion(for: id)
+            stopAlert_RemoveRadiusAlertItem(for: id)
+        }
+        
+        setInteractionModes(markers.isEmpty ? [.all] : [])
+        alertManager.stopHaptic()
+        alertManager.stopTone()
+        positionToInitialUserLocation(on: .primary, animate: true)
+        clearPopupCardItem()
+        setPopupCardItem(nil)
+        setSelectedSearchResult(nil)
+        Task { await textToSpeechManager.stopSpeak() }
+        resetDistanceText()
+    }
+    
+    // MARK: - PRIVATE FUNCTIONS
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
     private func onAlertStartEnded() {
@@ -140,9 +143,27 @@ extension MapViewModel {
     }
     
     /// Validate that the selected radius is beyond the minimum allowed distance.
-    private func startAlert_ValidateDistance() -> Bool {
-        guard isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate) else {
-            alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: .content))
+    private func startAlert_ValidateDistance(on type: MapTypes) -> Bool {
+        let isBeyondMinimumDistanceCondition: Bool = {
+            switch type {
+            case .primary:
+                return isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+            case .secondary:
+                return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
+            }
+        }()
+        
+        let viewLevel: AlertViewLevels = {
+            switch type {
+            case .primary:
+                return .content
+            case .secondary:
+                return .multipleStopsMapSheet
+            }
+        }()
+        
+        guard isBeyondMinimumDistanceCondition else {
+            alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
             return false
         }
         
@@ -151,9 +172,18 @@ extension MapViewModel {
     
     /// Calculate the distance between the map pin { center coordinate } and the current user location.
     /// - Returns: A tuple containing the distance and current user location, or nil if unavailable.
-    private func startAlert_GetDistance() -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
+    private func startAlert_GetDistance(on type: MapTypes) -> (distance: CLLocationDistance, userLocation: CLLocationCoordinate2D)? {
+        let coordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
         guard
-            let mapPinCoordinate: CLLocationCoordinate2D = primaryCenterCoordinate,
+            let mapPinCoordinate: CLLocationCoordinate2D = coordinate,
             let currentUserLocation = locationManager.currentUserLocation else {
             Utilities.log(MapCTAButtonErrorModel.failedToGetDistance.errorDescription)
             return nil
@@ -170,8 +200,8 @@ extension MapViewModel {
     /// Ensure the selected radius is less than the distance to avoid setting an alert when the user is already inside the radius.
     /// - Parameter distance: The distance between center coordinate and current user location.
     /// - Returns: True if the selected radius is less than the distance; otherwise false.
-    private func startAlert_ValidateRadius(distance: CLLocationDistance) -> Bool {
-        guard isSelectedRadiusLessThanDistance(distance: distance) else {
+    private func startAlert_ValidateRadius(on type: MapTypes, distance: CLLocationDistance) -> Bool {
+        guard isSelectedRadiusLessThanDistance(on: type, distance: distance) else {
             Utilities.log(MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription)
             return false
         }
@@ -223,7 +253,6 @@ extension MapViewModel {
             }
         
         guard locationManager.startMonitoringRegion(region: region) else {
-            stopAlert(for: markerID)
             Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
@@ -251,7 +280,11 @@ extension MapViewModel {
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation(for markerID: String) {
-        alertManager.showAlert(.stopSingleAlertConfirmation(viewLevel: .content) { self.stopAlert(for: markerID) })
+        alertManager.showAlert(
+            .stopSingleAlertConfirmation(viewLevel: .content) {
+                self.stopAlert(for: [markerID])
+            }
+        )
     }
     
     private func stopAlert_RemoveRadiusAlertItem(for markerID: String) {
@@ -264,7 +297,7 @@ extension MapViewModel {
             guard let markerID: String = markers.first?.id else { return }
             action(markerID)
         } else {
-            // Present a sheet here to let the user decide which marker to stop!
+            setIsPresentedMultipleStopsCancellationSheet(true)
         }
     }
     

@@ -9,5 +9,6 @@ import Foundation
 
 enum AlertViewLevels {
     case content
+    case multipleStopsMapSheet
     case multipleStopsCancellationSheet
 }

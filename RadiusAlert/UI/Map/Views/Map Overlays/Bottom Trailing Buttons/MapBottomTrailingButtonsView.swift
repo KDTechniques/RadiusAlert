@@ -10,10 +10,11 @@ import SwiftUI
 struct MapBottomTrailingButtonsView: View {
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     @Environment(MapViewModel.self) private var mapVM
+    
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 10) {
-            AddPinOrAddMultipleStopsMapBottomTrailingButtonView()
+            AddPinOrAddMultipleStopsMapBottomTrailingButtonView(type: mapVM.getAddPinOrMultipleStopsType())
             MapStyleButtonView()
         }
         .mapBottomTrailingButtonsViewModifier

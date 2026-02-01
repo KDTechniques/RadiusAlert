@@ -84,23 +84,23 @@ struct MultipleStopsMapSheetView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if #available(iOS 26.0, *) {
-                        Button("Done", role: .confirm) {
-                            
+                        Button("Add", role: .confirm) {
+                            mapVM.startAlert(from: .secondary)
                         }
                     } else {
-                        Button("Done") {
-                            
+                        Button("Add") {
+                            mapVM.startAlert(from: .secondary)
                         }
                     }
                 }
                 
                 ToolbarItem(placement: .topBarLeading) {
                     if #available(iOS 26.0, *) {
-                        Button(role: .cancel) {
+                        Button(role: .close) {
                             mapVM.setIsPresentedMultipleStopsMapSheet(false)
                         }
                     } else {
-                        Button("Cancel") {
+                        Button("Done") {
                             mapVM.setIsPresentedMultipleStopsMapSheet(false)
                         }
                     }
@@ -109,6 +109,7 @@ struct MultipleStopsMapSheetView: View {
             .onChange(of: mapVM.secondarySelectedRadius) {
                 setRegionBoundsOnRadius($1)
             }
+            .alertViewModifier(at: .multipleStopsMapSheet)
             .navigationTitle("Add Another Stop")
             .navigationBarTitleDisplayMode(.inline)
         }

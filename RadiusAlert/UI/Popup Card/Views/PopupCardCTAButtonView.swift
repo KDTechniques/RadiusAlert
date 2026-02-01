@@ -21,7 +21,7 @@ struct PopupCardCTAButtonView: View {
     // MARK: - BODY
     var body: some View {
         Button {
-            mapVM.stopAlert(for: markerID)
+            mapVM.stopAlert(for: [markerID])
         } label: {
             Text("OK")
                 .textTintViewModifier(colorScheme)

@@ -38,6 +38,7 @@ struct MultipleStopsCancellationSheetView: View {
                     .contentMargins(.top, 10, for: .scrollContent)
                     .contentMargins(.bottom, 80, for: .scrollContent)
                     .listStyle(.plain)
+                    .animation(.default, value: markers)
                 }
             }
             .toolbar {

@@ -14,7 +14,8 @@ struct RegionModel: Hashable {
     var monitor: CLCircularRegion?
     let onRegionEntry: () -> Void
     
-    static func == (lhs: RegionModel, rhs: RegionModel) -> Bool {
+    // Implement Equatable manually
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.markerID == rhs.markerID
     }
     

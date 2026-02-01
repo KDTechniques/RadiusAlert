@@ -34,18 +34,6 @@ extension MapViewModel {
             .store(in: &cancellables)
     }
     
-    func multipleStopsMedium_IsCameraDraggingSubscriber() {
-        $multipleStopsMedium$.removeDuplicates()
-            .combineLatest($isPrimaryCameraDragging$.removeDuplicates())
-            .dropFirst()
-            .debounce(for: .nanoseconds(/*60*/3_000_000_000), scheduler: DispatchQueue.main) // 1 min.
-            .sink { medium, isDragging in
-                guard medium == .manual && !isDragging else { return }
-                self.resetMultipleStopsMedium()
-            }
-            .store(in: &cancellables)
-    }
-    
     func currentUserLocationSubscriber() {
         locationManager.$currentUserLocation$
             .compactMap { $0 } // Returns non-optional values because of `Compact Map`. So, no need of `guard let` statements

@@ -13,6 +13,13 @@ struct AddPinOrAddMultipleStopsMapBottomTrailingButtonView: View {
     @Environment(MapViewModel.self) private var mapVM
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
+    let type: AddPinOrAddMultipleStops
+    
+    // MARK: - INITIALIZER
+    init(type: AddPinOrAddMultipleStops) {
+        self.type = type
+    }
+    
     // MARK: - ASSIGNED PROPERTIES
     @State private var alertManager: AlertManager = .shared
     
@@ -42,14 +49,15 @@ struct AddPinOrAddMultipleStopsMapBottomTrailingButtonView: View {
 
 fileprivate struct Preview: View {
     @Environment(MapViewModel.self) private var mapVM
+    @State private var type: AddPinOrAddMultipleStops = .addPin
     
     var body: some View {
-        AddPinOrAddMultipleStopsMapBottomTrailingButtonView()
+        AddPinOrAddMultipleStopsMapBottomTrailingButtonView(type: type)
             .allowsHitTesting(false)
             .overlay {
                 Color.primary.opacity(0.001)
                     .onTapGesture {
-                        mapVM.setAddPinOrAddMultipleStops(mapVM.addPinOrAddMultipleStops == .addPin ? .addMultipleStops : .addPin)
+                        type = (type == .addPin) ? .addMultipleStops : .addPin
                     }
             }
     }
@@ -60,49 +68,37 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
     private var buttonLabel: some View {
         MapControlButtonBackgroundView(size: .init(width: 44, height: 44)) {
             Group {
-                switch mapVM.addPinOrAddMultipleStops {
+                switch type {
                 case .addPin:
-                    Image(systemName: mapVM.addPinOrAddMultipleStops.rawValue)
+                    Image(systemName: type.rawValue)
                         .frame(width: 44, height: 44)
                         .transition(.slide)
                     
                 case .addMultipleStops:
-                    Image(systemName: mapVM.addPinOrAddMultipleStops.rawValue)
+                    Image(systemName: type.rawValue)
                         .frame(width: 44, height: 44)
                         .transition(.slide)
                 }
             }
-            .animation(.bouncy, value: mapVM.addPinOrAddMultipleStops)
+            .animation(.bouncy, value: type)
         }
         .defaultTypeSizeViewModifier
     }
     
     private func buttonAction() {
-        switch mapVM.addPinOrAddMultipleStops {
+        switch type {
         case .addPin:
             locationPinsVM.onAddNewLocationPinButtonTap()
             
         case .addMultipleStops:
-#if DEBUG
-//            Task {
-//                guard
-//                    let currentUserLocation = locationManager.markerCoordinate,
-//                    let centerCoordinate = mapVM.primaryCenterCoordinate,
-//                    let route = await locationManager.getRoute(pointA: currentUserLocation, pointB: centerCoordinate) else { return }
-//                
-//                mapVM.setRoute(route)
-//            }
-            alertManager.showAlert(
+            mapVM.alertManager.showAlert(
                 .addMultipleStops(viewLevel: .content) {
-                    mapVM.handleAddAnotherStopBySearchOnAlert()
+                    // add logic here later...
                 } manual: {
-                    mapVM.handleAddAnotherStopManuallyOnAlert()
+                    mapVM.setIsPresentedMultipleStopsMapSheet(true)
                 }
             )
-            
-#endif
         }
-        
     }
     
     private var nonGlassButton: some View {

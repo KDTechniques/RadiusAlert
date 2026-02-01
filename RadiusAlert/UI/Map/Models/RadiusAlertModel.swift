@@ -15,7 +15,8 @@ struct RadiusAlertModel: Hashable {
     let setRadius: CLLocationDistance
     let firstDate: Date = Date.now
     
-    static func == (lhs: RadiusAlertModel, rhs: RadiusAlertModel) -> Bool {
+    // Implement Equatable manually
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.markerID == rhs.markerID
     }
     

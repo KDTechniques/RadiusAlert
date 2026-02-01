@@ -39,6 +39,7 @@ enum AlertTypes: CaseIterable, Hashable {
         .requestTimedOut(viewLevel: .content),
         .radiusNotBeyondMinimumDistance(viewLevel: .content),
         .stopSingleAlertConfirmation(viewLevel: .content, {}),
+        .stopAllAlertsConfirmation(viewLevel: .content, {}),
         .stopAlertOnSubmit(viewLevel: .content, {}),
         .locationPinAlreadyExist(viewLevel: .content, {}),
         .addMultipleStops(viewLevel: .content, search: {}, manual: {})
@@ -50,7 +51,7 @@ enum AlertTypes: CaseIterable, Hashable {
     }
     
     // Implement Equatable manually
-    static func == (lhs: AlertTypes, rhs: AlertTypes) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
     

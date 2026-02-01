@@ -13,7 +13,7 @@ struct MapControlButtonBackgroundView<T: View>: View {
     let content: T
     
     // MARK: - INITIALIZER
-    init(size: CGSize, _ content: () -> T) {
+    init(size: CGSize, @ViewBuilder _ content: () -> T) {
         self.size = size
         self.content = content()
     }
@@ -46,11 +46,11 @@ struct MapControlButtonBackgroundView<T: View>: View {
             if toggle {
                 Image(systemName: "plus")
                     .frame(width: 44, height: 44)
-                    .transition(.move(edge: .bottom))
+                    .transition(.slide)
             } else {
                 Image(systemName: "pin")
                     .frame(width: 44, height: 44)
-                    .transition(.move(edge: .top))
+                    .transition(.slide)
             }
         }
         .onTapGesture {

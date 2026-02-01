@@ -89,9 +89,27 @@ extension MapViewModel {
     }
     
     /// Checks if the selected radius is less than a given distance. Shows alert and returns false if not.
-    func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
-        guard primarySelectedRadius < distance else {
-            alertManager.showAlert(.alreadyInRadius(viewLevel: .content))
+    func isSelectedRadiusLessThanDistance(on type: MapTypes, distance: CLLocationDistance) -> Bool {
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
+        let viewLevel: AlertViewLevels = {
+            switch type {
+            case .primary:
+                return .content
+            case .secondary:
+                return .multipleStopsMapSheet
+            }
+        }()
+        
+        guard radius < distance else {
+            alertManager.showAlert(.alreadyInRadius(viewLevel: viewLevel))
             return false
         }
         
@@ -127,5 +145,9 @@ extension MapViewModel {
         let condition1: Bool = isThereAnyMarkerCoordinate()
         
         return !condition1
+    }
+    
+    func getAddPinOrMultipleStopsType() -> AddPinOrAddMultipleStops {
+        markers.isEmpty ? .addPin : .addMultipleStops
     }
 }

@@ -45,9 +45,7 @@ final class MapViewModel {
     private(set) var primarySelectedRadius: CLLocationDistance { didSet { primarySelectedRadius$ = primarySelectedRadius } }
     @ObservationIgnored @Published private(set) var primarySelectedRadius$: CLLocationDistance
     
-    private(set) var isPrimaryCameraDragging: Bool = false { didSet { isPrimaryCameraDragging$ = isPrimaryCameraDragging } }
-    @ObservationIgnored @Published private(set) var isPrimaryCameraDragging$: Bool = false
-    
+    private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     
@@ -62,9 +60,6 @@ final class MapViewModel {
     private(set) var distanceText: CLLocationDistance = .zero
     
     // Multiple Stops Map Related
-    private(set) var addPinOrAddMultipleStops: AddPinOrAddMultipleStops = .addPin
-    private(set) var multipleStopsMedium: MultipleStopMediums? { didSet { multipleStopsMedium$ = multipleStopsMedium } }
-    @ObservationIgnored @Published private(set) var multipleStopsMedium$: MultipleStopMediums?
     private(set) var markers: [MarkerModel] = []
     private(set) var secondaryPosition: MapCameraPosition = .automatic
     private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
@@ -163,14 +158,6 @@ final class MapViewModel {
         recentSearches = value
     }
     
-    func setAddPinOrAddMultipleStops(_ value: AddPinOrAddMultipleStops) {
-        addPinOrAddMultipleStops = value
-    }
-    
-    func setMultipleStopsMedium(_ value: MultipleStopMediums?) {
-        multipleStopsMedium = value
-    }
-    
     func setDistanceText(_ value: CLLocationDistance) {
         distanceText = value
     }
@@ -195,10 +182,6 @@ final class MapViewModel {
     
     func removeMarker(for id: String) {
         markers.removeAll(where: { $0.id == id })
-    }
-    
-    func removeAllMarkers() {
-        markers.removeAll()
     }
     
     func setIsPresentedMultipleStopsCancellationSheet(_ value: Bool) {
@@ -231,7 +214,6 @@ final class MapViewModel {
         authorizationStatusSubscriber()
         clearMemoryByMapStyles()
         fetchNAssignRecentSearches()
-        multipleStopsMedium_IsCameraDraggingSubscriber()
         currentUserLocationSubscriber()
         primarySelectedRadiusSubscriber()
     }

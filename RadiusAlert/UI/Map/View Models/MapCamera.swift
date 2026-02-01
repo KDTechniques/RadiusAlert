@@ -81,16 +81,6 @@ extension MapViewModel {
         return .init(get: { self.secondaryPosition }, set: setSecondaryPosition)
     }
     
-    /// Resets the map to the initial region bounds, removing markers and routes.
-    /// The map animates smoothly back to the initial view.
-    func resetMapToCurrentUserLocation(on type: MapTypes) {
-        // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
-        removeAllMarkers()
-        
-        // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
-        positionToInitialUserLocation(on: type, animate: true)
-    }
-    
     /// Handles logic when the map camera changes continuously.
     /// - Parameter context: The camera update context containing the latest camera state.
     func onContinuousPrimaryMapCameraChange(_ context: MapCameraUpdateContext) {

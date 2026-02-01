@@ -8,13 +8,23 @@
 import MapKit
 import SwiftUI
 
-struct MarkerModel: Identifiable {
+struct MarkerModel: Identifiable, Hashable {
     var id: String { coordinate.markerID() }
     let title: String?
     let coordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
     var route: MKRoute?
     var color: Color
+    
+    // Implement Hashable manually
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.id)
+    }
+    
+    // Implement Equatable manually
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
     
     static var mock: [Self] {
         var tempArray: [Self] = []
