@@ -93,7 +93,7 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
 //                mapVM.setRoute(route)
 //            }
             alertManager.showAlert(
-                .addMultipleStops {
+                .addMultipleStops(viewLevel: .content) {
                     mapVM.handleAddAnotherStopBySearchOnAlert()
                 } manual: {
                     mapVM.handleAddAnotherStopManuallyOnAlert()

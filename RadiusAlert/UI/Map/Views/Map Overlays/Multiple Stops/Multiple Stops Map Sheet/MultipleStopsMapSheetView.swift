@@ -97,11 +97,11 @@ struct MultipleStopsMapSheetView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     if #available(iOS 26.0, *) {
                         Button(role: .cancel) {
-                            
+                            mapVM.setIsPresentedMultipleStopsMapSheet(false)
                         }
                     } else {
                         Button("Cancel") {
-                            
+                            mapVM.setIsPresentedMultipleStopsMapSheet(false)
                         }
                     }
                 }

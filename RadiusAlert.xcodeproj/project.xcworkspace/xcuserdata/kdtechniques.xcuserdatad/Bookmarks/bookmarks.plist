@@ -147,15 +147,15 @@
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>21</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>143</string>
+					<string>146</string>
 					<key>StartingColumnNumber</key>
-					<string>21</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>143</string>
+					<string>145</string>
 					<key>Timestamp</key>
-					<string>791314259.977404</string>
+					<string>791644152.578325</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -171,15 +171,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string></string>
+				<string>    func removeRadiusAlertItem(_ item: RadiusAlertModel) {
+</string>
 				<key>leading</key>
 				<string>    }
     
-    func removeRadius</string>
+</string>
 				<key>trailing</key>
-				<string>AlertItem(_ item: RadiusAlertModel) {
-        radiusAlertItems.remove(item)
+				<string>        radiusAlertItems.remove(item)
     }
+    
 </string>
 			</dict>
 			<key>title</key>

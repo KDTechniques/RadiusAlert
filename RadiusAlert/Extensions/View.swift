@@ -30,7 +30,7 @@ extension View {
     /// Handles and presents all alert popups managed by `AlertManager`
     /// throughout the entire app lifecycle.
     @ViewBuilder
-    var alertViewModifier: some View {
+    func alertViewModifier(at level: AlertViewLevels) -> some View {
         let alertManager: AlertManager = .shared
         let firstItem: AlertModel? = alertManager.getFirstAlertItem()
         
@@ -38,7 +38,7 @@ extension View {
             .alert(
                 firstItem?.title ?? "",
                 /// isPresented: get true & false, but only setting false when dismissed by the user.
-                isPresented: alertManager.alertPopupBinding(),
+                isPresented: (level == firstItem?.viewLevel) ? alertManager.alertPopupBinding() : .constant(false),
                 presenting: firstItem,
                 actions: { alert in
                     ForEach(alert.actions) { action in

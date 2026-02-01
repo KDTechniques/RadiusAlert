@@ -21,4 +21,24 @@ extension MapViewModel {
             }
         )
     }
+    
+    func multipleStopsCancellationSheetBinding() -> Binding<Bool> {
+        return .init(
+            get: { self.isPresentedMultipleStopsCancellationSheet },
+            set: {
+                guard self.isPresentedMultipleStopsCancellationSheet != $0 else { return }
+                self.setIsPresentedMultipleStopsCancellationSheet($0)
+            }
+        )
+    }
+    
+    func multipleStopsMapSheetBinding() -> Binding<Bool> {
+        return .init(
+            get: { self.isPresentedMultipleStopsMapSheet },
+            set: {
+                guard self.isPresentedMultipleStopsMapSheet != $0 else { return }
+                self.setIsPresentedMultipleStopsMapSheet($0)
+            }
+        )
+    }
 }

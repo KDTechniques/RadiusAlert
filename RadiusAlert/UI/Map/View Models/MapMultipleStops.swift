@@ -43,4 +43,20 @@ extension MapViewModel {
     func resetMultipleStopsMedium() {
         setMultipleStopsMedium(nil)
     }
+    
+    func handleMultipleStopsSingleCancellation(for markerID: String) {
+        alertManager.showAlert(
+            .stopSingleAlertConfirmation(viewLevel: .multipleStopsCancellationSheet) {
+                self.removeMarker(for: markerID)
+            }
+        )
+    }
+    
+    func handleMultipleStopsCancellation() {
+        alertManager.showAlert(
+            .stopAllAlertsConfirmation(viewLevel: .multipleStopsCancellationSheet) {
+                self.removeAllMarkers()
+            }
+        )
+    }
 }

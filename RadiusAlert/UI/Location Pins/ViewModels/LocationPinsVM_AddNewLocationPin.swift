@@ -18,7 +18,7 @@ extension LocationPinsViewModel {
         let existingItem: LocationPinsModel? = locationPinsArray.first(where: { $0.isSameCoordinate(centerCoordinate) })
         
         if let item: LocationPinsModel = existingItem { // If Item Already Exist, Show An Alert
-            alertManager.showAlert(.locationPinAlreadyExist {
+            alertManager.showAlert(.locationPinAlreadyExist(viewLevel: .content) {
                 self.setLocationPinNavigationPathsArray([item])
                 self.setIsPresentedSavedLocationsSheet(true)
             })

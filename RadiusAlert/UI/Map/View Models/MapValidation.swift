@@ -91,7 +91,7 @@ extension MapViewModel {
     /// Checks if the selected radius is less than a given distance. Shows alert and returns false if not.
     func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
         guard primarySelectedRadius < distance else {
-            alertManager.showAlert(.alreadyInRadius)
+            alertManager.showAlert(.alreadyInRadius(viewLevel: .content))
             return false
         }
         

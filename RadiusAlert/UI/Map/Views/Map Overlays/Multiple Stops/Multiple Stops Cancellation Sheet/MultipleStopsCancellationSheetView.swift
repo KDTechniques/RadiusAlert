@@ -10,14 +10,20 @@ import SwiftUI
 struct MultipleStopsCancellationSheetView: View {
     // MARK: INJECTED PROEPRTIES
     @Environment(MapViewModel.self) private var mapVM
+    let markers: [MarkerModel]
+    
+    // MARK: - INITIALIZER
+    init(markers: [MarkerModel]) {
+        self.markers = markers
+    }
     
     // MARK: - BODY
     var body: some View {
         NavigationView {
             Group {
-                if let firstMarkerID: String = mapVM.markers.first?.id,
-                   let lastMarkerID: String = mapVM.markers.last?.id {
-                    List(mapVM.markers) { marker in
+                if let firstMarkerID: String = markers.first?.id,
+                   let lastMarkerID: String = markers.last?.id {
+                    List(markers) { marker in
                         let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: false)
                         
                         MultipleStopsCancellationSheetListRowView(
@@ -27,11 +33,7 @@ struct MultipleStopsCancellationSheetView: View {
                         )
                         .listRowSeparator(marker.id == firstMarkerID ? .hidden : .visible, edges: .top)
                         .listRowSeparator(marker.id == lastMarkerID ? .hidden : .visible, edges: .bottom)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button("Stop Alert", role: .destructive) {
-                                print("Stop Alert here...")
-                            }
-                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) { swipeActionButton(marker.id) }
                     }
                     .contentMargins(.top, 10, for: .scrollContent)
                     .contentMargins(.bottom, 80, for: .scrollContent)
@@ -45,6 +47,7 @@ struct MultipleStopsCancellationSheetView: View {
             .navigationTitle(Text("Your Current Stops"))
             .navigationBarTitleDisplayMode(.inline)
         }
+        .alertViewModifier(at: .multipleStopsCancellationSheet)
         .sheetCornerRadiusViewModifier
         .presentationDragIndicator(.visible)
     }
@@ -54,7 +57,7 @@ struct MultipleStopsCancellationSheetView: View {
 #Preview("MultipleStopsCancellationSheetView") {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            MultipleStopsCancellationSheetView()
+            MultipleStopsCancellationSheetView(markers: MarkerModel.mock)
         }
         .previewModifier()
 }
@@ -65,7 +68,7 @@ extension MultipleStopsCancellationSheetView {
         ToolbarItem(placement: .bottomBar) {
             if #available(iOS 26, *) {
                 Button(role: .destructive) {
-                    // action goes here...
+                    mapVM.handleMultipleStopsCancellation()
                 } label: {
                     Text("Stop All Alerts")
                         .fontWeight(.semibold)
@@ -76,7 +79,7 @@ extension MultipleStopsCancellationSheetView {
                 .buttonStyle(.plain)
             } else {
                 Button("Stop All Alerts", role: .destructive) {
-                    // action goes here...
+                    mapVM.handleMultipleStopsCancellation()
                 }
                 .tint(.red)
                 .fontWeight(.semibold)
@@ -89,13 +92,19 @@ extension MultipleStopsCancellationSheetView {
         ToolbarItem(placement: .topBarTrailing) {
             if #available(iOS 26, *) {
                 Button(role: .close) {
-                    // action goes here...
+                    mapVM.setIsPresentedMultipleStopsCancellationSheet(false)
                 }
             } else {
                 Button("Dismiss", role: .cancel) {
-                    // action goes here...
+                    mapVM.setIsPresentedMultipleStopsCancellationSheet(false)
                 }
             }
+        }
+    }
+    
+    private func swipeActionButton(_ markerID: String) -> some View {
+        Button("Stop Alert", role: .destructive) {
+            mapVM.handleMultipleStopsSingleCancellation(for: markerID)
         }
     }
 }

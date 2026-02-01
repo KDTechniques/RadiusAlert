@@ -41,9 +41,25 @@ struct ContentView: View {
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons } }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons }
+                    
+#if DEBUG
+                    ToolbarItem(placement: .topBarLeading) {
+                        HStack {
+                            Button("Map Sheet") {
+                                mapVM.setIsPresentedMultipleStopsMapSheet(true)
+                            }
+                            
+                            Button("Cancellation Sheet") {
+                                mapVM.setIsPresentedMultipleStopsCancellationSheet(true)
+                            }
+                        }
+                    }
+#endif
+                }
         }
-        .alertViewModifier
+        .alertViewModifier(at: .content)
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
         .onAppear { mapVM.positionToInitialUserLocation(on: .primary, animate: true) }

@@ -63,7 +63,8 @@ struct MapView: View {
         .onMapCameraChange(frequency: .onEnd) { mapVM.onPrimaryMapCameraChangeEnd($0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
-//        .sheet(isPresented: .constant(true)) { MultipleStopsMapSheetView() }
+        .sheet(isPresented: mapVM.multipleStopsMapSheetBinding()) { MultipleStopsMapSheetView() }
+        .sheet(isPresented: mapVM.multipleStopsCancellationSheetBinding()) { MultipleStopsCancellationSheetView(markers: MarkerModel.mock) }
     }
 }
 

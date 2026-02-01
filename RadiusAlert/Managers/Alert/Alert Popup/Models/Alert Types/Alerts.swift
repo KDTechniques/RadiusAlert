@@ -10,16 +10,18 @@ import Foundation
 extension AlertTypes {
     var alert: AlertModel {
         switch  self {
-        case .noConnection:
+        case .noConnection(let viewLevel):
             return .init(
+                viewLevel: viewLevel,
                 title: "No Internet Connection",
                 message: "Please check your internet connection and try again.",
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
             )
             
-        case .requestTimedOut:
+        case .requestTimedOut(let viewLevel):
             return .init(
+                viewLevel: viewLevel,
                 title: "Search Request Timed out",
                 message: "Your internet connection seems slow. Please check your connection and try again.",
                 hapticType: .warning,
@@ -29,8 +31,9 @@ extension AlertTypes {
                 ]
             )
             
-        case .locationPermissionDenied:
+        case .locationPermissionDenied(let viewLevel):
             return .init(
+                viewLevel: viewLevel,
                 title: "Location Permission Required",
                 message: "This app cannot work correctly without location access set to 'Always Allow'. Please enable it in Settings to continue.",
                 hapticType: .warning,
@@ -39,24 +42,27 @@ extension AlertTypes {
                 ]
             )
             
-        case .alreadyInRadius:
+        case .alreadyInRadius(let viewLevel):
             return .init(
+                viewLevel: viewLevel,
                 title: "Already Within Radius",
                 message: "Please reduce the radius to set a meaningful alert.",
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
             )
             
-        case .radiusNotBeyondMinimumDistance:
+        case .radiusNotBeyondMinimumDistance(let viewLevel):
             return .init(
+                viewLevel: viewLevel,
                 title: "Too Close to Set Alert",
                 message: "The alert radius must be set at least 1km ahead of your current location.",
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
             )
             
-        case .stopAlertHereConfirmation(let action):
+        case .stopSingleAlertConfirmation(let viewLevel, let action):
             return .init(
+                viewLevel: viewLevel,
                 title: "Are You Sure?",
                 message: "This will stop the alert immediately.",
                 hapticType: .warning,
@@ -66,8 +72,9 @@ extension AlertTypes {
                 ]
             )
             
-        case .stopAllAlertsConfirmation(let action):
+        case .stopAllAlertsConfirmation(let viewLevel, let action):
             return .init(
+                viewLevel: viewLevel,
                 title: "Are You Sure?",
                 message: "This will stop all the alerts immediately.",
                 hapticType: .warning,
@@ -77,8 +84,9 @@ extension AlertTypes {
                 ]
             )
             
-        case .stopAlertOnSubmit(let action):
+        case .stopAlertOnSubmit(let viewLevel, let action):
             return .init(
+                viewLevel: viewLevel,
                 title: "Stop Existing Radius Alert?",
                 message: "You already have a radius alert set. Do you want to stop it to set a new radius alert?",
                 hapticType: .warning,
@@ -88,8 +96,9 @@ extension AlertTypes {
                 ]
             )
             
-        case .locationPinAlreadyExist(let action):
+        case .locationPinAlreadyExist(let viewLevel, let action):
             return .init(
+                viewLevel: viewLevel,
                 title: "Location Already Pinned",
                 message: "You may update the existing pin if needed.",
                 hapticType: .warning,
@@ -99,8 +108,9 @@ extension AlertTypes {
                 ]
             )
             
-        case .addMultipleStops(let searchAction, let manualAction):
+        case .addMultipleStops(let viewLevel, let searchAction, let manualAction):
             return .init(
+                viewLevel: viewLevel,
                 title: "Add Another Stop By:",
                 hapticType: .light,
                 actions: [

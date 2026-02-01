@@ -236,7 +236,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func checkLocationPermission() -> Bool {
         switch manager.authorizationStatus {
         case .denied, .restricted, .authorizedWhenInUse :
-            alertManager.showAlert(.locationPermissionDenied)
+            alertManager.showAlert(.locationPermissionDenied(viewLevel: .content))
             return false
             
         default:

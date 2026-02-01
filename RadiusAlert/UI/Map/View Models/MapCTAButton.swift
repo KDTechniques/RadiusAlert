@@ -44,7 +44,7 @@ extension MapViewModel {
     func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
         stopAlertConfirmationHandler { markerID in
             alertManager.showAlert(
-                .stopAlertOnSubmit {
+                .stopAlertOnSubmit(viewLevel: .content) {
                     self.stopAlert(for: markerID)
                     self.setSearchFieldFocused(false)
                     self.prepareSelectedSearchResultCoordinateOnMap(item)
@@ -56,7 +56,7 @@ extension MapViewModel {
     func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
         stopAlertConfirmationHandler { markerID in
             alertManager.showAlert(
-                .stopAlertOnSubmit {
+                .stopAlertOnSubmit(viewLevel: .content) {
                     self.stopAlert(for: markerID)
                     self.setSearchFieldFocused(false)
                     self.prepareSelectedRecentSearchCoordinateOnMap(item)
@@ -132,7 +132,7 @@ extension MapViewModel {
     /// - Returns: `true` if permission is granted as `.authorizedAlways`, otherwise `false`.
     private func startAlert_CheckAlwaysAllowPermission() -> Bool {
         guard locationManager.authorizationStatus == .authorizedAlways else {
-            alertManager.showAlert(.locationPermissionDenied)
+            alertManager.showAlert(.locationPermissionDenied(viewLevel: .content))
             return false
         }
         
@@ -142,7 +142,7 @@ extension MapViewModel {
     /// Validate that the selected radius is beyond the minimum allowed distance.
     private func startAlert_ValidateDistance() -> Bool {
         guard isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate) else {
-            alertManager.showAlert(.radiusNotBeyondMinimumDistance)
+            alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: .content))
             return false
         }
         
@@ -251,7 +251,7 @@ extension MapViewModel {
     /// Shows a confirmation alert when the user taps the Stop Alert button.
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation(for markerID: String) {
-        alertManager.showAlert(.stopAlertHereConfirmation { self.stopAlert(for: markerID) })
+        alertManager.showAlert(.stopSingleAlertConfirmation(viewLevel: .content) { self.stopAlert(for: markerID) })
     }
     
     private func stopAlert_RemoveRadiusAlertItem(for markerID: String) {

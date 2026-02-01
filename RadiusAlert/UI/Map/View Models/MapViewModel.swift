@@ -70,6 +70,8 @@ final class MapViewModel {
     private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
     private(set) var secondarySelectedRadius: CLLocationDistance
     private(set) var isSecondaryCameraDragging: Bool = false
+    private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false
+    private(set) var isPresentedMultipleStopsMapSheet: Bool = false
     
     // MARK: - SETTERS
     
@@ -191,8 +193,20 @@ final class MapViewModel {
         markers[index] = value
     }
     
-    func clearAllMarkers() {
+    func removeMarker(for id: String) {
+        markers.removeAll(where: { $0.id == id })
+    }
+    
+    func removeAllMarkers() {
         markers.removeAll()
+    }
+    
+    func setIsPresentedMultipleStopsCancellationSheet(_ value: Bool) {
+        isPresentedMultipleStopsCancellationSheet = value
+    }
+    
+    func setIsPresentedMultipleStopsMapSheet(_ value: Bool) {
+        isPresentedMultipleStopsMapSheet = value
     }
     
     // MARK: - PUBLIC FUNCTIONS

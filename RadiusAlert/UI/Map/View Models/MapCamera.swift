@@ -85,7 +85,7 @@ extension MapViewModel {
     /// The map animates smoothly back to the initial view.
     func resetMapToCurrentUserLocation(on type: MapTypes) {
         // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
-        clearAllMarkers()
+        removeAllMarkers()
         
         // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
         positionToInitialUserLocation(on: type, animate: true)

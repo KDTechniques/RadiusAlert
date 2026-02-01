@@ -21,27 +21,27 @@ import SwiftUI
 /// let alertModel = alertType.alert
 /// ```
 enum AlertTypes: CaseIterable, Hashable {
-    case noConnection
-    case requestTimedOut
-    case locationPermissionDenied
-    case alreadyInRadius
-    case radiusNotBeyondMinimumDistance
-    case stopAlertHereConfirmation(() -> Void)
-    case stopAllAlertsConfirmation(() -> Void)
-    case stopAlertOnSubmit(() -> Void)
-    case locationPinAlreadyExist(() -> Void)
-    case addMultipleStops(search: () -> Void, manual: () -> Void)
+    case noConnection(viewLevel: AlertViewLevels)
+    case requestTimedOut(viewLevel: AlertViewLevels)
+    case locationPermissionDenied(viewLevel: AlertViewLevels)
+    case alreadyInRadius(viewLevel: AlertViewLevels)
+    case radiusNotBeyondMinimumDistance(viewLevel: AlertViewLevels)
+    case stopSingleAlertConfirmation(viewLevel: AlertViewLevels, () -> Void)
+    case stopAllAlertsConfirmation(viewLevel: AlertViewLevels, () -> Void)
+    case stopAlertOnSubmit(viewLevel: AlertViewLevels, () -> Void)
+    case locationPinAlreadyExist(viewLevel: AlertViewLevels, () -> Void)
+    case addMultipleStops(viewLevel: AlertViewLevels, search: () -> Void, manual: () -> Void)
     
     static var allCases: [AlertTypes] = [
-        .alreadyInRadius,
-        .locationPermissionDenied,
-        .noConnection,
-        .requestTimedOut,
-        .radiusNotBeyondMinimumDistance,
-        .stopAlertHereConfirmation({}),
-        .stopAlertOnSubmit({}),
-        .locationPinAlreadyExist({}),
-        .addMultipleStops(search: {}, manual: {})
+        .alreadyInRadius(viewLevel: .content),
+        .locationPermissionDenied(viewLevel: .content),
+        .noConnection(viewLevel: .content),
+        .requestTimedOut(viewLevel: .content),
+        .radiusNotBeyondMinimumDistance(viewLevel: .content),
+        .stopSingleAlertConfirmation(viewLevel: .content, {}),
+        .stopAlertOnSubmit(viewLevel: .content, {}),
+        .locationPinAlreadyExist(viewLevel: .content, {}),
+        .addMultipleStops(viewLevel: .content, search: {}, manual: {})
     ]
     
     // Implement Hashable manually
@@ -71,8 +71,8 @@ enum AlertTypes: CaseIterable, Hashable {
         case .radiusNotBeyondMinimumDistance:
             return "Radius Not Beyond Minimum Distance"
             
-        case .stopAlertHereConfirmation:
-            return "Stop Alert Here Confirmation"
+        case .stopSingleAlertConfirmation:
+            return "Stop Single Alert Confirmation"
             
         case .stopAllAlertsConfirmation:
             return "Stop All Alerts Confirmation"
