@@ -47,12 +47,11 @@ struct MultipleStopsMapSheetView: View {
                 }
                 
                 // MARK: - Routes
-                let routes: [MKRoute] = mapVM.markers.compactMap { $0.route }
-                ForEach(routes, id: \.self) { route in
-                    let isFirst: Bool = routes.first == route
-                    
-                    MapPolyline(route)
-                        .stroke(isFirst ? .pink : Color.debug, lineWidth: 3)
+                ForEach(mapVM.markers) { marker in
+                    if let route: MKRoute = marker.route {
+                        MapPolyline(route)
+                            .stroke(marker.color, lineWidth: 3)
+                    }
                 }
             }
             .mapControls { mapControls }

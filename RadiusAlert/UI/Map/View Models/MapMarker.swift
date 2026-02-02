@@ -7,6 +7,7 @@
 
 import CoreLocation
 import MapKit
+import SwiftUI
 
 // MARK: MAP MARKER
 
@@ -45,7 +46,7 @@ extension MapViewModel {
             coordinate: markerCoordinate,
             radius: radius,
             route: nil,
-            color: .debug
+            color: markers.isEmpty ? .pink : .debug
         )
         
         addMarker(marker)
