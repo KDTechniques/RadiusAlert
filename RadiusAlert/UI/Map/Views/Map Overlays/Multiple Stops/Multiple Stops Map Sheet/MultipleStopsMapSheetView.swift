@@ -43,7 +43,16 @@ struct MultipleStopsMapSheetView: View {
                 // MARK: - Markers
                 ForEach(mapVM.markers) { marker in
                     let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: true)
-                    Marker(radiusText, coordinate: marker.coordinate)
+                    Group {
+                        if mapVM.markers.count == 1 {
+                            Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
+                        } else if let number: Int = mapVM.getMarkerNumber(for: marker.id) {
+                            Marker(radiusText, monogram: Text("\(number)"), coordinate: marker.coordinate)
+                        } else {
+                            Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
+                        }
+                    }
+                    .tint(marker.color.gradient)
                 }
                 
                 // MARK: - Routes

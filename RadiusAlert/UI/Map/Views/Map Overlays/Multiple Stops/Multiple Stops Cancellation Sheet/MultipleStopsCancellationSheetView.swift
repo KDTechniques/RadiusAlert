@@ -28,6 +28,7 @@ struct MultipleStopsCancellationSheetView: View {
                         
                         MultipleStopsCancellationSheetListRowView(
                             color: marker.color,
+                            number: mapVM.getMarkerNumber(for: marker.id),
                             title: marker.title,
                             radius: radiusText
                         )

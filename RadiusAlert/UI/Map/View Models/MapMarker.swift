@@ -66,4 +66,11 @@ extension MapViewModel {
     func isThereAnyMarkerCoordinate() -> Bool {
         return !markers.isEmpty
     }
+    
+    func getMarkerNumber(for markerID: String) -> Int? {
+        guard let index: Int = markers.firstIndex(where: { $0.id == markerID }) else { return nil }
+        
+        let number: Int = index + 1
+        return number
+    }
 }

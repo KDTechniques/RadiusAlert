@@ -171,16 +171,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>    }
+				<string>            setIsPresentedMultipleStopsCancellationSheet(true)
 </string>
 				<key>leading</key>
-				<string>            setIsPresentedMultipleStopsCancellationSheet(true)
-        }
+				<string>            action(markerID)
+        } else {
 </string>
 				<key>trailing</key>
-				<string>    
-    private func stopAlert_StopMonitoringRegion(for markerID: String) {
-        guard let region: RegionModel = locationManager.regions.first(where: { $0.markerID == markerID }) else { return }
+				<string>        }
+    }
+    
 </string>
 			</dict>
 			<key>type</key>
