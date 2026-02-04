@@ -258,7 +258,7 @@ extension MapViewModel {
             Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
-        
+
         return true
     }
     

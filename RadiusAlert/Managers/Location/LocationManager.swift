@@ -23,6 +23,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         manager.startUpdatingLocation()
+        
+        for region in manager.monitoredRegions {
+            manager.stopMonitoring(for: region)
+        }
     }
     
     // MARK: - ASSIGNED PROPERTIES
@@ -151,15 +155,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func stopMonitoringAllRegions() {
-        for region in regions {
-            guard let monitor = region.monitor else { return }
-            manager.stopMonitoring(for: monitor)
-        }
-        
-        regions.removeAll()
-    }
-    
     func startMonitoringRegion(region: RegionModel) -> Bool {
         var region = region
         
@@ -172,6 +167,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.startMonitoring(for: monitor)
         insertRegion(region)
         
+        print("monitored regions count: ", manager.monitoredRegions.count)
+        print("monitored regions:\n")
+        for monitoredRegion in manager.monitoredRegions {
+            print("\(monitoredRegion.description)\n")
+        }
+        print("Regions count: ", regions.count)
+        
         return true
     }
     
@@ -180,6 +182,15 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard let monitor: CLCircularRegion = region.monitor else { return }
         manager.stopMonitoring(for: monitor)
         regions.remove(region)
+    }
+    
+    func stopMonitoringAllRegions() {
+        for region in regions {
+            guard let monitor = region.monitor else { return }
+            manager.stopMonitoring(for: monitor)
+        }
+        
+        regions.removeAll()
     }
     
     /// Dynamically adjusts location accuracy and update frequency
