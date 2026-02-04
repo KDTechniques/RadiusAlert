@@ -15,6 +15,9 @@ extension MapViewModel {
     /// Generates a PopupCardModel with updated radius, duration, and distance
     /// values for the current alert and sets it for display in the UI.
     func generateNSetPopupCardItem(for markerID: String) {
+        // Get rid of any overlapping popup card items if exist and stop monitoring regions for them
+        handleOverlappingRadiusAlertItems(without: markerID)
+        
         guard let item: RadiusAlertModel = getRadiusAlertItem(markerID: markerID) else { return } // Ensure the valid alert item is available
         
         let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false) // Format the alert radius for display
@@ -75,6 +78,13 @@ extension MapViewModel {
         }
         
         return duration
+    }
+    
+    private func handleOverlappingRadiusAlertItems(without markerID: String) {
+        var didEnterRegionMarkerIDs: [String] = locationManager.regions.filter({ $0.didEnterRegion == true }).map({ $0.markerID })
+        didEnterRegionMarkerIDs.removeAll(where: { $0 == markerID }) // Remove the did enter region marker ids without the current one.
+        
+        stopAlert(for: didEnterRegionMarkerIDs)
     }
 }
 

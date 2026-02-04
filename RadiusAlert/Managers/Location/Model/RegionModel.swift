@@ -12,6 +12,7 @@ struct RegionModel: Hashable {
     let markerCoordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
     var monitor: CLCircularRegion?
+    var didEnterRegion: Bool = false
     let onRegionEntry: () -> Void
     
     // Implement Equatable manually
