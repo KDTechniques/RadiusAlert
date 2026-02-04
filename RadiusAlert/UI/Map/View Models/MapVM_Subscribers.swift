@@ -16,7 +16,7 @@ extension MapViewModel {
             // Updates authorization state and may reposition the map if authorized.
             .sink {
                 // Updates internal state based on current authorization status.
-                self.set_IsAuthorizedToGetMapCameraUpdate($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
+                self.setIsAuthorizedToGetMapCameraUpdate($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
                 
                 // Skips map update if not authorized.
                 guard self.isAuthorizedToGetMapCameraUpdate else { return }

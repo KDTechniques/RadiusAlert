@@ -45,6 +45,17 @@ extension MapViewModel {
         )
     }
     
+    func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
+        alertManager.showAlert(
+            .stopAlertOnSubmit {
+                self.stopAlert()
+                self.setSearchFieldFocused(false)
+                self.prepareSelectedRecentSearchCoordinateOnMap(item)
+                
+            }
+        )
+    }
+    
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
     /// halting haptics and tones, resetting the map, and clearing alert UI.
     func stopAlert() {

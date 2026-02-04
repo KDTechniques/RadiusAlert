@@ -21,8 +21,8 @@ struct TopSafeAreaView: View {
         VStack(spacing: 0) {
             SearchBarSwiftUIView()
             horizontalLocationPins
-            Divider()
-            SearchResultsListView()
+            divider
+            SearchListContentView()
         }
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
@@ -46,5 +46,10 @@ extension TopSafeAreaView {
         if locationPinsVM.showScrollableHorizontalLocationPins() {
             HorizontalLocationPinsView()
         }
+    }
+    
+    private var divider: some View {
+        Divider()
+            .opacity(mapVM.showTopSafeAreaDivider() ? 1 : 0)
     }
 }

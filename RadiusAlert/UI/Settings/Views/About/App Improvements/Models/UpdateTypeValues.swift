@@ -13,6 +13,7 @@ struct UpdateTypeValues: Identifiable {
     let description: String
     
     static let whatsNew: [Self] = [
+        .init(emoji: "🔍", description: "Recent location searches for faster access"),
         .init(emoji: "🙊", description: "Text-to-Speech for your set destinations in the popup"),
         .init(emoji: "📍", description: "Saved pins for quick access to frequent stops"),
         .init(emoji: "🎚️", description: "After the selected duration, the alert tone automatically fades to 50% of the iPhone’s volume."),
@@ -22,7 +23,6 @@ struct UpdateTypeValues: Identifiable {
     static let futureUpdates: [Self] = [
         .init(emoji: "🗺️", description: "Smarter map handling with static snapshots to save memory"),
         .init(emoji: "➕", description: "Add multiple stops and view distances between them"),
-        .init(emoji: "🔍", description: "Improved search bar with suggestions before results"),
         .init(emoji: "⚡", description: "Optimized background performance"),
         .init(emoji: "📖", description: "Past activity history"),
         .init(emoji: "📊", description: "SwiftUI Charts to track daily routines and trips"),

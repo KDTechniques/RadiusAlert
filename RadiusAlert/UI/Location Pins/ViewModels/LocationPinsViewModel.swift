@@ -16,7 +16,7 @@ final class LocationPinsViewModel {
     // MARK: - ASSIGNED PROPERTIES
     
     // Managers/Services/Models:
-    let locationPinsManager: LocationPinsManager = .shared
+    let locationPinManager: LocationPinManager = .shared
     let alertManager: AlertManager = .shared
     let errorModel = LocationPinsVMErrorModel.self
     
@@ -100,7 +100,7 @@ final class LocationPinsViewModel {
             try await fetchNSetLocationPins()
 #if DEBUG
             for item in locationPinsArray {
-                print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.getCoordinate())" )
+                print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.coordinate)" )
             }
             print("\n\n")
 #endif
@@ -120,7 +120,7 @@ final class LocationPinsViewModel {
     
     func fetchNSetLocationPins() async throws {
         do {
-            let locationPinsArray: [LocationPinsModel] = try await locationPinsManager.fetchLocationPins()
+            let locationPinsArray: [LocationPinsModel] = try await locationPinManager.fetchLocationPins()
             withAnimation { setLocationPinsArray(locationPinsArray) }
         } catch let error {
             Utilities.log(errorModel.failedToFetchNSetLocationPinArray(error).errorDescription)
@@ -132,12 +132,12 @@ final class LocationPinsViewModel {
         guard mapVM.isMarkerCoordinateNil() else {
             alertManager.showAlert(.stopAlertOnSubmit {
                 self.mapVM.stopAlert()
-                self.mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
             })
             return
         }
         
-        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
 }
 

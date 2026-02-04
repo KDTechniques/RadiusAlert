@@ -6,152 +6,158 @@
 //
 
 import MapKit
-import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    /// Handles tapping a search result from the list.
-    /// - If no marker coordinate is set, select the location directly.
-    /// - If a marker already exists, show a confirmation to stop the ongoing alert before changing location.
+    /// Handles a tap on a search completion result from the results list.
+    ///
+    /// - Creates a recent-search entry for the tapped completion.
+    /// - If there is no existing marker/selection, proceeds to select and focus the map on the item.
+    /// - If there is an existing marker/selection (an active alert), presents a confirmation to stop it before switching.
+    ///
+    /// - Parameter item: The `MKLocalSearchCompletion` the user tapped.
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
+        createRecentSearch(on: item)
+        
         isMarkerCoordinateNil()
-        ? onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: item)
+        ? prepareSelectedSearchResultCoordinateOnMap(item)
         : stopAlertOnSearchResultListRowTapConfirmation(item)
     }
     
-    /// Called whenever the search text changes.
-    /// - If the text is empty, reset results.
-    /// - Otherwise, update results with the `MKLocalSearchCompleter`.
+    /// Handles a tap on an item from the recent searches list.
+    ///
+    /// - If there is no existing marker/selection, proceeds to select and focus the map on the recent item.
+    /// - If there is an existing marker/selection (an active alert), presents a confirmation to stop it before switching.
+    ///
+    /// - Parameter item: The `RecentSearchModel` the user tapped.
+    func onRecentSearchListRowTap(_ item: RecentSearchModel) {
+        isMarkerCoordinateNil()
+        ? prepareSelectedRecentSearchCoordinateOnMap(item)
+        : stopAlertOnRecentSearchListRowTapConfirmation(item)
+    }
+    
+    /// Responds to changes in the search bar text.
+    ///
+    /// - If the text becomes empty, clears any existing search results and resets the search state.
+    /// - Otherwise, forwards the query to the search completer to fetch new suggestions.
+    ///
+    /// - Parameter text: The latest text entered by the user.
     func onSearchTextChange(_ text: String) {
         searchText.isEmpty ? resetSearchResults() : onNotEmptySearchText(text)
     }
     
-    /// Sets the selected search result’s coordinate and updates the map.
-    /// Also resets search text and results, then animates map to the new location.
+    /// Resolves a tapped search completion to a full `MKMapItem`, updates selection, and repositions the map.
+    ///
+    /// - Sets the selected search result as soon as resolution begins for responsive UI.
+    /// - Clears the search UI (results, text, focus) to dismiss the keyboard and cancel button.
+    /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
+    ///
+    /// - Parameter item: The completion result to resolve and focus.
     func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
         setSelectedMapItem(item)
-        resetSearchResults()
-        resetSearchText()
+        
+        // Clear any existing search UI state
+        resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
         
         Task {
-            // Delay to ensure state updates propagate before moving the map
-            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
-            
-            let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
-            
             guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
-            
-            let region: MKCoordinateRegion = .init(
-                center: mapItem.placemark.coordinate,
-                latitudinalMeters: boundsMeters,
-                longitudinalMeters: boundsMeters
-            )
-            
-            // Set the marker coordinate position
-            setPosition(region: region, animate: true)
-            
-            // Wait for the default animation on setting marker position above
-            try? await Task.sleep(nanoseconds: 800_000_000)
-            
-            // Once the position animation is over, set the region bound for better user experience
-            setRegionBoundsOnRadius()
-            
-            // Wait for the default animation on setting region bounds above and set it's done.
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
+            await prepareMapPositionNRegion(mapItem)
         }
     }
     
-    /// Prepares the map for a user-selected `MKMapItem` comes from a location pin.
+    /// Prepares the map for a user-selected location pin from the predefined pins list.
     ///
-    /// - Sets the selected search result immediately for UI feedback.
-    /// - Clears search results and text.
-    /// - Animates the map to center on the item's coordinate with a sensible default span.
-    /// - After animations complete, marks the selection as fully set (`doneSetting = true`).
+    /// - Sets the radius from the pin, applies the selection immediately for UI feedback, and clears search UI state.
+    /// - Animates the map to center on the pin's coordinate with a sensible default span.
+    /// - Marks the selection as fully set (`doneSetting = true`) after the map finishes animating.
     ///
-    /// This method uses small delays to allow state changes and default map animations
-    /// to complete in sequence, improving perceived smoothness.
-    ///
-    /// - Parameter item: The `MKMapItem` representing the location to focus on.
-    func prepareSelectedSearchResultCoordinateOnMap(_ item: LocationPinsModel) {
+    /// - Parameter item: The location pin the user selected.
+    func prepareSelectedLocationPinCoordinateOnMap(_ item: LocationPinsModel) {
+        // Clear any existing search UI state
+        resetSearchable()
+        
         setSelectedRadius(item.radius)
         
-        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.getCoordinate()))
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
         // Optimistically set the selection so the UI can reflect the choice right away
         setSelectedSearchResult(.init(result: mkMapItem))
         
-        // Clear any existing search UI state
-        resetSearchResults()
-        resetSearchText()
-        
-        Task {
-            // Allow state updates to propagate before moving the map
-            try? await Task.sleep(nanoseconds: 500_000_000) // ~0.5s
-            
-            let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
-            
-            // Define a region centered on the selected item using our default bounds
-            let region: MKCoordinateRegion = .init(
-                center: mkMapItem.placemark.coordinate,
-                latitudinalMeters: boundsMeters,
-                longitudinalMeters: boundsMeters
-            )
-            
-            // Move the marker/viewport to the new region with animation
-            setPosition(region: region, animate: true)
-            
-            // Wait for the default position animation to complete
-            try? await Task.sleep(nanoseconds: 800_000_000)
-            
-            // Tighten the visible region around the current radius for a better UX
-            setRegionBoundsOnRadius()
-            
-            // Wait for the bounds animation to complete, then mark as fully set
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            setSelectedSearchResult(.init(result: mkMapItem, doneSetting: true))
-        }
+        Task { await prepareMapPositionNRegion(mkMapItem) }
     }
     
-    /// Called when the selected search result changes.
-    /// Updates the radius slider tip rule based on the new selection.
+    /// Focuses the map on a location picked from recent searches.
+    ///
+    /// - Clears the search UI (results, text, focus) to dismiss the keyboard/cancel button.
+    /// - Creates an `MKMapItem` from the recent search coordinate and optimistically updates the selection.
+    /// - Animates and bounds the map around the chosen location.
+    ///
+    /// - Parameter item: The recent search to focus on.
+    func prepareSelectedRecentSearchCoordinateOnMap(_ item: RecentSearchModel) {
+        // Clear any existing search UI state
+        resetSearchable()
+        
+        let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
+        mkMapItem.name = item.title
+        
+        // Optimistically set the selection so the UI can reflect the choice right away
+        setSelectedSearchResult(.init(result: mkMapItem))
+        
+        Task { await prepareMapPositionNRegion(mkMapItem) }
+    }
+    
+    /// Reacts to changes in the currently selected search result.
+    ///
+    /// Updates the radius slider tip/validation rule to reflect whether a radius is already set for the selection.
+    ///
+    /// - Parameter result: The newly selected result, or `nil` if cleared.
     func onSelectedSearchResultChange(_ result: SearchResultModel?) {
         setRadiusSliderTipRule_IsSetRadius(result)
     }
     
     // MARK: - PRIVATE FUNCTIONS
     
-    /// Handle when there's text in the search bar
+    /// Resets the search UI state to a clean slate.
+    ///
+    /// - Clears results and text, and removes focus from the search field (hiding keyboard/cancel button).
+    private func resetSearchable() {
+        resetSearchResults()
+        resetSearchText()
+        setSearchFieldFocused(false)
+    }
+    
+    /// Handles the case where the search text is non-empty.
+    ///
+    /// - Sets the searching flag and forwards the query to the internal search manager/completer.
+    ///
+    /// - Parameter text: The non-empty query string.
     private func onNotEmptySearchText(_ text: String) {
         locationSearchManager.setIsSearching(true)
         locationSearchManager.setQueryText(searchText: text)
     }
     
-    /// Handles search result selection when there’s no existing marker.
-    private func onSearchResultsListRowTap_WhenMarkerCoordinateIsNil(item: MKLocalSearchCompletion) {
-        prepareSelectedSearchResultCoordinateOnMap(item)
-        setSearchFieldFocused(false)
-    }
-    
-    /// Clears the search text field.
+    /// Clears the search text field and any bound UI state.
     private func resetSearchText() {
         setSearchText("")
     }
     
-    /// Clears all search results from the list.
+    /// Removes all search results from the list.
     private func resetSearchResults() {
         locationSearchManager.clearResults()
     }
     
-    /// Handles failures in location search by clearing results.
+    /// Handles failures from the location search pipeline by clearing stale results.
     private func handleLocationSearchFailure() {
         locationSearchManager.clearResults()
     }
     
-    /// Retrieves a full `MKMapItem` from a completion result and sets it as the selected location.
-    /// If retrieval fails, the selected search result is cleared.
+    /// Resolves a search completion into a full `MKMapItem` and updates the selected result.
+    ///
+    /// - If resolution fails or returns `nil`, clears the current selection.
+    ///
+    /// - Parameter item: The completion to resolve.
     private func setSelectedMapItem(_ item: MKLocalSearchCompletion) {
         Task {
             do {
@@ -165,6 +171,39 @@ extension MapViewModel {
                 setSelectedSearchResult(nil)
             }
         }
+    }
+    
+    /// Animates the map to the provided item and finalizes selection state.
+    ///
+    /// This method introduces small delays to allow SwiftUI/MapKit state changes and default animations
+    /// to complete in sequence, improving perceived smoothness:
+    /// 1) Wait for state propagation, 2) animate to position, 3) apply region bounds, 4) mark selection as done.
+    ///
+    /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
+    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
+        // 1) Allow state updates to propagate before moving the map.
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+        
+        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        
+        let region: MKCoordinateRegion = .init(
+            center: mapItem.placemark.coordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        // 2) Animate to the new position.
+        setPosition(region: region, animate: true)
+        
+        // Wait for the default animation on setting marker position above
+        try? await Task.sleep(nanoseconds: 800_000_000)
+        
+        // 3) After the position animation, apply region bounds for better UX.
+        setRegionBoundsOnRadius()
+        
+        // 4) After bounds animation, mark selection as fully set.
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
     }
 }
 

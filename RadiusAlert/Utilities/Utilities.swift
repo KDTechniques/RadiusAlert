@@ -14,6 +14,7 @@ import AVFoundation
 
 struct Utilities {
     static var screenWidth: CGFloat = UIScreen.main.bounds.width
+    static var screenHeight: CGFloat = UIScreen.main.bounds.height
     
     /// Logs debug info with file name, line number, and calling function.
     /// - Parameters:
@@ -93,3 +94,4 @@ struct Utilities {
         return getDistance(from: userCoordinate, to: markerCoordinate) - radius
     }
 }
+

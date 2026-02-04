@@ -1,5 +1,5 @@
 //
-//  LocationPinsLocalDatabaseManager.swift
+//  LocationPinLocalDatabaseManager.swift
 //  RadiusAlert
 //
 //  Created by Mr. Kavinda Dilshan on 2025-11-05.
@@ -8,9 +8,9 @@
 import Foundation
 import SwiftData
 
-actor LocationPinsLocalDatabaseManager {
+actor LocationPinLocalDatabaseManager {
     // MARK: - ASSIGNED PROPERTIES
-    static let shared: LocationPinsLocalDatabaseManager = .init()
+    static let shared: LocationPinLocalDatabaseManager = .init()
     let localDatabaseManager: LocalDatabaseManager = .shared
     
     // MARK: - INITIALIZER
@@ -27,7 +27,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToCreateNewLocationPin(error).errorDescription)
+            Utilities.log(LocationPinLocalDatabaseManagerErrorModel.failedToCreateLocationPin(error).errorDescription)
             throw error
         }
     }
@@ -37,11 +37,11 @@ actor LocationPinsLocalDatabaseManager {
         do {
             var descriptor: FetchDescriptor = FetchDescriptor<LocationPinsModel>()
             descriptor.sortBy = [SortDescriptor(\.order, order: .forward)]
-            let savedLocationPinsArray: [LocationPinsModel] = try localDatabaseManager.fetchFromContext(descriptor)
+            let savedLocationPins: [LocationPinsModel] = try localDatabaseManager.fetchFromContext(descriptor)
             
-            return savedLocationPinsArray
+            return savedLocationPins
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToFetchSavedLocationPins(error).errorDescription)
+            Utilities.log(LocationPinLocalDatabaseManagerErrorModel.failedToFetchLocationPins(error).errorDescription)
             throw error
         }
     }
@@ -51,7 +51,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToUpdateLocationPins(error).errorDescription)
+            Utilities.log(LocationPinLocalDatabaseManagerErrorModel.failedToUpdateLocationPins(error).errorDescription)
             throw error
         }
     }
@@ -62,22 +62,7 @@ actor LocationPinsLocalDatabaseManager {
         do {
             try localDatabaseManager.saveContext()
         } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).errorDescription)
-            throw error
-        }
-    }
-    
-    @MainActor
-    func deleteAllLocationPins() throws {
-        let fetchedLocationPins: [LocationPinsModel] = try fetchLocationPins()
-        for item in fetchedLocationPins {
-            localDatabaseManager.deleteFromContext(item)
-        }
-        
-        do {
-            try localDatabaseManager.saveContext()
-        } catch {
-            Utilities.log(SavedPinsLocalDatabaseManagerErrorModel.failedToDeleteSavedLocationPin(error).errorDescription)
+            Utilities.log(LocationPinLocalDatabaseManagerErrorModel.failedToDeleteLocationPin(error).errorDescription)
             throw error
         }
     }
