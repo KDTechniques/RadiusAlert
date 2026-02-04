@@ -15,6 +15,7 @@ struct MarkerModel: Identifiable, Hashable {
     let radius: CLLocationDistance
     var route: MKRoute?
     let color: Color
+    let number: Int
     
     // Implement Hashable manually
     func hash(into hasher: inout Hasher) {
@@ -36,7 +37,8 @@ struct MarkerModel: Identifiable, Hashable {
                 coordinate: .init(latitude: Double.random(in: 0...50), longitude: Double.random(in: 0...50)),
                 radius: Double.random(in: 700...3000),
                 route: nil,
-                color: .debug
+                color: .debug,
+                number: Int.random(in: 0...100)
             )
             
             tempArray.append(object)

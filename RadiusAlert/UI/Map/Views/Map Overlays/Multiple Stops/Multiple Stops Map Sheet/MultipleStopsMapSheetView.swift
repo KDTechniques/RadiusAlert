@@ -46,10 +46,8 @@ struct MultipleStopsMapSheetView: View {
                     Group {
                         if mapVM.markers.count == 1 {
                             Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
-                        } else if let number: Int = mapVM.getMarkerNumber(for: marker.id) {
-                            Marker(radiusText, monogram: Text("\(number)"), coordinate: marker.coordinate)
                         } else {
-                            Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
+                            Marker(radiusText, monogram: Text("\(marker.number)"), coordinate: marker.coordinate)
                         }
                     }
                     .tint(marker.color.gradient)

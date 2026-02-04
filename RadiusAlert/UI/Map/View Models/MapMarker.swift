@@ -46,7 +46,8 @@ extension MapViewModel {
             coordinate: markerCoordinate,
             radius: radius,
             route: nil,
-            color: markers.isEmpty ? .pink : .debug
+            color: markers.isEmpty ? .pink : .debug,
+            number: (markers.map({ $0.number }).max() ?? 0) + 1
         )
         
         addMarker(marker)
@@ -65,12 +66,5 @@ extension MapViewModel {
     
     func isThereAnyMarkerCoordinate() -> Bool {
         return !markers.isEmpty
-    }
-    
-    func getMarkerNumber(for markerID: String) -> Int? {
-        guard let index: Int = markers.firstIndex(where: { $0.id == markerID }) else { return nil }
-        
-        let number: Int = index + 1
-        return number
     }
 }
