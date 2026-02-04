@@ -21,7 +21,7 @@ extension LocationPinsViewModel {
         
         Task {
             do {
-                try await locationPinsManager.updateLocationPins(tempArray)
+                try await locationPinManager.updateLocationPins(tempArray)
                 try await fetchNSetLocationPins()
             } catch let error {
                 Utilities.log(errorModel.failedToMoveLocationPinListItem(error).errorDescription)
@@ -38,7 +38,7 @@ extension LocationPinsViewModel {
         
         Task {
             do {
-                try await locationPinsManager.deleteLocationPin(item: locationPin)
+                try await locationPinManager.deleteLocationPin(item: locationPin)
                 try await fetchNSetLocationPins()
             } catch let error {
                 Utilities.log(errorModel.failedToMoveLocationPinListItem(error).errorDescription)
@@ -58,7 +58,7 @@ extension LocationPinsViewModel {
     
     func onLocationPinsListRowItemTap(_ item: LocationPinsModel) {
         setIsPresentedSavedLocationsSheet(false)
-        mapVM.prepareSelectedSearchResultCoordinateOnMap(item)
+        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
     
     func onSavedLocationSheetAppearance(_ isPresented: Bool) {

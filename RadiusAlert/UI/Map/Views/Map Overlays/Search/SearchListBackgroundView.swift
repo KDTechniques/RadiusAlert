@@ -18,8 +18,7 @@ struct SearchListBackgroundView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.showSearchListBackground() {
-            Color.clear
-                .background(mapValues.safeAreaBackgroundColor(colorScheme))
+            mapValues.safeAreaBackgroundColor(colorScheme)
                 .ignoresSafeArea()
         }
     }

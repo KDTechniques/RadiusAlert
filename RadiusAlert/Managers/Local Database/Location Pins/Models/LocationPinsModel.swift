@@ -15,6 +15,7 @@ final class LocationPinsModel {
     var order: Int
     var title: String
     var radius: CLLocationDistance
+    var coordinate: CLLocationCoordinate2D { return .init(latitude: latitude, longitude: longitude) }
     private var latitude: CLLocationDegrees
     private var longitude: CLLocationDegrees
     
@@ -36,11 +37,7 @@ final class LocationPinsModel {
     }
     
     // MARK: - FUNCTIONS
-    func getCoordinate() -> CLLocationCoordinate2D {
-        return .init(latitude: latitude, longitude: longitude)
-    }
-    
-    func isSameCoordinate(_ coordinate:CLLocationCoordinate2D) -> Bool{
+    func isSameCoordinate(_ coordinate:CLLocationCoordinate2D) -> Bool {
         return latitude == coordinate.latitude && longitude == coordinate.longitude
     }
 }

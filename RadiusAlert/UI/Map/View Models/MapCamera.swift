@@ -136,4 +136,24 @@ extension MapViewModel {
             }
         }
     }
+    
+    // MARK: - PRIVATE FUNCTIONS
+    
+    /// Check the coordinates between selectedMapItem and the center coordinate.
+    /// If these two don’t match, it means the user has moved the map around,
+    /// and it is no longer the selected search result coordinate.
+    /// Clears the selected search result if the map camera position no longer matches the selected search result's coordinate.
+    private func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
+        // Ensure we have a selected search result that is set, a valid center coordinate,
+        // no radius alert item active, and the center coordinate does not match the selected result coordinate within a precision of 5 decimal places.
+        guard
+            let selectedSearchResult,
+            selectedSearchResult.doneSetting,
+            let centerCoordinate,
+            radiusAlertItem == nil,
+            !centerCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
+        
+        // Clear the selected search result because the user moved the map away from it
+        setSelectedSearchResult(nil)
+    }
 }
