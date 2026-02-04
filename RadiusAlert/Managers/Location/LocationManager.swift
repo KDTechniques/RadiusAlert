@@ -34,7 +34,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     private let mapValues: MapValues.Type = MapValues.self
     private(set) var currentDistanceMode: LocationDistanceModes?
     private(set) var currentRegionName: String?
-    private(set) var distances: Set<CLLocationDistance> = []
     
     // MARK: - SETTERS
     func setCurrentDistanceMode(_ value: LocationDistanceModes) {
@@ -147,7 +146,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             let route: MKRoute? = directions.routes.first
             return  route
         } catch {
-            print("Error getting directions: \(error.localizedDescription)")
+            print("Error getting the route: \(error.localizedDescription)")
             return nil
         }
     }
@@ -198,8 +197,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
             distances.insert(distance)
         }
-        
-        self.distances = distances
         
         guard let minDistance: CLLocationDistance = distances.min() else { return }
         let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: minDistance)

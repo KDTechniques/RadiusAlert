@@ -54,13 +54,13 @@ extension MapViewModel {
         return marker.id
     }
     
-    func setRegionBoundsToUserLocationNMarkers() {
+    func setRegionBoundsToUserLocationNMarkers(on type: MapTypes) {
         guard let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
         
         var coordinates: [CLLocationCoordinate2D] = markers.map({ $0.coordinate })
         coordinates.append(userLocation)
         
-        positionRegionBoundsToMidCoordinate(from: coordinates, on: .primary, animate: true)
+        positionRegionBoundsToMidCoordinate(from: coordinates, on: type, animate: true)
     }
     
     func isThereAnyMarkerCoordinate() -> Bool {

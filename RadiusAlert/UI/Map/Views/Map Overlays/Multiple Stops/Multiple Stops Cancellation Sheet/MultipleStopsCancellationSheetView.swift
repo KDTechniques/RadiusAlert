@@ -49,6 +49,9 @@ struct MultipleStopsCancellationSheetView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .alertViewModifier(at: .multipleStopsCancellationSheet)
+        .onDisappear {
+            mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary)
+        }
         .sheetCornerRadiusViewModifier
         .presentationDragIndicator(.visible)
     }

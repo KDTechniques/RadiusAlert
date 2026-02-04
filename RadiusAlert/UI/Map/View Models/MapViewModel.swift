@@ -41,10 +41,9 @@ final class MapViewModel {
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
-    
     private(set) var primarySelectedRadius: CLLocationDistance { didSet { primarySelectedRadius$ = primarySelectedRadius } }
     @ObservationIgnored @Published private(set) var primarySelectedRadius$: CLLocationDistance
-    
+    private(set) var failedRouteMarkers: Set<MarkerModel> = []
     private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
@@ -57,7 +56,8 @@ final class MapViewModel {
     @ObservationIgnored private(set) var selectedSearchResult: SearchResultModel? { didSet { onSelectedSearchResultChange(selectedSearchResult) } }
     @ObservationIgnored private(set) var radiusAlertItems: Set<RadiusAlertModel> = []
     private(set) var recentSearches: [RecentSearchModel] = []
-    private(set) var distanceText: CLLocationDistance = .zero
+    private(set) var distanceText: CLLocationDistance = .zero { didSet { distanceText$ = distanceText } }
+    @ObservationIgnored @Published private(set) var distanceText$: CLLocationDistance = .zero
     
     // Multiple Stops Map Related
     private(set) var markers: [MarkerModel] = []
@@ -65,8 +65,8 @@ final class MapViewModel {
     private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
     private(set) var secondarySelectedRadius: CLLocationDistance
     private(set) var isSecondaryCameraDragging: Bool = false
-    private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false
     private(set) var isPresentedMultipleStopsMapSheet: Bool = false
+    private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false
     
     // MARK: - SETTERS
     
@@ -165,14 +165,7 @@ final class MapViewModel {
     func addMarker(_ value: MarkerModel) {
         // Following logic must be isolated to another function except the setter.
         guard !markers.contains(where: { $0.id == value.id }) else { return }
-        
-        var marker = value
-        
-        if markers.isEmpty {
-            marker.color = .pink
-        }
-        
-        markers.append(marker)
+        markers.append(value)
     }
     
     func updateMarker(at id: String, value: MarkerModel) {
@@ -190,6 +183,15 @@ final class MapViewModel {
     
     func setIsPresentedMultipleStopsMapSheet(_ value: Bool) {
         isPresentedMultipleStopsMapSheet = value
+    }
+    
+    func insertFailedRouteMarker(_ value: MarkerModel) {
+        failedRouteMarkers.insert(value)
+    }
+    
+    func removeFailedRouteMarker(by id: String) {
+        guard let marker: MarkerModel = failedRouteMarkers.first(where: { $0.id == id }) else { return }
+        failedRouteMarkers.remove(marker)
     }
     
     // MARK: - PUBLIC FUNCTIONS
@@ -216,6 +218,7 @@ final class MapViewModel {
         fetchNAssignRecentSearches()
         currentUserLocationSubscriber()
         primarySelectedRadiusSubscriber()
+        networkStatusSubscriber()
     }
 }
 

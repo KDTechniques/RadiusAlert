@@ -83,7 +83,7 @@ extension MapViewModel {
         RadiusSliderTipModel.isSliderVisible = boolean
     }
     
-    func setInitialDistanceText() {
+    func updateDistanceText() {
         guard
             let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
             markers.count == 1,

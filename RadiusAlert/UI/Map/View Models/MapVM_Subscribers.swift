@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import CoreLocation
+import MapKit
 
 // MARK: SUBSCRIBERS
 
@@ -36,9 +37,11 @@ extension MapViewModel {
     
     func currentUserLocationSubscriber() {
         locationManager.$currentUserLocation$
-            .compactMap { $0 } // Returns non-optional values because of `Compact Map`. So, no need of `guard let` statements
-            .sink { location in
-                self.setDistanceText(self.locationManager.distances.min() ?? .zero)
+            .combineLatest($distanceText$)
+            .throttle(for: .nanoseconds(500_000_000), scheduler: DispatchQueue.main, latest: true)
+            .compactMap { $0 }
+            .sink { _ in
+                self.updateDistanceText()
             }
             .store(in: &cancellables)
     }
@@ -51,6 +54,48 @@ extension MapViewModel {
             .removeDuplicates()
             .sink { radius in
                 self.setRegionBoundsOnRadius()
+            }
+            .store(in: &cancellables)
+    }
+    
+    func networkStatusSubscriber() {
+        networkManager.$connectionState$
+            .removeDuplicates()
+            .sink { status in
+                guard
+                    !self.failedRouteMarkers.isEmpty,
+                    status == .connected,
+                    let userLocation: CLLocationCoordinate2D = self.locationManager.currentUserLocation else { return }
+                
+                Utilities.log("⚠️: Retrieving routes again.")
+                
+                Task {
+                    await withTaskGroup(of: MarkerModel?.self) { [weak self] group in
+                        guard let self else { return }
+                        
+                        for marker in failedRouteMarkers {
+                            group.addTask {
+                                guard
+                                    let route = await self.locationManager.getRoute(
+                                        pointA: userLocation,
+                                        pointB: marker.coordinate
+                                    ) else { return nil }
+                                
+                                var updatedMarker: MarkerModel = marker
+                                updatedMarker.route = route
+                                return updatedMarker
+                            }
+                        }
+                        
+                        for await updatedMarker in group.compactMap({ $0 }) {
+                            await MainActor.run {
+                                self.updateMarker(at: updatedMarker.id, value: updatedMarker)
+                                self.removeFailedRouteMarker(by: updatedMarker.id)
+                            }
+                        }
+                    }
+                    Utilities.log("✅: Tried retrieving routes.")
+                }
             }
             .store(in: &cancellables)
     }

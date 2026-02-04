@@ -60,11 +60,13 @@ extension MapViewModel {
         setInteractionModes([])
         
         // encapsulated region bounds
-        setRegionBoundsToUserLocationNMarkers()
-        setInitialDistanceText()
+        setRegionBoundsToUserLocationNMarkers(on: type)
         
         //Retrieve directions.
         assignRoute(to: markerID)
+        
+        // Set distance text between user location to the marker coordinate
+        updateDistanceText()
         
         startAlert_PreparePopupCardItem(currentUserLocation: userLocation, markerID: markerID)
         guard startAlert_StartMonitoringRegion(markerID: markerID) else { return }

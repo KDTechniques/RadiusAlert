@@ -24,7 +24,7 @@ final class NetworkManager {
     private(set) var connectionState: ConnectionStates = .noConnection {
         didSet { connectionState$ = connectionState }
     }
-    @ObservationIgnored @Published private var connectionState$: ConnectionStates = .noConnection
+    @ObservationIgnored @Published private(set) var connectionState$: ConnectionStates = .noConnection
     private var cancellables: Set<AnyCancellable> = []
     
     // MARK: - INITIALIZER
@@ -53,16 +53,23 @@ final class NetworkManager {
     
     /// Starts monitoring the network path for changes in connectivity.
     private func startNetworkMonitor() {
-        monitor.pathUpdateHandler = { value in
-            Task { @MainActor in
-                if value.status == .satisfied {
-                    self.connectionState = .connected
-                } else {
-                    self.connectionState = .noConnection
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            
+            if path.status == .satisfied {
+                Task { @MainActor in
+                    if self.connectionState != .connected {
+                        self.connectionState = .connected
+                    }
+                }
+            } else {
+                Task { @MainActor in
+                    if self.connectionState != .noConnection {
+                        self.connectionState = .noConnection
+                    }
                 }
             }
         }
-        
         monitor.start(queue: networkManagerQueue)
     }
     

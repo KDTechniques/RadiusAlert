@@ -112,12 +112,16 @@ struct MultipleStopsMapSheetView: View {
             .navigationTitle("Add Another Stop")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .onAppear {
+        .onAppear { // or use onFirst Appear if possible
             guard
                 let position: MapCameraPosition = mapVM.locationManager.getInitialMapCameraPosition(),
                 let region: MKCoordinateRegion = position.region else { return }
             
             mapVM.setSecondaryPosition(.region(region))
+            mapVM.setRegionBoundsToUserLocationNMarkers(on: .secondary)
+        }
+        .onDisappear {
+            mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary)
         }
         .presentationDragIndicator(.visible)
     }
