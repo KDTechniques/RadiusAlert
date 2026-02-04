@@ -9,7 +9,7 @@ import Foundation
 
 extension AlertTypes {
     var alert: AlertModel {
-        switch  self {
+        switch self {
         case .noConnection(let viewLevel):
             return .init(
                 viewLevel: viewLevel,
@@ -119,6 +119,15 @@ extension AlertTypes {
                     .init(role: .custom("Setting a Pin Manually")) { manualAction() },
                     .init(role: .cancel)
                 ]
+            )
+            
+        case .maxMarkerLimitReached(let viewLevel):
+            return .init(
+                viewLevel: viewLevel,
+                title: "Maximum Stops Limit Reached",
+                message: "You can only add a maximum of 20 stops.",
+                hapticType: .warning,
+                actions: [.init(role: .ok)]
             )
         }
     }

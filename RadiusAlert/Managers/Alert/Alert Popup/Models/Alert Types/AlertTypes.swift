@@ -31,6 +31,7 @@ enum AlertTypes: CaseIterable, Hashable {
     case stopAlertOnSubmit(viewLevel: AlertViewLevels, () -> Void)
     case locationPinAlreadyExist(viewLevel: AlertViewLevels, () -> Void)
     case addMultipleStops(viewLevel: AlertViewLevels, search: () -> Void, manual: () -> Void)
+    case maxMarkerLimitReached(viewLevel: AlertViewLevels)
     
     static var allCases: [AlertTypes] = [
         .alreadyInRadius(viewLevel: .content),
@@ -42,7 +43,8 @@ enum AlertTypes: CaseIterable, Hashable {
         .stopAllAlertsConfirmation(viewLevel: .content, {}),
         .stopAlertOnSubmit(viewLevel: .content, {}),
         .locationPinAlreadyExist(viewLevel: .content, {}),
-        .addMultipleStops(viewLevel: .content, search: {}, manual: {})
+        .addMultipleStops(viewLevel: .content, search: {}, manual: {}),
+        .maxMarkerLimitReached(viewLevel: .content)
     ]
     
     // Implement Hashable manually
@@ -86,6 +88,9 @@ enum AlertTypes: CaseIterable, Hashable {
             
         case .addMultipleStops:
             return "Add Multiple Stops"
+            
+        case .maxMarkerLimitReached:
+            return "Max Marker Limit Reached"
         }
     }
 }

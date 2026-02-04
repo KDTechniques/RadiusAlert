@@ -91,10 +91,22 @@ struct MultipleStopsMapSheetView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     if #available(iOS 26.0, *) {
                         Button("Add", role: .confirm) {
+                            guard mapVM.markers.count < 20 else {
+                                mapVM.alertManager.showAlert(.maxMarkerLimitReached(viewLevel: .multipleStopsMapSheet))
+                                
+                                return
+                            }
+                            
                             mapVM.startAlert(from: .secondary)
                         }
                     } else {
                         Button("Add") {
+                            guard mapVM.markers.count < 20 else {
+                                mapVM.alertManager.showAlert(.maxMarkerLimitReached(viewLevel: .multipleStopsMapSheet))
+                                
+                                return
+                            }
+                            
                             mapVM.startAlert(from: .secondary)
                         }
                     }
