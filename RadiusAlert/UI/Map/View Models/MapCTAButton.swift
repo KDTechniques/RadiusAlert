@@ -114,7 +114,7 @@ extension MapViewModel {
         setInteractionModes(markers.isEmpty ? [.all] : [])
         alertManager.stopHaptic()
         alertManager.stopTone()
-        positionToInitialUserLocation(on: .primary, animate: true)
+        markers.isEmpty ? positionToInitialUserLocation(on: .primary, animate: true) : setRegionBoundsToUserLocationNMarkers(on: .primary)
         clearPopupCardItem()
         setPopupCardItem(nil)
         setSelectedSearchResult(nil)
@@ -270,13 +270,17 @@ extension MapViewModel {
             if settingsVM.spokenAlertValues.isOnSpokenAlert {
                 let locationTitle: String? = getRadiusAlertItem(markerID: markerID)?.locationTitle
                 await settingsVM.spokenAlertSpeakAction(with: locationTitle)
-                alertManager.playTone(settingsVM.selectedTone.fileName)
-                settingsVM.setToneVolumeToFade()
+                safelyHandleAlertToneOnRegionEntry(for: markerID)
             } else {
-                alertManager.playTone(settingsVM.selectedTone.fileName)
-                settingsVM.setToneVolumeToFade()
+                safelyHandleAlertToneOnRegionEntry(for: markerID)
             }
         }
+    }
+    
+    private func safelyHandleAlertToneOnRegionEntry(for markerID: String) {
+        guard markers.contains(where: { $0.id == markerID }) else { return }
+        alertManager.playTone(settingsVM.selectedTone.fileName)
+        settingsVM.setToneVolumeToFade()
     }
     
     /// Shows a confirmation alert when the user taps the Stop Alert button.

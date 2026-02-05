@@ -141,6 +141,31 @@ extension MapViewModel {
         }
     }
     
+    func positionMapOnAuthorization(authorizationStatus: CLAuthorizationStatus) {
+        // Updates internal state based on current authorization status.
+        setIsAuthorizedToGetMapCameraUpdate(authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse)
+        
+        // Skips map update if not authorized.
+        guard isAuthorizedToGetMapCameraUpdate else { return }
+        
+        // Delays then repositions the map to the initial user location on the main actor.
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            positionToInitialUserLocation(on: .primary, animate: true)
+        }
+    }
+    
+    func autoPositionMarkersNUserLocationRegionBounds() {
+        guard !markers.isEmpty else { return }
+        let currentTime: Date = .now
+        let timeDiff: Double = currentTime.timeIntervalSince(regionBoundsToUserLocationNMarkersTimestamp)
+        let timeCondition: Double = 10 // 10 seconds
+        
+        guard timeDiff >= timeCondition else { return }
+        setRegionBoundsToUserLocationNMarkers(on: .primary)
+        setRegionBoundsToUserLocationNMarkersTimestamp(.now)
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Check the coordinates between selectedMapItem and the center coordinate.

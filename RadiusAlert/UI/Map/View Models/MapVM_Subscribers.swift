@@ -19,19 +19,7 @@ extension MapViewModel {
             .dropFirst()
             .removeDuplicates()
         // Updates authorization state and may reposition the map if authorized.
-            .sink {
-                // Updates internal state based on current authorization status.
-                self.setIsAuthorizedToGetMapCameraUpdate($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
-                
-                // Skips map update if not authorized.
-                guard self.isAuthorizedToGetMapCameraUpdate else { return }
-                
-                // Delays then repositions the map to the initial user location on the main actor.
-                Task { @MainActor in
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self.positionToInitialUserLocation(on: .primary, animate: true)
-                }
-            }
+            .sink { self.positionMapOnAuthorization(authorizationStatus: $0) }
             .store(in: &cancellables)
     }
     
@@ -42,6 +30,8 @@ extension MapViewModel {
             .compactMap { $0 }
             .sink { _ in
                 self.updateDistanceText()
+                self.autoPositionMarkersNUserLocationRegionBounds()
+                
             }
             .store(in: &cancellables)
     }
@@ -61,42 +51,7 @@ extension MapViewModel {
     func networkStatusSubscriber() {
         networkManager.$connectionState$
             .removeDuplicates()
-            .sink { status in
-                guard
-                    !self.failedRouteMarkers.isEmpty,
-                    status == .connected,
-                    let userLocation: CLLocationCoordinate2D = self.locationManager.currentUserLocation else { return }
-                
-                Utilities.log("⚠️: Retrieving routes again.")
-                
-                Task {
-                    await withTaskGroup(of: MarkerModel?.self) { [weak self] group in
-                        guard let self else { return }
-                        
-                        for marker in failedRouteMarkers {
-                            group.addTask {
-                                guard
-                                    let route = await self.locationManager.getRoute(
-                                        pointA: userLocation,
-                                        pointB: marker.coordinate
-                                    ) else { return nil }
-                                
-                                var updatedMarker: MarkerModel = marker
-                                updatedMarker.route = route
-                                return updatedMarker
-                            }
-                        }
-                        
-                        for await updatedMarker in group.compactMap({ $0 }) {
-                            await MainActor.run {
-                                self.updateMarker(at: updatedMarker.id, value: updatedMarker)
-                                self.removeFailedRouteMarker(by: updatedMarker.id)
-                            }
-                        }
-                    }
-                    Utilities.log("✅: Tried retrieving routes.")
-                }
-            }
+            .sink { self.recoverRoutes(networkStatus: $0) }
             .store(in: &cancellables)
     }
 }

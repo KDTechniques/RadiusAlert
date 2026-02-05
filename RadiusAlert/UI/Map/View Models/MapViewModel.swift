@@ -47,6 +47,7 @@ final class MapViewModel {
     private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
+    private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
     
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -192,6 +193,10 @@ final class MapViewModel {
     func removeFailedRouteMarker(by id: String) {
         guard let marker: MarkerModel = failedRouteMarkers.first(where: { $0.id == id }) else { return }
         failedRouteMarkers.remove(marker)
+    }
+    
+    func setRegionBoundsToUserLocationNMarkersTimestamp(_ value: Date) {
+        regionBoundsToUserLocationNMarkersTimestamp = value
     }
     
     // MARK: - PUBLIC FUNCTIONS
