@@ -27,18 +27,14 @@ struct MultipleStopsMapSheetView: View {
             Map(position: mapVM.secondaryPositionBinding(), scope: mapSpace) {
                 UserAnnotation()
                 
-                if let centerCoordinate: CLLocationCoordinate2D = mapVM.secondaryCenterCoordinate,
-                   showOverlays(),
-                   !mapVM.isSecondaryCameraDragging {
-                    MapCircle(center: centerCoordinate, radius: mapVM.secondarySelectedRadius)
-                        .foregroundStyle(.primary.opacity(0.3))
-                }
-                
-                // MARK: Marker Circles
-                ForEach(mapVM.markers) { marker in
-                    MapCircle(center: marker.coordinate, radius: marker.radius)
-                        .foregroundStyle(marker.color.opacity(0.3))
-                }
+                // MARK: - Radius Circles
+                MapFloatingCircleView(
+                    centerCoordinate: mapVM.secondaryCenterCoordinate,
+                    radius: mapVM.secondarySelectedRadius,
+                    condition: mapVM.showSecondaryFloatingCircle()
+                )
+               
+                MapMarkerCirclesView(markers: mapVM.markers)
                 
                 // MARK: - Markers
                 ForEach(mapVM.markers) { marker in
@@ -80,9 +76,9 @@ struct MultipleStopsMapSheetView: View {
                         CircularRadiusTextView(radius: mapVM.secondarySelectedRadius)
                     }
                 }
-                .opacity(showOverlays() ? 1 : 0)
-                .disabled(!showOverlays())
-                .animation(.default, value: showOverlays())
+                .opacity(mapVM.showSecondaryMapOverlays() ? 1 : 0)
+                .disabled(!mapVM.showSecondaryMapOverlays())
+                .animation(.default, value: mapVM.showSecondaryMapOverlays())
                 
                 MapStyleButtonView()
                     .mapBottomTrailingButtonsViewModifier
@@ -185,9 +181,5 @@ extension MultipleStopsMapSheetView {
         withAnimation(.none) {
             mapVM.setSecondaryPosition(.region(region))
         }
-    }
-    
-    private func showOverlays() -> Bool {
-        return mapVM.isBeyondMinimumDistance(centerCoordinate: mapVM.secondaryCenterCoordinate)
     }
 }

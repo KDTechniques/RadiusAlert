@@ -28,18 +28,13 @@ struct MapView: View {
             UserAnnotation()
             
             // MARK: - Radius Circles
+            MapFloatingCircleView(
+                centerCoordinate: mapVM.primaryCenterCoordinate,
+                radius: mapVM.primarySelectedRadius,
+                condition: mapVM.showPrimaryFloatingCircle()
+            )
             
-            // MARK:  Floating Circle
-            if let centerCoordinate: CLLocationCoordinate2D = mapVM.primaryCenterCoordinate, mapVM.showPrimaryFloatingCircle() {
-                MapCircle(center: centerCoordinate, radius: mapVM.primarySelectedRadius)
-                    .foregroundStyle(.primary.opacity(0.3))
-            }
-            
-            // MARK: Marker Circles
-            ForEach(mapVM.markers) { marker in
-                MapCircle(center: marker.coordinate, radius: marker.radius)
-                    .foregroundStyle(marker.color.opacity(0.3))
-            }
+            MapMarkerCirclesView(markers: mapVM.markers)
             
             // MARK: - Markers
             ForEach(mapVM.markers) { marker in

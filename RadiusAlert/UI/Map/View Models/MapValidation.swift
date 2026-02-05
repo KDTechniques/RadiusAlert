@@ -47,6 +47,17 @@ extension MapViewModel {
         return !condition1 && condition2 && !condition3
     }
     
+    func showSecondaryFloatingCircle() -> Bool {
+        let condition1: Bool = showSecondaryMapOverlays()
+        let condition2: Bool = isSecondaryCameraDragging
+        
+        return condition1 && !condition2
+    }
+    
+    func showSecondaryMapOverlays() -> Bool {
+        return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
+    }
+    
     /// Returns true if the radius slider should be visible, based on marker coordinate and user distance. Also triggers slider visibility change callback.
     func showPrimaryRadiusSliderOrDistanceText() -> RadiusSliderOrDistanceTextTypes? {
         let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
