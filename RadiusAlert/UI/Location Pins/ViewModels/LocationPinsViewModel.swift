@@ -98,12 +98,6 @@ final class LocationPinsViewModel {
         // Fetch saved location pins from local database
         do {
             try await fetchNSetLocationPins()
-#if DEBUG
-            for item in locationPinsArray {
-                print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.coordinate)" )
-            }
-            print("\n\n")
-#endif
         } catch let error {
             Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).errorDescription)
         }
@@ -129,6 +123,16 @@ final class LocationPinsViewModel {
     }
     
     func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
+        guard mapVM.markers.isEmpty else {
+            
+            return
+        }
+        
+        
+        // just write the whole logic from scratch!!!!!!!!!!!!!
+        
+        
+        
 //        guard mapVM.isMarkerCoordinateNil() else {
 //            alertManager.showAlert(.stopAlertOnSubmit {
 //                self.mapVM.stopAlert()
