@@ -212,7 +212,7 @@ extension MapViewModel {
         await setPrimaryPosition(region: newRegion, animate: true)
         
         // 3) Zoom in or out to region bounds based on radius
-        setRegionBoundsOnRadius()
+        setRegionBoundsOnRadius(for: .primary, radius: primarySelectedRadius)
         try? await Task.sleep(nanoseconds: 800_000_000)
         
         setSelectedSearchResult(.init(result: mapItem, doneSetting: true))

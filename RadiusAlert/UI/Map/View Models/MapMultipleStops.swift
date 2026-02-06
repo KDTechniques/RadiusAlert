@@ -26,4 +26,33 @@ extension MapViewModel {
             }
         )
     }
+    
+    func addAnotherStop() {
+        guard markers.count < 20 else {
+            alertManager.showAlert(
+                .maxMarkerLimitReached(viewLevel: .multipleStopsMapSheet)
+            )
+            
+            return
+        }
+        
+        startAlert(from: .secondary)
+    }
+    
+    func dismissMultipleStopsMapSheet() {
+        setIsPresentedMultipleStopsMapSheet(false)
+    }
+    
+    func onMultipleStopsMapSheetAppear() {
+        guard
+            let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
+            let region: MKCoordinateRegion = position.region else { return }
+        
+        setSecondaryPosition(.region(region))
+        setRegionBoundsToUserLocationNMarkers(on: .secondary)
+    }
+    
+    func onMultipleStopsMapSheetDisappear() {
+        setRegionBoundsToUserLocationNMarkers(on: .primary)
+    }
 }

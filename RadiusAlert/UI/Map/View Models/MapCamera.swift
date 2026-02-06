@@ -83,19 +83,33 @@ extension MapViewModel {
     
     /// Handles logic when the map camera changes continuously.
     /// - Parameter context: The camera update context containing the latest camera state.
-    func onContinuousPrimaryMapCameraChange(_ context: MapCameraUpdateContext) {
-        guard isAuthorizedToGetMapCameraUpdate else { return }
-        setPrimaryCameraDragging(true)
-        setPrimaryCenterCoordinate(context.camera.centerCoordinate)
+    func onContinuousMapCameraChange(for type: MapTypes, _ context: MapCameraUpdateContext) {
+        switch type {
+        case .primary:
+            guard isAuthorizedToGetMapCameraUpdate else { return }
+            setPrimaryCameraDragging(true)
+            setPrimaryCenterCoordinate(context.camera.centerCoordinate)
+            
+        case .secondary:
+            setSecondaryCameraDragging(true)
+            setSecondaryCenterCoordinate(context.region.center)
+        }
     }
     
     /// Handles logic when the map camera stops moving.
     /// - Parameter context: The camera update context containing the final camera state.
-    func onPrimaryMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
-        guard isAuthorizedToGetMapCameraUpdate else { return }
-        setPrimaryCameraDragging(false)
-        setPrimaryCenterCoordinate(context.camera.centerCoordinate)
-        clearSelectedSearchResultItemOnMapCameraChangeByUser()
+    func onMapCameraChangeEnd(for type: MapTypes, _ context: MapCameraUpdateContext) {
+        switch type {
+        case .primary:
+            guard isAuthorizedToGetMapCameraUpdate else { return }
+            setPrimaryCameraDragging(false)
+            setPrimaryCenterCoordinate(context.camera.centerCoordinate)
+            clearSelectedSearchResultItemOnMapCameraChangeByUser()
+            
+        case .secondary:
+            setSecondaryCameraDragging(false)
+            setSecondaryCenterCoordinate(context.region.center)
+        }
     }
     
     /// Cycles through available map styles and sets the next one.

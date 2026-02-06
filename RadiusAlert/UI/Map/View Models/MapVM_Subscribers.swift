@@ -42,8 +42,8 @@ extension MapViewModel {
             .map { $0.rounded() }
             .debounce(for: .nanoseconds(100_000_000), scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .sink { radius in
-                self.setRegionBoundsOnRadius()
+            .sink {
+                self.setRegionBoundsOnRadius(for: .primary, radius: $0)
             }
             .store(in: &cancellables)
     }

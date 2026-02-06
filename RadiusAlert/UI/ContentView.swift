@@ -43,20 +43,6 @@ struct ContentView: View {
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons }
-                    
-#if DEBUG
-                    ToolbarItem(placement: .topBarLeading) {
-                        HStack {
-                            Button("Map Sheet") {
-                                mapVM.setIsPresentedMultipleStopsMapSheet(true)
-                            }
-                            
-                            Button("Cancellation Sheet") {
-                                mapVM.setIsPresentedMultipleStopsCancellationSheet(true)
-                            }
-                        }
-                    }
-#endif
                 }
         }
         .alertViewModifier(at: .content)

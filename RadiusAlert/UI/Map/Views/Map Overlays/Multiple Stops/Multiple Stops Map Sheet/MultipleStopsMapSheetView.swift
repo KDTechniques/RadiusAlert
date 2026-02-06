@@ -33,111 +33,33 @@ struct MultipleStopsMapSheetView: View {
                     radius: mapVM.secondarySelectedRadius,
                     condition: mapVM.showSecondaryFloatingCircle()
                 )
-               
+                
                 MapMarkerCirclesView(markers: mapVM.markers)
                 
                 // MARK: - Markers
-                ForEach(mapVM.markers) { marker in
-                    let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: true)
-                    Group {
-                        if mapVM.markers.count == 1 {
-                            Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
-                        } else {
-                            Marker(radiusText, monogram: Text("\(marker.number)"), coordinate: marker.coordinate)
-                        }
-                    }
-                    .tint(marker.color.gradient)
-                }
+                MapMarkersView(markers: mapVM.markers)
                 
                 // MARK: - Routes
-                ForEach(mapVM.markers) { marker in
-                    if let route: MKRoute = marker.route {
-                        MapPolyline(route)
-                            .stroke(marker.color, lineWidth: 3)
-                    }
-                }
+                MapRoutesView(markers: mapVM.markers)
             }
-            .mapControls { mapControls }
             .mapStyle(settingsVM.selectedMapStyle.mapStyle)
-            .onMapCameraChange(frequency: .continuous) {
-                mapVM.setSecondaryCameraDragging(true)
-                mapVM.setSecondaryCenterCoordinate($0.region.center)
-            }
-            .onMapCameraChange(frequency: .onEnd) {
-                mapVM.setSecondaryCameraDragging(false)
-                mapVM.setSecondaryCenterCoordinate($0.region.center)
-            }
-            .overlay {
-                Group {
-                    MapPinView()
-                    radiusSlider
-                    
-                    if !mapVM.isSecondaryCameraDragging {
-                        CircularRadiusTextView(radius: mapVM.secondarySelectedRadius)
-                    }
-                }
-                .opacity(mapVM.showSecondaryMapOverlays() ? 1 : 0)
-                .disabled(!mapVM.showSecondaryMapOverlays())
-                .animation(.default, value: mapVM.showSecondaryMapOverlays())
-                
-                MapStyleButtonView()
-                    .mapBottomTrailingButtonsViewModifier
-            }
+            .mapControls { mapControls }
+            .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange(for: .secondary, $0) }
+            .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd(for: .secondary, $0) }
+            .overlay { mapOverlays }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if #available(iOS 26.0, *) {
-                        Button("Add", role: .confirm) {
-                            guard mapVM.markers.count < 20 else {
-                                mapVM.alertManager.showAlert(.maxMarkerLimitReached(viewLevel: .multipleStopsMapSheet))
-                                
-                                return
-                            }
-                            
-                            mapVM.startAlert(from: .secondary)
-                        }
-                    } else {
-                        Button("Add") {
-                            guard mapVM.markers.count < 20 else {
-                                mapVM.alertManager.showAlert(.maxMarkerLimitReached(viewLevel: .multipleStopsMapSheet))
-                                
-                                return
-                            }
-                            
-                            mapVM.startAlert(from: .secondary)
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarLeading) {
-                    if #available(iOS 26.0, *) {
-                        Button(role: .close) {
-                            mapVM.setIsPresentedMultipleStopsMapSheet(false)
-                        }
-                    } else {
-                        Button("Done") {
-                            mapVM.setIsPresentedMultipleStopsMapSheet(false)
-                        }
-                    }
-                }
+                addButton
+                dismissButton
             }
             .onChange(of: mapVM.secondarySelectedRadius) {
-                setRegionBoundsOnRadius($1)
+                mapVM.setRegionBoundsOnRadius(for: .secondary, radius: $1)
             }
             .alertViewModifier(at: .multipleStopsMapSheet)
             .navigationTitle("Add Another Stop")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .onAppear { // or use onFirst Appear if possible
-            guard
-                let position: MapCameraPosition = mapVM.locationManager.getInitialMapCameraPosition(),
-                let region: MKCoordinateRegion = position.region else { return }
-            
-            mapVM.setSecondaryPosition(.region(region))
-            mapVM.setRegionBoundsToUserLocationNMarkers(on: .secondary)
-        }
-        .onDisappear {
-            mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary)
-        }
+        .onAppear { mapVM.onMultipleStopsMapSheetAppear() }
+        .onDisappear { mapVM.onMultipleStopsMapSheetDisappear() }
         .presentationDragIndicator(.visible)
     }
 }
@@ -167,19 +89,41 @@ extension MultipleStopsMapSheetView {
             .padding(.trailing, 10)
     }
     
-    private func setRegionBoundsOnRadius(_ value: CLLocationDistance) {
-        guard let centerCoordinate = mapVM.secondaryCenterCoordinate else { return }
+    @ViewBuilder
+    private var mapOverlays: some View {
+        Group {
+            MapPinView()
+            radiusSlider
+            
+            if !mapVM.isSecondaryCameraDragging {
+                CircularRadiusTextView(radius: mapVM.secondarySelectedRadius)
+            }
+        }
+        .opacity(mapVM.showSecondaryMapOverlays() ? 1 : 0)
+        .disabled(!mapVM.showSecondaryMapOverlays())
+        .animation(.default, value: mapVM.showSecondaryMapOverlays())
         
-        let boundMeters: CLLocationDistance = mapVM.getRegionBoundsMetersOnRadius(for: value)
-        
-        let region: MKCoordinateRegion = .init(
-            center: centerCoordinate,
-            latitudinalMeters: boundMeters,
-            longitudinalMeters: boundMeters
-        )
-        
-        withAnimation(.none) {
-            mapVM.setSecondaryPosition(.region(region))
+        MapStyleButtonView()
+            .mapBottomTrailingButtonsViewModifier
+    }
+    
+    private var addButton: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            if #available(iOS 26.0, *) {
+                Button("Add", role: .confirm) { mapVM.addAnotherStop() }
+            } else {
+                Button("Add") {  mapVM.addAnotherStop() }
+            }
+        }
+    }
+    
+    private var dismissButton: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            if #available(iOS 26.0, *) {
+                Button(role: .close) { mapVM.dismissMultipleStopsMapSheet() }
+            } else {
+                Button("Done") { mapVM.dismissMultipleStopsMapSheet() }
+            }
         }
     }
 }

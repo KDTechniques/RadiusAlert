@@ -37,31 +37,16 @@ struct MapView: View {
             MapMarkerCirclesView(markers: mapVM.markers)
             
             // MARK: - Markers
-            ForEach(mapVM.markers) { marker in
-                let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: true)
-                Group {
-                    if mapVM.markers.count == 1 {
-                        Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)
-                    } else {
-                        Marker(radiusText, monogram: Text("\(marker.number)"), coordinate: marker.coordinate)
-                    }
-                }
-                .tint(marker.color.gradient)
-            }
+            MapMarkersView(markers: mapVM.markers)
             
             // MARK: - Routes
-            ForEach(mapVM.markers) { marker in
-                if let route: MKRoute = marker.route {
-                    MapPolyline(route)
-                        .stroke(marker.color, lineWidth: 3)
-                }
-            }
+            MapRoutesView(markers: mapVM.markers)
         }
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
         .mapControlVisibility(mapVM.showPrimaryMapControls() ? .visible : .hidden)
-        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousPrimaryMapCameraChange($0) }
-        .onMapCameraChange(frequency: .onEnd) { mapVM.onPrimaryMapCameraChangeEnd($0) }
+        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange(for: .primary, $0) }
+        .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd(for: .primary, $0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
         .sheet(isPresented: mapVM.multipleStopsMapSheetBinding()) { MultipleStopsMapSheetView() }

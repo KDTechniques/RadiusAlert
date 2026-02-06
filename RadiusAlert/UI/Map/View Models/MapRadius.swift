@@ -7,6 +7,7 @@
 
 import CoreLocation
 import SwiftUI
+import MapKit
 
 // MARK: RADIUS
 
@@ -47,9 +48,32 @@ extension MapViewModel {
         return textWithName
     }
     
-    func setRegionBoundsOnRadius() {
-        guard let primaryCenterCoordinate else { return }
-        setRegionBoundMeters(to: primaryCenterCoordinate, meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius), on: .primary, animate: true)
+    func setRegionBoundsOnRadius(for type: MapTypes, radius: CLLocationDistance) {
+        switch type {
+        case .primary:
+            guard let primaryCenterCoordinate else { return }
+            setRegionBoundMeters(
+                to: primaryCenterCoordinate,
+                meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius),
+                on: .primary,
+                animate: true
+            )
+            
+        case .secondary:
+            guard let secondaryCenterCoordinate else { return }
+            
+            let boundMeters: CLLocationDistance = getRegionBoundsMetersOnRadius(for: radius)
+            
+            let region: MKCoordinateRegion = .init(
+                center: secondaryCenterCoordinate,
+                latitudinalMeters: boundMeters,
+                longitudinalMeters: boundMeters
+            )
+            
+            withAnimation(.none) {
+                setSecondaryPosition(.region(region))
+            }
+        }
     }
     
     func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {
