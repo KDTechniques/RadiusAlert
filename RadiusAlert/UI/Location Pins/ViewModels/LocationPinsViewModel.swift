@@ -123,25 +123,24 @@ final class LocationPinsViewModel {
     }
     
     func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
+        /// when user taps on a pin, position the pin on primary map only when there's no markers, and then create a marker just way we normally do.
+        /// but if there are markers just show the multiple stops sheet and position the map there, so user can tap on add button and then we can addd the to markers array like the way we add a a normal marker.
         guard mapVM.markers.isEmpty else {
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            mapVM.setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                await mapVM.prepareSelectedLocationPinCoordinate(on: .secondary, item: item)
+            }
             
             return
         }
         
-        
-        // just write the whole logic from scratch!!!!!!!!!!!!!
-        
-        
-        
-//        guard mapVM.isMarkerCoordinateNil() else {
-//            alertManager.showAlert(.stopAlertOnSubmit {
-//                self.mapVM.stopAlert()
-//                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
-//            })
-//            return
-//        }
-//        
-//        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
+        Task {
+            await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item)
+        }
     }
 }
 

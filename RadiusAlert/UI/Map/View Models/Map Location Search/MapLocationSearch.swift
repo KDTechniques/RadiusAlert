@@ -64,7 +64,7 @@ extension MapViewModel {
     /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
     ///
     /// - Parameter item: The completion result to resolve and focus.
-    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
+    func prepareSelectedSearchResultCoordinate(on type: MapTypes, item: MKLocalSearchCompletion) {
         setSelectedMapItem(item)
         
         // Clear any existing search UI state
@@ -72,7 +72,7 @@ extension MapViewModel {
         
         Task {
             guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
-            await prepareMapPositionNRegion(mapItem)
+            await prepareMapPositionNRegion(on: type, mapItem: mapItem)
         }
     }
     
@@ -83,11 +83,16 @@ extension MapViewModel {
     /// - Marks the selection as fully set (`doneSetting = true`) after the map finishes animating.
     ///
     /// - Parameter item: The location pin the user selected.
-    func prepareSelectedLocationPinCoordinateOnMap(_ item: LocationPinsModel) {
+    func prepareSelectedLocationPinCoordinate(on type: MapTypes, item: LocationPinsModel) async {
         // Clear any existing search UI state
         resetSearchable()
         
-        setPrimarySelectedRadius(item.radius)
+        switch type {
+        case .primary:
+            setPrimarySelectedRadius(item.radius)
+        case .secondary:
+            setSecondarySelectedRadius(item.radius)
+        }
         
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
@@ -95,7 +100,7 @@ extension MapViewModel {
         // Optimistically set the selection so the UI can reflect the choice right away
         setSelectedSearchResult(.init(result: mkMapItem))
         
-        Task { await prepareMapPositionNRegion(mkMapItem) }
+        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem)
     }
     
     /// Focuses the map on a location picked from recent searches.
@@ -115,7 +120,7 @@ extension MapViewModel {
         // Optimistically set the selection so the UI can reflect the choice right away
         setSelectedSearchResult(.init(result: mkMapItem))
         
-        Task { await prepareMapPositionNRegion(mkMapItem) }
+        Task { await prepareMapPositionNRegion(on: .primary, mapItem: mkMapItem) }
     }
     
     /// Reacts to changes in the currently selected search result.
@@ -190,17 +195,32 @@ extension MapViewModel {
     /// 1) Wait for state propagation, 2) animate to position, 3) apply region bounds, 4) mark selection as done.
     ///
     /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
-    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
-        guard let primaryCenterCoordinate else { return }
+    private func prepareMapPositionNRegion(on type: MapTypes, mapItem: MKMapItem) async {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        guard let centerCoordinate else { return }
         
         // 1) Zoom out to Initial Region Bounds
         let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
         let initialRegion: MKCoordinateRegion = .init(
-            center: primaryCenterCoordinate,
+            center: centerCoordinate,
             latitudinalMeters: boundsMeters,
             longitudinalMeters: boundsMeters
         )
-        await setPrimaryPosition(region: initialRegion, animate: true)
+        
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: initialRegion, animate: true)
+        case .secondary:
+            await setSecondaryPosition(region: initialRegion, animate: true)
+        }
         
         // 2) Position Camera to New Coordinates
         let newRegion: MKCoordinateRegion = .init(
@@ -208,11 +228,25 @@ extension MapViewModel {
             latitudinalMeters: boundsMeters,
             longitudinalMeters: boundsMeters
         )
-       
-        await setPrimaryPosition(region: newRegion, animate: true)
+        
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: newRegion, animate: true)
+        case .secondary:
+            await setSecondaryPosition(region: newRegion, animate: true)
+        }
         
         // 3) Zoom in or out to region bounds based on radius
-        setRegionBoundsOnRadius(for: .primary, radius: primarySelectedRadius)
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
+        setRegionBoundsOnRadius(for: type, radius: radius)
         try? await Task.sleep(nanoseconds: 800_000_000)
         
         setSelectedSearchResult(.init(result: mapItem, doneSetting: true))

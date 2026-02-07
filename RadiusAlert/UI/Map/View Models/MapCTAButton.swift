@@ -83,7 +83,7 @@ extension MapViewModel {
                 .stopAlertOnSubmit(viewLevel: .content) {
                     self.stopAlert(for: [markerID])
                     self.setSearchFieldFocused(false)
-                    self.prepareSelectedSearchResultCoordinateOnMap(item)
+                    self.prepareSelectedSearchResultCoordinate(on: .primary, item: item)
                 }
             )
         }
