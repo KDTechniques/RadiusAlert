@@ -21,7 +21,7 @@ struct MapMarkersView: MapContent {
     // MARK: - BODY
     var body: some MapContent {
         ForEach(markers) { marker in
-            let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: true)
+            let radiusText: String = mapVM.getRadiusTextString(marker.radius, title: marker.title, withAlertRadiusText: true)
             Group {
                 if markers.count == 1 {
                     Marker(radiusText, systemImage: "bell.and.waves.left.and.right.fill", coordinate: marker.coordinate)

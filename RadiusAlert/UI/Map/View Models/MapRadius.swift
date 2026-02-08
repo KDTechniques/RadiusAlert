@@ -15,15 +15,15 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func primarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(get: { self.primarySelectedRadius }, set: withAnimation { setPrimarySelectedRadius })
+        return .init(get: { self.primarySelectedRadius }, set: setPrimarySelectedRadius)
     }
     
     func secondarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(get: { self.secondarySelectedRadius }, set: withAnimation { setSecondarySelectedRadius })
+        return .init(get: { self.secondarySelectedRadius }, set: setSecondarySelectedRadius)
     }
     
     /// Formats the radius value as a string, optionally including alert text and a name.
-    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
+    func getRadiusTextString(_ radius: CLLocationDistance, title: String?, withAlertRadiusText: Bool) -> String {
         /// Round the radius to the nearest whole number
         let radius: Double = radius.rounded()
         /// Convert the radius from meters to kilometers
@@ -41,39 +41,40 @@ extension MapViewModel {
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
         /// Returns text only if no alert text or no selectedSearchResult name
-        guard withAlertRadiusText, let name: String = selectedSearchResult?.result.name else { return text }
+        guard withAlertRadiusText, let title else { return text }
         
         /// Returns text with the name included
-        let textWithName: String = "(\(name))\n\(text)"
+        let textWithName: String = "(\(title))\n\(text)"
         return textWithName
     }
     
-    func setRegionBoundsOnRadius(for type: MapTypes, radius: CLLocationDistance) {
-        switch type {
-        case .primary:
-            guard let primaryCenterCoordinate else { return }
-            setRegionBoundMeters(
-                to: primaryCenterCoordinate,
-                meters: getRegionBoundsMetersOnRadius(for: primarySelectedRadius),
-                on: .primary,
-                animate: true
-            )
-            
-        case .secondary:
-            guard let secondaryCenterCoordinate else { return }
-            
-            let boundMeters: CLLocationDistance = getRegionBoundsMetersOnRadius(for: radius)
-            
-            let region: MKCoordinateRegion = .init(
-                center: secondaryCenterCoordinate,
-                latitudinalMeters: boundMeters,
-                longitudinalMeters: boundMeters
-            )
-            
-            withAnimation(.none) {
-                setSecondaryPosition(.region(region))
+    func setRegionBoundsOnRadius(for type: MapTypes) async {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
             }
-        }
+        }()
+        
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
+        guard let centerCoordinate else { return }
+        
+        await setRegionBoundMeters(
+            to: centerCoordinate,
+            meters: getRegionBoundsMetersOnRadius(for: radius),
+            on: type,
+            animate: true
+        )
     }
     
     func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {
@@ -89,8 +90,9 @@ extension MapViewModel {
         }
     }
     
-    func onRadiusSliderEditingChanged(_ isEditing: Bool) {
+    func onRadiusSliderSlidingEnded(on type: MapTypes) {
         invalidateRadiusSliderTip()
+        Task { await setRegionBoundsOnRadius(for: type) }
     }
     
     func setRadiusSliderTipRule_IsSetRadius(_ item: SearchResultModel?) {

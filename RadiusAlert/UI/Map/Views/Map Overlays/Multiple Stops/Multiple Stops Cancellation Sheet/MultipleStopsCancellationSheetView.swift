@@ -24,7 +24,7 @@ struct MultipleStopsCancellationSheetView: View {
                 if let firstMarkerID: String = markers.first?.id,
                    let lastMarkerID: String = markers.last?.id {
                     List(markers) { marker in
-                        let radiusText: String = mapVM.getRadiusTextString(marker.radius, withAlertRadiusText: false)
+                        let radiusText: String = mapVM.getRadiusTextString(marker.radius, title: nil, withAlertRadiusText: false)
                         
                         MultipleStopsCancellationSheetListRowView(
                             color: marker.color,

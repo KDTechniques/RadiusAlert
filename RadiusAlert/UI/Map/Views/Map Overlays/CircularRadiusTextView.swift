@@ -20,7 +20,7 @@ struct CircularRadiusTextView: View {
     
     // MARK: - BODY
     var body: some View {
-        Text(mapVM.getRadiusTextString(radius, withAlertRadiusText: true))
+        Text(mapVM.getRadiusTextString(radius, title: mapVM.selectedSearchResult?.result.name, withAlertRadiusText: true))
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)

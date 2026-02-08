@@ -56,6 +56,9 @@ extension MapViewModel {
         // Set the marker coordinate.
         guard let markerID: String = addMarkerCoordinate(from: type) else { return }
         
+        // Clear Selected Map Item
+        setSelectedSearchResult(nil)
+        
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
@@ -215,31 +218,17 @@ extension MapViewModel {
     /// This method determines the display title and other details for the popup card.
     /// - Parameter currentUserLocation: The user’s current geographic coordinates.
     private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D, markerID: String) {
-        guard let marker: MarkerModel = markers.first(where: { $0.id == markerID }) else { return }
-        
-        // Tracks whether the marker coordinate exactly matches the selected search result's coordinate
-        var coordinateCheck: Bool
-        var locationTitle: String?
-        
-        if let selectedSearchResultCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.placemark.coordinate {
-            coordinateCheck = marker.coordinate.isEqual(to: selectedSearchResultCoordinate)
-            locationTitle = coordinateCheck ? selectedSearchResult?.result.name : nil
-            
-            print("Match?: ", coordinateCheck)
-            print("\n\n")
-        }
-        
-        // Create the RadiusAlertModel:
-        // - If coordinates match, use the search result's name for the title
-        // - Always store the user's first location, the marker coordinate, and the chosen radius
+        guard let marker: MarkerModel = getMarkerObject(on: markerID) else { return }
+    
+        // Create the RadiusAlertModel
         let radiusAlertItem = RadiusAlertModel(
-            locationTitle: locationTitle,
+            locationTitle: marker.title,
             firstUserLocation: currentUserLocation,
             markerCoordinate: marker.coordinate,
             setRadius: marker.radius
         )
         
-        // Save this alert item so it can be displayed when the alert triggers
+        // Add this alert item so it can be displayed when the alert triggers
         insertRadiusAlertItem(radiusAlertItem)
     }
     
@@ -264,7 +253,7 @@ extension MapViewModel {
     
     private func onRegionEntry(markerID: String) {
         alertManager.sendNotification()
-        generateNSetPopupCardItem(for: markerID)
+        generateNSetAlertPopupCardItem(for: markerID)
         alertManager.playHaptic()
         Task {
             if settingsVM.spokenAlertValues.isOnSpokenAlert {

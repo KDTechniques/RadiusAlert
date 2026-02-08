@@ -13,12 +13,12 @@ struct RadiusSliderView: View {
     @Environment(MapViewModel.self) private var mapVM
     
     @Binding var value: Double
-    let onEditingChanged: (_ boolean: Bool) -> Void
+    let onSlidingEnded: () -> Void
     
     // MARK: - INITIALIZER
-    init(value: Binding<Double>, _ onEditingChanged: @escaping (_ boolean: Bool) -> Void) {
+    init(value: Binding<Double>, _ onSlidingEnded: @escaping () -> Void) {
         _value = value
-        self.onEditingChanged = onEditingChanged
+        self.onSlidingEnded = onSlidingEnded
     }
     
     // MARK: - ASSIGNED PROPERTIES
@@ -36,14 +36,14 @@ struct RadiusSliderView: View {
         } maximumValueLabel: {
             Text(mapValues.maximumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
-        } onEditingChanged: { onEditingChanged($0) }
+        } onEditingChanged: { $0 ? () : onSlidingEnded() }
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("RadiusSliderView") {
     @Previewable @State var sliderValue: Double = MapValues.minimumRadius
-    RadiusSliderView(value: $sliderValue) { print($0) }
+    RadiusSliderView(value: $sliderValue) { print("Sliding Ended!") }
         .padding()
         .previewModifier()
 }

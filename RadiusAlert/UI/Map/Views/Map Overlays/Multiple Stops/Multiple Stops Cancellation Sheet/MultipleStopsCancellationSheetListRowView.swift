@@ -44,7 +44,7 @@ struct MultipleStopsCancellationSheetListRowView: View {
         color: .debug,
         number: Int.random(in: 0...10),
         title: "Unknown Location",
-        radius: mapVM.getRadiusTextString(randomRadius, withAlertRadiusText: false)
+        radius: mapVM.getRadiusTextString(randomRadius, title: nil, withAlertRadiusText: false)
     )
     .padding(.horizontal)
     .previewModifier()

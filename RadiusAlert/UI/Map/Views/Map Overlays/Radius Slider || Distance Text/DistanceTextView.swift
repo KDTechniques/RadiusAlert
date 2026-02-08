@@ -21,7 +21,7 @@ struct DistanceTextView: View {
     
     // MARK: - BODY
     var body: some View {
-        let distanceString: String = mapVM.getRadiusTextString(distance, withAlertRadiusText: false)
+        let distanceString: String = mapVM.getRadiusTextString(distance, title: nil, withAlertRadiusText: false)
         
         Text("Distance: \(distanceString)")
             .fontDesign(.monospaced)

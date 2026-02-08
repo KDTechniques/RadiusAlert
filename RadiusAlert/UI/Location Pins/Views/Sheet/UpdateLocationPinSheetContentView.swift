@@ -72,7 +72,7 @@ extension UpdateLocationPinSheetContentView {
                     Text(MapValues.maximumRadiusString)
                 }
         } header: {
-            Text("Radius: \(mapVM.getRadiusTextString(radius, withAlertRadiusText: false))")
+            Text("Radius: \(mapVM.getRadiusTextString(radius, title: nil, withAlertRadiusText: false))")
                 .padding(.top)
         }
         .listRowBackground(Color.clear)

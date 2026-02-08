@@ -36,18 +36,6 @@ extension MapViewModel {
             .store(in: &cancellables)
     }
     
-    func primarySelectedRadiusSubscriber() {
-        $primarySelectedRadius$
-            .dropFirst()
-            .map { $0.rounded() }
-            .debounce(for: .nanoseconds(100_000_000), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .sink {
-                self.setRegionBoundsOnRadius(for: .primary, radius: $0)
-            }
-            .store(in: &cancellables)
-    }
-    
     func networkStatusSubscriber() {
         networkManager.$connectionState$
             .removeDuplicates()

@@ -41,7 +41,7 @@ struct RadiusSliderOrDistanceTextView: View {
     @Previewable @State var mapVM: MapViewModel = .init(settingsVM: .init())
     
     VStack {
-        RadiusSliderView(value: $sliderValue) { print($0) }
+        RadiusSliderView(value: $sliderValue) { print("Sliding Ended!") }
             .popoverTip(mapVM.radiusSliderTip)
             .padding()
         
@@ -67,7 +67,7 @@ struct RadiusSliderOrDistanceTextView: View {
 // MARK: - EXTENSIONS
 extension RadiusSliderOrDistanceTextView {
     private var radiusSlider: some View {
-        RadiusSliderView(value: mapVM.primarySelectedRadiusBinding()) { mapVM.onRadiusSliderEditingChanged($0) }
+        RadiusSliderView(value: mapVM.primarySelectedRadiusBinding()) { mapVM.onRadiusSliderSlidingEnded(on: .primary) }
             .opacity(mapVM.showPrimaryRadiusSliderOrDistanceText() == .radiusSlider ? 1 : 0)
             .disabled(mapVM.showPrimaryRadiusSliderOrDistanceText() != .radiusSlider)
             .popoverTip(mapVM.radiusSliderTip)

@@ -18,7 +18,6 @@ final class MapViewModel {
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
         primarySelectedRadius = mapValues.minimumRadius
-        primarySelectedRadius$ = mapValues.minimumRadius
         secondarySelectedRadius = mapValues.minimumRadius
         initializeMapVM()
     }
@@ -37,12 +36,11 @@ final class MapViewModel {
     let textToSpeechManager: TextToSpeechManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let recentSearchManager: RecentSearchManager = .shared
-    
+   
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
-    private(set) var primarySelectedRadius: CLLocationDistance { didSet { primarySelectedRadius$ = primarySelectedRadius } }
-    @ObservationIgnored @Published private(set) var primarySelectedRadius$: CLLocationDistance
+    private(set) var primarySelectedRadius: CLLocationDistance
     private(set) var failedRouteMarkers: Set<MarkerModel> = []
     private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
@@ -96,7 +94,7 @@ final class MapViewModel {
             primaryPosition = .region(region)
         }
         
-        try? await Task.sleep(nanoseconds: 800_000_000)
+        try? await Task.sleep(nanoseconds: 500_000_000)
     }
     
     func setSecondaryPosition(region: MKCoordinateRegion, animate: Bool) async {
@@ -104,7 +102,7 @@ final class MapViewModel {
             secondaryPosition = .region(region)
         }
         
-        try? await Task.sleep(nanoseconds: 800_000_000)
+        try? await Task.sleep(nanoseconds: 500_000_000)
     }
     
     func setSearchFieldFocused(_ boolean: Bool) {
@@ -198,7 +196,7 @@ final class MapViewModel {
     func setRegionBoundsToUserLocationNMarkersTimestamp(_ value: Date) {
         regionBoundsToUserLocationNMarkersTimestamp = value
     }
-    
+  
     // MARK: - PUBLIC FUNCTIONS
     
     func getNavigationTitleIconColor() -> Color {
@@ -222,7 +220,6 @@ final class MapViewModel {
         clearMemoryByMapStyles()
         fetchNAssignRecentSearches()
         currentUserLocationSubscriber()
-        primarySelectedRadiusSubscriber()
         networkStatusSubscriber()
     }
 }

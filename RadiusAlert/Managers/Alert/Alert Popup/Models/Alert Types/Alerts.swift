@@ -52,7 +52,6 @@ extension AlertTypes {
             )
             
         case .radiusNotBeyondMinimumDistance(let viewLevel):
-            print(viewLevel)
             return .init(
                 viewLevel: viewLevel,
                 title: "Too Close to Set Alert",

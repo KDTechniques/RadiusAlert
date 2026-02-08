@@ -51,9 +51,6 @@ struct MultipleStopsMapSheetView: View {
                 addButton
                 dismissButton
             }
-            .onChange(of: mapVM.secondarySelectedRadius) {
-                mapVM.setRegionBoundsOnRadius(for: .secondary, radius: $1)
-            }
             .alertViewModifier(at: .multipleStopsMapSheet)
             .navigationTitle("Add Another Stop")
             .navigationBarTitleDisplayMode(.inline)
@@ -83,7 +80,7 @@ extension MultipleStopsMapSheetView {
     }
     
     private var radiusSlider: some View {
-        RadiusSliderView(value: mapVM.secondarySelectedRadiusBinding()) { print($0) }
+        RadiusSliderView(value: mapVM.secondarySelectedRadiusBinding()) { mapVM.onRadiusSliderSlidingEnded(on: .secondary) }
             .frame(width: Utilities.screenWidth/MapValues.radiusSliderWidthFactor)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .padding(.trailing, 10)

@@ -104,12 +104,13 @@ extension MapViewModel {
             guard isAuthorizedToGetMapCameraUpdate else { return }
             setPrimaryCameraDragging(false)
             setPrimaryCenterCoordinate(context.camera.centerCoordinate)
-            clearSelectedSearchResultItemOnMapCameraChangeByUser()
             
         case .secondary:
             setSecondaryCameraDragging(false)
-            setSecondaryCenterCoordinate(context.region.center)
+            setSecondaryCenterCoordinate(context.camera.centerCoordinate)
         }
+        
+        clearSelectedSearchResultItemOnMapCameraChangeByUser()
     }
     
     /// Cycles through available map styles and sets the next one.
@@ -128,16 +129,14 @@ extension MapViewModel {
     /// - Parameters:
     ///   - center: The center coordinate for the new region.
     ///   - meters: The distance in meters for both latitude and longitude bounds.
-    func setRegionBoundMeters(to centerCoordinate: CLLocationCoordinate2D, meters: CLLocationDistance, on type: MapTypes, animate: Bool) {
+    func setRegionBoundMeters(to centerCoordinate: CLLocationCoordinate2D, meters: CLLocationDistance, on type: MapTypes, animate: Bool) async {
         let region: MKCoordinateRegion = .init(center: centerCoordinate, latitudinalMeters: meters, longitudinalMeters: meters)
         
-        Task {
-            switch type {
-            case .primary:
-                await setPrimaryPosition(region: region, animate: animate)
-            case .secondary:
-                await setSecondaryPosition(region: region, animate: animate)
-            }
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: region, animate: animate)
+        case .secondary:
+            await setSecondaryPosition(region: region, animate: animate)
         }
     }
     
@@ -180,6 +179,63 @@ extension MapViewModel {
         setRegionBoundsToUserLocationNMarkersTimestamp(.now)
     }
     
+    func prepareMapPositionNRegion(on type: MapTypes, mapItem: MKMapItem, itemRadius: CLLocationDistance) async {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        guard let centerCoordinate else { return }
+        
+        // 1) Zoom out to Initial Region Bounds
+        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let initialRegion: MKCoordinateRegion = .init(
+            center: centerCoordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: initialRegion, animate: true)
+            break
+        case .secondary:
+            await setSecondaryPosition(region: initialRegion, animate: true)
+        }
+        
+        // 2) Position Camera to New Coordinates
+        let newRegion: MKCoordinateRegion = .init(
+            center: mapItem.placemark.coordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        /// View get affected due to following radius changes, because of that position doesn't update with animation properly.
+        /// A small delay help the position to animate properly after the view update was ended from the radius value.
+        switch type {
+        case .primary:
+            setPrimarySelectedRadius(itemRadius)
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            await setPrimaryPosition(region: newRegion, animate: true)
+            
+        case .secondary:
+            setSecondarySelectedRadius(itemRadius)
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            await setSecondaryPosition(region: newRegion, animate: true)
+        }
+        
+        setSelectedSearchResult(.init(result: mapItem))
+        
+        // 3) Zoom in or out to region bounds based on radius
+        await setRegionBoundsOnRadius(for: type)
+        
+        setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Check the coordinates between selectedMapItem and the center coordinate.
@@ -187,14 +243,7 @@ extension MapViewModel {
     /// and it is no longer the selected search result coordinate.
     /// Clears the selected search result if the map camera position no longer matches the selected search result's coordinate.
     private func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
-        // Ensure we have a selected search result that is set, a valid center coordinate,
-        // no radius alert item active, and the center coordinate does not match the selected result coordinate within a precision of 5 decimal places.
-        guard
-            let selectedSearchResult,
-            selectedSearchResult.doneSetting,
-            let primaryCenterCoordinate,
-            radiusAlertItems.isEmpty,
-            !primaryCenterCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
+        guard selectedSearchResult?.doneSetting ?? false else { return }
         
         // Clear the selected search result because the user moved the map away from it
         setSelectedSearchResult(nil)
