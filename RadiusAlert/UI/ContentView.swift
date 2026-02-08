@@ -29,7 +29,10 @@ struct ContentView: View {
                         .disabled(!mapVM.showPrimaryMapPin())
                     
                     if mapVM.showFloatingAlertRadiusText() {
-                        CircularRadiusTextView(radius: mapVM.primarySelectedRadius)
+                        CircularRadiusTextView(
+                            radius: mapVM.primarySelectedRadius,
+                            title: mapVM.selectedSearchResult?.result.name
+                        )
                     }
                     
                     MapBottomTrailingButtonsView()

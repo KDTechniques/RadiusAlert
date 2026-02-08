@@ -56,7 +56,7 @@ extension MapViewModel {
         // Set the marker coordinate.
         guard let markerID: String = addMarkerCoordinate(from: type) else { return }
         
-        // Clear Selected Map Item
+        // Clear Selected Search Result Item
         setSelectedSearchResult(nil)
         
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.

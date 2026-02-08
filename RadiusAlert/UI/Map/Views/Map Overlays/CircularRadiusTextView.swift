@@ -12,15 +12,17 @@ struct CircularRadiusTextView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(MapViewModel.self) private var mapVM
     let radius: CLLocationDistance
+    let title: String?
     
     // MARK: - INITIALIZER
-    init(radius: CLLocationDistance) {
+    init(radius: CLLocationDistance, title: String?) {
         self.radius = radius
+        self.title = title
     }
     
     // MARK: - BODY
     var body: some View {
-        Text(mapVM.getRadiusTextString(radius, title: mapVM.selectedSearchResult?.result.name, withAlertRadiusText: true))
+        Text(mapVM.getRadiusTextString(radius, title: title, withAlertRadiusText: true))
             .multilineTextAlignment(.center)
             .font(.caption)
             .fontWeight(.medium)
@@ -32,6 +34,6 @@ struct CircularRadiusTextView: View {
 
 // MARK: - PREVIEWS
 #Preview("CircularRadiusTextView") {
-    CircularRadiusTextView(radius: MapValues.minimumRadius)
+    CircularRadiusTextView(radius: MapValues.minimumRadius, title: nil)
         .previewModifier()
 }

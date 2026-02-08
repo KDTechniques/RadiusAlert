@@ -93,7 +93,10 @@ extension MultipleStopsMapSheetView {
             radiusSlider
             
             if !mapVM.isSecondaryCameraDragging {
-                CircularRadiusTextView(radius: mapVM.secondarySelectedRadius)
+                CircularRadiusTextView(
+                    radius: mapVM.secondarySelectedRadius,
+                    title: mapVM.selectedSearchResult?.result.name
+                )
             }
         }
         .opacity(mapVM.showSecondaryMapOverlays() ? 1 : 0)
