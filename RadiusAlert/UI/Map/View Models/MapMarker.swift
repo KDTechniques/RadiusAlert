@@ -49,6 +49,12 @@ extension MapViewModel {
             number: (markers.map({ $0.number }).max() ?? 0) + 1
         )
         
+        // Make sure we're not adding the same marker on the same location
+        guard !markers.contains(where: { $0.id == marker.id }) else {
+            alertManager.showAlert(.markerAlreadyExist(ViewLevel: .multipleStopsMapSheet))
+            return nil
+        }
+        
         addMarker(marker)
         
         return marker.id

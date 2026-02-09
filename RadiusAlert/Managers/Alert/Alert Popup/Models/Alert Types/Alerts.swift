@@ -128,6 +128,15 @@ extension AlertTypes {
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
             )
+            
+        case .markerAlreadyExist(let viewLevel):
+            return .init(
+                viewLevel: viewLevel,
+                title: "The Stop Already Exist",
+                message: "You can't add a stop on the same location.",
+                hapticType: .warning,
+                actions: [.init(role: .ok)]
+            )
         }
     }
 }

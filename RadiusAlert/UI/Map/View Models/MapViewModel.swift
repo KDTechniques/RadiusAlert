@@ -161,8 +161,6 @@ final class MapViewModel {
     }
     
     func addMarker(_ value: MarkerModel) {
-        // Following logic must be isolated to another function except the setter.
-        guard !markers.contains(where: { $0.id == value.id }) else { return }
         markers.append(value)
     }
     
