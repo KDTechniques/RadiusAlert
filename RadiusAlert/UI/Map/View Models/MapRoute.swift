@@ -32,7 +32,7 @@ extension MapViewModel {
         guard
             !self.failedRouteMarkers.isEmpty,
             networkStatus == .connected,
-            let userLocation: CLLocationCoordinate2D = self.locationManager.currentUserLocation else { return }
+            let currentUserLocation: CLLocationCoordinate2D = self.locationManager.currentUserLocation else { return }
         
         Utilities.log("⚠️: Retrieving routes again.")
         
@@ -44,7 +44,7 @@ extension MapViewModel {
                     group.addTask {
                         guard
                             let route = await self.locationManager.getRoute(
-                                pointA: userLocation,
+                                pointA: currentUserLocation,
                                 pointB: marker.coordinate
                             ) else { return nil }
                         
@@ -61,8 +61,23 @@ extension MapViewModel {
                     }
                 }
             }
+            
             Utilities.log("✅: Tried retrieving routes.")
         }
+    }
+    
+    func regenerateRoutes() {
+        let condition1: Bool = scenePhase == .active
+        let condition2: Bool = UIApplication.shared.isProtectedDataAvailable
+        
+        guard
+            condition1,
+            condition2,
+            !markers.isEmpty,
+            let currentUserLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        
+        print("👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀")
     }
     
     // MARK: - PRIVATE FUNCTIONS

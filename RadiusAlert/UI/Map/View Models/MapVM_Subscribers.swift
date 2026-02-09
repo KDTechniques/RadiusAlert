@@ -31,7 +31,7 @@ extension MapViewModel {
             .sink { _ in
                 self.updateDistanceText()
                 self.autoPositionMarkersNUserLocationRegionBounds()
-                
+                self.regenerateRoutes()
             }
             .store(in: &cancellables)
     }

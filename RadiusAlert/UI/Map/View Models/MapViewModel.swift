@@ -37,6 +37,9 @@ final class MapViewModel {
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let recentSearchManager: RecentSearchManager = .shared
    
+    // Common
+    private(set) var scenePhase: ScenePhase?
+    
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
@@ -46,7 +49,8 @@ final class MapViewModel {
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
-    
+    private(set) var regenerateRoutesTimestamp: Date = .now
+ 
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
@@ -195,6 +199,14 @@ final class MapViewModel {
     
     func setRegionBoundsToUserLocationNMarkersTimestamp(_ value: Date) {
         regionBoundsToUserLocationNMarkersTimestamp = value
+    }
+    
+    func setRegenerateRoutesTimestamp(time: Date) {
+        regenerateRoutesTimestamp = time
+    }
+    
+    func setScenePhase(_ phase: ScenePhase) {
+        scenePhase = phase
     }
   
     // MARK: - PUBLIC FUNCTIONS

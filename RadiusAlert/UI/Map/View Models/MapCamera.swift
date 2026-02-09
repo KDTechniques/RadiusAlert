@@ -110,7 +110,7 @@ extension MapViewModel {
             setSecondaryCenterCoordinate(context.camera.centerCoordinate)
         }
         
-        clearSelectedSearchResultItemOnMapCameraChangeByUser()
+        clearSelectedSearchResultItemOnMapCameraChangeByUser(on: type)
     }
     
     /// Cycles through available map styles and sets the next one.
@@ -242,8 +242,21 @@ extension MapViewModel {
     /// If these two don’t match, it means the user has moved the map around,
     /// and it is no longer the selected search result coordinate.
     /// Clears the selected search result if the map camera position no longer matches the selected search result's coordinate.
-    private func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
-        guard selectedSearchResult?.doneSetting ?? false else { return }
+    private func clearSelectedSearchResultItemOnMapCameraChangeByUser(on type: MapTypes) {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        guard
+            let centerCoordinate,
+            let selectedSearchResult,
+            !selectedSearchResult.result.coordinate.isEqual(to: centerCoordinate),
+            selectedSearchResult.doneSetting else { return }
         
         // Clear the selected search result because the user moved the map away from it
         setSelectedSearchResult(nil)
