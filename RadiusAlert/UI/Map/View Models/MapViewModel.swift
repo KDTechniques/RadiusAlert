@@ -36,20 +36,15 @@ final class MapViewModel {
     let textToSpeechManager: TextToSpeechManager = .shared
     private(set) var locationSearchManager: LocationSearchManager = .init()
     let recentSearchManager: RecentSearchManager = .shared
-   
-    // Common
-    private(set) var scenePhase: ScenePhase?
     
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
     private(set) var primarySelectedRadius: CLLocationDistance
-    private(set) var failedRouteMarkers: Set<MarkerModel> = []
     private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
-    private(set) var regenerateRoutesTimestamp: Date = .now
  
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -188,25 +183,8 @@ final class MapViewModel {
         isPresentedMultipleStopsMapSheet = value
     }
     
-    func insertFailedRouteMarker(_ value: MarkerModel) {
-        failedRouteMarkers.insert(value)
-    }
-    
-    func removeFailedRouteMarker(by id: String) {
-        guard let marker: MarkerModel = failedRouteMarkers.first(where: { $0.id == id }) else { return }
-        failedRouteMarkers.remove(marker)
-    }
-    
     func setRegionBoundsToUserLocationNMarkersTimestamp(_ value: Date) {
         regionBoundsToUserLocationNMarkersTimestamp = value
-    }
-    
-    func setRegenerateRoutesTimestamp(time: Date) {
-        regenerateRoutesTimestamp = time
-    }
-    
-    func setScenePhase(_ phase: ScenePhase) {
-        scenePhase = phase
     }
   
     // MARK: - PUBLIC FUNCTIONS
@@ -232,7 +210,6 @@ final class MapViewModel {
         clearMemoryByMapStyles()
         fetchNAssignRecentSearches()
         currentUserLocationSubscriber()
-        networkStatusSubscriber()
     }
 }
 

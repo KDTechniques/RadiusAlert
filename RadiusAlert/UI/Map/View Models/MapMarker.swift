@@ -45,7 +45,6 @@ extension MapViewModel {
             title: title,
             coordinate: markerCoordinate,
             radius: radius,
-            route: nil,
             color: markers.isEmpty ? .pink : .debug,
             number: (markers.map({ $0.number }).max() ?? 0) + 1
         )

@@ -13,7 +13,6 @@ struct MarkerModel: Identifiable, Hashable {
     let title: String?
     let coordinate: CLLocationCoordinate2D
     let radius: CLLocationDistance
-    var route: MKRoute?
     let color: Color
     let number: Int
     
@@ -24,8 +23,7 @@ struct MarkerModel: Identifiable, Hashable {
     
     // Implement Equatable manually
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id &&
-        lhs.route == rhs.route
+        lhs.id == rhs.id
     }
     
     static var mock: [Self] {
@@ -36,7 +34,6 @@ struct MarkerModel: Identifiable, Hashable {
                 title: UUID().uuidString,
                 coordinate: .init(latitude: Double.random(in: 0...50), longitude: Double.random(in: 0...50)),
                 radius: Double.random(in: 700...3000),
-                route: nil,
                 color: .debug,
                 number: Int.random(in: 0...100)
             )

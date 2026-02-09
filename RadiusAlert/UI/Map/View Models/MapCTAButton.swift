@@ -65,9 +65,6 @@ extension MapViewModel {
         // encapsulated region bounds
         setRegionBoundsToUserLocationNMarkers(on: type)
         
-        //Retrieve directions.
-        assignRoute(to: markerID)
-        
         // Set distance text between user location to the marker coordinate
         updateDistanceText()
         

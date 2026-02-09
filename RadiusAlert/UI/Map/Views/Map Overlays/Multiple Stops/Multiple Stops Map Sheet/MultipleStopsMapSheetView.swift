@@ -38,9 +38,6 @@ struct MultipleStopsMapSheetView: View {
                 
                 // MARK: - Markers
                 MapMarkersView(markers: mapVM.markers)
-                
-                // MARK: - Routes
-                MapRoutesView(markers: mapVM.markers)
             }
             .mapStyle(settingsVM.selectedMapStyle.mapStyle)
             .mapControls { mapControls }

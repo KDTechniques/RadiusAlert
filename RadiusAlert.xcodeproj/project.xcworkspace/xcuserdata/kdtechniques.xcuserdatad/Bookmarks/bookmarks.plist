@@ -3,6 +3,54 @@
 <plist version="1.0">
 <dict>
 	<key>top-level-items</key>
-	<array/>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>179</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>178</string>
+					<key>Timestamp</key>
+					<string>792265392.951354</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Map/View Models/MapCamera.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        setRegionBoundsToUserLocationNMarkersTimestamp(.now)
+</string>
+				<key>leading</key>
+				<string>        guard timeDiff &gt;= timeCondition else { return }
+        setRegionBoundsToUserLocationNMarkers(on: .primary)
+</string>
+				<key>trailing</key>
+				<string>    }
+    
+    func prepareMapPositionNRegion(on type: MapTypes, mapItem: MKMapItem, itemRadius: CLLocationDistance) async {
+</string>
+			</dict>
+			<key>title</key>
+			<string>Regenerate routes like this in a seperate fiunction and call that in the subscriber function</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -21,15 +21,10 @@ final class NetworkManager {
     static let shared: NetworkManager = .init()
     private let monitor = NWPathMonitor()
     private let networkManagerQueue = DispatchQueue(label: "com.kdtechniques.Pixel-Desktop-Pictures.NetworkManager.networkManagerQueue")
-    private(set) var connectionState: ConnectionStates = .noConnection {
-        didSet { connectionState$ = connectionState }
-    }
-    @ObservationIgnored @Published private(set) var connectionState$: ConnectionStates = .noConnection
-    private var cancellables: Set<AnyCancellable> = []
+    private(set) var connectionState: ConnectionStates = .noConnection { didSet { onConnectionStatusChange(connectionState) } }
     
     // MARK: - INITIALIZER
     private init() {
-        connectionStatusSubscriber()
         startNetworkMonitor()
         Utilities.log("✅: `Network Manager` has been initialized")
     }
@@ -37,18 +32,13 @@ final class NetworkManager {
     // MARK: - PRIVATE FUNCTIONS
     
     /// Subscribes to changes in the `connectionStatus$` property and handles updates accordingly.
-    private func connectionStatusSubscriber() {
-        $connectionState$
-            .removeDuplicates()
-            .sink {
-                switch $0 {
-                case .connected:
-                    self.handleConnectedStatus()
-                case .noConnection:
-                    self.handleNoConnectionStatus()
-                }
-            }
-            .store(in: &cancellables)
+    private func onConnectionStatusChange(_ status: ConnectionStates) {
+        switch status {
+        case .connected:
+            self.handleConnectedStatus()
+        case .noConnection:
+            self.handleNoConnectionStatus()
+        }
     }
     
     /// Starts monitoring the network path for changes in connectivity.

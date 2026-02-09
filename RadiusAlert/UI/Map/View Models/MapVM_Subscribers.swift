@@ -31,15 +31,7 @@ extension MapViewModel {
             .sink { _ in
                 self.updateDistanceText()
                 self.autoPositionMarkersNUserLocationRegionBounds()
-                self.regenerateRoutes()
             }
-            .store(in: &cancellables)
-    }
-    
-    func networkStatusSubscriber() {
-        networkManager.$connectionState$
-            .removeDuplicates()
-            .sink { self.recoverRoutes(networkStatus: $0) }
             .store(in: &cancellables)
     }
 }
