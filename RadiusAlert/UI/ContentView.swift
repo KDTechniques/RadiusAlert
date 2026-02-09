@@ -44,9 +44,7 @@ struct ContentView: View {
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons }
-                }
+                .toolbar { ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons } }
         }
         .alertViewModifier(at: .content)
         .popupCardViewModifier(vm: mapVM)

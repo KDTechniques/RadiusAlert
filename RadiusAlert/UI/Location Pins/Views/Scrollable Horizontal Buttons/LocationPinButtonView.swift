@@ -9,12 +9,15 @@ import SwiftUI
 
 struct LocationPinButtonView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     let title: String
+    let type: MapTypes
     let action: () -> Void
     
     // MARK: - INITIALIZER
-    init(title: String, action: @escaping () -> Void) {
+    init(title: String, type: MapTypes, _ action: @escaping () -> Void) {
         self.title = title
+        self.type = type
         self.action = action
     }
     
@@ -27,9 +30,9 @@ struct LocationPinButtonView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
-                .background(.regularMaterial)
+                .buttonBackground(type: type)
                 .clipShape(.capsule)
-                .pinButtonGlassEffect
+                .pinButtonGlassEffect(type: type, colorScheme: colorScheme)
         }
         .foregroundStyle(.primary)
     }
@@ -37,7 +40,7 @@ struct LocationPinButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("LocationPinButtonView") {
-    LocationPinButtonView(title: LocationPinsModel.mock.randomElement()!.title) {
+    LocationPinButtonView(title: LocationPinsModel.mock.randomElement()!.title, type: .random()) {
         print("Action Triggered!")
     }
     .previewModifier()
@@ -46,16 +49,36 @@ struct LocationPinButtonView: View {
 // MARK: - EXTENSIONS
 fileprivate extension View {
     @ViewBuilder
-    var pinButtonGlassEffect: some View {
+    func pinButtonGlassEffect(type: MapTypes, colorScheme: ColorScheme) -> some View {
         if #available(iOS  26.0, *) {
+            let effect: Glass = {
+                switch type {
+                case .primary:
+                    return .clear
+                case .secondary:
+                    return colorScheme == .dark ? .regular : .clear
+                }
+            }()
+            
             self
-                .glassEffect(.clear)
+                .glassEffect(effect)
         } else {
             self
                 .overlay {
                     Capsule()
                         .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
                 }
+        }
+    }
+    
+    @ViewBuilder
+    func buttonBackground(type: MapTypes) -> some View {
+        switch type {
+        case .primary:
+            self.background(.regularMaterial)
+            
+        case .secondary:
+            self.background(.clear)
         }
     }
 }

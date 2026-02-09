@@ -48,6 +48,7 @@ struct MultipleStopsMapSheetView: View {
                 addButton
                 dismissButton
             }
+            .safeAreaInset(edge: .top) { HorizontalLocationPinsView(type: .secondary).padding(.top) }
             .alertViewModifier(at: .multipleStopsMapSheet)
             .navigationTitle("Add Another Stop")
             .navigationBarTitleDisplayMode(.inline)

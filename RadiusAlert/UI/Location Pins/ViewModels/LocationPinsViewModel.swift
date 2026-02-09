@@ -130,12 +130,14 @@ final class LocationPinsViewModel {
                 await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item)
             }
         } else {
+            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
             /// present the multiple stops map sheet and set coordinate on secondary map type.
             /// then when user tap on add button, prepare the marker just like we do normally!
             mapVM.setIsPresentedMultipleStopsMapSheet(true)
             
             Task {
-                try? await Task.sleep(nanoseconds: 500_000_000)
+                try? await Task.sleep(nanoseconds: nanoSeconds)
                 await mapVM.prepareSelectedLocationPinCoordinate(on: .secondary, item: item)
             }
         }

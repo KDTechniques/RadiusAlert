@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum MapTypes {
+enum MapTypes: CaseIterable {
     case primary, secondary
 }
