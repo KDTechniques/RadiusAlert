@@ -7,16 +7,23 @@
 
 import CoreLocation
 import SwiftUI
+import MapKit
+
+// MARK: RADIUS
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    func selectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(get: { self.selectedRadius }, set: withAnimation { setSelectedRadius })
+    func primarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
+        return .init(get: { self.primarySelectedRadius }, set: setPrimarySelectedRadius)
+    }
+    
+    func secondarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
+        return .init(get: { self.secondarySelectedRadius }, set: setSecondarySelectedRadius)
     }
     
     /// Formats the radius value as a string, optionally including alert text and a name.
-    func getRadiusTextString(_ radius: CLLocationDistance, withAlertRadiusText: Bool) -> String {
+    func getRadiusTextString(_ radius: CLLocationDistance, title: String?, withAlertRadiusText: Bool) -> String {
         /// Round the radius to the nearest whole number
         let radius: Double = radius.rounded()
         /// Convert the radius from meters to kilometers
@@ -34,57 +41,58 @@ extension MapViewModel {
         let text: String = withAlertRadiusText ? ("Alert Radius\n"+numberText) : numberText
         
         /// Returns text only if no alert text or no selectedSearchResult name
-        guard withAlertRadiusText, let name: String = selectedSearchResult?.result.name else { return text }
+        guard withAlertRadiusText, let title else { return text }
         
         /// Returns text with the name included
-        let textWithName: String = "(\(name))\n\(text)"
+        let textWithName: String = "(\(title))\n\(text)"
         return textWithName
     }
     
-    func getRadiusCircleCoordinate() -> CLLocationCoordinate2D? {
-        guard let centerCoordinate else { return nil }
-        return isMarkerCoordinateNil() ? centerCoordinate : markerCoordinate!
-    }
-    
-    func onRadiusChange(_ radius: CLLocationDistance) {
-        setRegionBoundsOnRadius()
-        locationManager.selectedRadius = radius
-    }
-    
-    func setRegionBoundsOnRadius() {
+    func setRegionBoundsOnRadius(for type: MapTypes) async {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
         guard let centerCoordinate else { return }
         
-        let regionBoundMeters: CLLocationDistance = selectedRadius*mapValues.radiusToRegionBoundsMetersFactor
-        setRegionBoundMeters(center: centerCoordinate, meters: regionBoundMeters)
+        await setRegionBoundMeters(
+            to: centerCoordinate,
+            meters: getRegionBoundsMetersOnRadius(for: radius),
+            on: type,
+            animate: true
+        )
     }
     
-    func handleOnRegionEntryAlertFailure() {
-        // Ensure current distance mode is close, marker coordinate exists, and user location is available
-        guard
-            locationManager.currentDistanceMode == .close,
-            let markerCoordinate,
-            let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
-        
-        // Calculate the distance from the user to the marker coordinate
-        let distance: CLLocationDistance = Utilities.getDistance(from: userLocation, to: markerCoordinate)
-        // Proceed only if the distance is less than the selected radius
-        guard distance < selectedRadius else { return }
-        
-        onRegionEntry()
+    func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {
+        return radius * mapValues.radiusToRegionBoundsMetersFactor
     }
     
     /// Animates and randomizes the radius slider, then invalidates the tip.
     func onRadiusSliderTipAction() {
         withAnimation {
-            setSelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
+            setPrimarySelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
         } completion: {
             self.radiusSliderTip.invalidate(reason: .actionPerformed)
         }
     }
     
-    func onRadiusSliderEditingChanged(_ isEditing: Bool) {
-        setRadiusSliderActiveState(isEditing)
+    func onRadiusSliderSlidingEnded(on type: MapTypes) {
         invalidateRadiusSliderTip()
+        Task { await setRegionBoundsOnRadius(for: type) }
     }
     
     func setRadiusSliderTipRule_IsSetRadius(_ item: SearchResultModel?) {
@@ -100,5 +108,23 @@ extension MapViewModel {
     func onRadiusSliderVisibilityChange(_ boolean: Bool) {
         RadiusSliderTipModel.isSliderVisible = boolean
     }
+    
+    func updateDistanceText() {
+        guard
+            let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
+            markers.count == 1,
+            let markerCoordinate: CLLocationCoordinate2D = markers.first?.coordinate else { return }
+        
+        let distance: CLLocationDistance = Utilities.getDistanceToRadius(
+            userCoordinate: userCoordinate,
+            markerCoordinate: markerCoordinate,
+            radius: primarySelectedRadius
+        )
+        
+        setDistanceText(distance)
+    }
+    
+    func resetDistanceText() {
+        setDistanceText(.zero)
+    }
 }
-

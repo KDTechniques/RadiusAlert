@@ -12,6 +12,12 @@ struct HorizontalLocationPinsView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     @Environment(MapViewModel.self) private var mapVM
+    let type: MapTypes
+    
+    // MARK: - INITIALIZER
+    init(type: MapTypes) {
+        self.type = type
+    }
     
     // MARK: - BODY
     var body: some View {
@@ -21,7 +27,7 @@ struct HorizontalLocationPinsView: View {
                     let limitedLocationPinsArray: [LocationPinsModel] = Array(locationPinsVM.locationPinsArray.prefix(5))
                     
                     ForEach(limitedLocationPinsArray) { item in
-                        LocationPinButtonView(title: item.title) {
+                        LocationPinButtonView(title: item.title, type: type) {
                             locationPinsVM.onScrollableHorizontalLocationPinButtonTap(item)
                         }
                     }
@@ -46,7 +52,7 @@ struct HorizontalLocationPinsView: View {
 
 // MARK: - PREVIEWS
 #Preview("HorizontalLocationPinsView") {
-    HorizontalLocationPinsView()
+    HorizontalLocationPinsView(type: .random())
         .previewModifier()
 }
 
@@ -75,7 +81,7 @@ extension HorizontalLocationPinsView  {
     @ViewBuilder
     private var moreButton: some View {
         if locationPinsVM.showMoreButton() {
-            MoreSavedLocationPinsButtonView()
+            MoreSavedLocationPinsButtonView(type: type)
         }
     }
 }

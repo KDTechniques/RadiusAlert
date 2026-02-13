@@ -8,11 +8,13 @@
 import CoreLocation
 
 struct PopupCardModel: Identifiable {
-    let id: String = UUID().uuidString
+    var id: String { markerID }
+    let markerID: String
     let typeNValue: [(type: PopupCardDetailTypes, value: String)]
     let locationTitle: String?
     
     static let mockValues: Self = .init(
+        markerID: UUID().uuidString,
         typeNValue: [(.radius, "700m"), (.duration, "41 min."), (.distance, "37km")],
         locationTitle: "Pettah Market"
     )

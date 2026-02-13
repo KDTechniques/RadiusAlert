@@ -7,6 +7,8 @@
 
 import MapKit
 
+// MARK: LOCATION SEARCH
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
@@ -19,10 +21,24 @@ extension MapViewModel {
     /// - Parameter item: The `MKLocalSearchCompletion` the user tapped.
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         createRecentSearch(on: item)
+        resetSearchable()
         
-        isMarkerCoordinateNil()
-        ? prepareSelectedSearchResultCoordinateOnMap(item)
-        : stopAlertOnSearchResultListRowTapConfirmation(item)
+        if markers.isEmpty {
+            Task {
+                await prepareSelectedSearchResultCoordinate(on: .primary, item: item)
+            }
+        } else {
+            let nanoSeconds: UInt64 = isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: nanoSeconds)
+                await prepareSelectedSearchResultCoordinate(on: .secondary, item: item)
+            }
+        }
     }
     
     /// Handles a tap on an item from the recent searches list.
@@ -32,9 +48,24 @@ extension MapViewModel {
     ///
     /// - Parameter item: The `RecentSearchModel` the user tapped.
     func onRecentSearchListRowTap(_ item: RecentSearchModel) {
-        isMarkerCoordinateNil()
-        ? prepareSelectedRecentSearchCoordinateOnMap(item)
-        : stopAlertOnRecentSearchListRowTapConfirmation(item)
+        resetSearchable()
+        
+        if markers.isEmpty {
+            Task {
+                await prepareSelectedRecentSearchCoordinateOnMap(type: .primary, item: item)
+            }
+        } else {
+            let nanoSeconds: UInt64 = isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: nanoSeconds)
+                await prepareSelectedRecentSearchCoordinateOnMap(type: .secondary, item: item)
+            }
+        }
     }
     
     /// Responds to changes in the search bar text.
@@ -54,38 +85,26 @@ extension MapViewModel {
     /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
     ///
     /// - Parameter item: The completion result to resolve and focus.
-    func prepareSelectedSearchResultCoordinateOnMap(_ item: MKLocalSearchCompletion) {
-        setSelectedMapItem(item)
+    func prepareSelectedSearchResultCoordinate(on type: MapTypes, item: MKLocalSearchCompletion) async {
+        setSelectedSearchResult(from: item)
         
         // Clear any existing search UI state
         resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
         
-        Task {
-            guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
-            await prepareMapPositionNRegion(mapItem)
-        }
+        guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
+        await prepareMapPositionNRegion(on: type, mapItem: mapItem, itemRadius: mapValues.minimumRadius)
     }
     
-    /// Prepares the map for a user-selected location pin from the predefined pins list.
-    ///
-    /// - Sets the radius from the pin, applies the selection immediately for UI feedback, and clears search UI state.
-    /// - Animates the map to center on the pin's coordinate with a sensible default span.
-    /// - Marks the selection as fully set (`doneSetting = true`) after the map finishes animating.
-    ///
-    /// - Parameter item: The location pin the user selected.
-    func prepareSelectedLocationPinCoordinateOnMap(_ item: LocationPinsModel) {
+    func prepareSelectedLocationPinCoordinate(on type: MapTypes, item: LocationPinsModel) async {
         // Clear any existing search UI state
         resetSearchable()
         
-        setSelectedRadius(item.radius)
+        setSelectedSearchResult(nil)
         
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
-        // Optimistically set the selection so the UI can reflect the choice right away
-        setSelectedSearchResult(.init(result: mkMapItem))
-        
-        Task { await prepareMapPositionNRegion(mkMapItem) }
+        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem, itemRadius: item.radius)
     }
     
     /// Focuses the map on a location picked from recent searches.
@@ -95,17 +114,16 @@ extension MapViewModel {
     /// - Animates and bounds the map around the chosen location.
     ///
     /// - Parameter item: The recent search to focus on.
-    func prepareSelectedRecentSearchCoordinateOnMap(_ item: RecentSearchModel) {
+    func prepareSelectedRecentSearchCoordinateOnMap(type: MapTypes, item: RecentSearchModel) async {
         // Clear any existing search UI state
         resetSearchable()
+        
+        setSelectedSearchResult(nil)
         
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
-        // Optimistically set the selection so the UI can reflect the choice right away
-        setSelectedSearchResult(.init(result: mkMapItem))
-        
-        Task { await prepareMapPositionNRegion(mkMapItem) }
+        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem, itemRadius: mapValues.minimumRadius)
     }
     
     /// Reacts to changes in the currently selected search result.
@@ -158,7 +176,7 @@ extension MapViewModel {
     /// - If resolution fails or returns `nil`, clears the current selection.
     ///
     /// - Parameter item: The completion to resolve.
-    private func setSelectedMapItem(_ item: MKLocalSearchCompletion) {
+    private func setSelectedSearchResult(from item: MKLocalSearchCompletion) {
         Task {
             do {
                 guard let mapItem: MKMapItem = try await locationSearchManager.getMKMapItem(for: item) else {
@@ -172,38 +190,4 @@ extension MapViewModel {
             }
         }
     }
-    
-    /// Animates the map to the provided item and finalizes selection state.
-    ///
-    /// This method introduces small delays to allow SwiftUI/MapKit state changes and default animations
-    /// to complete in sequence, improving perceived smoothness:
-    /// 1) Wait for state propagation, 2) animate to position, 3) apply region bounds, 4) mark selection as done.
-    ///
-    /// - Parameter mapItem: The item whose coordinate should be centered and bounded.
-    private func prepareMapPositionNRegion(_ mapItem: MKMapItem) async {
-        // 1) Allow state updates to propagate before moving the map.
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
-        
-        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
-        
-        let region: MKCoordinateRegion = .init(
-            center: mapItem.placemark.coordinate,
-            latitudinalMeters: boundsMeters,
-            longitudinalMeters: boundsMeters
-        )
-        
-        // 2) Animate to the new position.
-        setPosition(region: region, animate: true)
-        
-        // Wait for the default animation on setting marker position above
-        try? await Task.sleep(nanoseconds: 800_000_000)
-        
-        // 3) After the position animation, apply region bounds for better UX.
-        setRegionBoundsOnRadius()
-        
-        // 4) After bounds animation, mark selection as fully set.
-        try? await Task.sleep(nanoseconds: 500_000_000)
-        setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
-    }
 }
-

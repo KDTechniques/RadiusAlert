@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import CoreLocation
 
 struct MapView: View {
     // MARK: - INJECTED PROPERTIES
@@ -22,44 +23,31 @@ struct MapView: View {
         //        let _ = Self._printChanges()
 #endif
         
-        Map(position: mapVM.positionBinding(), interactionModes: mapVM.interactionModes) {
-            // User's Current Location
+        Map(position: mapVM.primaryPositionBinding(), interactionModes: mapVM.interactionModes, scope: mapSpace) {
+            // MARK: - User's Current Location
             UserAnnotation()
             
-            // Radius Circle
-            if let centerCoordinate: CLLocationCoordinate2D = mapVM.getRadiusCircleCoordinate(),
-               mapVM.showRadiusCircle() {
-                MapCircle(
-                    center: centerCoordinate,
-                    radius: mapVM.selectedRadius
-                )
-                .foregroundStyle(.primary.opacity(0.3))
-            }
+            // MARK: - Radius Circles
+            MapFloatingCircleView(
+                centerCoordinate: mapVM.primaryCenterCoordinate,
+                radius: mapVM.primarySelectedRadius,
+                condition: mapVM.showPrimaryFloatingCircle()
+            )
             
-            // Marker
-            if let markerCoordinate = mapVM.markerCoordinate {
-                Marker(
-                    mapVM.getRadiusTextString(
-                        mapVM.selectedRadius,
-                        withAlertRadiusText: true
-                    ),
-                    coordinate: markerCoordinate
-                )
-            }
+            MapMarkerCirclesView(markers: mapVM.markers)
             
-            // Route
-            if let route = mapVM.route {
-                MapPolyline(route)
-                    .stroke(Color.pink.gradient, lineWidth: 3)
-            }
+            // MARK: - Markers
+            MapMarkersView(markers: mapVM.markers)
         }
         .mapStyle(settingsVM.selectedMapStyle.mapStyle)
         .mapControls { mapControls }
-        .mapControlVisibility(mapVM.isMarkerCoordinateNil() ? .visible : .hidden)
-        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange($0) }
-        .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd($0) }
+        .mapControlVisibility(mapVM.showPrimaryMapControls() ? .visible : .hidden)
+        .onMapCameraChange(frequency: .continuous) { mapVM.onContinuousMapCameraChange(for: .primary, $0) }
+        .onMapCameraChange(frequency: .onEnd) { mapVM.onMapCameraChangeEnd(for: .primary, $0) }
         .onAppear { mapVM.onMapViewAppear() }
         .onDisappear { mapVM.onMapViewDisappear() }
+        .sheet(isPresented: mapVM.multipleStopsMapSheetBinding()) { MultipleStopsMapSheetView() }
+        .sheet(isPresented: mapVM.multipleStopsCancellationSheetBinding()) { MultipleStopsCancellationSheetView(markers: mapVM.markers) }
     }
 }
 

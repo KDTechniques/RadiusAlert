@@ -21,9 +21,7 @@ final class NetworkManager {
     static let shared: NetworkManager = .init()
     private let monitor = NWPathMonitor()
     private let networkManagerQueue = DispatchQueue(label: "com.kdtechniques.Pixel-Desktop-Pictures.NetworkManager.networkManagerQueue")
-    private(set) var connectionState: ConnectionStates = .noConnection {
-        didSet { connectionState$ = connectionState }
-    }
+    private(set) var connectionState: ConnectionStates = .noConnection { didSet { connectionState$ = connectionState } }
     @ObservationIgnored @Published private var connectionState$: ConnectionStates = .noConnection
     private var cancellables: Set<AnyCancellable> = []
     
@@ -51,18 +49,37 @@ final class NetworkManager {
             .store(in: &cancellables)
     }
     
+    /// Subscribes to changes in the `connectionStatus$` property and handles updates accordingly.
+    private func onConnectionStatusChange(_ status: ConnectionStates) {
+        switch status {
+        case .connected:
+            self.handleConnectedStatus()
+        case .noConnection:
+            self.handleNoConnectionStatus()
+        }
+    }
+    
     /// Starts monitoring the network path for changes in connectivity.
     private func startNetworkMonitor() {
-        monitor.pathUpdateHandler = { value in
-            Task { @MainActor in
-                if value.status == .satisfied {
-                    self.connectionState = .connected
-                } else {
-                    self.connectionState = .noConnection
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            
+            Utilities.log(path.debugDescription)
+            
+            if path.status == .satisfied {
+                Task { @MainActor in
+                    if self.connectionState != .connected {
+                        self.connectionState = .connected
+                    }
+                }
+            } else {
+                Task { @MainActor in
+                    if self.connectionState != .noConnection {
+                        self.connectionState = .noConnection
+                    }
                 }
             }
         }
-        
         monitor.start(queue: networkManagerQueue)
     }
     

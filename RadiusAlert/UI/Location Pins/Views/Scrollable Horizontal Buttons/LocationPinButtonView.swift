@@ -9,12 +9,15 @@ import SwiftUI
 
 struct LocationPinButtonView: View {
     // MARK: - INJECTED PROPERTIES
+    @Environment(\.colorScheme) private var colorScheme
     let title: String
+    let type: MapTypes
     let action: () -> Void
     
     // MARK: - INITIALIZER
-    init(title: String, action: @escaping () -> Void) {
+    init(title: String, type: MapTypes, _ action: @escaping () -> Void) {
         self.title = title
+        self.type = type
         self.action = action
     }
     
@@ -27,9 +30,9 @@ struct LocationPinButtonView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
-                .background(.regularMaterial)
+                .savedLocationPinButtonBackgroundViewModifier(type: type)
                 .clipShape(.capsule)
-                .pinButtonGlassEffect
+                .savedLocationPinButtonGlassEffect(type: type, colorScheme: colorScheme)
         }
         .foregroundStyle(.primary)
     }
@@ -37,25 +40,8 @@ struct LocationPinButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("LocationPinButtonView") {
-    LocationPinButtonView(title: LocationPinsModel.mock.randomElement()!.title) {
+    LocationPinButtonView(title: LocationPinsModel.mock.randomElement()!.title, type: .random()) {
         print("Action Triggered!")
     }
     .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-fileprivate extension View {
-    @ViewBuilder
-    var pinButtonGlassEffect: some View {
-        if #available(iOS  26.0, *) {
-            self
-                .glassEffect(.clear)
-        } else {
-            self
-                .overlay {
-                    Capsule()
-                        .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
-                }
-        }
-    }
 }

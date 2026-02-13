@@ -41,7 +41,7 @@ extension AddLocationPinSheetContentView {
     private var textField: some View {
         Section {
             TextField("", text: locationPinsVM.newLocationPinTextFieldTextBinding(), prompt: .init("Title"))
-                .limitInputLength(
+                .limitInputLengthViewModifier(
                     locationPinsVM.newLocationPinTextFieldTextBinding(),
                     to: locationPinsVM.locationPinTitleMaxCharacterCount
                 )
@@ -61,7 +61,7 @@ extension AddLocationPinSheetContentView {
                     Text(MapValues.maximumRadiusString)
                 }
         } header: {
-            Text("Radius: \(mapVM.getRadiusTextString(locationPinsVM.newLocationPinRadius, withAlertRadiusText: false))")
+            Text("Radius: \(mapVM.getRadiusTextString(locationPinsVM.newLocationPinRadius, title: nil, withAlertRadiusText: false))")
                 .padding(.top)
         }
         .listRowBackground(Color.clear)
