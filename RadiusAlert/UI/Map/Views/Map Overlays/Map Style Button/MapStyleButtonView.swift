@@ -50,7 +50,7 @@ extension ButtonView {
     private var buttonLabel: some View {
         Image(systemName: settingsVM.selectedMapStyle.mapStyleSystemImageName)
             .frame(width: 44, height: 44)
-            .mapControlButtonBackground
+            .mapControlButtonBackgroundViewModifier
             .defaultTypeSizeViewModifier
             .popoverTip(settingsVM.mapStyleButtonTip)
     }
@@ -62,7 +62,7 @@ extension ButtonView {
             buttonLabel
                 .foregroundStyle(Color.accentColor)
         }
-        .mapControlButtonShadow
+        .mapControlButtonShadowViewModifier
     }
     
     @ViewBuilder

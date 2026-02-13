@@ -29,15 +29,23 @@ struct Utilities {
 #endif
     }
     
-    /// Calculates the midpoint between two coordinates.
+    /// Calculates the geographic average (centroid) of a list of coordinates.
     ///
-    /// - Parameters:
-    ///   - coord1: The first coordinate.
-    ///   - coord2: The second coordinate.
-    /// - Returns: The geographic midpoint as a `CLLocationCoordinate2D`.
-    static func calculateMidCoordinate(from coord1: CLLocationCoordinate2D, and coord2: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        let midLatitude = (coord1.latitude + coord2.latitude) / 2
-        let midLongitude = (coord1.longitude + coord2.longitude) / 2
+    /// This function computes the mean latitude and longitude of all coordinates
+    /// in the array and returns the result as a new `CLLocationCoordinate2D`.
+    ///
+    /// - Parameter coordinates: An array of coordinates to average.
+    /// - Returns: The geographic midpoint (average) of all provided coordinates.
+    /// - Note: This uses simple arithmetic averaging and is suitable for
+    ///         relatively small areas. For long distances or spherical
+    ///         accuracy, a great-circle midpoint algorithm may be needed.
+    static func calculateMidCoordinate(from coordinates: [CLLocationCoordinate2D]) -> CLLocationCoordinate2D {
+        let count: Int = coordinates.count
+        let totalLatitude: CLLocationDistance = coordinates.map({ $0.latitude }).reduce(0, +)
+        let totalLongitude: CLLocationDistance = coordinates.map({ $0.longitude }).reduce(0, +)
+        
+        let midLatitude: CLLocationDistance = totalLatitude / Double(count)
+        let midLongitude: CLLocationDistance = totalLongitude / Double(count)
         
         return .init(latitude: midLatitude, longitude: midLongitude)
     }
@@ -53,6 +61,47 @@ struct Utilities {
         let location2: CLLocation = .init(latitude: coordinate2.latitude, longitude: coordinate2.longitude)
         
         return location1.distance(from: location2)
+    }
+    
+    static func getDistance(by type: DistanceTypes, from coordinates: [CLLocationCoordinate2D]) -> CLLocationDistance {
+        guard coordinates.count >= 2 else { return 0 }
+        
+        var result: CLLocationDistance = type == .min ? .greatestFiniteMagnitude : 0
+        
+        for i in 0..<coordinates.count {
+            let location1 = CLLocation(
+                latitude: coordinates[i].latitude,
+                longitude: coordinates[i].longitude
+            )
+            
+            for j in (i + 1)..<coordinates.count {
+                let location2 = CLLocation(
+                    latitude: coordinates[j].latitude,
+                    longitude: coordinates[j].longitude
+                )
+                
+                let distance = location1.distance(from: location2)
+                
+                switch type {
+                case .max:
+                    if distance > result {
+                        result = distance
+                    }
+                    
+                case .min:
+                    if distance < result {
+                        result = distance
+                    }
+                }
+            }
+        }
+        
+        // If min was never updated (should not happen, but safe)
+        if result == .greatestFiniteMagnitude {
+            return 0
+        }
+        
+        return result
     }
     
     static func getCountryCode() -> String? {

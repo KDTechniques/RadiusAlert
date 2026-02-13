@@ -26,10 +26,6 @@ extension LocationPinsViewModel {
         return editMode == .active
     }
     
-    func showAddNewLocationPinButton() -> Bool {
-        return mapVM.isMarkerCoordinateNil()
-    }
-    
     func showScrollableHorizontalLocationPins() -> Bool {
         return !locationPinsArray.isEmpty
     }

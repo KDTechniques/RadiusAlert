@@ -98,12 +98,6 @@ final class LocationPinsViewModel {
         // Fetch saved location pins from local database
         do {
             try await fetchNSetLocationPins()
-#if DEBUG
-            for item in locationPinsArray {
-                print("\n\(item.order) | \(item.title) | \(item.radius) | \(item.coordinate)" )
-            }
-            print("\n\n")
-#endif
         } catch let error {
             Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).errorDescription)
         }
@@ -129,15 +123,24 @@ final class LocationPinsViewModel {
     }
     
     func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
-        guard mapVM.isMarkerCoordinateNil() else {
-            alertManager.showAlert(.stopAlertOnSubmit {
-                self.mapVM.stopAlert()
-                self.mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
-            })
-            return
+        /// when user taps on a pin, position the pin on primary map only when there's no markers, and then create a marker just way we normally do.
+        /// but if there are markers just show the multiple stops sheet and position the map there, so user can tap on add button and then we can addd the to markers array like the way we add a a normal marker.
+        if mapVM.markers.isEmpty {
+            Task {
+                await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item)
+            }
+        } else {
+            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            mapVM.setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: nanoSeconds)
+                await mapVM.prepareSelectedLocationPinCoordinate(on: .secondary, item: item)
+            }
         }
-        
-        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
     }
 }
 

@@ -16,8 +16,10 @@ final class RecentSearchModel: Identifiable {
     var subtitle: String
     var coordinate: CLLocationCoordinate2D { return .init(latitude: latitude, longitude: longitude) }
     var timestamp: Date
+    
     private var latitude: CLLocationDegrees
     private var longitude: CLLocationDegrees
+    
     static let maxRecentSearchesCount: Int = 5
     
     // MARK: - INITIALIZER

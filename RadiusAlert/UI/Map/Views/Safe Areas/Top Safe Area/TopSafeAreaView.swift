@@ -44,7 +44,7 @@ extension TopSafeAreaView {
     @ViewBuilder
     private var horizontalLocationPins: some View {
         if locationPinsVM.showScrollableHorizontalLocationPins() {
-            HorizontalLocationPinsView()
+            HorizontalLocationPinsView(type: .primary)
         }
     }
     

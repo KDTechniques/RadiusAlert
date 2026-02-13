@@ -7,11 +7,13 @@
 
 import CoreLocation
 
+// MARK: VALIDATION
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     /// Returns true if the distance between the user's location and center is above the minimum threshold.
-    func isBeyondMinimumDistance() -> Bool {
+    func isBeyondMinimumDistance(centerCoordinate: CLLocationCoordinate2D?) -> Bool {
         guard let currentLocation = locationManager.currentUserLocation,
               let centerCoordinate else { return false }
         
@@ -22,45 +24,57 @@ extension MapViewModel {
         
         return distance > mapValues.minimumDistance
     }
-    
-    /// Determines whether to show the radius circle on the map based on marker presence, distance, slider activity, and camera dragging state.
-    func showRadiusCircle() -> Bool {
-        // If marker coordinate is nil, check minimum distance; otherwise, default to true
-        let condition1: Bool = isMarkerCoordinateNil() ? isBeyondMinimumDistance() : true
+
+    /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
+    func showPrimaryMapPin() -> Bool {
+        let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition2: Bool = isThereAnyMarkerCoordinate()
         
-        // If radius slider active, true; otherwise, if marker coordinate is nil, then show only if camera is not dragging, else true
-        let condition2: Bool = isRadiusSliderActive
-        ? true
-        : isMarkerCoordinateNil() ? !isCameraDragging : true
-        
-        return condition1 && condition2
+        return condition1 && !condition2
     }
     
-    /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
-    func showMapPin() -> Bool {
-        let condition1: Bool = isBeyondMinimumDistance()
-        let condition2: Bool = isMarkerCoordinateNil()
+    func showSecondaryMapPin() -> Bool {
+        false // add logic here later......
+    }
+    
+    func showPrimaryFloatingCircle() -> Bool {
+        guard let primaryCenterCoordinate else { return false }
         
-        return condition1 && condition2
+        let condition1: Bool = isPrimaryCameraDragging
+        let condition2: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition3: Bool = isThereAnyMarkerCoordinate()
+        
+        return !condition1 && condition2 && !condition3
+    }
+    
+    func showSecondaryFloatingCircle() -> Bool {
+        let condition1: Bool = showSecondaryMapOverlays()
+        let condition2: Bool = isSecondaryCameraDragging
+        
+        return condition1 && !condition2
+    }
+    
+    func showSecondaryMapOverlays() -> Bool {
+        return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
     }
     
     /// Returns true if the radius slider should be visible, based on marker coordinate and user distance. Also triggers slider visibility change callback.
-    func showRadiusSlider() -> Bool {
-        let condition1: Bool = isMarkerCoordinateNil()
-        let condition2: Bool = isBeyondMinimumDistance()
+    func showPrimaryRadiusSliderOrDistanceText() -> RadiusSliderOrDistanceTextTypes? {
+        let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition2: Bool = isThereAnyMarkerCoordinate()
+        let condition3: Bool = markers.count == 1
         
-        let boolean: Bool = condition1 && condition2
-        onRadiusSliderVisibilityChange(boolean)
+        let condition4: Bool = condition1 && !condition2 // For Radius Slider
+        let condition5: Bool = condition2 && condition3 // For Distance Text
         
-        return boolean
+        return (condition4 ? .radiusSlider : (condition5 ? .distanceText : nil))
     }
     
-    /// Returns true if the floating alert radius text should be shown, based on radius circle visibility and marker coordinate state.
+    /// Returns true if the floating alert radius text should be shown, based on radius circle visibility.
     func showFloatingAlertRadiusText() -> Bool {
-        let condition1: Bool = showRadiusCircle()
-        let condition2: Bool = isMarkerCoordinateNil()
+        let condition1: Bool = showPrimaryFloatingCircle()
         
-        return condition1 && condition2
+        return condition1
     }
     
     /// Returns true if the "no search results" text should be displayed, i.e., when search text is not empty, results are empty, and not currently searching.
@@ -86,9 +100,27 @@ extension MapViewModel {
     }
     
     /// Checks if the selected radius is less than a given distance. Shows alert and returns false if not.
-    func isSelectedRadiusLessThanDistance(distance: CLLocationDistance) -> Bool {
-        guard selectedRadius < distance else {
-            alertManager.showAlert(.alreadyInRadius)
+    func isSelectedRadiusLessThanDistance(on type: MapTypes, distance: CLLocationDistance) -> Bool {
+        let radius: CLLocationDistance = {
+            switch type {
+            case .primary:
+                return primarySelectedRadius
+            case .secondary:
+                return secondarySelectedRadius
+            }
+        }()
+        
+        let viewLevel: AlertViewLevels = {
+            switch type {
+            case .primary:
+                return .content
+            case .secondary:
+                return .multipleStopsMapSheet
+            }
+        }()
+        
+        guard radius < distance else {
+            alertManager.showAlert(.alreadyInRadius(viewLevel: viewLevel))
             return false
         }
         
@@ -118,5 +150,15 @@ extension MapViewModel {
     
     func showTopSafeAreaDivider() -> Bool {
         return getMapSearchType() == .searchResults
+    }
+    
+    func showPrimaryMapControls() -> Bool {
+        let condition1: Bool = isThereAnyMarkerCoordinate()
+        
+        return !condition1
+    }
+    
+    func getAddPinOrMultipleStopsType() -> AddPinOrAddMultipleStops {
+        markers.isEmpty ? .addPin : .addMultipleStops
     }
 }

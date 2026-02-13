@@ -45,16 +45,25 @@ final class AlertPopupManager {
     /// and are presented one by one as previous alerts are dismissed.
     /// - Parameter type: The `AlertTypes` value representing the alert to show.
     func showAlert(_ type: AlertTypes) {
-        /// If this function is called multiple times, alerts cannot be displayed simultaneously.
-        /// Therefore, each alert is added to a queue and presented one by one.
-        /// Each subsequent alert is shown only after the previous one is dismissed by the user.
-        appendAlertItem(type.alert)
+        /// before we append an alert, we must check whether there's a duplicate alert has been added very recently or not.
+        /// if not we proceed otherwise we don't append the new one.
+        guard let lastAlertItem: AlertModel = alertItems.last else {
+            /// If this function is called multiple times, alerts cannot be displayed simultaneously.
+            /// Therefore, each alert is added to a queue and presented one by one.
+            /// Each subsequent alert is shown only after the previous one is dismissed by the user.
+            appendAlertItem(type.alert)
+            
+            // If this is the only alert in the queue, vibrate and present immediately
+            guard let firstItemHaptic: HapticTypes = alertItems.first?.hapticType else { return }
+            vibrateNPresent(firstItemHaptic)
+            
+            return
+        }
         
-        // If this is the only alert in the queue, vibrate and present immediately
-        guard alertItems.count == 1,
-              let firstItemHaptic: HapticTypes = alertItems.first?.hapticType else { return }
+        let injectedAlertID: String = type.alert.title + type.alert.message
+        let lastAlertID: String = lastAlertItem.title + lastAlertItem.message
         
-        vibrateNPresent(firstItemHaptic)
+        injectedAlertID == lastAlertID ? () : appendAlertItem(type.alert)
     }
     
     // MARK: - PRIVATE FUNCTIONS

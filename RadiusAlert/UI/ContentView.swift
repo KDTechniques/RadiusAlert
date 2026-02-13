@@ -25,9 +25,18 @@ struct ContentView: View {
             MapView()
                 .overlay {
                     MapPinView()
-                    CircularRadiusTextView()
+                        .opacity(mapVM.showPrimaryMapPin() ? 1 : 0)
+                        .disabled(!mapVM.showPrimaryMapPin())
+                    
+                    if mapVM.showFloatingAlertRadiusText() {
+                        CircularRadiusTextView(
+                            radius: mapVM.primarySelectedRadius,
+                            title: mapVM.selectedSearchResult?.result.name
+                        )
+                    }
+                    
                     MapBottomTrailingButtonsView()
-                    RadiusSliderView()
+                    RadiusSliderOrDistanceTextView()
                 }
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
                 .overlay { SearchListBackgroundView() }
@@ -37,10 +46,10 @@ struct ContentView: View {
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
                 .toolbar { ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons } }
         }
-        .alertViewModifier
+        .alertViewModifier(at: .content)
         .popupCardViewModifier(vm: mapVM)
         .overlay(splashScreen)
-        .onAppear { mapVM.positionToInitialUserLocation() }
+        .onAppear { mapVM.positionToInitialUserLocation(on: .primary, animate: true) }
         .onChange(of: scenePhase) { onScenePhaseChange($1) }
     }
 }

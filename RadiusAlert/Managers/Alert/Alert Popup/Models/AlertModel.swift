@@ -26,17 +26,20 @@ import SwiftUI
 /// ```
 struct AlertModel: Identifiable {
     let id: String = UUID().uuidString
+    let viewLevel: AlertViewLevels
     let title: String
     let message: String
     let hapticType: HapticTypes
     let actions: [AlertButtonModel]
     
     init(
+        viewLevel: AlertViewLevels,
         title: String,
         message: String = "",
         hapticType: HapticTypes,
         actions: [AlertButtonModel],
     ) {
+        self.viewLevel = viewLevel
         self.title = title
         self.message = message
         self.hapticType = hapticType

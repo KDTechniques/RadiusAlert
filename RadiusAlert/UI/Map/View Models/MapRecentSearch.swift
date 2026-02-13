@@ -7,6 +7,8 @@
 
 import MapKit
 
+// MARK: RECENT SEARCH
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     

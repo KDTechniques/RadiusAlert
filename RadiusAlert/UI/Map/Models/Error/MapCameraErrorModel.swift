@@ -10,7 +10,6 @@ import Foundation
 enum MapCameraErrorModel {
     case failToGetInitialMapCameraPosition
     case failedToSetNextMapStyle
-    case failedToCenterRegionBoundsForMarkerNUserLocation
     
     var errorDescription: String {
         switch self {
@@ -19,9 +18,6 @@ enum MapCameraErrorModel {
             
         case .failedToSetNextMapStyle:
             return "❌: Failed to set next map camera due to array index issue."
-            
-        case .failedToCenterRegionBoundsForMarkerNUserLocation:
-            return "⚠️: Failed to center region bounds for both marker and current user location."
         }
     }
 }

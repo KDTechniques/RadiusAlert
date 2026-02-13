@@ -58,7 +58,14 @@ extension LocationPinsViewModel {
     
     func onLocationPinsListRowItemTap(_ item: LocationPinsModel) {
         setIsPresentedSavedLocationsSheet(false)
-        mapVM.prepareSelectedLocationPinCoordinateOnMap(item)
+        
+        guard mapVM.markers.isEmpty else {
+            mapVM.setIsPresentedMultipleStopsMapSheet(true)
+            Task { await mapVM.prepareSelectedLocationPinCoordinate(on: .secondary, item: item) }
+            return
+        }
+        
+        Task { await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item) }
     }
     
     func onSavedLocationSheetAppearance(_ isPresented: Bool) {

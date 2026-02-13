@@ -8,14 +8,21 @@
 import CoreLocation
 import SwiftUI
 
+// MARK: POPUP
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     /// Generates a PopupCardModel with updated radius, duration, and distance
     /// values for the current alert and sets it for display in the UI.
-    func generateNSetPopupCardItem() {
-        guard let item: RadiusAlertModel = radiusAlertItem else { return } // Ensure a valid alert item is available
+    func generateNSetAlertPopupCardItem(for markerID: String) {
+        guard let marker: MarkerModel = getMarkerObject(on: markerID) else { return }
         
-        let radiusText: String = getRadiusTextString(item.setRadius, withAlertRadiusText: false) // Format the alert radius for display
+        // Get rid of any overlapping popup card items if exist and stop monitoring regions for them
+        handleOverlappingRadiusAlertItems(without: marker.id)
+        
+        guard let item: RadiusAlertModel = getRadiusAlertItem(markerID: marker.id) else { return } // Ensure the valid alert item is available
+        
+        let radiusText: String = getRadiusTextString(item.setRadius, title: nil, withAlertRadiusText: false) // Format the alert radius for display
         let duration: String = generateDurationText(item.firstDate) // Compute the duration since the alert's first recorded date
         
         // Calculate the user's distance to the alert's radius
@@ -24,10 +31,11 @@ extension MapViewModel {
             markerCoordinate: item.markerCoordinate,
             radius: item.setRadius)
         
-        let distanceText: String = getRadiusTextString(distanceToRadius, withAlertRadiusText: false) // Format the calculated distance
+        let distanceText: String = getRadiusTextString(distanceToRadius, title: nil, withAlertRadiusText: false) // Format the calculated distance
         
         // Prepare a popup card model with the collected display values
         let popupCardItem: PopupCardModel = .init(
+            markerID: marker.id,
             typeNValue: [
                 (.radius, radiusText),
                 (.duration, duration),
@@ -72,6 +80,13 @@ extension MapViewModel {
         }
         
         return duration
+    }
+    
+    private func handleOverlappingRadiusAlertItems(without markerID: String) {
+        var didEnterRegionMarkerIDs: [String] = locationManager.regions.filter({ $0.didEnterRegion == true }).map({ $0.markerID })
+        didEnterRegionMarkerIDs.removeAll(where: { $0 == markerID }) // Remove the did enter region marker ids without the current one.
+        
+        stopAlert(for: didEnterRegionMarkerIDs)
     }
 }
 

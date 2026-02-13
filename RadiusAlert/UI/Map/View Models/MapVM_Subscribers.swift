@@ -6,6 +6,11 @@
 //
 
 import Foundation
+import Combine
+import CoreLocation
+import MapKit
+
+// MARK: SUBSCRIBERS
 
 extension MapViewModel {
     /// Subscribes to changes in the location authorization status and repositions the map if authorized.
@@ -13,19 +18,19 @@ extension MapViewModel {
         locationManager.$authorizationStatus$
             .dropFirst()
             .removeDuplicates()
-            // Updates authorization state and may reposition the map if authorized.
-            .sink {
-                // Updates internal state based on current authorization status.
-                self.setIsAuthorizedToGetMapCameraUpdate($0 == .authorizedAlways || $0 == .authorizedWhenInUse)
-                
-                // Skips map update if not authorized.
-                guard self.isAuthorizedToGetMapCameraUpdate else { return }
-                
-                // Delays then repositions the map to the initial user location on the main actor.
-                Task { @MainActor in
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self.positionToInitialUserLocation()
-                }
+        // Updates authorization state and may reposition the map if authorized.
+            .sink { self.positionMapOnAuthorization(authorizationStatus: $0) }
+            .store(in: &cancellables)
+    }
+    
+    func currentUserLocationSubscriber() {
+        locationManager.$currentUserLocation$
+            .combineLatest($distanceText$)
+            .throttle(for: .nanoseconds(500_000_000), scheduler: DispatchQueue.main, latest: true)
+            .compactMap { $0 }
+            .sink { _ in
+                self.updateDistanceText()
+                self.autoPositionMarkersNUserLocationRegionBounds()
             }
             .store(in: &cancellables)
     }

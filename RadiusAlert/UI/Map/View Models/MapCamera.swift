@@ -9,12 +9,14 @@ import MapKit
 import CoreLocation
 import SwiftUI
 
+// MARK: CAMERA
+
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     /// Sets the initial position on the map focusing on the user's location.
-    /// This is typically called when the user opens the app for the first time.
-    func positionToInitialUserLocation() {
+    /// This is typically called when the user opens the app for the first time or map renders.
+    func positionToInitialUserLocation(on type: MapTypes, animate: Bool) {
         guard
             let position: MapCameraPosition = locationManager.getInitialMapCameraPosition(),
             let region: MKCoordinateRegion = position.region else {
@@ -22,7 +24,14 @@ extension MapViewModel {
             return
         }
         
-        setPosition(region: region, animate: true)
+        Task {
+            switch type {
+            case .primary:
+                await setPrimaryPosition(region: region, animate: animate)
+            case .secondary:
+                await setSecondaryPosition(region: region, animate: animate)
+            }
+        }
     }
     
     /// Positions the map region so that both coordinates are visible, centered at their midpoint.
@@ -30,16 +39,14 @@ extension MapViewModel {
     ///   - coordinate1: The first location coordinate.
     ///   - coordinate2: The second location coordinate.
     ///   - animate: Whether the map camera movement should be animated.
-    func positionRegionBoundsToMidCoordinate(
-        coordinate1: CLLocationCoordinate2D,
-        coordinate2: CLLocationCoordinate2D,
-        animate: Bool
-    ) {
-        // Calculate the distance between the two coordinates.
-        let distance: CLLocationDistance = Utilities.getDistance(from: coordinate1, to: coordinate2)
+    func positionRegionBoundsToMidCoordinate(from coordinates: [CLLocationCoordinate2D], on type: MapTypes, animate: Bool) {
+        guard coordinates.count >= 2 else { return }
         
-        // Find the midpoint between the two coordinates.
-        let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: coordinate1, and: coordinate2)
+        // Find the midpoint between the coordinates.
+        let midCoordinate: CLLocationCoordinate2D = Utilities.calculateMidCoordinate(from: coordinates)
+        
+        // Calculate the max distance between coordinates.
+        let distance: CLLocationDistance = Utilities.getDistance(by: .max, from: coordinates)
         
         // Determine the bounds size so both annotations are visible.
         let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
@@ -51,44 +58,60 @@ extension MapViewModel {
             longitudinalMeters: boundsMeters
         )
         
-        // Update the map position with optional animation.
-        setPosition(region: region, animate: animate)
+        // Update the map position.
+        Task {
+            switch type {
+            case .primary:
+                await setPrimaryPosition(region: region, animate: animate)
+            case .secondary:
+                await setSecondaryPosition(region: region, animate: animate)
+            }
+        }
     }
     
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
-    func positionBinding() -> Binding<MapCameraPosition> {
-        return .init(get: { self.position }, set: setPosition)
+    func primaryPositionBinding() -> Binding<MapCameraPosition> {
+        return .init(get: { self.primaryPosition }, set: setPrimaryPosition)
     }
     
-    /// Resets the map to the initial region bounds, removing markers and routes.
-    /// The map animates smoothly back to the initial view.
-    func resetMapToCurrentUserLocation() {
-        // First, remove marker coordinates so it gets rid of the marker annotation and the radius circle on the map.
-        removeMarkerCoordinate()
-        
-        // Then, remove route paths from the map if available.
-        removeDirections()
-        
-        // Finally, animate the map back to the initial region bounds to provide a smooth user experience.
-        withAnimation { positionToInitialUserLocation() }
+    /// Returns a binding to the secondary map camera position.
+    /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
+    func secondaryPositionBinding() -> Binding<MapCameraPosition> {
+        return .init(get: { self.secondaryPosition }, set: setSecondaryPosition)
     }
     
     /// Handles logic when the map camera changes continuously.
     /// - Parameter context: The camera update context containing the latest camera state.
-    func onContinuousMapCameraChange(_ context: MapCameraUpdateContext) {
-        guard isAuthorizedToGetMapCameraUpdate else { return }
-        setCameraDragging(true)
-        setCenterCoordinate(context.camera.centerCoordinate)
+    func onContinuousMapCameraChange(for type: MapTypes, _ context: MapCameraUpdateContext) {
+        switch type {
+        case .primary:
+            guard isAuthorizedToGetMapCameraUpdate else { return }
+            setPrimaryCameraDragging(true)
+            setPrimaryCenterCoordinate(context.camera.centerCoordinate)
+            
+        case .secondary:
+            setSecondaryCameraDragging(true)
+            setSecondaryCenterCoordinate(context.region.center)
+        }
     }
     
     /// Handles logic when the map camera stops moving.
     /// - Parameter context: The camera update context containing the final camera state.
-    func onMapCameraChangeEnd(_ context: MapCameraUpdateContext) {
-        guard isAuthorizedToGetMapCameraUpdate else { return }
-        setCameraDragging(false)
-        setCenterCoordinate(context.camera.centerCoordinate)
-        clearSelectedSearchResultItemOnMapCameraChangeByUser()
+    func onMapCameraChangeEnd(for type: MapTypes, _ context: MapCameraUpdateContext) {
+        switch type {
+        case .primary:
+            guard isAuthorizedToGetMapCameraUpdate else { return }
+            setPrimaryCameraDragging(false)
+            setPrimaryCenterCoordinate(context.camera.centerCoordinate)
+            
+        case .secondary:
+            setSecondaryCameraDragging(false)
+            setSecondaryCenterCoordinate(context.camera.centerCoordinate)
+        }
+        
+        handleIsBeyondMinimumDistanceOnSelectedSearchResult(on: type)
+        clearSelectedSearchResultItemOnMapCameraChangeByUser(on: type)
     }
     
     /// Cycles through available map styles and sets the next one.
@@ -107,20 +130,15 @@ extension MapViewModel {
     /// - Parameters:
     ///   - center: The center coordinate for the new region.
     ///   - meters: The distance in meters for both latitude and longitude bounds.
-    func setRegionBoundMeters(center: CLLocationCoordinate2D, meters: CLLocationDistance) {
-        let region: MKCoordinateRegion = .init(center: center, latitudinalMeters: meters, longitudinalMeters: meters)
-        setPosition(region: region, animate: true)
-    }
-    
-    /// Centers the map region to fit both the marker and the user's location.
-    /// If either is unavailable, logs an error instead.
-    func centerRegionBoundsForMarkerNUserLocation() {
-        guard let markerCoordinate, let currentUserLocation = locationManager.currentUserLocation else {
-            Utilities.log(MapCameraErrorModel.failedToCenterRegionBoundsForMarkerNUserLocation.errorDescription)
-            return
-        }
+    func setRegionBoundMeters(to centerCoordinate: CLLocationCoordinate2D, meters: CLLocationDistance, on type: MapTypes, animate: Bool) async {
+        let region: MKCoordinateRegion = .init(center: centerCoordinate, latitudinalMeters: meters, longitudinalMeters: meters)
         
-        positionRegionBoundsToMidCoordinate(coordinate1: markerCoordinate, coordinate2: currentUserLocation, animate: true)
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: region, animate: animate)
+        case .secondary:
+            await setSecondaryPosition(region: region, animate: animate)
+        }
     }
     
     /// Registers a cleanup action to help clear memory related to map styles.
@@ -137,23 +155,140 @@ extension MapViewModel {
         }
     }
     
+    func positionMapOnAuthorization(authorizationStatus: CLAuthorizationStatus) {
+        // Updates internal state based on current authorization status.
+        setIsAuthorizedToGetMapCameraUpdate(authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse)
+        
+        // Skips map update if not authorized.
+        guard isAuthorizedToGetMapCameraUpdate else { return }
+        
+        // Delays then repositions the map to the initial user location on the main actor.
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            positionToInitialUserLocation(on: .primary, animate: true)
+        }
+    }
+    
+    func autoPositionMarkersNUserLocationRegionBounds() {
+        guard !markers.isEmpty else { return }
+        let currentTime: Date = .now
+        let timeDiff: Double = currentTime.timeIntervalSince(regionBoundsToUserLocationNMarkersTimestamp)
+        let timeCondition: Double = 10 // 10 seconds
+        
+        guard timeDiff >= timeCondition else { return }
+        setRegionBoundsToUserLocationNMarkers(on: .primary)
+        setRegionBoundsToUserLocationNMarkersTimestamp(.now)
+    }
+    
+    func prepareMapPositionNRegion(on type: MapTypes, mapItem: MKMapItem, itemRadius: CLLocationDistance) async {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        guard let centerCoordinate else { return }
+        
+        // 1) Zoom out to Initial Region Bounds
+        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let initialRegion: MKCoordinateRegion = .init(
+            center: centerCoordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        switch type {
+        case .primary:
+            await setPrimaryPosition(region: initialRegion, animate: true)
+            break
+        case .secondary:
+            await setSecondaryPosition(region: initialRegion, animate: true)
+        }
+        
+        // 2) Position Camera to New Coordinates
+        let newRegion: MKCoordinateRegion = .init(
+            center: mapItem.placemark.coordinate,
+            latitudinalMeters: boundsMeters,
+            longitudinalMeters: boundsMeters
+        )
+        
+        /// View get affected due to following radius changes, because of that position doesn't update with animation properly.
+        /// A small delay help the position to animate properly after the view update was ended from the radius value.
+        switch type {
+        case .primary:
+            setPrimarySelectedRadius(itemRadius)
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            await setPrimaryPosition(region: newRegion, animate: true)
+            
+        case .secondary:
+            setSecondarySelectedRadius(itemRadius)
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            await setSecondaryPosition(region: newRegion, animate: true)
+        }
+        
+        setSelectedSearchResult(.init(result: mapItem))
+        
+        // 3) Zoom in or out to region bounds based on radius
+        await setRegionBoundsOnRadius(for: type)
+        
+        setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Check the coordinates between selectedMapItem and the center coordinate.
     /// If these two don’t match, it means the user has moved the map around,
     /// and it is no longer the selected search result coordinate.
     /// Clears the selected search result if the map camera position no longer matches the selected search result's coordinate.
-    private func clearSelectedSearchResultItemOnMapCameraChangeByUser() {
-        // Ensure we have a selected search result that is set, a valid center coordinate,
-        // no radius alert item active, and the center coordinate does not match the selected result coordinate within a precision of 5 decimal places.
+    private func clearSelectedSearchResultItemOnMapCameraChangeByUser(on type: MapTypes) {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
         guard
-            let selectedSearchResult,
-            selectedSearchResult.doneSetting,
             let centerCoordinate,
-            radiusAlertItem == nil,
-            !centerCoordinate.isEqual(to: selectedSearchResult.result.placemark.coordinate, precision: 5) else { return }
+            let selectedSearchResult,
+            !selectedSearchResult.result.coordinate.isEqual(to: centerCoordinate),
+            selectedSearchResult.doneSetting else { return }
         
         // Clear the selected search result because the user moved the map away from it
+        setSelectedSearchResult(nil)
+    }
+    
+    private func handleIsBeyondMinimumDistanceOnSelectedSearchResult(on type: MapTypes) {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        let viewLevel: AlertViewLevels = {
+            switch type {
+            case .primary:
+                return .content
+            case .secondary:
+                return .multipleStopsMapSheet
+            }
+        }()
+        
+        guard
+            let centerCoordinate,
+            let selectedCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.coordinate,
+            centerCoordinate.isEqual(to: selectedCoordinate),
+            !isBeyondMinimumDistance(centerCoordinate: centerCoordinate) else { return }
+        
+        alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
         setSelectedSearchResult(nil)
     }
 }
