@@ -74,34 +74,6 @@ extension MapViewModel {
         onAlertStartEnded()
     }
     
-    /// Prompts the user to confirm stopping the current alert when they select a new search result.
-    /// If confirmed, stops the existing alert and sets a new alert at the selected coordinate.
-    /// - Parameter item: The selected search completion item representing the new alert location.
-    func stopAlertOnSearchResultListRowTapConfirmation(_ item: MKLocalSearchCompletion) {
-        stopAlertConfirmationHandler { markerID in
-            alertManager.showAlert(
-                .stopAlertOnSubmit(viewLevel: .content) {
-                    self.stopAlert(for: [markerID])
-                    self.setSearchFieldFocused(false)
-                    self.prepareSelectedSearchResultCoordinate(on: .primary, item: item)
-                }
-            )
-        }
-    }
-    
-    func stopAlertOnRecentSearchListRowTapConfirmation(_ item: RecentSearchModel) {
-        stopAlertConfirmationHandler { markerID in
-            alertManager.showAlert(
-                .stopAlertOnSubmit(viewLevel: .content) {
-                    self.stopAlert(for: [markerID])
-                    self.setSearchFieldFocused(false)
-                    self.prepareSelectedRecentSearchCoordinateOnMap(item)
-                    
-                }
-            )
-        }
-    }
-    
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
     /// halting haptics and tones, resetting the map, and clearing alert UI.
     func stopAlert(for markerIDs: [String]) {

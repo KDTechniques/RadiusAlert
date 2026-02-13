@@ -21,14 +21,24 @@ extension MapViewModel {
     /// - Parameter item: The `MKLocalSearchCompletion` the user tapped.
     func onSearchResultsListRowTap(_ item: MKLocalSearchCompletion) {
         createRecentSearch(on: item)
+        resetSearchable()
         
-        //        if multipleStopsMedium == .search {
-        //            prepareSelectedSearchResultCoordinateOnMap(item)
-        //        } else {
-        //            isMarkerCoordinateNil()
-        //            ? prepareSelectedSearchResultCoordinateOnMap(item)
-        //            : stopAlertOnSearchResultListRowTapConfirmation(item)
-        //        }
+        if markers.isEmpty {
+            Task {
+                await prepareSelectedSearchResultCoordinate(on: .primary, item: item)
+            }
+        } else {
+            let nanoSeconds: UInt64 = isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: nanoSeconds)
+                await prepareSelectedSearchResultCoordinate(on: .secondary, item: item)
+            }
+        }
     }
     
     /// Handles a tap on an item from the recent searches list.
@@ -38,13 +48,24 @@ extension MapViewModel {
     ///
     /// - Parameter item: The `RecentSearchModel` the user tapped.
     func onRecentSearchListRowTap(_ item: RecentSearchModel) {
-        //        if multipleStopsMedium == .search {
-        //            prepareSelectedRecentSearchCoordinateOnMap(item)
-        //        } else {
-        //            isMarkerCoordinateNil()
-        //            ? prepareSelectedRecentSearchCoordinateOnMap(item)
-        //            : stopAlertOnRecentSearchListRowTapConfirmation(item)
-        //        }
+        resetSearchable()
+        
+        if markers.isEmpty {
+            Task {
+                await prepareSelectedRecentSearchCoordinateOnMap(type: .primary, item: item)
+            }
+        } else {
+            let nanoSeconds: UInt64 = isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            
+            /// present the multiple stops map sheet and set coordinate on secondary map type.
+            /// then when user tap on add button, prepare the marker just like we do normally!
+            setIsPresentedMultipleStopsMapSheet(true)
+            
+            Task {
+                try? await Task.sleep(nanoseconds: nanoSeconds)
+                await prepareSelectedRecentSearchCoordinateOnMap(type: .secondary, item: item)
+            }
+        }
     }
     
     /// Responds to changes in the search bar text.
@@ -64,18 +85,15 @@ extension MapViewModel {
     /// - Asynchronously fetches the full `MKMapItem` and animates the map to the new location.
     ///
     /// - Parameter item: The completion result to resolve and focus.
-    func prepareSelectedSearchResultCoordinate(on type: MapTypes, item: MKLocalSearchCompletion) {
+    func prepareSelectedSearchResultCoordinate(on type: MapTypes, item: MKLocalSearchCompletion) async {
         setSelectedSearchResult(from: item)
         
         // Clear any existing search UI state
         resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
         
-        Task {
-            guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
-            await prepareMapPositionNRegion(on: type, mapItem: mapItem, itemRadius: mapValues.minimumRadius)
-        }
+        guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
+        await prepareMapPositionNRegion(on: type, mapItem: mapItem, itemRadius: mapValues.minimumRadius)
     }
-    
     
     func prepareSelectedLocationPinCoordinate(on type: MapTypes, item: LocationPinsModel) async {
         // Clear any existing search UI state
@@ -96,17 +114,16 @@ extension MapViewModel {
     /// - Animates and bounds the map around the chosen location.
     ///
     /// - Parameter item: The recent search to focus on.
-    func prepareSelectedRecentSearchCoordinateOnMap(_ item: RecentSearchModel) {
+    func prepareSelectedRecentSearchCoordinateOnMap(type: MapTypes, item: RecentSearchModel) async {
         // Clear any existing search UI state
         resetSearchable()
+        
+        setSelectedSearchResult(nil)
         
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
-        // Optimistically set the selection so the UI can reflect the choice right away
-        setSelectedSearchResult(.init(result: mkMapItem))
-        
-        Task { await prepareMapPositionNRegion(on: .primary, mapItem: mkMapItem, itemRadius: mapValues.minimumRadius) }
+        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem, itemRadius: mapValues.minimumRadius)
     }
     
     /// Reacts to changes in the currently selected search result.

@@ -110,6 +110,7 @@ extension MapViewModel {
             setSecondaryCenterCoordinate(context.camera.centerCoordinate)
         }
         
+        handleIsBeyondMinimumDistanceOnSelectedSearchResult(on: type)
         clearSelectedSearchResultItemOnMapCameraChangeByUser(on: type)
     }
     
@@ -259,6 +260,35 @@ extension MapViewModel {
             selectedSearchResult.doneSetting else { return }
         
         // Clear the selected search result because the user moved the map away from it
+        setSelectedSearchResult(nil)
+    }
+    
+    private func handleIsBeyondMinimumDistanceOnSelectedSearchResult(on type: MapTypes) {
+        let centerCoordinate: CLLocationCoordinate2D? = {
+            switch type {
+            case .primary:
+                return primaryCenterCoordinate
+            case .secondary:
+                return secondaryCenterCoordinate
+            }
+        }()
+        
+        let viewLevel: AlertViewLevels = {
+            switch type {
+            case .primary:
+                return .content
+            case .secondary:
+                return .multipleStopsMapSheet
+            }
+        }()
+        
+        guard
+            let centerCoordinate,
+            let selectedCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.coordinate,
+            centerCoordinate.isEqual(to: selectedCoordinate),
+            !isBeyondMinimumDistance(centerCoordinate: centerCoordinate) else { return }
+        
+        alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
         setSelectedSearchResult(nil)
     }
 }
