@@ -134,6 +134,40 @@ extension View {
             self
         }
     }
+    
+    @ViewBuilder
+    func savedLocationPinButtonBackgroundViewModifier(type: MapTypes) -> some View {
+        switch type {
+        case .primary:
+            self.background(.regularMaterial)
+            
+        case .secondary:
+            self.background(.clear)
+        }
+    }
+    
+    @ViewBuilder
+    func savedLocationPinButtonGlassEffect(type: MapTypes, colorScheme: ColorScheme) -> some View {
+        if #available(iOS  26.0, *) {
+            let effect: Glass = {
+                switch type {
+                case .primary:
+                    return .clear
+                case .secondary:
+                    return colorScheme == .dark ? .regular : .clear
+                }
+            }()
+            
+            self
+                .glassEffect(effect)
+        } else {
+            self
+                .overlay {
+                    Capsule()
+                        .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
+                }
+        }
+    }
 }
 
 // MARK: - EXTENSIONS

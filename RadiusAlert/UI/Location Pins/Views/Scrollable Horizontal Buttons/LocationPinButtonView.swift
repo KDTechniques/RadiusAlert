@@ -30,9 +30,9 @@ struct LocationPinButtonView: View {
                 .font(.subheadline)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
-                .buttonBackground(type: type)
+                .savedLocationPinButtonBackgroundViewModifier(type: type)
                 .clipShape(.capsule)
-                .pinButtonGlassEffect(type: type, colorScheme: colorScheme)
+                .savedLocationPinButtonGlassEffect(type: type, colorScheme: colorScheme)
         }
         .foregroundStyle(.primary)
     }
@@ -44,41 +44,4 @@ struct LocationPinButtonView: View {
         print("Action Triggered!")
     }
     .previewModifier()
-}
-
-// MARK: - EXTENSIONS
-fileprivate extension View {
-    @ViewBuilder
-    func pinButtonGlassEffect(type: MapTypes, colorScheme: ColorScheme) -> some View {
-        if #available(iOS  26.0, *) {
-            let effect: Glass = {
-                switch type {
-                case .primary:
-                    return .clear
-                case .secondary:
-                    return colorScheme == .dark ? .regular : .clear
-                }
-            }()
-            
-            self
-                .glassEffect(effect)
-        } else {
-            self
-                .overlay {
-                    Capsule()
-                        .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
-                }
-        }
-    }
-    
-    @ViewBuilder
-    func buttonBackground(type: MapTypes) -> some View {
-        switch type {
-        case .primary:
-            self.background(.regularMaterial)
-            
-        case .secondary:
-            self.background(.clear)
-        }
-    }
 }

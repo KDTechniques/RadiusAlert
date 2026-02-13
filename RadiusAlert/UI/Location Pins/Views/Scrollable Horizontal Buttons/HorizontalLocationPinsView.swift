@@ -81,7 +81,7 @@ extension HorizontalLocationPinsView  {
     @ViewBuilder
     private var moreButton: some View {
         if locationPinsVM.showMoreButton() {
-            MoreSavedLocationPinsButtonView()
+            MoreSavedLocationPinsButtonView(type: type)
         }
     }
 }
