@@ -93,7 +93,7 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
         case .addMultipleStops:
             mapVM.alertManager.showAlert(
                 .addMultipleStops(viewLevel: .content) {
-                    // add search based logic here later...
+                    mapVM.setSearchFieldFocused(true)
                 } manual: {
                     mapVM.setIsPresentedMultipleStopsMapSheet(true)
                 }
