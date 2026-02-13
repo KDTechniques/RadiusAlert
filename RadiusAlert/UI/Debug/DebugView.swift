@@ -126,6 +126,12 @@ extension Content {
                     alertManager.showAlert(alert)
                 }
             }
+            
+            Button("Trigger All the Alerts at Once") {
+                for alert in AlertTypes.allCases {
+                    alertManager.showAlert(alert)
+                }
+            }
         } header: {
             Text("Alert Popups")
         }
