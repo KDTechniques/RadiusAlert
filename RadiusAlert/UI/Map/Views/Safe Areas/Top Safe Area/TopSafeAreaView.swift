@@ -22,7 +22,6 @@ struct TopSafeAreaView: View {
             SearchBarSwiftUIView()
             horizontalLocationPins
             divider
-            SearchListContentView()
         }
         .background(mapValues.safeAreaBackgroundColor(colorScheme))
     }
@@ -51,5 +50,23 @@ extension TopSafeAreaView {
     private var divider: some View {
         Divider()
             .opacity(mapVM.showTopSafeAreaDivider() ? 1 : 0)
+            .overlay {
+                GeometryReader { geo in
+                    Color.clear
+                        .preference(key: DividerMaxYPreferenceKey.self, value: geo.frame(in: .global).maxY)
+                }
+                .onPreferenceChange(DividerMaxYPreferenceKey.self) { maxY in
+                    let height: CGFloat = Utilities.screenHeight - maxY
+                    mapVM.setSearchResultBackgroundHeight(height)
+                }
+            }
+    }
+}
+
+private struct DividerMaxYPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }

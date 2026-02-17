@@ -19,6 +19,9 @@ struct SearchListBackgroundView: View {
     var body: some View {
         if mapVM.showSearchListBackground() {
             mapValues.safeAreaBackgroundColor(colorScheme)
+                .frame(height: mapVM.searchResultBackgroundHeight)
+                .overlay(alignment: .top) { SearchListContentView() }
+                .frame(maxHeight: .infinity, alignment: .bottom)
                 .ignoresSafeArea()
         }
     }
