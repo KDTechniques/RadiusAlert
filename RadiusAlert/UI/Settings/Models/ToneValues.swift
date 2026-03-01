@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct ToneValues {
-    static let minDuration: Double = 5
-    static let maxDuration: Double = 10
-    static let defaultDuration: Double = 6
+enum ToneValues {
+    // Tone Fade
+    static let toneFadeMinDuration: Double = 5
+    static let toneFadeMaxDuration: Double = 10
+    static let toneFadeDefaultDuration: Double = 6
 }

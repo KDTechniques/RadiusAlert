@@ -23,24 +23,10 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             MapView()
-                .overlay {
-                    MapPinView()
-                        .opacity(mapVM.showPrimaryMapPin() ? 1 : 0)
-                        .disabled(!mapVM.showPrimaryMapPin())
-                    
-                    if mapVM.showFloatingAlertRadiusText() {
-                        CircularRadiusTextView(
-                            radius: mapVM.primarySelectedRadius,
-                            title: mapVM.selectedSearchResult?.result.name
-                        )
-                    }
-                    
-                    MapBottomTrailingButtonsView()
-                    RadiusSliderOrDistanceTextView()
-                }
+                .mapOverlays(mapVM)
                 .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
-                .overlay { SearchListBackgroundView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
+                .overlay { SearchListBackgroundView() }
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
@@ -127,6 +113,25 @@ fileprivate extension View  {
                 if let popupCardItem: PopupCardModel = vm.popupCardItem {
                     PopupCardView(item: popupCardItem)
                 }
+            }
+    }
+    
+    func mapOverlays(_ mapVM: MapViewModel) -> some View {
+        self
+            .overlay {
+                MapPinView()
+                    .opacity(mapVM.showPrimaryMapPin() ? 1 : 0)
+                    .disabled(!mapVM.showPrimaryMapPin())
+                
+                if mapVM.showFloatingAlertRadiusText() {
+                    CircularRadiusTextView(
+                        radius: mapVM.primarySelectedRadius,
+                        title: mapVM.selectedSearchResult?.result.name
+                    )
+                }
+                
+                MapBottomTrailingButtonsView()
+                RadiusSliderOrDistanceTextView()
             }
     }
 }

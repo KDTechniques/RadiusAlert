@@ -10,9 +10,8 @@ import Foundation
 enum UserDefaultKeys: String {
     case darkMode
     case tone
-    case mapStyle
-    case mapStyleButton
-    case toneFade
-    case toneFadeDuration
+    case mapStyle, mapStyleButton
+    case toneFade, toneFadeDuration
     case spokenAlert
+    case autoAlertStop, autoAlertStopDuration
 }

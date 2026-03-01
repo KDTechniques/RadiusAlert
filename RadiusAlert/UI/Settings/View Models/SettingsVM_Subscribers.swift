@@ -18,4 +18,13 @@ extension SettingsViewModel {
             .sink { self.userDefaultsManager.saveFadeDuration($0) }
             .store(in: &cancellables)
     }
+    
+    /// Subscribes to changes in the auto alert stop duration property, debounces updates, and saves changes to user defaults.
+    func autoAlertStopDurationSubscriber() {
+        $autoAlertStopDuration$
+            .removeDuplicates()
+            .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
+            .sink { self.userDefaultsManager.saveAutoAlertStopDuration($0) }
+            .store(in: &cancellables)
+    }
 }
