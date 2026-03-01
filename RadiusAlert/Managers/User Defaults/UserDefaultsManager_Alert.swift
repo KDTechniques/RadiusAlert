@@ -84,7 +84,7 @@ extension UserDefaultsManager {
         if defaults.object(forKey: keys.autoAlertStop.rawValue) == nil {
             return true
         } else {
-            return defaults.bool(forKey: keys.toneFade.rawValue)
+            return defaults.bool(forKey: keys.autoAlertStop.rawValue)
         }
     }
     
