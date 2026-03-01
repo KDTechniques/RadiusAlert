@@ -7,6 +7,16 @@
 
 import Foundation
 
+/// If the stored value is nil, we return true so the user can experience the feature by default.
+/// If the user explicitly disables it, we preserve that choice.
+///
+/// Example:
+/// ```swift
+/// if defaults.object(forKey: keys.toneFade.rawValue) == nil {
+///     return true
+/// }
+/// ```
+
 extension UserDefaultsManager {
     // MARK: - Map Style
     

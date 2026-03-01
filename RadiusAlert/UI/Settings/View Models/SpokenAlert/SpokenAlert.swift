@@ -17,15 +17,15 @@ extension SettingsViewModel {
     
     func spokenAlertSpeakAction(with locationTitle: String? = nil) async {
         let text: String = SpokenAlertValues.getPhrase(
-            userName: spokenAlertValues.userName,
+            userName: spokenAlert.userName,
             locationTitle: locationTitle ?? nil
         )
        
         await textToSpeechManager.speak(
             text: text,
-            voice: spokenAlertValues.voice,
-            spokenRate: Float(spokenAlertValues.speakingRate),
-            pitchRate: Float(spokenAlertValues.pitchRate)
+            voice: spokenAlert.voice,
+            spokenRate: Float(spokenAlert.speakingRate),
+            pitchRate: Float(spokenAlert.pitchRate)
         )
     }
     

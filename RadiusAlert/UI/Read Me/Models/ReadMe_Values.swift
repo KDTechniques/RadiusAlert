@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ReadMe_Values {
+enum ReadMe_Values {
     private static let screenWidth: CGFloat = UIScreen.main.bounds.width
     
     static var padding: CGFloat = 20

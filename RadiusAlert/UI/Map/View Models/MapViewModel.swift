@@ -45,7 +45,7 @@ final class MapViewModel {
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
- 
+    
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
     private(set) var isSearchFieldFocused: Bool = false
@@ -56,6 +56,7 @@ final class MapViewModel {
     private(set) var recentSearches: [RecentSearchModel] = []
     private(set) var distanceText: CLLocationDistance = .zero { didSet { distanceText$ = distanceText } }
     @ObservationIgnored @Published private(set) var distanceText$: CLLocationDistance = .zero
+    private(set) var searchResultBackgroundHeight: CGFloat = .zero
     
     // Multiple Stops Map Related
     private(set) var markers: [MarkerModel] = []
@@ -184,7 +185,11 @@ final class MapViewModel {
     func setRegionBoundsToUserLocationNMarkersTimestamp(_ value: Date) {
         regionBoundsToUserLocationNMarkersTimestamp = value
     }
-  
+    
+    func setSearchResultBackgroundHeight(_ height: CGFloat) {
+        searchResultBackgroundHeight = height
+    }
+    
     // MARK: - PUBLIC FUNCTIONS
     
     func getNavigationTitleIconColor() -> Color {

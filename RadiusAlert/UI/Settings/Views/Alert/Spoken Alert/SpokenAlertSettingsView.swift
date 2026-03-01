@@ -1,5 +1,5 @@
 //
-//  SpokenAlertView.swift
+//  SpokenAlertSettingsView.swift
 //  RadiusAlerts
 //
 //  Created by Kavinda Dilshan on 2025-11-16.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SpokenAlertView: View {
+struct SpokenAlertSettingsView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(SettingsViewModel.self) private var settingsVM
     
@@ -24,7 +24,7 @@ struct SpokenAlertView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
         .task { await settingsVM.getNSetVoiceNamesArray() }
-        .onChange(of: settingsVM.spokenAlertValues.voice) { _, _ in
+        .onChange(of: settingsVM.spokenAlert.voice) { _, _ in
             Task { await settingsVM.spokenAlertSpeakAction() }
         }
         .onDisappear { settingsVM.onSpokenAlertViewDisappear() }
@@ -34,13 +34,13 @@ struct SpokenAlertView: View {
 // MARK: - PREVIEWS
 #Preview("SpokenAlertView") {
     NavigationStack {
-        SpokenAlertView()
+        SpokenAlertSettingsView()
     }
     .previewModifier()
 }
 
 // MARK: - EXTENSIONS
-extension SpokenAlertView {
+extension SpokenAlertSettingsView {
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button {

@@ -18,20 +18,25 @@ final class SettingsViewModel {
     let userDefaultsManager: UserDefaultsManager = .init()
     let alertManager: AlertManager = .shared
     let textToSpeechManager: TextToSpeechManager = .shared
-    
+  
     // Appearance:
     private(set) var selectedColorScheme: ColorSchemeTypes? = .system { didSet { onColorSchemeChange() } }
     
     // Tone settings:
     private(set) var selectedTone: ToneTypes = .defaultTone { didSet { onToneChange() } }
+    /// Tone Fade
     private(set) var isEnabledToneFade: Bool = true { didSet { onToneFadeToggleChange() } }
-    private(set) var toneFadeDuration: Double = ToneValues.defaultDuration { didSet { toneFadeDuration$ = toneFadeDuration } }
-    @ObservationIgnored @Published private(set) var toneFadeDuration$: Double = ToneValues.defaultDuration
+    private(set) var toneFadeDuration: Double = ToneValues.toneFadeDefaultDuration { didSet { toneFadeDuration$ = toneFadeDuration } }
+    @ObservationIgnored @Published private(set) var toneFadeDuration$: Double = ToneValues.toneFadeDefaultDuration
+    /// Auto Alert Stop
+    private(set) var isEnableAutoAlertStop: Bool = true { didSet { onAutoAlertStopToggleChange() } }
+    private(set) var autoAlertStopDuration: Double = AlertValues.autoAlertStopDefaultDuration { didSet { autoAlertStopDuration$ = autoAlertStopDuration } }
+    @ObservationIgnored @Published private(set) var autoAlertStopDuration$: Double = AlertValues.autoAlertStopDefaultDuration
     
     // Text to Speech Spoken Alert:
     private(set) var voiceNamesArray: [String] = []
-    private(set) var spokenAlertValues: SpokenAlertModel = .initialValues { didSet { spokenAlertValues$ = spokenAlertValues } }
-    @ObservationIgnored @Published private var spokenAlertValues$: SpokenAlertModel = .initialValues
+    private(set) var spokenAlert: SpokenAlertModel = .initialValues { didSet { spokenAlert$ = spokenAlert } }
+    @ObservationIgnored @Published private var spokenAlert$: SpokenAlertModel = .initialValues
     
     // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
@@ -45,6 +50,7 @@ final class SettingsViewModel {
         spokenAlertValuesSubscriber()
         initializeSettingsVM()
         toneFadeDurationSubscriber()
+        autoAlertStopDurationSubscriber()
     }
     
     // MARK: - SETTERS
@@ -77,23 +83,31 @@ final class SettingsViewModel {
     }
     
     func setSpokenUserNameTextFieldText(_ value: String) {
-        spokenAlertValues.userName = value
+        spokenAlert.userName = value
     }
     
     func setSelectedVoiceName(_ value: String) {
-        spokenAlertValues.voice = value
+        spokenAlert.voice = value
     }
     
     func setSpeakingRate(_ value: CGFloat) {
-        spokenAlertValues.speakingRate = value
+        spokenAlert.speakingRate = value
     }
     
     func setPitchRate(_ value: CGFloat) {
-        spokenAlertValues.pitchRate = value
+        spokenAlert.pitchRate = value
     }
     
     func SetIsOnSpokenAlert(_ value: Bool) {
-        spokenAlertValues.isOnSpokenAlert = value
+        spokenAlert.isOnSpokenAlert = value
+    }
+    
+    func setAutoAlertStop(_ isEnabled: Bool) {
+        isEnableAutoAlertStop = isEnabled
+    }
+    
+    func setAutoAlertStopDuration(_ duration: Double) {
+        autoAlertStopDuration = duration
     }
     
     // MARK: - PRIVATE FUNCTIONS
@@ -102,7 +116,7 @@ final class SettingsViewModel {
     }
     
     private func spokenAlertValuesSubscriber() {
-        $spokenAlertValues$
+        $spokenAlert$
             .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
             .removeDuplicates(by: { $0 == $1 })
             .sink { self.userDefaultsManager.saveSpokenAlert($0) }
@@ -116,7 +130,9 @@ final class SettingsViewModel {
         showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
         isEnabledToneFade = userDefaultsManager.getToneFade()
         toneFadeDuration =  userDefaultsManager.getToneFadeDuration()
-        spokenAlertValues = userDefaultsManager.getSpokenAlert()
+        spokenAlert = userDefaultsManager.getSpokenAlert()
+        isEnableAutoAlertStop = userDefaultsManager.getAutoAlertStop()
+        autoAlertStopDuration = userDefaultsManager.getAutoAlertStopDuration()
     }
     
     private func onColorSchemeChange() {
