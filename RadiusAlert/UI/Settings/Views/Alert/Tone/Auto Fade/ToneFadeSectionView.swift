@@ -48,11 +48,15 @@ extension ToneFadeSectionView {
             VStack(alignment: .leading) {
                 Text(settingsVM.getToneFadeDurationString())
                 
-                Slider(value: settingsVM.toneFadeDurationBinding(), in: 5...10, step: 1) { }
+                Slider(
+                    value: settingsVM.toneFadeDurationBinding(),
+                    in: ToneValues.toneFadeMinDuration...ToneValues.toneFadeMaxDuration,
+                    step: 1
+                ) { }
                 minimumValueLabel: {
-                    Text("\(ToneValues.minDuration.int())s")
+                    Text("\(ToneValues.toneFadeMinDuration.int())s")
                 } maximumValueLabel: {
-                    Text("\(ToneValues.maxDuration.int())s")
+                    Text("\(ToneValues.toneFadeMaxDuration.int())s")
                 }
             }
         }

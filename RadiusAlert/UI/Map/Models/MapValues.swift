@@ -8,7 +8,7 @@
 import CoreLocation
 import SwiftUI
 
-struct MapValues {
+enum MapValues {
     // MARK: - Map Related
     static let initialUserLocationBoundsMeters: CLLocationDistance = 2000
     static let regionBoundsFactor: CLLocationDistance = 1.8

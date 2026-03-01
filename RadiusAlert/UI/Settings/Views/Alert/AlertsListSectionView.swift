@@ -13,6 +13,7 @@ struct AlertsListSectionView: View {
         Section {
             tone
             textToSpeech
+            autoAlertStop
             notifications
         } header: {
             Text("Alerts")
@@ -42,9 +43,17 @@ extension AlertsListSectionView {
     
     private var textToSpeech: some View {
         NavigationLink {
-            SpokenAlertView()
+            SpokenAlertSettingsView()
         } label: {
             Text("Spoken Alert")
+        }
+    }
+    
+    private var autoAlertStop: some View {
+        NavigationLink {
+            AutoAlertStopSettingsView()
+        } label: {
+            Text("Auto Alert Stop")
         }
     }
     

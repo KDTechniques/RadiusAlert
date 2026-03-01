@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SpokenAlertValues {
+enum SpokenAlertValues {
     static func getPhrase(userName: String, locationTitle: String?) -> String {
         let userName: String = userName.isEmpty ? "" : "\(userName), "
         

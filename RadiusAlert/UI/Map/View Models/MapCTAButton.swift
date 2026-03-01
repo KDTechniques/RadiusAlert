@@ -188,7 +188,7 @@ extension MapViewModel {
     /// - Parameter currentUserLocation: The user’s current geographic coordinates.
     private func startAlert_PreparePopupCardItem(currentUserLocation: CLLocationCoordinate2D, markerID: String) {
         guard let marker: MarkerModel = getMarkerObject(on: markerID) else { return }
-    
+        
         // Create the RadiusAlertModel
         let radiusAlertItem = RadiusAlertModel(
             locationTitle: marker.title,
@@ -216,7 +216,7 @@ extension MapViewModel {
             Utilities.log(MapCTAButtonErrorModel.failedToStartMonitoringRegion.errorDescription)
             return false
         }
-
+        
         return true
     }
     
@@ -224,14 +224,19 @@ extension MapViewModel {
         alertManager.sendNotification()
         generateNSetAlertPopupCardItem(for: markerID)
         alertManager.playHaptic()
+        
         Task {
-            if settingsVM.spokenAlertValues.isOnSpokenAlert {
+            if settingsVM.spokenAlert.isOnSpokenAlert {
                 let locationTitle: String? = getRadiusAlertItem(markerID: markerID)?.locationTitle
                 await settingsVM.spokenAlertSpeakAction(with: locationTitle)
                 safelyHandleAlertToneOnRegionEntry(for: markerID)
             } else {
                 safelyHandleAlertToneOnRegionEntry(for: markerID)
             }
+        }
+        
+        settingsVM.handleAlertToStopAutomatically {
+            self.stopAlert(for: [markerID])
         }
     }
     

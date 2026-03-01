@@ -21,6 +21,8 @@ struct ToneSettingsView: View {
 
 // MARK: - PREVIEWS
 #Preview("ToneSettingsView") {
-    ToneSettingsView()
-        .previewModifier()
+    NavigationStack {
+        ToneSettingsView()
+    }
+    .previewModifier()
 }
