@@ -19,7 +19,6 @@ struct RadiusSliderOrDistanceTextView: View {
     @Environment(MapViewModel.self) private var mapVM
     
     //  MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
     let screenWidth: CGFloat = UIScreen.main.bounds.size.width
     
     // MARK: - BODY
@@ -28,7 +27,7 @@ struct RadiusSliderOrDistanceTextView: View {
             radiusSlider
             distanceText
         }
-        .frame(width: screenWidth/mapValues.radiusSliderWidthFactor)
+        .frame(width: screenWidth / MapValues.radiusSliderWidthFactor)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showPrimaryRadiusSliderOrDistanceText())

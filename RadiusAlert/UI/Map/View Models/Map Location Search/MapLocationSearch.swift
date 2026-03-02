@@ -92,7 +92,7 @@ extension MapViewModel {
         resetSearchable() // NOTE: we need to manually get rid of the cancel button forcefully. So implement that on the third party Searchable API we made.
         
         guard let mapItem: MKMapItem = try? await locationSearchManager.getMKMapItem(for: item) else { return }
-        await prepareMapPositionNRegion(on: type, mapItem: mapItem, itemRadius: mapValues.minimumRadius)
+        await prepareMapPositionNRegion(on: type, mapItem: mapItem, itemRadius: MapValues.minimumRadius)
     }
     
     func prepareSelectedLocationPinCoordinate(on type: MapTypes, item: LocationPinsModel) async {
@@ -123,7 +123,7 @@ extension MapViewModel {
         let mkMapItem: MKMapItem = .init(placemark: .init(coordinate: item.coordinate))
         mkMapItem.name = item.title
         
-        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem, itemRadius: mapValues.minimumRadius)
+        await prepareMapPositionNRegion(on: type, mapItem: mkMapItem, itemRadius: MapValues.minimumRadius)
     }
     
     /// Reacts to changes in the currently selected search result.

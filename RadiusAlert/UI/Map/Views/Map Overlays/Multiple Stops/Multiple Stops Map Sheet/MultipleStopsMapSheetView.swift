@@ -111,6 +111,7 @@ extension MultipleStopsMapSheetView {
                 Button("Add", role: .confirm) { mapVM.addAnotherStop() }
             } else {
                 Button("Add") {  mapVM.addAnotherStop() }
+                    .fontWeight(.semibold)
             }
         }
     }

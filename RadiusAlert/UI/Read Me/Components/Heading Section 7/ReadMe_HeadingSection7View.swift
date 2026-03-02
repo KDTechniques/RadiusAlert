@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct ReadMe_HeadingSection7View: View {
-    // MARK: - ASSIGNED PROPERTIES
-    private let values: ReadMe_Values.Type = ReadMe_Values.self
-    
     // MARK: - BODY
     var body: some View {
         heading
@@ -47,8 +44,8 @@ extension ReadMe_HeadingSection7View {
         Image.custom.ReadMe.heading_section7.image
             .resizable()
             .scaledToFit()
-            .clipShape(.rect(cornerRadius: values.cornerRadius))
-            .padding(.vertical, values.padding)
+            .clipShape(.rect(cornerRadius: ReadMe_Values.cornerRadius))
+            .padding(.vertical, ReadMe_Values.padding)
     }
     
     private var footerSubHeading: some View {

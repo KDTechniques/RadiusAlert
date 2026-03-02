@@ -13,9 +13,6 @@ struct TopSafeAreaView: View {
     @Environment(MapViewModel.self) private var mapVM
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
     
-    // MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
-    
     // MARK: - BODY
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +20,7 @@ struct TopSafeAreaView: View {
             horizontalLocationPins
             divider
         }
-        .background(mapValues.safeAreaBackgroundColor(colorScheme))
+        .background(MapValues.safeAreaBackgroundColor(colorScheme))
     }
 }
 

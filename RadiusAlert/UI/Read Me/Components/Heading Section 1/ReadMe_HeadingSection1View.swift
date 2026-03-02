@@ -7,18 +7,15 @@
 
 import SwiftUI
 
-
-
 struct ReadMe_HeadingSection1View: View {
     // MARK: - ASSIGNED PROPERTIES
-    private let values: ReadMe_Values.Type = ReadMe_Values.self
     private let screenWidth: CGFloat = UIScreen.main.bounds.width
     private let cards: [ReadMe_HeadingSection1CardModel] = [
         .init(emoji: "😴", text: "Falling asleep during your ride", image: .custom.ReadMe.heading_section1_1.image),
         .init(emoji: "😨", text: "Missing your stop", image: .custom.ReadMe.heading_section1_2.image),
         .init(emoji: "🚶‍♂️", text: "Having to walk (or pay extra) just to get back", image: .custom.ReadMe.heading_section1_3.image)
     ]
-    private var overlayHeight: CGFloat { values.cardHeight / 4.5 }
+    private var overlayHeight: CGFloat { ReadMe_Values.cardHeight / 4.5 }
     
     // MARK: - BODY
     var body: some View {
@@ -55,7 +52,7 @@ extension ReadMe_HeadingSection1View {
             card.image
                 .resizable()
                 .scaledToFill()
-                .frame(width: values.cardWidth, height: values.cardHeight)
+                .frame(width: ReadMe_Values.cardWidth, height: ReadMe_Values.cardHeight)
         }
         
         var overlay: some View {
@@ -74,20 +71,20 @@ extension ReadMe_HeadingSection1View {
         }
         
         return ScrollView(.horizontal) {
-            HStack(spacing: values.padding) {
+            HStack(spacing: ReadMe_Values.padding) {
                 ForEach(cards) { card in
                     image(card)
                         .overlay(alignment: .top) { overlay }
-                        .clipShape(.rect(cornerRadius: values.cornerRadius))
+                        .clipShape(.rect(cornerRadius: ReadMe_Values.cornerRadius))
                         .overlay(alignment: .topLeading) { overlayText(card) }
                 }
             }
-            .padding(.horizontal, values.padding)
+            .padding(.horizontal, ReadMe_Values.padding)
             .scrollTargetLayout()
         }
         .readMeAfterScrollTargetLayoutViewModifier
-        .padding(.vertical, values.padding)
-        .padding(.horizontal, -values.padding)
+        .padding(.vertical, ReadMe_Values.padding)
+        .padding(.horizontal, -ReadMe_Values.padding)
     }
     
     private var footer: some View {

@@ -18,7 +18,6 @@ final class LocationPinsViewModel {
     // Managers/Services/Models:
     let locationPinManager: LocationPinManager = .shared
     let alertManager: AlertManager = .shared
-    let errorModel = LocationPinsVMErrorModel.self
     
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var locationPinsArray: [LocationPinsModel] = [] { didSet { onLocationPinsArrayChange() } }
@@ -99,7 +98,7 @@ final class LocationPinsViewModel {
         do {
             try await fetchNSetLocationPins()
         } catch let error {
-            Utilities.log(errorModel.failedToInitializeLocationPinsVM(error).errorDescription)
+            Utilities.log(LocationPinsVMErrorModel.failedToInitializeLocationPinsVM(error).errorDescription)
         }
     }
     
@@ -117,7 +116,7 @@ final class LocationPinsViewModel {
             let locationPinsArray: [LocationPinsModel] = try await locationPinManager.fetchLocationPins()
             withAnimation { setLocationPinsArray(locationPinsArray) }
         } catch let error {
-            Utilities.log(errorModel.failedToFetchNSetLocationPinArray(error).errorDescription)
+            Utilities.log(LocationPinsVMErrorModel.failedToFetchNSetLocationPinArray(error).errorDescription)
             throw error
         }
     }

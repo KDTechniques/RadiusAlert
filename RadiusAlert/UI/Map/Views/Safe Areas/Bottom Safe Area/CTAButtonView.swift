@@ -30,7 +30,13 @@ struct CTAButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("CTAButtonView") {
-    CTAButtonView()
+    Color.debug
+        .overlay {
+            VStack(spacing: 0) {
+                Spacer()
+                CTAButtonView()
+            }
+        }
         .previewModifier()
 }
 

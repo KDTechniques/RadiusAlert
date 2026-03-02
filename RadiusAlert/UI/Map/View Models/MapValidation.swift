@@ -22,7 +22,7 @@ extension MapViewModel {
             to: currentLocation
         )
         
-        return distance > mapValues.minimumDistance
+        return distance > MapValues.minimumDistance
     }
 
     /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
@@ -85,18 +85,6 @@ extension MapViewModel {
         
         // Show "no results" if search text is not empty, no results found, and not searching currently
         return !condition1 && condition2 && !condition3
-    }
-    
-    /// Returns true if the call-to-action button should be shown, which is when search results are empty and the search field is not focused.
-    func showCTAButton() -> Bool {
-        // condition1: true if there are results or the no search results text is shown
-        let condition1: Bool = !locationSearchManager.results.isEmpty || showNoSearchResultsText()
-        
-        // condition2: true if search field is focused
-        let condition2: Bool = isSearchFieldFocused
-        
-        // CTA button visible only if no results/no texts and search field is not focused
-        return !condition1 && !condition2
     }
     
     /// Checks if the selected radius is less than a given distance. Shows alert and returns false if not.

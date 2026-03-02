@@ -78,7 +78,7 @@ extension MapViewModel {
     }
     
     func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {
-        return radius * mapValues.radiusToRegionBoundsMetersFactor
+        return radius * MapValues.radiusToRegionBoundsMetersFactor
     }
     
     /// Animates and randomizes the radius slider, then invalidates the tip.

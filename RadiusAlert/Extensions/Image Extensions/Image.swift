@@ -8,5 +8,5 @@
 import SwiftUI
 
 extension Image {
-    static let custom: CustomImages.Type = CustomImages.self
+    static let custom = CustomImages.self
 }
