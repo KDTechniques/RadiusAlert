@@ -11,7 +11,7 @@ import Foundation
 
 extension SettingsViewModel {
     func alertsOnlyVia_DeviceCheck() -> Bool {
-        guard selectedAudioRouteOutputType != .any else { return true }
+        guard selectedAudioRouteOutputType != .allDevice else { return true }
         return currentAudioRouteOutputType == selectedAudioRouteOutputType
     }
 }
