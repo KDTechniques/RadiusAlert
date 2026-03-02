@@ -13,6 +13,8 @@ struct UpdateTypeValues: Identifiable {
     let description: String
     
     static let whatsNew: [Self] = [
+        .init(emoji: "🔕", description: "Alerts only via iPhone speaker or other connected device"),
+        .init(emoji: "⏳", description: "Auto alert stop after a set duration"),
         .init(emoji: "➕", description: "Add multiple stops"),
         .init(emoji: "🔍", description: "Recent location searches for faster access"),
         .init(emoji: "🙊", description: "Text-to-Speech for your set destinations in the popup"),

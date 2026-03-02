@@ -22,8 +22,8 @@ extension UserDefaultsManager {
     
     func getMapStyle() -> MapStyleTypes {
         guard
-            let mapStyleRawValue: String = defaults.string(forKey: UserDefaultKeys.mapStyle.rawValue),
-            let mapStyle: MapStyleTypes = MapStyleTypes.allCases.first(where: {$0.rawValue == mapStyleRawValue }) else { return .standard }
+            let rawValue: String = defaults.string(forKey: UserDefaultKeys.mapStyle.rawValue),
+            let mapStyle: MapStyleTypes = .init(rawValue: rawValue) else { return .standard }
         
         return mapStyle
     }
@@ -34,11 +34,8 @@ extension UserDefaultsManager {
     
     // MARK: - Map Style Button
     func getMapStyleButtonVisibility() -> Bool {
-        if defaults.object(forKey: UserDefaultKeys.mapStyleButton.rawValue) == nil {
-            return true
-        } else {
-            return defaults.bool(forKey: UserDefaultKeys.mapStyleButton.rawValue)
-        }
+        guard defaults.object(forKey: UserDefaultKeys.mapStyleButton.rawValue) != nil else { return true }
+        return defaults.bool(forKey: UserDefaultKeys.mapStyleButton.rawValue)
     }
     
     func saveMapStyleButtonVisibility(_ value: Bool) {

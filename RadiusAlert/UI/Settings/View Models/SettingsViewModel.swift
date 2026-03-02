@@ -32,6 +32,9 @@ final class SettingsViewModel {
     private(set) var isEnableAutoAlertStop: Bool = true { didSet { onAutoAlertStopToggleChange() } }
     private(set) var autoAlertStopDuration: Double = AlertValues.autoAlertStopDefaultDuration { didSet { autoAlertStopDuration$ = autoAlertStopDuration } }
     @ObservationIgnored @Published private(set) var autoAlertStopDuration$: Double = AlertValues.autoAlertStopDefaultDuration
+    /// Audio Route Output
+    private(set) var currentAudioRouteOutputType: AudioRouteOutputTypes = .any
+    private(set) var selectedAudioRouteOutputType: AudioRouteOutputTypes = .any { didSet { onAudioRouteOutputChange() } }
     
     // Text to Speech Spoken Alert:
     private(set) var voiceNamesArray: [String] = []
@@ -47,10 +50,11 @@ final class SettingsViewModel {
     
     // MARK: - INITIALIZER
     init() {
-        spokenAlertValuesSubscriber()
         initializeSettingsVM()
+        spokenAlertValuesSubscriber()
         toneFadeDurationSubscriber()
         autoAlertStopDurationSubscriber()
+        audioRouteChangeObserver()
     }
     
     // MARK: - SETTERS
@@ -110,9 +114,18 @@ final class SettingsViewModel {
         autoAlertStopDuration = duration
     }
     
+    func setCurrentAudioRouteOutputType(_ type: AudioRouteOutputTypes) {
+        currentAudioRouteOutputType = type
+    }
+    
+    func setSelectedAudioRouteOutputType(_ type: AudioRouteOutputTypes) {
+        selectedAudioRouteOutputType = type
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     private func initializeSettingsVM() {
         initializeFromUserDefaults()
+        setCurrentAudioRouteOutputType(getCurrentAudioRouteOutputType())
     }
     
     private func spokenAlertValuesSubscriber() {
@@ -133,6 +146,7 @@ final class SettingsViewModel {
         spokenAlert = userDefaultsManager.getSpokenAlert()
         isEnableAutoAlertStop = userDefaultsManager.getAutoAlertStop()
         autoAlertStopDuration = userDefaultsManager.getAutoAlertStopDuration()
+        selectedAudioRouteOutputType = userDefaultsManager.getAudioRouteOutputType()
     }
     
     private func onColorSchemeChange() {
