@@ -11,9 +11,6 @@ struct ReadMe_HeadingSection2View: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     
-    // MARK: - ASSIGNED PROPERTIES
-    private let values: ReadMe_Values.Type = ReadMe_Values.self
-    
     // MARK: - BODY
     var body: some View {
         heading
@@ -46,16 +43,16 @@ extension ReadMe_HeadingSection2View {
     
     private var hScrollCards: some View {
         var card: some View {
-            RoundedRectangle(cornerRadius: values.cornerRadius)
+            RoundedRectangle(cornerRadius: ReadMe_Values.cornerRadius)
                 .fill(.regularMaterial)
-                .frame(width: values.cardWidth, height: values.cardHeight)
+                .frame(width: ReadMe_Values.cardWidth, height: ReadMe_Values.cardHeight)
         }
         
         func image(_ type: ReadMe_HeadingSection2CardImageTypes) -> some View {
             type.image(colorScheme)
                 .resizable()
                 .scaledToFill()
-                .frame(width: values.cardWidth - values.padding*3 )
+                .frame(width: ReadMe_Values.cardWidth - ReadMe_Values.padding*3 )
                 .offset(y: type.offsetY)
         }
         
@@ -63,27 +60,27 @@ extension ReadMe_HeadingSection2View {
             type.description
                 .font(.footnote)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, values.padding)
+                .padding(.horizontal, ReadMe_Values.padding)
         }
         
         return ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: values.padding) {
+            HStack(alignment: .top, spacing: ReadMe_Values.padding) {
                 ForEach(ReadMe_HeadingSection2CardImageTypes.allCases, id: \.self) { type in
-                    VStack(alignment: .leading, spacing: values.padding) {
+                    VStack(alignment: .leading, spacing: ReadMe_Values.padding) {
                         card
                             .overlay { image(type) }
                             .clipped()
                         
                         description(type)
                     }
-                    .frame(width: values.cardWidth)
+                    .frame(width: ReadMe_Values.cardWidth)
                 }
             }
-            .padding(.horizontal, values.padding)
+            .padding(.horizontal, ReadMe_Values.padding)
             .scrollTargetLayout()
         }
-        .padding(.horizontal, -values.padding)
+        .padding(.horizontal, -ReadMe_Values.padding)
         .readMeAfterScrollTargetLayoutViewModifier
-        .padding(.top, values.padding)
+        .padding(.top, ReadMe_Values.padding)
     }
 }

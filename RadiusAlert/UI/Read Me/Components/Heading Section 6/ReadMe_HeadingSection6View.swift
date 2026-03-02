@@ -12,7 +12,6 @@ struct ReadMe_HeadingSection6View: View {
     @Environment(\.colorScheme) private var colorScheme
     
     // MARK: - ASSIGNED PROPERTIES
-    private let values: ReadMe_Values.Type = ReadMe_Values.self
     private let bullets: [ReadMe_HeadingSection6BulletModel] = [
         .init(emoji: "📍", text: "Destination name (if searched)"),
         .init(emoji: "📏", text: "Distance traveled"),
@@ -67,22 +66,21 @@ extension ReadMe_HeadingSection6View {
             }
         }
         .readMeBodyViewModifier
-        .padding(.top, values.padding)
+        .padding(.top, ReadMe_Values.padding)
     }
     
     @ViewBuilder
     private var image: some View {
-        let section6: CustomImages.ReadMe.Type = CustomImages.ReadMe.self
         let image: Image = colorScheme == .dark
-        ? section6.heading_section6_dark.image
-        : section6.heading_section6_light.image
+        ? .custom.ReadMe.heading_section6_dark.image
+        : .custom.ReadMe.heading_section6_light.image
         
         image
             .resizable()
             .scaledToFit()
             .shadow(color: .primary.opacity(0.3), radius: 1)
-            .frame(width: values.cardWidth)
+            .frame(width: ReadMe_Values.cardWidth)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, values.padding)
+            .padding(.vertical, ReadMe_Values.padding)
     }
 }

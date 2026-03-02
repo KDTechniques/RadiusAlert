@@ -8,15 +8,12 @@
 import SwiftUI
 
 struct AboutOriginView: View {
-    // MARK: - ASSIGNED PROPERTIES
-    let originStrings: AboutOriginStrings.Type = AboutOriginStrings.self
-    
     // MARK: - BODY
     var body: some View {
         NavigationLink {
             List {
                 Section {
-                    Text(originStrings.getOriginString())
+                    Text(AboutOriginStrings.getOriginString())
                 } header: {
                     Text("The Story Behind the App")
                 }

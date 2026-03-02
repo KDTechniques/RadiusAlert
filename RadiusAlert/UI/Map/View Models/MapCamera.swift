@@ -49,7 +49,7 @@ extension MapViewModel {
         let distance: CLLocationDistance = Utilities.getDistance(by: .max, from: coordinates)
         
         // Determine the bounds size so both annotations are visible.
-        let boundsMeters: CLLocationDistance = distance * mapValues.regionBoundsFactor
+        let boundsMeters: CLLocationDistance = distance * MapValues.regionBoundsFactor
         
         // Create a region centered at the midpoint with the calculated bounds.
         let region: MKCoordinateRegion = .init(
@@ -193,7 +193,7 @@ extension MapViewModel {
         guard let centerCoordinate else { return }
         
         // 1) Zoom out to Initial Region Bounds
-        let boundsMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let boundsMeters: CLLocationDistance = MapValues.initialUserLocationBoundsMeters
         let initialRegion: MKCoordinateRegion = .init(
             center: centerCoordinate,
             latitudinalMeters: boundsMeters,

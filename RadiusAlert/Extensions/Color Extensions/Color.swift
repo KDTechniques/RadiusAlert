@@ -43,5 +43,5 @@ extension Color {
     /// let background = Color.custom.SearchBar.searchBarBackground.color
     /// let mapButton = Color.custom.Map.mapControlButtonBackgroundViewModifier.color
     /// ```
-    static let custom: CustomColors.Type = CustomColors.self
+    static let custom = CustomColors.self
 }

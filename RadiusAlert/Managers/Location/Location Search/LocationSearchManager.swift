@@ -14,7 +14,6 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     private let completer = MKLocalSearchCompleter()
     private let locationManager: LocationManager = .shared
     private let resultListingAnimationDuration: Double = 0.3
-    private let errorModel: LocationSearchManagerErrorModel.Type = LocationSearchManagerErrorModel.self
     private(set) var results: [LocationSearchModel] = []
     private(set) var isSearching: Bool = false
     
@@ -85,7 +84,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         isNetworkFailureError(error) ? clearResults() : ()
         setIsSearching(false)
-        Utilities.log(errorModel.failedMKLocalSearchCompleter(error).errorDescription)
+        Utilities.log(LocationSearchManagerErrorModel.failedMKLocalSearchCompleter(error).errorDescription)
     }
     
     private func isNetworkFailureError(_ error: Error) -> Bool {

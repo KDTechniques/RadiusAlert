@@ -10,7 +10,6 @@ import UserNotifications
 final class NotificationManager {
     // MARK: - ASSIGNED PROPERTIES
     static let shared = NotificationManager()
-    private let errorModel: NotificationManagerErrorModel.Type = NotificationManagerErrorModel.self
     
     // MARK: - INITIALIZER
     private init() { }
@@ -39,7 +38,7 @@ final class NotificationManager {
         // 5. Add the new notification request to the notification center
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
-                Utilities.log(self.errorModel.failedToScheduleNotification(error).errorDescription)
+                Utilities.log(NotificationManagerErrorModel.failedToScheduleNotification(error).errorDescription)
             }
         }
     }
@@ -57,7 +56,7 @@ final class NotificationManager {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
                 if let error {
                     // Log any errors that occur during the authorization request
-                    Utilities.log(self.errorModel.failedToAuthorizeNotification(error).errorDescription)
+                    Utilities.log(NotificationManagerErrorModel.failedToAuthorizeNotification(error).errorDescription)
                 } else {
                     // Log the result of the authorization request
                     print("✅: Notification Permission Granted:", granted)

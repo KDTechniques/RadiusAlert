@@ -24,7 +24,7 @@ extension LocationPinsViewModel {
                 try await locationPinManager.updateLocationPins(tempArray)
                 try await fetchNSetLocationPins()
             } catch let error {
-                Utilities.log(errorModel.failedToMoveLocationPinListItem(error).errorDescription)
+                Utilities.log(LocationPinsVMErrorModel.failedToMoveLocationPinListItem(error).errorDescription)
             }
         }
     }
@@ -41,7 +41,7 @@ extension LocationPinsViewModel {
                 try await locationPinManager.deleteLocationPin(item: locationPin)
                 try await fetchNSetLocationPins()
             } catch let error {
-                Utilities.log(errorModel.failedToMoveLocationPinListItem(error).errorDescription)
+                Utilities.log(LocationPinsVMErrorModel.failedToMoveLocationPinListItem(error).errorDescription)
             }
         }
     }

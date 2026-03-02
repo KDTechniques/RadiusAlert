@@ -21,20 +21,17 @@ struct RadiusSliderView: View {
         self.onSlidingEnded = onSlidingEnded
     }
     
-    // MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
-    
     // MARK: - BODY
     var body: some View {
         Slider(
             value: $value,
-            in: mapValues.minimumRadius...mapValues.maximumRadius,
-            step: mapValues.radiusStep) { }
+            in: MapValues.minimumRadius...MapValues.maximumRadius,
+            step: MapValues.radiusStep) { }
         minimumValueLabel: {
-            Text(mapValues.minimumRadiusString)
+            Text(MapValues.minimumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
         } maximumValueLabel: {
-            Text(mapValues.maximumRadiusString)
+            Text(MapValues.maximumRadiusString)
                 .radiusSliderViewModifier(colorScheme)
         } onEditingChanged: { $0 ? () : onSlidingEnded() }
     }
