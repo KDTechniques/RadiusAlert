@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: ABOUT
+
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     func handleOnAppear() {

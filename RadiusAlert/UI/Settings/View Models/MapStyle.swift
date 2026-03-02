@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: MAP STYLE
+
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
