@@ -100,7 +100,7 @@ extension UserDefaultsManager {
     func getAudioRouteOutputType() -> AudioRouteOutputTypes {
         guard
             let rawValue: String = defaults.string(forKey: UserDefaultKeys.audioRouteOutput.rawValue),
-            let type: AudioRouteOutputTypes = .init(rawValue: rawValue) else { return .any }
+            let type: AudioRouteOutputTypes = .init(rawValue: rawValue) else { return .allDevice }
         
         return type
     }

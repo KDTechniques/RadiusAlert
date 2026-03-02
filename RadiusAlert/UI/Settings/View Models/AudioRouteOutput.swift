@@ -6,11 +6,35 @@
 //
 
 import Foundation
+import AVFoundation
 
 // MARK: AUDIO ROUTE OPUTPUT
 
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
+    
+    func audioRouteChangeObserver() {
+        NotificationCenter.default.addObserver(
+            forName: AVAudioSession.routeChangeNotification,
+            object: AVAudioSession.sharedInstance(),
+            queue: .main
+        ) { _ in
+            let audioRouteOutputType: AudioRouteOutputTypes = self.getCurrentAudioRouteOutputType()
+            self.setCurrentAudioRouteOutputType(audioRouteOutputType)
+        }
+    }
+    
+    func getCurrentAudioRouteOutputType() -> AudioRouteOutputTypes {
+        let route: AVAudioSessionRouteDescription = AVAudioSession.sharedInstance().currentRoute
+        let outPut: AVAudioSessionPortDescription? = route.outputs.first
+        
+        guard let outPut else { return .allDevice }
+        
+        let portType: AVAudioSession.Port = outPut.portType
+        let audioRouteOutputType: AudioRouteOutputTypes = .getAudioRouteOutputType(for: portType)
+        
+        return audioRouteOutputType
+    }
     
     func onAudioRouteOutputChange() {
         userDefaultsManager.saveAudioRouteOutputType(selectedAudioRouteOutputType)

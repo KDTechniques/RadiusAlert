@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AVFoundation
 
 // MARK: - TONE
 
@@ -37,30 +36,5 @@ extension SettingsViewModel {
     
     func onToneFadeToggleChange() {
         userDefaultsManager.saveToneFade(isEnabledToneFade)
-    }
-    
-    func audioRouteChangeObserver() {
-        NotificationCenter.default.addObserver(
-            forName: AVAudioSession.routeChangeNotification,
-            object: AVAudioSession.sharedInstance(),
-            queue: .main
-        ) { _ in
-            let audioRouteOutputType: AudioRouteOutputTypes = self.getCurrentAudioRouteOutputType()
-            self.setCurrentAudioRouteOutputType(audioRouteOutputType)
-        }
-    }
-    
-    func getCurrentAudioRouteOutputType() -> AudioRouteOutputTypes {
-        let route: AVAudioSessionRouteDescription = AVAudioSession.sharedInstance().currentRoute
-        let outPut: AVAudioSessionPortDescription? = route.outputs.first
-        
-        guard let outPut else { return .any }
-        
-        let portType: String = outPut.portType.rawValue
-        let audioRouteOutputType: AudioRouteOutputTypes? = .allCases.first(where: { $0.rawValue == portType })
-        
-        guard let audioRouteOutputType else { return .any }
-        
-        return audioRouteOutputType
     }
 }
