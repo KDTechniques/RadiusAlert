@@ -9,11 +9,13 @@ import SwiftUI
 
 struct AlertsListSectionView: View {
     // MARK: - BODY
+    @Environment(SettingsViewModel.self) private var settingsVM
     var body: some View {
         Section {
             tone
             textToSpeech
             autoAlertStop
+            AlertsOnlyVia_SettingsView()
             notifications
         } header: {
             Text("Alerts")

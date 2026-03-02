@@ -9,7 +9,6 @@ import Foundation
 
 struct UserDefaultsManager {
     let defaults: UserDefaults = .init()
-    let keys = UserDefaultKeys.self
     
     /// Clears all values stored in User Defaults.
     static func clearAllUserDefaults() {

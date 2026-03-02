@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: BINDINGS
+
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
@@ -48,5 +50,9 @@ extension SettingsViewModel {
     
     func autoAlertStopDurationBinding() -> Binding<Double> {
         return .init(get: { self.autoAlertStopDuration }, set: setAutoAlertStopDuration)
+    }
+    
+    func selectedAudioRouteOutputTypeBinding() -> Binding<AudioRouteOutputTypes> {
+        return .init(get: { self.selectedAudioRouteOutputType }, set: setSelectedAudioRouteOutputType)
     }
 }

@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: SUBSCRIBERS
+
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     

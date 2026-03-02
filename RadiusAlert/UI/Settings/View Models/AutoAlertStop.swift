@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: AUTO ALERT STOP
+
 extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     

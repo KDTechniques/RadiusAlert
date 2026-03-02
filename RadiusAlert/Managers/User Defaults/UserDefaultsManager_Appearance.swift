@@ -16,8 +16,8 @@ extension UserDefaultsManager {
     
     func getDarkMode() -> ColorSchemeTypes {
         guard
-            let modeRawValue: String = defaults.string(forKey: UserDefaultKeys.darkMode.rawValue),
-            let colorSchemeType: ColorSchemeTypes = ColorSchemeTypes.allCases.first(where: { $0.rawValue == modeRawValue }) else { return .system }
+            let rawValue: String = defaults.string(forKey: UserDefaultKeys.darkMode.rawValue),
+            let colorSchemeType: ColorSchemeTypes = .init(rawValue: rawValue) else { return .system }
         
         return colorSchemeType
     }
