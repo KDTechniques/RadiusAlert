@@ -17,7 +17,7 @@ enum AudioRouteOutputTypes: String, CaseIterable {
         case .speaker:
             return "Built-in Speaker"
         case .bluetooth:
-            return "Any Bluetooth Device"
+            return "Bluetooth Device"
         case .any:
             return "Any Device"
         }
