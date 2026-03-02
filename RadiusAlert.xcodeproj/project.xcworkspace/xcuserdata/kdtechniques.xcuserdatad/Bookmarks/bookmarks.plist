@@ -3,6 +3,54 @@
 <plist version="1.0">
 <dict>
 	<key>top-level-items</key>
-	<array/>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>34</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>33</string>
+					<key>Timestamp</key>
+					<string>794161915.924258</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>RadiusAlert/UI/Settings/View Models/AudioRouteOutput.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>        print(portType)
+</string>
+				<key>leading</key>
+				<string>        
+        let portType: String = outPut.portType.rawValue
+</string>
+				<key>trailing</key>
+				<string>        let audioRouteOutputType: AudioRouteOutputTypes? = .allCases.first(where: { $0.rawValue == portType })
+        
+        guard let audioRouteOutputType else { return .any }
+</string>
+			</dict>
+			<key>title</key>
+			<string>check port type with diferent bluetooth devices when you're at office</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
 </dict>
 </plist>
