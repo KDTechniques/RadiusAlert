@@ -33,8 +33,8 @@ final class SettingsViewModel {
     private(set) var autoAlertStopDuration: Double = AlertValues.autoAlertStopDefaultDuration { didSet { autoAlertStopDuration$ = autoAlertStopDuration } }
     @ObservationIgnored @Published private(set) var autoAlertStopDuration$: Double = AlertValues.autoAlertStopDefaultDuration
     /// Audio Route Output
-    private(set) var currentAudioRouteOutputType: AudioRouteOutputTypes = .any
-    private(set) var selectedAudioRouteOutputType: AudioRouteOutputTypes = .any { didSet { onAudioRouteOutputChange() } }
+    private(set) var currentAudioRouteOutputType: AudioRouteOutputTypes = .allDevice
+    private(set) var selectedAudioRouteOutputType: AudioRouteOutputTypes = .allDevice { didSet { onAudioRouteOutputChange() } }
     
     // Text to Speech Spoken Alert:
     private(set) var voiceNamesArray: [String] = []

@@ -15,7 +15,7 @@ struct AlertsOnlyVia_SettingsView: View {
     var body: some View {
         Picker("Alerts Only Via", selection: settingsVM.selectedAudioRouteOutputTypeBinding()) {
             ForEach(AudioRouteOutputTypes.allCases, id: \.self) {
-                Text($0.label)
+                Text($0.rawValue)
             }
         }
         .tint(.accentColor)

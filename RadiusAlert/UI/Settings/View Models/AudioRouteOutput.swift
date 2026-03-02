@@ -28,13 +28,10 @@ extension SettingsViewModel {
         let route: AVAudioSessionRouteDescription = AVAudioSession.sharedInstance().currentRoute
         let outPut: AVAudioSessionPortDescription? = route.outputs.first
         
-        guard let outPut else { return .any }
+        guard let outPut else { return .allDevice }
         
-        let portType: String = outPut.portType.rawValue
-        print(portType)
-        let audioRouteOutputType: AudioRouteOutputTypes? = .allCases.first(where: { $0.rawValue == portType })
-        
-        guard let audioRouteOutputType else { return .any }
+        let portType: AVAudioSession.Port = outPut.portType
+        let audioRouteOutputType: AudioRouteOutputTypes = .getAudioRouteOutputType(for: portType)
         
         return audioRouteOutputType
     }
