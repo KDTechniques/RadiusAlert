@@ -24,7 +24,7 @@ struct ContentView: View {
         NavigationStack {
             MapView()
                 .mapOverlays(mapVM)
-                .safeAreaInset(edge: .bottom, spacing: 0) {  BottomSafeAreaView() }
+                .safeAreaInset(edge: .bottom, spacing: 0) { BottomSafeAreaView() }
                 .safeAreaInset(edge: .top, spacing: 0) { TopSafeAreaView() }
                 .overlay { SearchListBackgroundView() }
                 .ignoresSafeArea(.keyboard)

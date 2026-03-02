@@ -15,7 +15,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     static let shared: LocationManager = .init()
     let manager: CLLocationManager = .init()
     let alertManager: AlertManager = .shared
-    private let errorModel: LocationManagerErrorModel.Type = LocationManagerErrorModel.self
     
     // MARK: - INITIALIZER
     private override init() {
@@ -35,7 +34,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined { didSet { authorizationStatus$ = authorizationStatus } }
     @ObservationIgnored @Published var authorizationStatus$: CLAuthorizationStatus = .notDetermined
     @ObservationIgnored private(set) var regions: Set<RegionModel> = []
-    private let mapValues: MapValues.Type = MapValues.self
     private(set) var currentDistanceMode: LocationDistanceModes?
     private(set) var currentRegionName: String?
     
@@ -117,7 +115,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return nil
         }
         
-        let regionBoundMeters: CLLocationDistance = mapValues.initialUserLocationBoundsMeters
+        let regionBoundMeters: CLLocationDistance = MapValues.initialUserLocationBoundsMeters
         let region: MKCoordinateRegion = .init(
             center: currentUserLocation,
             latitudinalMeters: regionBoundMeters,
@@ -228,7 +226,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             do {
                 let placemarks: [CLPlacemark] = try await geoCoder.reverseGeocodeLocation(location)
                 guard let country: String = placemarks.first?.country else {
-                    Utilities.log(errorModel.failedToGetCountry.errorDescription)
+                    Utilities.log(LocationManagerErrorModel.failedToGetCountry.errorDescription)
                     return
                 }
                 
@@ -237,7 +235,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
                     print("✅: Assigned current region name: \(country.description)")
                 }
             } catch let error {
-                Utilities.log(errorModel.failedCLGeoCoderOnRegionFilter(error).errorDescription)
+                Utilities.log(LocationManagerErrorModel.failedCLGeoCoderOnRegionFilter(error).errorDescription)
             }
         }
     }

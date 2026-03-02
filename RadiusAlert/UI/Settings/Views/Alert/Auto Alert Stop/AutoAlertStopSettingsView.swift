@@ -66,6 +66,6 @@ extension AutoAlertStopSettingsView {
     }
     
     private var footer: some View {
-        Text("Alerts will automatically dismiss after the selected duration if you don’t interact with them.\n\nEx: if you’re in a crowded bus and need to get off quickly, the alert will stop on its own without you taking your phone out.")
+        Text("Alerts will automatically dismiss after the selected duration if you don’t interact with them.\n\nex: if you’re in a crowded bus and need to get off quickly, the alert will stop on its own without you taking your phone out.")
     }
 }

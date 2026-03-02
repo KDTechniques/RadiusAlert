@@ -12,13 +12,10 @@ struct SearchListBackgroundView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
     
-    // MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
-    
     // MARK: - BODY
     var body: some View {
         if mapVM.showSearchListBackground() {
-            mapValues.safeAreaBackgroundColor(colorScheme)
+            MapValues.safeAreaBackgroundColor(colorScheme)
                 .frame(height: mapVM.searchResultBackgroundHeight)
                 .overlay(alignment: .top) { SearchListContentView() }
                 .frame(maxHeight: .infinity, alignment: .bottom)

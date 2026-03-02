@@ -12,7 +12,6 @@ actor HapticManager {
     //  MARK: - ASSIGNED PROPERTIES
     static let shared = HapticManager()
     private let hapticFeedbackGeneratorWrapper = HapticFeedbackGeneratorWrapper()
-    private let errorModel: HapticManagerErrorModel.Type = HapticManagerErrorModel.self
     private var hapticEngine: CHHapticEngine?
     private var player: CHHapticAdvancedPatternPlayer?
     
@@ -80,7 +79,7 @@ actor HapticManager {
             player?.loopEnabled = true
             try player?.start(atTime: 0)
         } catch {
-            Utilities.log(errorModel.failedToPlaySOSPattern(error).errorDescription)
+            Utilities.log(HapticManagerErrorModel.failedToPlaySOSPattern(error).errorDescription)
         }
     }
     
@@ -90,7 +89,7 @@ actor HapticManager {
             try player?.stop(atTime: 0)
             player = nil
         } catch {
-            Utilities.log(errorModel.failedToStopHaptics(error).errorDescription)
+            Utilities.log(HapticManagerErrorModel.failedToStopHaptics(error).errorDescription)
         }
     }
     
@@ -133,7 +132,7 @@ actor HapticManager {
                 }
             }
         } catch {
-            Utilities.log(errorModel.failedToStartHapticEngine(error).errorDescription)
+            Utilities.log(HapticManagerErrorModel.failedToStartHapticEngine(error).errorDescription)
         }
     }
 }

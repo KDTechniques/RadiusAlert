@@ -43,7 +43,7 @@ extension LocationPinsViewModel {
         do {
             try await locationPinManager.addLocationPins([item])
         } catch let error {
-            Utilities.log(errorModel.failedToCreateNewLocationPin(error).errorDescription)
+            Utilities.log(LocationPinsVMErrorModel.failedToCreateNewLocationPin(error).errorDescription)
         }
     }
     

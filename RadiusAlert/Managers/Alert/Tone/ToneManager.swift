@@ -10,7 +10,6 @@ import AVFoundation
 actor ToneManager {
     // MARK: - ASSIGNED PROPERTIRES
     static let shared = ToneManager()
-    private let errorModel: ToneManagerErrorModel.Type = ToneManagerErrorModel.self
     private var player: AVAudioPlayer?
     
     // MARK: - INITIALIZER
@@ -35,7 +34,7 @@ actor ToneManager {
         activateAudioSession()
         
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "mp3") else {
-            Utilities.log(errorModel.failedToFindAudioFile.errorDescription)
+            Utilities.log(ToneManagerErrorModel.failedToFindAudioFile.errorDescription)
             return
         }
         
@@ -45,7 +44,7 @@ actor ToneManager {
             player?.prepareToPlay()
             player?.play()
         } catch {
-            Utilities.log(errorModel.failedToInitializePlayer(error).errorDescription)
+            Utilities.log(ToneManagerErrorModel.failedToInitializePlayer(error).errorDescription)
         }
     }
     
@@ -83,7 +82,7 @@ actor ToneManager {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
             try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
         } catch {
-            Utilities.log(errorModel.failedToActivateAudioSession(error).errorDescription)
+            Utilities.log(ToneManagerErrorModel.failedToActivateAudioSession(error).errorDescription)
         }
     }
     
@@ -92,7 +91,7 @@ actor ToneManager {
         do  {
             try AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
         } catch {
-            Utilities.log(errorModel.failedToDeactivateAudioSession(error).errorDescription)
+            Utilities.log(ToneManagerErrorModel.failedToDeactivateAudioSession(error).errorDescription)
         }
     }
 }

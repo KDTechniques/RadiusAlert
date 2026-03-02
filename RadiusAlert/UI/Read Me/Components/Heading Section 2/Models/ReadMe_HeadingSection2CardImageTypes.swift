@@ -11,20 +11,18 @@ enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
     case image1, image2, image3, image4
     
     func image(_ colorScheme: ColorScheme) -> Image {
-        let section: CustomImages.ReadMe.Type = Image.custom.ReadMe.self
-        
         switch self {
         case .image1:
-            return colorScheme == .dark ? section.heading_section2_1_dark.image : section.heading_section2_1_light.image
+            return colorScheme == .dark ? .custom.ReadMe.heading_section2_1_dark.image : .custom.ReadMe.heading_section2_1_light.image
             
         case .image2:
-            return colorScheme == .dark ? section.heading_section2_2_dark.image : section.heading_section2_2_light.image
+            return colorScheme == .dark ? .custom.ReadMe.heading_section2_2_dark.image : .custom.ReadMe.heading_section2_2_light.image
             
         case .image3:
-            return colorScheme == .dark ? section.heading_section2_3_dark.image : section.heading_section2_3_light.image
+            return colorScheme == .dark ? .custom.ReadMe.heading_section2_3_dark.image : .custom.ReadMe.heading_section2_3_light.image
             
         case .image4:
-            return colorScheme == .dark ? section.heading_section2_4_dark.image : section.heading_section2_4_light.image
+            return colorScheme == .dark ? .custom.ReadMe.heading_section2_4_dark.image : .custom.ReadMe.heading_section2_4_light.image
         }
     }
     
@@ -45,14 +43,12 @@ enum ReadMe_HeadingSection2CardImageTypes: CaseIterable {
     }
     
     var offsetY: CGFloat {
-        let values: ReadMe_Values.Type = ReadMe_Values.self
-        
         switch self {
         case .image1, .image2:
-            return values.cardHeight/4
+            return ReadMe_Values.cardHeight/4
             
         case .image3:
-            return -values.cardHeight/4
+            return -ReadMe_Values.cardHeight/4
             
         case .image4:
             return .zero

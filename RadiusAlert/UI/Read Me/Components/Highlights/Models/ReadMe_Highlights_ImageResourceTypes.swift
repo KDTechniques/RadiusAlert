@@ -11,23 +11,21 @@ enum ReadMe_Highlights_ImageResourceTypes: CaseIterable {
     case readMeHighlightsLeft2, readMeHighlightsLeft1, readMeHighlightsMiddle, readMeHighlightsRight1, readMeHighlightsRight2
     
     func imageResource(_ colorScheme: ColorScheme) -> Image {
-        let highlights: CustomImages.ReadMe.Type = CustomImages.ReadMe.self
-        
         switch self {
         case .readMeHighlightsLeft2:
-            return colorScheme ==  .dark ? highlights.highlights_left_2_dark.image : highlights.highlights_left_2_light.image
+            return colorScheme ==  .dark ? .custom.ReadMe.highlights_left_2_dark.image : .custom.ReadMe.highlights_left_2_light.image
             
         case .readMeHighlightsLeft1:
-            return colorScheme ==  .dark ? highlights.highlights_left_1_dark.image : highlights.highlights_left_1_light.image
+            return colorScheme ==  .dark ? .custom.ReadMe.highlights_left_1_dark.image : .custom.ReadMe.highlights_left_1_light.image
             
         case .readMeHighlightsMiddle:
-            return colorScheme ==  .dark ? highlights.highlights_middle_dark.image : highlights.highlights_middle_light.image
+            return colorScheme ==  .dark ? .custom.ReadMe.highlights_middle_dark.image : .custom.ReadMe.highlights_middle_light.image
             
         case .readMeHighlightsRight1:
-            return colorScheme ==  .dark ? highlights.highlights_right_1_dark.image : highlights.highlights_right_1_light.image
+            return colorScheme ==  .dark ? .custom.ReadMe.highlights_right_1_dark.image :.custom.ReadMe.highlights_right_1_light.image
             
         case .readMeHighlightsRight2:
-            return colorScheme ==  .dark ? highlights.highlights_right_2_dark.image : highlights.highlights_right_2_light.image
+            return colorScheme ==  .dark ? .custom.ReadMe.highlights_right_2_dark.image :.custom.ReadMe.highlights_right_2_light.image
         }
     }
     

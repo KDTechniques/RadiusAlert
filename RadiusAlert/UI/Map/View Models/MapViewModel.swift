@@ -17,13 +17,10 @@ final class MapViewModel {
     // MARK: - INITIALIZER
     init(settingsVM: SettingsViewModel) {
         self.settingsVM = settingsVM
-        primarySelectedRadius = mapValues.minimumRadius
-        secondarySelectedRadius = mapValues.minimumRadius
         initializeMapVM()
     }
     
     // MARK: - ASSIGNED PROPERTIES
-    let mapValues: MapValues.Type = MapValues.self
     let radiusSliderTip: RadiusSliderTipModel = .init()
     @ObservationIgnored var cancellables: Set<AnyCancellable> = []
     
@@ -40,7 +37,7 @@ final class MapViewModel {
     // Main Map Related
     private(set) var primaryPosition: MapCameraPosition = .automatic
     private(set) var primaryCenterCoordinate: CLLocationCoordinate2D?
-    private(set) var primarySelectedRadius: CLLocationDistance
+    private(set) var primarySelectedRadius: CLLocationDistance = MapValues.minimumRadius
     private(set) var isPrimaryCameraDragging: Bool = false
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
@@ -62,7 +59,7 @@ final class MapViewModel {
     private(set) var markers: [MarkerModel] = []
     private(set) var secondaryPosition: MapCameraPosition = .automatic
     private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
-    private(set) var secondarySelectedRadius: CLLocationDistance
+    private(set) var secondarySelectedRadius: CLLocationDistance = MapValues.minimumRadius
     private(set) var isSecondaryCameraDragging: Bool = false
     private(set) var isPresentedMultipleStopsMapSheet: Bool = false
     private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false
