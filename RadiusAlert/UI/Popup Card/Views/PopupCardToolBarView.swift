@@ -6,37 +6,110 @@
 //
 
 import SwiftUI
+import CoreLocation
+
+enum PinAnimationState {
+    case none
+    case success
+    case failed
+}
 
 struct PopupCardToolBarView: View {
-    @State private var isSaved: Bool = false
+    // MARK: - INJECTED PROPERTIERS
+    @Environment(LocationPinsViewModel.self) private var locationPinsVM
+    @Environment(MapViewModel.self) private var mapVM
+    let item: PopupCardModel
+    
+    // MARK: - ASSIGNED PROPERTIES
+    @State private var state: PinAnimationState = .none
+    
+    // MARK: - INITIALIZER
+    init(item: PopupCardModel) {
+        self.item = item
+    }
     
     // MARK: - BODY
     var body: some View {
+        let showPin: Bool = item.locationTitle != nil
+        
         Button {
-            // save action goes here...
-            isSaved.toggle()
+            onPinTap()
         } label: {
-            Image(systemName: isSaved ? "checkmark.circle.fill" : "pin.fill")
+            Image(systemName: getSystemImageName(state))
                 .font(.title3)
-                .foregroundStyle(isSaved ? Color.green.gradient : Color.gray.gradient)
+                .pinForegroundColor(state: state)
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
-#if DEBUG
-        .opacity(1)
+        .opacity(showPin ? 1 : 0)
+        .disabled(!showPin)
         .padding(.top)
-#else
-        .opacity(0)
-        .disabled(true)
-#endif
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("Popup Card ToolBar") {
-    PopupCardToolBarView()
+    PopupCardToolBarView(item: .mock)
         .padding(.horizontal)
         .previewModifier()
+}
+
+// MARK: - EXTENSIONS
+extension PopupCardToolBarView {
+    func getSystemImageName(_ state: PinAnimationState) -> String {
+        switch state {
+        case .none:
+            return "pin.fill"
+            
+        case .success:
+            return  "checkmark.circle.fill"
+            
+        case .failed:
+            return "pin.fill"
+        }
+    }
+    
+    private func onPinTap() {
+        Task {
+            guard
+                let title: String = item.locationTitle,
+                let marker: MarkerModel = mapVM.getMarkerObject(on: item.markerID) else { return }
+            
+            let item: LocationPinsModel = .init(
+                title: title,
+                radius: marker.radius,
+                coordinate: marker.coordinate
+            )
+            
+            do {
+                try await locationPinsVM.onPopupCardLocationPinTap(item)
+                state = .success
+            } catch {
+                state = .failed
+            }
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func pinForegroundColor(state: PinAnimationState) -> some View {
+        let color: Color = {
+            switch state {
+            case .none:
+                return .secondary
+                
+            case .success:
+                return .green
+                
+            case .failed:
+                return .yellow
+            }
+        }()
+        
+        self
+            .foregroundStyle(color.gradient)
+    }
 }

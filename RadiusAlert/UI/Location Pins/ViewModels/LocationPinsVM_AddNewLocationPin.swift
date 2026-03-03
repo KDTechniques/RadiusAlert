@@ -40,11 +40,7 @@ extension LocationPinsViewModel {
             coordinate: coordinate
         )
         
-        do {
-            try await locationPinManager.addLocationPins([item])
-        } catch let error {
-            Utilities.log(LocationPinsVMErrorModel.failedToCreateNewLocationPin(error).errorDescription)
-        }
+        try? await addLocationPin(item)
     }
     
     func onAddNewLocationPinSaveButtonTap() {
@@ -54,6 +50,20 @@ extension LocationPinsViewModel {
             try? await fetchNSetLocationPins()
             try? await Task.sleep(nanoseconds: 800_000_000)
             setScrollPositionID(scrollableHorizontalLocationPinsContentID)
+        }
+    }
+    
+    func onPopupCardLocationPinTap(_ item: LocationPinsModel) async throws {
+        try await addLocationPin(item)
+    }
+    
+    // MARK: - PRIVATER FUNCTIONS
+    private func addLocationPin(_ item: LocationPinsModel) async throws {
+        do {
+            try await locationPinManager.addLocationPins([item])
+        } catch let error {
+            Utilities.log(LocationPinsVMErrorModel.failedToCreateNewLocationPin(error).errorDescription)
+            throw error
         }
     }
 }
