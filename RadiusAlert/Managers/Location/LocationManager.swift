@@ -196,8 +196,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         case .veryFar:
             manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-            manager.stopUpdatingLocation()
-            manager.startMonitoringSignificantLocationChanges()
+            manager.distanceFilter = 1000
+            stopSignificantUpdatesNStartLocationUpdates()
         }
     }
     

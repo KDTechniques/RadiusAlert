@@ -20,7 +20,7 @@ struct PopupCardView: View {
     //MARK: - BODY
     var body: some View {
         VStack {
-            PopupCardToolBarView()
+            PopupCardToolBarView(item: item)
             PopupCardTitlesView()
             PopupCardLocationTitleView(title: item.locationTitle)
             
@@ -42,7 +42,7 @@ struct PopupCardView: View {
 #Preview("PopupCardView") {
     ZStack {
         ContentView()
-        PopupCardView(item: .mockValues)
+        PopupCardView(item: .mock)
     }
     .previewModifier()
 }
