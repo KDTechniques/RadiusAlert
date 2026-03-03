@@ -16,6 +16,7 @@ final class LocationPinsModel {
     var title: String
     var radius: CLLocationDistance
     var coordinate: CLLocationCoordinate2D { return .init(latitude: latitude, longitude: longitude) }
+    
     private var latitude: CLLocationDegrees
     private var longitude: CLLocationDegrees
     

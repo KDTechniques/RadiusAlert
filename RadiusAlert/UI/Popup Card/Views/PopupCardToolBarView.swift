@@ -30,12 +30,10 @@ struct PopupCardToolBarView: View {
     
     // MARK: - BODY
     var body: some View {
-        let showPin: Bool = item.locationTitle != nil
-        
         Button {
             onPinTap()
         } label: {
-            Image(systemName: getSystemImageName(state))
+            Image(systemName: getSystemImageName(state)) // Image needs to be replaced entirely or use just one color with symbol effect replace otherwise th first icon will inherit the second icons foreground color.
                 .font(.title3)
                 .pinForegroundColor(state: state)
                 .contentTransition(.symbolEffect(.replace))
@@ -43,8 +41,8 @@ struct PopupCardToolBarView: View {
         .buttonStyle(.plain)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
-        .opacity(showPin ? 1 : 0)
-        .disabled(!showPin)
+        .opacity(showPin() ? 1 : 0)
+        .disabled(!showPin())
         .padding(.top)
     }
 }
@@ -67,8 +65,19 @@ extension PopupCardToolBarView {
             return  "checkmark.circle.fill"
             
         case .failed:
-            return "pin.fill"
+            return "exclamationmark.triangle.fill"
         }
+    }
+    
+    private func showPin() -> Bool {
+        guard let coordinate: CLLocationCoordinate2D = mapVM.getMarkerObject(on: item.markerID)?.coordinate else { return false }
+        
+        let condition1: Bool = locationPinsVM.locationPinsArray.contains(where: { $0.isSameCoordinate(coordinate) })
+        let condition2: Bool = item.locationTitle.isNil()
+        let condition3: Bool = (state == .none)
+        let condition4: Bool = (state == .failed)
+        
+        return !condition1 && !condition2 && (condition3 || condition4)
     }
     
     private func onPinTap() {
@@ -86,8 +95,10 @@ extension PopupCardToolBarView {
             do {
                 try await locationPinsVM.onPopupCardLocationPinTap(item)
                 state = .success
+                await HapticManager.shared.vibrate(type: .success)
             } catch {
                 state = .failed
+                await HapticManager.shared.vibrate(type: .warning)
             }
         }
     }

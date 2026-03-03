@@ -23,24 +23,11 @@ extension LocationPinsViewModel {
                 self.setIsPresentedSavedLocationsSheet(true)
             })
         } else {  // If No Item Available, Prepare a Sheet for Adding a New Location Pin
-            
             setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
             setNewLocationPinRadius(mapVM.primarySelectedRadius)
             setNewLocationCoordinate(centerCoordinate)
             setIsPresentedLocationSavingSheet(true)
         }
-    }
-    
-    func createNewLocationPin() async {
-        guard let coordinate = newLocationCoordinate else { return }
-        
-        let item: LocationPinsModel = .init(
-            title: newLocationPinTextFieldText,
-            radius: newLocationPinRadius,
-            coordinate: coordinate
-        )
-        
-        try? await addLocationPin(item)
     }
     
     func onAddNewLocationPinSaveButtonTap() {
@@ -55,12 +42,26 @@ extension LocationPinsViewModel {
     
     func onPopupCardLocationPinTap(_ item: LocationPinsModel) async throws {
         try await addLocationPin(item)
+        try? await fetchNSetLocationPins()
     }
     
     // MARK: - PRIVATER FUNCTIONS
+    
+    private func createNewLocationPin() async {
+        guard let coordinate = newLocationCoordinate else { return }
+        
+        let item: LocationPinsModel = .init(
+            title: newLocationPinTextFieldText,
+            radius: newLocationPinRadius,
+            coordinate: coordinate
+        )
+        
+        try? await addLocationPin(item)
+    }
+    
     private func addLocationPin(_ item: LocationPinsModel) async throws {
         do {
-            try await locationPinManager.addLocationPins([item])
+            try await locationPinManager.addLocationPin(item)
         } catch let error {
             Utilities.log(LocationPinsVMErrorModel.failedToCreateNewLocationPin(error).errorDescription)
             throw error
