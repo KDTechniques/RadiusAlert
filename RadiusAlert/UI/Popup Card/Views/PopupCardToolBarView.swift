@@ -31,18 +31,17 @@ struct PopupCardToolBarView: View {
     // MARK: - BODY
     var body: some View {
         Button {
-            onPinTap()
+            handleTap()
         } label: {
-            Image(systemName: getSystemImageName(state)) // Image needs to be replaced entirely or use just one color with symbol effect replace otherwise th first icon will inherit the second icons foreground color.
+            getSystemImage(state)
                 .font(.title3)
-                .pinForegroundColor(state: state)
-                .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
+        .animation(.default, value: state)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
         .opacity(showPin() ? 1 : 0)
-        .disabled(!showPin())
+        .disabled(disablePin())
         .padding(.top)
     }
 }
@@ -56,16 +55,20 @@ struct PopupCardToolBarView: View {
 
 // MARK: - EXTENSIONS
 extension PopupCardToolBarView {
-    func getSystemImageName(_ state: PinAnimationState) -> String {
+    @ViewBuilder
+    private func getSystemImage(_ state: PinAnimationState) -> some View {
         switch state {
         case .none:
-            return "pin.fill"
+            Image(systemName: "pin.fill")
+                .foregroundStyle(.secondary)
             
         case .success:
-            return  "checkmark.circle.fill"
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
             
         case .failed:
-            return "exclamationmark.triangle.fill"
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.yellow)
         }
     }
     
@@ -74,53 +77,23 @@ extension PopupCardToolBarView {
         
         let condition1: Bool = locationPinsVM.locationPinsArray.contains(where: { $0.isSameCoordinate(coordinate) })
         let condition2: Bool = item.locationTitle.isNil()
-        let condition3: Bool = (state == .none)
-        let condition4: Bool = (state == .failed)
+        let condition3: Bool = state != .none
         
-        return !condition1 && !condition2 && (condition3 || condition4)
+        return (!condition1 && !condition2) || (condition1 && condition3)
     }
     
-    private func onPinTap() {
-        Task {
-            guard
-                let title: String = item.locationTitle,
-                let marker: MarkerModel = mapVM.getMarkerObject(on: item.markerID) else { return }
-            
-            let item: LocationPinsModel = .init(
-                title: title,
-                radius: marker.radius,
-                coordinate: marker.coordinate
-            )
-            
-            do {
-                try await locationPinsVM.onPopupCardLocationPinTap(item)
-                state = .success
-                await HapticManager.shared.vibrate(type: .success)
-            } catch {
-                state = .failed
-                await HapticManager.shared.vibrate(type: .warning)
-            }
-        }
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func pinForegroundColor(state: PinAnimationState) -> some View {
-        let color: Color = {
-            switch state {
-            case .none:
-                return .secondary
-                
-            case .success:
-                return .green
-                
-            case .failed:
-                return .yellow
-            }
-        }()
+    private func disablePin() -> Bool {
+        let condition1: Bool = showPin()
+        let condition2: Bool = (state == .none)
         
-        self
-            .foregroundStyle(color.gradient)
+        return !condition1 && condition2
+    }
+    
+    private func handleTap() {
+        locationPinsVM.onPopupCardPinTap(item: item) {
+            state = .success
+        } failure: {
+            state = .failed
+        }
     }
 }
