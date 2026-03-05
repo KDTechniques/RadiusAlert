@@ -8,12 +8,6 @@
 import SwiftUI
 import CoreLocation
 
-enum PinAnimationState {
-    case none
-    case success
-    case failed
-}
-
 struct PopupCardToolBarView: View {
     // MARK: - INJECTED PROPERTIERS
     @Environment(LocationPinsViewModel.self) private var locationPinsVM
@@ -21,7 +15,7 @@ struct PopupCardToolBarView: View {
     let item: PopupCardModel
     
     // MARK: - ASSIGNED PROPERTIES
-    @State private var state: PinAnimationState = .none
+    @State private var state: PopupCardLocationPinStates = .none
     
     // MARK: - INITIALIZER
     init(item: PopupCardModel) {
@@ -37,11 +31,11 @@ struct PopupCardToolBarView: View {
                 .font(.title3)
         }
         .buttonStyle(.plain)
-        .animation(.default, value: state)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
-        .opacity(showPin() ? 1 : 0)
-        .disabled(disablePin())
+        .opacity(locationPinsVM.showLocationPinOnPopupCard(item: item, state: state) ? 1 : 0)
+        .animation(.default, value: state)
+        .disabled(locationPinsVM.disableLocationPinOnPopupCard(item: item, state: state))
         .padding(.top)
     }
 }
@@ -56,37 +50,20 @@ struct PopupCardToolBarView: View {
 // MARK: - EXTENSIONS
 extension PopupCardToolBarView {
     @ViewBuilder
-    private func getSystemImage(_ state: PinAnimationState) -> some View {
+    private func getSystemImage(_ state: PopupCardLocationPinStates) -> some View {
         switch state {
         case .none:
             Image(systemName: "pin.fill")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondary.gradient)
             
         case .success:
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(.green.gradient)
             
         case .failed:
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.yellow)
+                .foregroundStyle(.yellow.gradient)
         }
-    }
-    
-    private func showPin() -> Bool {
-        guard let coordinate: CLLocationCoordinate2D = mapVM.getMarkerObject(on: item.markerID)?.coordinate else { return false }
-        
-        let condition1: Bool = locationPinsVM.locationPinsArray.contains(where: { $0.isSameCoordinate(coordinate) })
-        let condition2: Bool = item.locationTitle.isNil()
-        let condition3: Bool = state != .none
-        
-        return (!condition1 && !condition2) || (condition1 && condition3)
-    }
-    
-    private func disablePin() -> Bool {
-        let condition1: Bool = showPin()
-        let condition2: Bool = (state == .none)
-        
-        return !condition1 && condition2
     }
     
     private func handleTap() {
