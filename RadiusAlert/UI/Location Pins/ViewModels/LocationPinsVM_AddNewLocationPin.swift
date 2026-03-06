@@ -18,9 +18,10 @@ extension LocationPinsViewModel {
         let existingItem: LocationPinsModel? = locationPinsArray.first(where: { $0.isSameCoordinate(centerCoordinate) })
         
         if let item: LocationPinsModel = existingItem { // If Item Already Exist, Show An Alert
-            alertManager.showAlert(.locationPinAlreadyExist(viewLevel: .content) {
-                self.setLocationPinNavigationPathsArray([item])
-                self.setIsPresentedSavedLocationsSheet(true)
+            alertManager.showAlert(.locationPinAlreadyExist(viewLevel: .content) { [weak self] in
+                guard let self else { return }
+                setLocationPinNavigationPathsArray([item])
+                setIsPresentedSavedLocationsSheet(true)
             })
         } else {  // If No Item Available, Prepare a Sheet for Adding a New Location Pin
             setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")

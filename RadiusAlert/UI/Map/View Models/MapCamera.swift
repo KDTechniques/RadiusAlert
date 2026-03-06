@@ -72,13 +72,21 @@ extension MapViewModel {
     /// Returns a binding to the current map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func primaryPositionBinding() -> Binding<MapCameraPosition> {
-        return .init(get: { self.primaryPosition }, set: setPrimaryPosition)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .automatic }
+                return primaryPosition
+            }, set: setPrimaryPosition)
     }
     
     /// Returns a binding to the secondary map camera position.
     /// - Returns: A `Binding` to `MapCameraPosition` that updates the map region when set.
     func secondaryPositionBinding() -> Binding<MapCameraPosition> {
-        return .init(get: { self.secondaryPosition }, set: setSecondaryPosition)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .automatic}
+                return secondaryPosition
+            }, set: setSecondaryPosition)
     }
     
     /// Handles logic when the map camera changes continuously.
@@ -146,9 +154,10 @@ extension MapViewModel {
     /// with short delays between each change to release cached map resources.
     func clearMemoryByMapStyles() {
         memoryWarningsHandler.registerCleanupAction {
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
                 for _ in 1...3 {
-                    self.setNextMapStyle()
+                    setNextMapStyle()
                     try? await Task.sleep(nanoseconds: 100_000_000)
                 }
             }

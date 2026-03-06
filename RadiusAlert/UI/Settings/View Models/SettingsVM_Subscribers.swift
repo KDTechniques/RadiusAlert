@@ -17,7 +17,10 @@ extension SettingsViewModel {
         $toneFadeDuration$
             .removeDuplicates()
             .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
-            .sink { self.userDefaultsManager.saveFadeDuration($0) }
+            .sink { [weak self] in
+                guard let self else { return }
+                userDefaultsManager.saveFadeDuration($0)
+            }
             .store(in: &cancellables)
     }
     
@@ -26,7 +29,10 @@ extension SettingsViewModel {
         $autoAlertStopDuration$
             .removeDuplicates()
             .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
-            .sink { self.userDefaultsManager.saveAutoAlertStopDuration($0) }
+            .sink { [weak self] in
+                guard let self else { return }
+                userDefaultsManager.saveAutoAlertStopDuration($0)
+            }
             .store(in: &cancellables)
     }
 }

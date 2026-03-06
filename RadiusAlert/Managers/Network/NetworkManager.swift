@@ -38,12 +38,14 @@ final class NetworkManager {
     private func connectionStatusSubscriber() {
         $connectionState$
             .removeDuplicates()
-            .sink {
+            .sink { [weak self] in
+                guard let self else { return }
+                
                 switch $0 {
                 case .connected:
-                    self.handleConnectedStatus()
+                    handleConnectedStatus()
                 case .noConnection:
-                    self.handleNoConnectionStatus()
+                    handleNoConnectionStatus()
                 }
             }
             .store(in: &cancellables)
@@ -53,9 +55,9 @@ final class NetworkManager {
     private func onConnectionStatusChange(_ status: ConnectionStates) {
         switch status {
         case .connected:
-            self.handleConnectedStatus()
+            handleConnectedStatus()
         case .noConnection:
-            self.handleNoConnectionStatus()
+            handleNoConnectionStatus()
         }
     }
     
@@ -67,16 +69,14 @@ final class NetworkManager {
             Utilities.log(path.debugDescription)
             
             if path.status == .satisfied {
-                Task { @MainActor in
-                    if self.connectionState != .connected {
-                        self.connectionState = .connected
-                    }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    connectionState != .connected ? connectionState = .connected : ()
                 }
             } else {
-                Task { @MainActor in
-                    if self.connectionState != .noConnection {
-                        self.connectionState = .noConnection
-                    }
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    connectionState != .noConnection ? connectionState = .noConnection : ()
                 }
             }
         }

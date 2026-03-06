@@ -13,7 +13,7 @@ struct MapStyleButtonView: View {
     
     // MARK: - BODY
     var body: some View {
-        if settingsVM.showMapStyleButton {
+        if !settingsVM.hideMapStyleButton {
             ButtonView()
         }
     }

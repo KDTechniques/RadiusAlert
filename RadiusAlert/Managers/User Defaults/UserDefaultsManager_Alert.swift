@@ -12,7 +12,7 @@ import Foundation
 ///
 /// Example:
 /// ```swift
-/// if defaults.object(forKey: UserDefaultKeys.toneFade.rawValue) == nil {
+/// if defaults.object(forKey: UserDefaultKeys.toneFade.rawValue).isNil() {
 ///     return true
 /// }
 /// ```

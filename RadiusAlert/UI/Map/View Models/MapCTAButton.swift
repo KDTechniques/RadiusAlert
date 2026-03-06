@@ -208,8 +208,9 @@ extension MapViewModel {
         
         let region: RegionModel = .init(
             markerCoordinate: marker.coordinate,
-            radius: marker.radius) {
-                self.onRegionEntry(markerID: markerID)
+            radius: marker.radius) { [weak self] in
+                guard let self else { return }
+                onRegionEntry(markerID: markerID)
             }
         
         guard locationManager.startMonitoringRegion(region: region) else {
@@ -257,8 +258,9 @@ extension MapViewModel {
     /// If the user confirms, the active alert is stopped.
     private func stopAlertConfirmation(for markerID: String) {
         alertManager.showAlert(
-            .stopSingleAlertConfirmation(viewLevel: .content) {
-                self.stopAlert(for: [markerID])
+            .stopSingleAlertConfirmation(viewLevel: .content) {  [weak self] in
+                guard let self else { return }
+                stopAlert(for: [markerID])
             }
         )
     }

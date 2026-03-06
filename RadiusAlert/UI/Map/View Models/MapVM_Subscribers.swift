@@ -19,7 +19,10 @@ extension MapViewModel {
             .dropFirst()
             .removeDuplicates()
         // Updates authorization state and may reposition the map if authorized.
-            .sink { self.positionMapOnAuthorization(authorizationStatus: $0) }
+            .sink {  [weak self] in
+                guard let self else { return }
+                positionMapOnAuthorization(authorizationStatus: $0)
+            }
             .store(in: &cancellables)
     }
     
@@ -28,9 +31,11 @@ extension MapViewModel {
             .combineLatest($distanceText$)
             .throttle(for: .nanoseconds(500_000_000), scheduler: DispatchQueue.main, latest: true)
             .compactMap { $0 }
-            .sink { _ in
-                self.updateDistanceText()
-                self.autoPositionMarkersNUserLocationRegionBounds()
+            .sink {  [weak self] _ in
+                guard let self else { return }
+                
+                updateDistanceText()
+                autoPositionMarkersNUserLocationRegionBounds()
             }
             .store(in: &cancellables)
     }

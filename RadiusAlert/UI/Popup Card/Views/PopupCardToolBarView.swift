@@ -30,7 +30,6 @@ struct PopupCardToolBarView: View {
             getSystemImage(state)
                 .font(.title3)
         }
-        .buttonStyle(.plain)
         .frame(height: 25)
         .frame(maxWidth: .infinity, alignment: .trailing)
         .opacity(locationPinsVM.showLocationPinOnPopupCard(item: item, state: state) ? 1 : 0)
