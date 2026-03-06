@@ -15,11 +15,19 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func primarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(get: { self.primarySelectedRadius }, set: setPrimarySelectedRadius)
+        return .init(
+            get: {  [weak self] in
+                guard let self else { return .zero }
+                return primarySelectedRadius
+            }, set: setPrimarySelectedRadius)
     }
     
     func secondarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(get: { self.secondarySelectedRadius }, set: setSecondarySelectedRadius)
+        return .init(
+            get: {  [weak self] in
+                guard let self else { return .zero }
+                return secondarySelectedRadius
+            }, set: setSecondarySelectedRadius)
     }
     
     /// Formats the radius value as a string, optionally including alert text and a name.
@@ -85,8 +93,9 @@ extension MapViewModel {
     func onRadiusSliderTipAction() {
         withAnimation {
             setPrimarySelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
-        } completion: {
-            self.radiusSliderTip.invalidate(reason: .actionPerformed)
+        } completion: {  [weak self] in
+            guard let self else { return }
+            radiusSliderTip.invalidate(reason: .actionPerformed)
         }
     }
     

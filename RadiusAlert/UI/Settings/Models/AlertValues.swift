@@ -9,7 +9,7 @@ import Foundation
 
 enum AlertValues {
     // Auto Alert Stop
-    static let autoAlertStopMinDuration: Double = 12
-    static let autoAlertStopMaxDuration: Double = 20
-    static let autoAlertStopDefaultDuration: Double = 12
+    static let autoAlertStopMinDuration: Double = 15
+    static let autoAlertStopMaxDuration: Double = 30
+    static var autoAlertStopDefaultDuration: Double { autoAlertStopMinDuration }
 }

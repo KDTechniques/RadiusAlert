@@ -14,30 +14,41 @@ extension MapViewModel {
     /// Useful for connecting the SwiftUI TextField directly to the view model.
     func searchTextBinding() -> Binding<String> {
         return .init(
-            get: { self.searchText },
-            set: {
-                guard self.searchText != $0 else { return }
-                self.setSearchText($0)
+            get: { [weak self] in
+                guard let self else { return "" }
+                return searchText
+            },
+            set: {  [weak self] in
+                guard
+                    let self,
+                    searchText != $0 else { return }
+                setSearchText($0)
             }
         )
     }
     
     func multipleStopsCancellationSheetBinding() -> Binding<Bool> {
         return .init(
-            get: { self.isPresentedMultipleStopsCancellationSheet },
-            set: {
-                guard self.isPresentedMultipleStopsCancellationSheet != $0 else { return }
-                self.setIsPresentedMultipleStopsCancellationSheet($0)
+            get: { [weak self] in
+                guard let self else { return false }
+                return isPresentedMultipleStopsCancellationSheet
+            },
+            set: { [weak self] in
+                guard let self, isPresentedMultipleStopsCancellationSheet != $0 else { return }
+                setIsPresentedMultipleStopsCancellationSheet($0)
             }
         )
     }
     
     func multipleStopsMapSheetBinding() -> Binding<Bool> {
         return .init(
-            get: { self.isPresentedMultipleStopsMapSheet },
-            set: {
-                guard self.isPresentedMultipleStopsMapSheet != $0 else { return }
-                self.setIsPresentedMultipleStopsMapSheet($0)
+            get: { [weak self] in
+                guard let self else { return false }
+                return isPresentedMultipleStopsMapSheet
+            },
+            set: { [weak self] in
+                guard let self, isPresentedMultipleStopsMapSheet != $0 else { return }
+                setIsPresentedMultipleStopsMapSheet($0)
             }
         )
     }

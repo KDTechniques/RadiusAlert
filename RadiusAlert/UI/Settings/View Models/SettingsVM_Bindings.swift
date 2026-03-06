@@ -13,46 +13,90 @@ extension SettingsViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     func mapStyleButtonVisibilityBinding() -> Binding<Bool> {
-        return .init(get: { self.showMapStyleButton }, set: setShowMapStyleButton)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return hideMapStyleButton
+            }, set: setHideShowMapStyleButton)
     }
     
     func toneFadeToggleBinding() -> Binding<Bool> {
-        return .init(get: { self.isEnabledToneFade }, set: withAnimation { setIsEnabledToneFade })
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return isEnabledToneFade
+            }, set: withAnimation { setIsEnabledToneFade })
     }
     
     func toneFadeDurationBinding() -> Binding<Double> {
-        return .init(get: { self.toneFadeDuration }, set: setToneFadeDuration)
+        return .init(
+            get: {  [weak self] in
+                guard let self else { return .zero }
+                return toneFadeDuration
+            }, set: setToneFadeDuration)
     }
     
     func spokenUserNameTextFieldTextBinding() -> Binding<String> {
-        return .init(get: { self.spokenAlert.userName }, set: setSpokenUserNameTextFieldText)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return "" }
+                return spokenAlert.userName
+            }, set: setSpokenUserNameTextFieldText)
     }
     
     func selectedVoiceNameBinding() -> Binding<String> {
-        return .init(get: { self.spokenAlert.voice }, set: setSelectedVoiceName)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return "" }
+                return spokenAlert.voice
+            }, set: setSelectedVoiceName)
     }
     
     func speakingRateBinding() -> Binding<CGFloat> {
-        return .init(get: { self.spokenAlert.speakingRate }, set: setSpeakingRate)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .zero }
+                return spokenAlert.speakingRate
+            }, set: setSpeakingRate)
     }
     
     func pitchRateBinding() -> Binding<CGFloat> {
-        return .init(get: { self.spokenAlert.pitchRate }, set: setPitchRate)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .zero }
+                return spokenAlert.pitchRate
+            }, set: setPitchRate)
     }
     
     func isOnSpokenAlertBinding() -> Binding<Bool> {
-        return .init(get: { self.spokenAlert.isOnSpokenAlert }, set: SetIsOnSpokenAlert)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return spokenAlert.isOnSpokenAlert
+            }, set: SetIsOnSpokenAlert)
     }
     
     func autoAlertStopToggleBinding() -> Binding<Bool> {
-        return .init(get: { self.isEnableAutoAlertStop }, set: withAnimation { setAutoAlertStop })
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return isEnableAutoAlertStop
+            }, set: withAnimation { setAutoAlertStop })
     }
     
     func autoAlertStopDurationBinding() -> Binding<Double> {
-        return .init(get: { self.autoAlertStopDuration }, set: setAutoAlertStopDuration)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .zero }
+                return autoAlertStopDuration
+            }, set: setAutoAlertStopDuration)
     }
     
     func selectedAudioRouteOutputTypeBinding() -> Binding<AudioRouteOutputTypes> {
-        return .init(get: { self.selectedAudioRouteOutputType }, set: setSelectedAudioRouteOutputType)
+        return .init(
+            get: { [weak self] in
+                guard let self else { return .allDevice }
+                return selectedAudioRouteOutputType
+            }, set: setSelectedAudioRouteOutputType)
     }
 }

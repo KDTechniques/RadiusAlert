@@ -18,7 +18,7 @@ final class SettingsViewModel {
     let userDefaultsManager: UserDefaultsManager = .init()
     let alertManager: AlertManager = .shared
     let textToSpeechManager: TextToSpeechManager = .shared
-  
+    
     // Appearance:
     private(set) var selectedColorScheme: ColorSchemeTypes? = .system { didSet { onColorSchemeChange() } }
     
@@ -43,7 +43,7 @@ final class SettingsViewModel {
     
     // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
-    private(set) var showMapStyleButton: Bool = true { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
+    private(set) var hideMapStyleButton: Bool = false { didSet { onMapStyleButtonVisibilityChange(hideMapStyleButton) } }
     
     // About:
     let settingsTip: SettingsTipModel = .init()
@@ -70,8 +70,8 @@ final class SettingsViewModel {
         selectedMapStyle = mapStyle
     }
     
-    func setShowMapStyleButton(_ boolean: Bool) {
-        showMapStyleButton = boolean
+    func setHideShowMapStyleButton(_ boolean: Bool) {
+        hideMapStyleButton = boolean
     }
     
     func setIsEnabledToneFade(_ value: Bool) {
@@ -132,7 +132,10 @@ final class SettingsViewModel {
         $spokenAlert$
             .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
             .removeDuplicates(by: { $0 == $1 })
-            .sink { self.userDefaultsManager.saveSpokenAlert($0) }
+            .sink { [weak self] in
+                guard let self else { return }
+                userDefaultsManager.saveSpokenAlert($0)
+            }
             .store(in: &cancellables)
     }
     
@@ -140,7 +143,7 @@ final class SettingsViewModel {
         selectedColorScheme = userDefaultsManager.getDarkMode()
         selectedTone = userDefaultsManager.getTone()
         selectedMapStyle = userDefaultsManager.getMapStyle()
-        showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
+        hideMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
         isEnabledToneFade = userDefaultsManager.getToneFade()
         toneFadeDuration =  userDefaultsManager.getToneFadeDuration()
         spokenAlert = userDefaultsManager.getSpokenAlert()

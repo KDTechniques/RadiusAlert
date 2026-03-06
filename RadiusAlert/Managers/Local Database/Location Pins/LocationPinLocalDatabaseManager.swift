@@ -19,10 +19,8 @@ actor LocationPinLocalDatabaseManager {
     // MARK: - PUBLIC FUNCTIONS
     
     @MainActor
-    func addLocationPins(_ newItems: [LocationPinsModel]) throws {
-        for item in newItems {
-            localDatabaseManager.insertToContext(item)
-        }
+    func addLocationPin(_ newItem: LocationPinsModel) throws {
+        localDatabaseManager.insertToContext(newItem)
         
         do {
             try localDatabaseManager.saveContext()

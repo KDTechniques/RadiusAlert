@@ -76,8 +76,9 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
         // Animate the results update in the UI
         withAnimation(.smooth(duration: resultListingAnimationDuration)) {
             results = mappedResults
-        } completion: {
-            self.setIsSearching(false)
+        } completion: { [weak self] in
+            guard let self else { return }
+            setIsSearching(false)
         }
     }
     

@@ -73,7 +73,7 @@ actor HapticManager {
             let pattern = try CHHapticPattern(events: events, parameters: [])
             
             // Lazily initialize the haptic engine if needed
-            hapticEngine == nil ? await setupHaptics() : ()
+            hapticEngine.isNil() ? await setupHaptics() : ()
             
             player = try hapticEngine?.makeAdvancedPlayer(with: pattern)
             player?.loopEnabled = true
@@ -127,8 +127,9 @@ actor HapticManager {
             
             // Automatically restart engine if it stops
             hapticEngine?.resetHandler = {
-                Task {
-                    try await self.hapticEngine?.start()
+                Task { [weak self] in
+                    guard let self else { return }
+                    try await hapticEngine?.start()
                 }
             }
         } catch {

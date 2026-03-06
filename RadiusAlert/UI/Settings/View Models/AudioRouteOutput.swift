@@ -18,9 +18,11 @@ extension SettingsViewModel {
             forName: AVAudioSession.routeChangeNotification,
             object: AVAudioSession.sharedInstance(),
             queue: .main
-        ) { _ in
-            let audioRouteOutputType: AudioRouteOutputTypes = self.getCurrentAudioRouteOutputType()
-            self.setCurrentAudioRouteOutputType(audioRouteOutputType)
+        ) { [weak self] _ in
+            guard let self else { return }
+            
+            let audioRouteOutputType: AudioRouteOutputTypes = getCurrentAudioRouteOutputType()
+            setCurrentAudioRouteOutputType(audioRouteOutputType)
         }
     }
     

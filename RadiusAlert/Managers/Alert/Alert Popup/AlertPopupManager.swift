@@ -24,16 +24,19 @@ final class AlertPopupManager {
     ///
     /// Automatically updates the alert queue when the current alert is dismissed.
     func alertIsPresentedBinding() -> Binding<Bool> {
-        .init {
-            return !self.alertItems.isEmpty
-        } set: { newValue in
-            guard newValue != self.isAlertPresented else { return }
+        .init { [weak self] in
+            guard let self else { return false }
+            return !alertItems.isEmpty
+        } set: { [weak self] newValue in
+            guard
+                let self,
+                newValue != isAlertPresented else { return }
             
-            self.setIsPresented(newValue)
+            setIsPresented(newValue)
             
             // Once the user dismiss the current alert the following get executed
             guard !newValue else { return }
-            self.removeFirstNPresentNextAlert()
+            removeFirstNPresentNextAlert()
         }
     }
     
@@ -68,7 +71,7 @@ final class AlertPopupManager {
     
     // MARK: - PRIVATE FUNCTIONS
     private func appendAlertItem(_ alertItem: AlertModel) {
-        self.alertItems.append(alertItem)
+        alertItems.append(alertItem)
     }
     
     private func removeFirstAlert() {

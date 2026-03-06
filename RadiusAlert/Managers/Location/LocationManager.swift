@@ -196,8 +196,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             
         case .veryFar:
             manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-            manager.stopUpdatingLocation()
-            manager.startMonitoringSignificantLocationChanges()
+            manager.distanceFilter = 1000
+            stopSignificantUpdatesNStartLocationUpdates()
         }
     }
     
@@ -231,7 +231,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
                 }
                 
                 await MainActor.run {
-                    self.setCurrentRegionName(country)
+                    setCurrentRegionName(country)
                     print("✅: Assigned current region name: \(country.description)")
                 }
             } catch let error {
@@ -250,7 +250,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     private func updateInitialCurrentRegion(_ currentUserLocation: CLLocationCoordinate2D?) {
-        guard self.currentUserLocation == nil,
+        guard self.currentUserLocation.isNil(),
               let currentUserLocation else { return }
         
         getCurrentRegionName(currentUserLocation)

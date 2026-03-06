@@ -18,6 +18,7 @@ final class LocationPinsViewModel {
     // Managers/Services/Models:
     let locationPinManager: LocationPinManager = .shared
     let alertManager: AlertManager = .shared
+    let hapticManager: HapticManager = .shared
     
     private(set) var horizontalPinButtonsHeight: CGFloat?
     private(set) var locationPinsArray: [LocationPinsModel] = [] { didSet { onLocationPinsArrayChange() } }

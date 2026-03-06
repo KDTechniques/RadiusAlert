@@ -23,15 +23,14 @@ actor LocationPinManager {
     }
     
     @MainActor
-    func addLocationPins(_ newItems: [LocationPinsModel]) throws {
+    func addLocationPin(_ newItem: LocationPinsModel) throws {
         let existingLocationPinsArray: [LocationPinsModel] = try fetchLocationPins()
+        
+        guard !existingLocationPinsArray.contains(where: { $0.isSameCoordinate(newItem.coordinate) }) else { return }
+        
         let startOrder: Int = (existingLocationPinsArray.map(\.order).max() ?? -1) + 1
-        
-        for (offset, item) in newItems.enumerated() {
-            item.order = startOrder + offset
-        }
-        
-        try locationPinDatabaseManager.addLocationPins(newItems)
+        newItem.order = startOrder
+        try locationPinDatabaseManager.addLocationPin(newItem)
     }
     
     @MainActor

@@ -19,10 +19,12 @@ extension MapViewModel {
     
     func handleMultipleStopsCancellation() {
         alertManager.showAlert(
-            .stopAllAlertsConfirmation(viewLevel: .multipleStopsCancellationSheet) {
-                let markerIDs: [String] = self.markers.map({ $0.id })
-                self.stopAlert(for: markerIDs)
-                self.setIsPresentedMultipleStopsCancellationSheet(false)
+            .stopAllAlertsConfirmation(viewLevel: .multipleStopsCancellationSheet) {  [weak self] in
+                guard let self else { return }
+                
+                let markerIDs: [String] = markers.map({ $0.id })
+                stopAlert(for: markerIDs)
+                setIsPresentedMultipleStopsCancellationSheet(false)
             }
         )
     }
