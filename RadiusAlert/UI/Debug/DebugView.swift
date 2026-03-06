@@ -111,8 +111,10 @@ extension Content {
                 alertManager.requestNotificationPermission()
             }
             
-            Button("Send Notification") {
-                alertManager.sendNotification(after: 3)
+            if let marker: MarkerModel = MarkerModel.mock.first {
+                Button("Send Notification") {
+                    alertManager.sendNotification(after: 3, item: marker)
+                }
             }
         } header: {
             Text("Notification Manager")

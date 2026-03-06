@@ -221,12 +221,14 @@ extension MapViewModel {
     }
     
     private func onRegionEntry(markerID: String) {
-        guard settingsVM.alertsOnlyVia_DeviceCheck() else {
+        guard
+            settingsVM.alertsOnlyVia_DeviceCheck(),
+            let markerItem: MarkerModel = getMarkerObject(on: markerID) else {
             stopAlert(for: [markerID])
             return
         }
         
-        alertManager.sendNotification()
+        alertManager.sendNotification(item: markerItem)
         generateNSetAlertPopupCardItem(for: markerID)
         alertManager.playHaptic()
         

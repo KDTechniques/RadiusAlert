@@ -19,11 +19,12 @@ final class NotificationManager {
     /// Schedules a local notification to inform the user they've reached their destination.
     /// Any previously scheduled notification with the same identifier is removed before scheduling a new one.
     /// - Parameter seconds: Delay in seconds before the notification is delivered. Defaults to 0.5 seconds.
-    func scheduleNotification(after seconds: TimeInterval = 0.5) {
+    func scheduleNotification(after seconds: TimeInterval = 0.5, item: MarkerModel) {
         // 1. Configure notification content
         let content = UNMutableNotificationContent()
-        content.title = "You're Here 📍"
-        content.body = "You've arrived at your destination radius. Tap to continue."
+        let title: String = "Getting close to " + (item.title.isNil() ? "your stop" : "\(item.title!)") + " 📍"
+        content.title = title
+        content.body = "Tap to continue."
         content.sound = .defaultRingtone
         
         // 2. Create a time-based trigger
