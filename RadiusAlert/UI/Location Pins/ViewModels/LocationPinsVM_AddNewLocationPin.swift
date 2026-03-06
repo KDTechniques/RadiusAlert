@@ -5,7 +5,7 @@
 //  Created by Kavinda Dilshan on 2025-11-07.
 //
 
-import Foundation
+import SwiftUI
 
 extension LocationPinsViewModel {
     // MARK: - PUBLIC FUNCTIONS
@@ -23,24 +23,11 @@ extension LocationPinsViewModel {
                 self.setIsPresentedSavedLocationsSheet(true)
             })
         } else {  // If No Item Available, Prepare a Sheet for Adding a New Location Pin
-            
             setNewLocationPinTextFieldText(mapVM.selectedSearchResult?.result.name ?? "")
             setNewLocationPinRadius(mapVM.primarySelectedRadius)
             setNewLocationCoordinate(centerCoordinate)
             setIsPresentedLocationSavingSheet(true)
         }
-    }
-    
-    func createNewLocationPin() async {
-        guard let coordinate = newLocationCoordinate else { return }
-        
-        let item: LocationPinsModel = .init(
-            title: newLocationPinTextFieldText,
-            radius: newLocationPinRadius,
-            coordinate: coordinate
-        )
-        
-        try? await addLocationPin(item)
     }
     
     func onAddNewLocationPinSaveButtonTap() {
@@ -55,12 +42,53 @@ extension LocationPinsViewModel {
     
     func onPopupCardLocationPinTap(_ item: LocationPinsModel) async throws {
         try await addLocationPin(item)
+        try? await fetchNSetLocationPins()
+    }
+    
+    func onPopupCardPinTap(
+        item: PopupCardModel,
+        success: @escaping () -> Void,
+        failure: @escaping () -> Void)
+    {
+        Task {
+            guard
+                let title: String = item.locationTitle,
+                let marker: MarkerModel = mapVM.getMarkerObject(on: item.markerID) else { return }
+            
+            let item: LocationPinsModel = .init(
+                title: title,
+                radius: marker.radius,
+                coordinate: marker.coordinate
+            )
+            
+            do {
+                try await onPopupCardLocationPinTap(item)
+                success()
+                await hapticManager.vibrate(type: .success)
+            } catch {
+                failure()
+                await hapticManager.vibrate(type: .warning)
+            }
+        }
     }
     
     // MARK: - PRIVATER FUNCTIONS
+    
+    private func createNewLocationPin() async {
+        guard let coordinate = newLocationCoordinate else { return }
+        
+        let item: LocationPinsModel = .init(
+            title: newLocationPinTextFieldText,
+            radius: newLocationPinRadius,
+            coordinate: coordinate
+        )
+        
+        try? await addLocationPin(item)
+    }
+    
     private func addLocationPin(_ item: LocationPinsModel) async throws {
         do {
-            try await locationPinManager.addLocationPins([item])
+            try await locationPinManager.addLocationPin(item)
         } catch let error {
             Utilities.log(LocationPinsVMErrorModel.failedToCreateNewLocationPin(error).errorDescription)
             throw error

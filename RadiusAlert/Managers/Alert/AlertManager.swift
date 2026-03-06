@@ -41,8 +41,8 @@ final class AlertManager {
         notificationsManager.requestAuthorizationIfNeeded()
     }
     
-    func sendNotification(after seconds: TimeInterval = 0.5) {
-        notificationsManager.scheduleNotification(after: seconds)
+    func sendNotification(after seconds: TimeInterval = 0.5, item: MarkerModel) {
+        notificationsManager.scheduleNotification(after: seconds, item: item)
     }
     
     // MARK: - Tone Related
