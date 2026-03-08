@@ -16,8 +16,8 @@ extension SettingsViewModel {
         return .init(
             get: { [weak self] in
                 guard let self else { return false }
-                return hideMapStyleButton
-            }, set: setHideShowMapStyleButton)
+                return showMapStyleButton
+            }, set: setShowMapStyleButton)
     }
     
     func toneFadeToggleBinding() -> Binding<Bool> {

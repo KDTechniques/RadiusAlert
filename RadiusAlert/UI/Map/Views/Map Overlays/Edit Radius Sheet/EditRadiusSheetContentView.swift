@@ -43,7 +43,7 @@ struct EditRadiusSheetContentView: View {
                     .animation(.default, value: markers)
                 }
             }
-            .navigationTitle(.init("Edit Radius"))
+            .navigationTitle(.init("Edit Your Stops"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -53,6 +53,7 @@ struct EditRadiusSheetContentView: View {
         }
         .alertViewModifier(at: .editRadiusSheet)
         .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 }
 
