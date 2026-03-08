@@ -168,6 +168,13 @@ extension View {
                 }
         }
     }
+    
+    var markerItemListViewModifier: some View {
+        self
+            .contentMargins(.top, 10, for: .scrollContent)
+            .contentMargins(.bottom, 80, for: .scrollContent)
+            .listStyle(.plain)
+    }
 }
 
 // MARK: - EXTENSIONS

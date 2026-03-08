@@ -42,6 +42,7 @@ final class MapViewModel {
     private(set) var interactionModes: MapInteractionModes = [.all]
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
+    private(set) var isPresentedEditRadiusSheet: Bool = false
     
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -185,6 +186,10 @@ final class MapViewModel {
     
     func setSearchResultBackgroundHeight(_ height: CGFloat) {
         searchResultBackgroundHeight = height
+    }
+    
+    func setIsPresentedEditRadiusSheet(_ present: Bool) {
+        isPresentedEditRadiusSheet = present
     }
     
     // MARK: - PUBLIC FUNCTIONS

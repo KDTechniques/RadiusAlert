@@ -1,5 +1,5 @@
 //
-//  MultipleStopsCancellationSheetListRowView.swift
+//  MarkerItemListRowView.swift
 //  RadiusAlert
 //
 //  Created by Kavinda Dilshan on 2026-01-30.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MultipleStopsCancellationSheetListRowView: View {
+struct MarkerItemListRowView: View {
     // MARK: - INJECTED PROPERTIES
     let color: Color
     let number: Int?
@@ -40,7 +40,7 @@ struct MultipleStopsCancellationSheetListRowView: View {
     let mapVM: MapViewModel = .init(settingsVM: .init())
     let randomRadius: Double = Double.random(in: 700...3000)
     
-    MultipleStopsCancellationSheetListRowView(
+    MarkerItemListRowView(
         color: .debug,
         number: Int.random(in: 0...10),
         title: "Unknown Location",
@@ -51,7 +51,7 @@ struct MultipleStopsCancellationSheetListRowView: View {
 }
 
 // MARK: - EXTENSIONS
-extension MultipleStopsCancellationSheetListRowView {
+extension MarkerItemListRowView {
     @ViewBuilder
     private func markerCircle(color: Color) -> some View {
         let size: CGFloat = 50

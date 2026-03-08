@@ -34,17 +34,8 @@ struct LocationPinsListView: View {
             }
             .onDisappear { locationPinsVM.onLocationPinListDisappear() }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                        .disabled(locationPinsVM.isDisabledLocationPinListSheetEditButton())
-                }
-                
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(locationPinsVM.getLocationPinListSheetTopBarLeadingButtonText()) {
-                        locationPinsVM.locationPinListTopLeadingButtonAction()
-                    }
-                    .disabled(locationPinsVM.isDisabledLocationPinListSheetTopLeadingButtons())
-                }
+                topLeadingToolbarItem
+                topTrailingToolbarItem
             }
             .environment(\.editMode, locationPinsVM.editModeBinding())
             .navigationTitle(.init("Pined Locations"))
@@ -70,6 +61,22 @@ struct LocationPinsListView: View {
 
 // MARK: - EXTENSIONS
 extension LocationPinsListView {
+    private var topLeadingToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button(locationPinsVM.getLocationPinListSheetTopBarLeadingButtonText()) {
+                locationPinsVM.locationPinListTopLeadingButtonAction()
+            }
+            .disabled(locationPinsVM.isDisabledLocationPinListSheetTopLeadingButtons())
+        }
+    }
+    
+    private var topTrailingToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            EditButton()
+                .disabled(locationPinsVM.isDisabledLocationPinListSheetEditButton())
+        }
+    }
+    
     private func justTitle(_ item: LocationPinsModel) -> some View {
         Button(item.title) {
             locationPinsVM.onLocationPinsListRowItemTap(item)

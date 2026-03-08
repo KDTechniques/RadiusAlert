@@ -26,7 +26,7 @@ struct MultipleStopsCancellationSheetView: View {
                     List(markers) { marker in
                         let radiusText: String = mapVM.getRadiusTextString(marker.radius, title: nil, withAlertRadiusText: false)
                         
-                        MultipleStopsCancellationSheetListRowView(
+                        MarkerItemListRowView(
                             color: marker.color,
                             number: marker.number,
                             title: marker.title,
@@ -36,9 +36,7 @@ struct MultipleStopsCancellationSheetView: View {
                         .listRowSeparator(marker.id == lastMarkerID ? .hidden : .visible, edges: .bottom)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) { swipeActionButton(marker.id) }
                     }
-                    .contentMargins(.top, 10, for: .scrollContent)
-                    .contentMargins(.bottom, 80, for: .scrollContent)
-                    .listStyle(.plain)
+                    .markerItemListViewModifier
                     .animation(.default, value: markers)
                 }
             }
