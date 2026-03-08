@@ -51,11 +51,11 @@ extension AlertTypes {
                 actions: [.init(role: .ok)]
             )
             
-        case .radiusNotBeyondMinimumDistance(let viewLevel):
+        case .stopNotBeyondMinimumDistance(let viewLevel):
             return .init(
                 viewLevel: viewLevel,
                 title: "Too Close to Set Alert",
-                message: "The alert radius must be set at least 1km ahead of your current location.",
+                message: "The stop must be set at least 1km ahead of your current location.",
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
             )
@@ -136,6 +136,15 @@ extension AlertTypes {
                 message: "You can't add a stop on the same location.",
                 hapticType: .warning,
                 actions: [.init(role: .ok)]
+            )
+            
+        case .editRadiusFailure(let viewLevel, let action):
+            return .init(
+                viewLevel: viewLevel,
+                title: "Something Went Wrong",
+                message: "You can't edit the radius at the moment. Try removing the current stop and adding a new one.",
+                hapticType: .error,
+                actions: [.init(role: .ok, action: action)]
             )
         }
     }

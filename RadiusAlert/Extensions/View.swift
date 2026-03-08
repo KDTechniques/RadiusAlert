@@ -173,7 +173,6 @@ extension View {
         self
             .contentMargins(.top, 10, for: .scrollContent)
             .contentMargins(.bottom, 80, for: .scrollContent)
-            .listStyle(.plain)
     }
 }
 

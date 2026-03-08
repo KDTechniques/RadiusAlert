@@ -12,7 +12,7 @@ struct MarkerModel: Identifiable, Hashable {
     var id: String { coordinate.markerID() }
     let title: String?
     let coordinate: CLLocationCoordinate2D
-    let radius: CLLocationDistance
+    var radius: CLLocationDistance
     let color: Color
     let number: Int
     
@@ -23,7 +23,8 @@ struct MarkerModel: Identifiable, Hashable {
     
     // Implement Equatable manually
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.radius == rhs.radius
     }
     
     static var mock: [Self] {

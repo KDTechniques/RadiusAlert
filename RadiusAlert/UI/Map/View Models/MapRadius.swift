@@ -122,12 +122,12 @@ extension MapViewModel {
         guard
             let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
             markers.count == 1,
-            let markerCoordinate: CLLocationCoordinate2D = markers.first?.coordinate else { return }
+            let marker: MarkerModel = markers.first else { return }
         
         let distance: CLLocationDistance = Utilities.getDistanceToRadius(
             userCoordinate: userCoordinate,
-            markerCoordinate: markerCoordinate,
-            radius: primarySelectedRadius
+            markerCoordinate: marker.coordinate,
+            radius: marker.radius
         )
         
         setDistanceText(distance)

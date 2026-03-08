@@ -140,6 +140,22 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return true
     }
     
+    func stopNUpdateMonitorRegion(markerID: String, newRadius: CLLocationDistance) -> Bool {
+        guard let currentRegion: RegionModel = regions.first(where: { $0.markerID == markerID }) else { return false }
+        
+        stopMonitoringRegion(for: currentRegion)
+        
+        let newRegion: RegionModel = .init(
+            markerCoordinate: currentRegion.markerCoordinate,
+            radius: newRadius,
+            onRegionEntry: currentRegion.onRegionEntry
+        )
+        
+        guard startMonitoringRegion(region: newRegion) else { return false }
+        
+        return true
+    }
+    
     /// Stops monitoring the currently active circular region.
     func stopMonitoringRegion(for region: RegionModel) {
         guard let monitor: CLCircularRegion = region.monitor else { return }

@@ -6,113 +6,79 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct EditRadiusSheetSliderContentView: View {
+    // MARK: - INJECTED PROPERTIES
+    @Environment(MapViewModel.self) private var mapVM
+    @Environment(\.dismiss) private var dismiss
+    let marker: MarkerModel
+    @State private var radius: CLLocationDistance
+    
+    // MARK: - INITIALIZER
+    init(_ marker: MarkerModel) {
+        self.marker = marker
+        _radius = State(initialValue: marker.radius)
+    }
+    
+    // MARK: - BODY
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Form {
+            title
+            slider
+        }
+        .scrollDisabled(true)
+        .navigationTitle(.init("Edit Radius"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .confirmationAction) { doneButton } }
     }
 }
 
-#Preview {
-    EditRadiusSheetSliderContentView()
+#Preview("EditRadiusSheetSliderContentView") {
+    NavigationStack {
+        EditRadiusSheetSliderContentView(.mock.first!)
+    }
+    .previewModifier()
 }
 
-
-/*
- 
- import CoreLocation
-
- struct UpdateLocationPinSheetContentView: View {
-     // MARK: - INJECTED PROPERTIES
-     @Environment(MapViewModel.self) private var mapVM
-     @Environment(LocationPinsViewModel.self) private var locationPinsVM
-     @Environment(\.dismiss) private var dismiss
-     
-     let item: LocationPinsModel
-     @State private var renameText: String
-     @State private var radius: CLLocationDistance
-     
-     // MARK: - INITIALIZER
-     init(_ item: LocationPinsModel) {
-         self.item = item
-         _renameText = State(initialValue: item.title)
-
-         _radius = State(initialValue: item.radius)
-     }
-     
-     // MARK: - ASSIGNED PROPERTIES
-     @FocusState var isFocused: Bool
-     
-     // MARK: - BODY
-     var body: some View {
-         Form {
-             textfield
-             slider
-         }
-         .scrollDisabled(true)
-         .navigationTitle(.init("Update Pined Location"))
-         .navigationBarTitleDisplayMode(.inline)
-         .toolbar { ToolbarItem(placement: .confirmationAction) { doneButton } }
-     }
- }
-
- // MARK: - PREVIEWS
- #Preview("UpdateLocationPinSheetContentView") {
-     NavigationStack {
-         UpdateLocationPinSheetContentView(.mock.first!)
-     }
-     .previewModifier()
- }
-
- // MARK: - EXTENSIONS
- extension UpdateLocationPinSheetContentView {
-     private var textfield: some View {
-         Section {
-             TextField("", text: $renameText, prompt: .init("Title"))
-                 .limitInputLengthViewModifier(
-                     $renameText,
-                     to: locationPinsVM.locationPinTitleMaxCharacterCount
-                 )
-         }
-     }
-     
-     private var slider: some View  {
-         Section {
-             Slider(
-                 value: $radius,
-                 in: MapValues.minimumRadius...MapValues.maximumRadius,
-                 step: 100) { } minimumValueLabel: {
-                     Text(MapValues.minimumRadiusString)
-                 } maximumValueLabel: {
-                     Text(MapValues.maximumRadiusString)
-                 }
-         } header: {
-             Text("Radius: \(mapVM.getRadiusTextString(radius, title: nil, withAlertRadiusText: false))")
-                 .padding(.top)
-         }
-         .listRowBackground(Color.clear)
-     }
-     
-     private func onUpdateDoneTap() {
-         Task {
-             await locationPinsVM.onLocationPinUpdateDoneButtonAction(
-                 item,
-                 title: renameText,
-                 radius: radius
-             )
-             
-             dismiss()
-         }
-     }
-     
-     private var doneButton: some View {
-         Button("Done") {
-             onUpdateDoneTap()
-         }
-         .foregroundStyle(Color.accentColor)
-         .disabled(renameText.isEmpty)
-     }
- }
-
- 
- */
+// MARK: - EXTENSIONS
+extension EditRadiusSheetSliderContentView {
+    private var title: some View {
+        Text(marker.title ?? MapValues.nilTitleText)
+            .listRowBackground(Color.clear)
+    }
+    
+    private var slider: some View  {
+        Section {
+            Slider(
+                value: $radius,
+                in: MapValues.minimumRadius...MapValues.maximumRadius,
+                step: 100) { } minimumValueLabel: {
+                    Text(MapValues.minimumRadiusString)
+                } maximumValueLabel: {
+                    Text(MapValues.maximumRadiusString)
+                }
+        } header: {
+            Text("Radius: \(mapVM.getRadiusTextString(radius, title: nil, withAlertRadiusText: false))")
+                .padding(.top)
+        }
+        .listRowBackground(Color.clear)
+    }
+    
+    private func onUpdateDoneTap() {
+        mapVM.OnEditingRadius(currentMarkerID: marker.id, newRadius: radius)
+        dismiss()
+    }
+    
+    private var doneButton: some View {
+        Button("Done") {
+            onUpdateDoneTap()
+        }
+        .foregroundStyle(isSameRadius() ? Color.secondary : Color.accentColor)
+        .disabled(isSameRadius())
+    }
+    
+    private func isSameRadius() -> Bool {
+        return radius == marker.radius
+    }
+}

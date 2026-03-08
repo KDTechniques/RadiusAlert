@@ -21,15 +21,12 @@ struct MarkerItemListRowView: View {
         self.title = title
         self.radius = radius
     }
-    
-    // MARK: - ASSIGNED PROPERTIES
-    let nilTitleText: String = "Unknown Location"
-    
+  
     // MARK: - BODY
     var body: some View {
         HStack(spacing: 12) {
             markerCircle(color: color)
-            markerText(title: title ?? nilTitleText, radius: radius)
+            markerText(title: title ?? MapValues.nilTitleText, radius: radius)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

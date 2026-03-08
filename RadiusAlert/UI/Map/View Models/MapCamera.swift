@@ -295,9 +295,9 @@ extension MapViewModel {
             let centerCoordinate,
             let selectedCoordinate: CLLocationCoordinate2D = selectedSearchResult?.result.coordinate,
             centerCoordinate.isEqual(to: selectedCoordinate),
-            !isBeyondMinimumDistance(centerCoordinate: centerCoordinate) else { return }
+            !isBeyondMinimumDistance(coordinate: centerCoordinate) else { return }
         
-        alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
+        alertManager.showAlert(.stopNotBeyondMinimumDistance(viewLevel: viewLevel))
         setSelectedSearchResult(nil)
     }
 }

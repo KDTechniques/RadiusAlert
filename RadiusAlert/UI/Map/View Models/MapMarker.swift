@@ -51,7 +51,7 @@ extension MapViewModel {
         
         // Make sure we're not adding the same marker on the same location
         guard !markers.contains(where: { $0.id == marker.id }) else {
-            alertManager.showAlert(.markerAlreadyExist(ViewLevel: .multipleStopsMapSheet))
+            alertManager.showAlert(.markerAlreadyExist(viewLevel: .multipleStopsMapSheet))
             return nil
         }
         

@@ -19,7 +19,7 @@ struct MultipleStopsCancellationSheetView: View {
     
     // MARK: - BODY
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 if let firstMarkerID: String = markers.first?.id,
                    let lastMarkerID: String = markers.last?.id {
@@ -48,9 +48,7 @@ struct MultipleStopsCancellationSheetView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .alertViewModifier(at: .multipleStopsCancellationSheet)
-        .onDisappear {
-            mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary)
-        }
+        .onDisappear { mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary) }
         .sheetCornerRadiusViewModifier
         .presentationDragIndicator(.visible)
     }

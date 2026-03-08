@@ -11,4 +11,5 @@ enum AlertViewLevels {
     case content
     case multipleStopsMapSheet
     case multipleStopsCancellationSheet
+    case editRadiusSheet
 }

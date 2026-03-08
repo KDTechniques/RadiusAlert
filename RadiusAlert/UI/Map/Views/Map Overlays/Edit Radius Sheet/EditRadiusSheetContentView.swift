@@ -27,7 +27,7 @@ struct EditRadiusSheetContentView: View {
                         let radiusText: String = mapVM.getRadiusTextString(marker.radius, title: nil, withAlertRadiusText: false)
                         
                         NavigationLink {
-                            // Edit radius view goes here
+                            EditRadiusSheetSliderContentView(marker)
                         } label: {
                             MarkerItemListRowView(
                                 color: marker.color,
@@ -51,18 +51,16 @@ struct EditRadiusSheetContentView: View {
                 }
             }
         }
+        .alertViewModifier(at: .editRadiusSheet)
+        .presentationDetents([.medium])
     }
 }
 
 // MARK: - PREVIEWS
 #Preview("EditRadiusSheetContentView") {
-    @Previewable @Environment(\.colorScheme) var colorScheme
-    
-    Color.clear
+    Color.debug.ignoresSafeArea()
         .sheet(isPresented: .constant(true)) {
             EditRadiusSheetContentView(markers: MarkerModel.mock)
-                .presentationDetents([.medium])
-                .presentationBackground(colorScheme == .dark ? Color(uiColor: .systemGray6) : Color.white)
         }
         .previewModifier()
 }

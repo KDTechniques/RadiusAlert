@@ -62,7 +62,7 @@ extension MapViewModel {
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
-        // encapsulated region bounds
+        // Encapsulated region bounds
         setRegionBoundsToUserLocationNMarkers(on: type)
         
         // Set distance text between user location to the marker coordinate
@@ -72,6 +72,62 @@ extension MapViewModel {
         guard startAlert_StartMonitoringRegion(markerID: markerID) else { return }
         
         onAlertStartEnded()
+    }
+    
+    func OnEditingRadius(currentMarkerID: String, newRadius: CLLocationDistance) {
+        // Validations before editing the radius
+        guard
+            let currentUserLocation: CLLocationCoordinate2D = locationManager.currentUserLocation,
+            var currentMarker: MarkerModel = getMarkerObject(on: currentMarkerID) else {
+            alertManager.showAlert(.editRadiusFailure(viewLevel: .editRadiusSheet) { [weak self] in
+                guard let self else { return }
+                setIsPresentedEditRadiusSheet(false)
+            })
+            return
+        }
+        
+        guard isBeyondMinimumDistance(coordinate: currentMarker.coordinate) else {
+            alertManager.showAlert(.stopNotBeyondMinimumDistance(viewLevel: .editRadiusSheet))
+            return
+        }
+        
+        let distanceFromUserToMarkerCoordinates: CLLocationDistance = Utilities.getDistance(from: currentUserLocation, to: currentMarker.coordinate)
+        
+        guard newRadius < distanceFromUserToMarkerCoordinates else {
+            alertManager.showAlert(.alreadyInRadius(viewLevel: .editRadiusSheet))
+            Utilities.log(MapCTAButtonErrorModel.userAlreadyInRadius.errorDescription)
+            return
+        }
+        
+        guard var currentRadiusAlertItem: RadiusAlertModel = getRadiusAlertItem(markerID: currentMarkerID) else {
+            alertManager.showAlert(.editRadiusFailure(viewLevel: .editRadiusSheet) { [weak self] in
+                guard let self else { return }
+                setIsPresentedEditRadiusSheet(false)
+            })
+            return
+        }
+        
+        // Edit the exciting references properly.
+        
+        // 1 - Update marker in markers array
+        currentMarker.radius = newRadius
+        updateMarker(at: currentMarkerID, value: currentMarker)
+        
+        // 2 - Update distance text between user location to the marker coordinate
+        updateDistanceText()
+        
+        // 3 - Update radius alert item in radius alert items set
+        currentRadiusAlertItem.radius = newRadius
+        updateRadiusAlertItem(currentRadiusAlertItem)
+        
+        // 4 - Finally, update region monitor
+        guard locationManager.stopNUpdateMonitorRegion(markerID: currentMarkerID, newRadius: newRadius) else {
+            alertManager.showAlert(.editRadiusFailure(viewLevel: .editRadiusSheet) { [weak self] in
+                guard let self else { return }
+                setIsPresentedEditRadiusSheet(false)
+            })
+            return
+        }
     }
     
     /// Stops the active alert by resetting interaction modes, stopping region monitoring,
@@ -121,9 +177,9 @@ extension MapViewModel {
         let isBeyondMinimumDistanceCondition: Bool = {
             switch type {
             case .primary:
-                return isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+                return isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
             case .secondary:
-                return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
+                return isBeyondMinimumDistance(coordinate: secondaryCenterCoordinate)
             }
         }()
         
@@ -137,7 +193,7 @@ extension MapViewModel {
         }()
         
         guard isBeyondMinimumDistanceCondition else {
-            alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
+            alertManager.showAlert(.stopNotBeyondMinimumDistance(viewLevel: viewLevel))
             return false
         }
         
@@ -194,7 +250,7 @@ extension MapViewModel {
             locationTitle: marker.title,
             firstUserLocation: currentUserLocation,
             markerCoordinate: marker.coordinate,
-            setRadius: marker.radius
+            radius: marker.radius
         )
         
         // Add this alert item so it can be displayed when the alert triggers

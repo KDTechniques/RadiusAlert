@@ -135,6 +135,10 @@ final class MapViewModel {
         radiusAlertItems.insert(item)
     }
     
+    func updateRadiusAlertItem(_ item: RadiusAlertModel) {
+        radiusAlertItems.update(with: item)
+    }
+    
     func removeRadiusAlertItem(_ item: RadiusAlertModel) {
         radiusAlertItems.remove(item)
     }

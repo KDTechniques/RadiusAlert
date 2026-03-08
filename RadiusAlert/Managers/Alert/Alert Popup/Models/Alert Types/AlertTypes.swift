@@ -25,28 +25,30 @@ enum AlertTypes: CaseIterable, Hashable {
     case requestTimedOut(viewLevel: AlertViewLevels)
     case locationPermissionDenied(viewLevel: AlertViewLevels)
     case alreadyInRadius(viewLevel: AlertViewLevels)
-    case radiusNotBeyondMinimumDistance(viewLevel: AlertViewLevels)
+    case stopNotBeyondMinimumDistance(viewLevel: AlertViewLevels)
     case stopSingleAlertConfirmation(viewLevel: AlertViewLevels, () -> Void)
     case stopAllAlertsConfirmation(viewLevel: AlertViewLevels, () -> Void)
     case stopAlertOnSubmit(viewLevel: AlertViewLevels, () -> Void)
     case locationPinAlreadyExist(viewLevel: AlertViewLevels, () -> Void)
     case addMultipleStops(viewLevel: AlertViewLevels, search: () -> Void, manual: () -> Void)
     case maxMarkerLimitReached(viewLevel: AlertViewLevels)
-    case markerAlreadyExist(ViewLevel: AlertViewLevels)
+    case markerAlreadyExist(viewLevel: AlertViewLevels)
+    case editRadiusFailure(viewLevel: AlertViewLevels, () -> Void)
     
     static var allCases: [AlertTypes] = [
         .alreadyInRadius(viewLevel: .content),
         .locationPermissionDenied(viewLevel: .content),
         .noConnection(viewLevel: .content),
         .requestTimedOut(viewLevel: .content),
-        .radiusNotBeyondMinimumDistance(viewLevel: .content),
+        .stopNotBeyondMinimumDistance(viewLevel: .content),
         .stopSingleAlertConfirmation(viewLevel: .content, {}),
         .stopAllAlertsConfirmation(viewLevel: .content, {}),
         .stopAlertOnSubmit(viewLevel: .content, {}),
         .locationPinAlreadyExist(viewLevel: .content, {}),
         .addMultipleStops(viewLevel: .content, search: {}, manual: {}),
         .maxMarkerLimitReached(viewLevel: .content),
-        .markerAlreadyExist(ViewLevel: .content)
+        .markerAlreadyExist(viewLevel: .content),
+        .editRadiusFailure(viewLevel: .content, {})
     ]
     
     // Implement Hashable manually
@@ -73,7 +75,7 @@ enum AlertTypes: CaseIterable, Hashable {
         case .alreadyInRadius:
             return "Already in Radius"
             
-        case .radiusNotBeyondMinimumDistance:
+        case .stopNotBeyondMinimumDistance:
             return "Radius Not Beyond Minimum Distance"
             
         case .stopSingleAlertConfirmation:
@@ -96,6 +98,9 @@ enum AlertTypes: CaseIterable, Hashable {
             
         case .markerAlreadyExist:
             return "Marker Already Exist"
+            
+        case .editRadiusFailure:
+            return "Edit Radius Failure"
         }
     }
 }

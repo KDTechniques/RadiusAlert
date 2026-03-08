@@ -13,12 +13,12 @@ extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
     /// Returns true if the distance between the user's location and center is above the minimum threshold.
-    func isBeyondMinimumDistance(centerCoordinate: CLLocationCoordinate2D?) -> Bool {
+    func isBeyondMinimumDistance(coordinate: CLLocationCoordinate2D?) -> Bool {
         guard let currentLocation = locationManager.currentUserLocation,
-              let centerCoordinate else { return false }
+              let coordinate else { return false }
         
         let distance: CLLocationDistance = Utilities.getDistance(
-            from: centerCoordinate,
+            from: coordinate,
             to: currentLocation
         )
         
@@ -27,7 +27,7 @@ extension MapViewModel {
 
     /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
     func showPrimaryMapPin() -> Bool {
-        let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition1: Bool = isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
         let condition2: Bool = isThereAnyMarkerCoordinate()
         
         return condition1 && !condition2
@@ -41,7 +41,7 @@ extension MapViewModel {
         guard let primaryCenterCoordinate else { return false }
         
         let condition1: Bool = isPrimaryCameraDragging
-        let condition2: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition2: Bool = isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
         let condition3: Bool = isThereAnyMarkerCoordinate()
         
         return !condition1 && condition2 && !condition3
@@ -55,12 +55,12 @@ extension MapViewModel {
     }
     
     func showSecondaryMapOverlays() -> Bool {
-        return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
+        return isBeyondMinimumDistance(coordinate: secondaryCenterCoordinate)
     }
     
     /// Returns true if the radius slider should be visible, based on marker coordinate and user distance. Also triggers slider visibility change callback.
     func showPrimaryRadiusSliderOrDistanceText() -> RadiusSliderOrDistanceTextTypes? {
-        let condition1: Bool = isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+        let condition1: Bool = isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
         let condition2: Bool = isThereAnyMarkerCoordinate()
         let condition3: Bool = markers.count == 1
         

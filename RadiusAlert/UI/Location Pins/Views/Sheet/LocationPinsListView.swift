@@ -54,7 +54,6 @@ struct LocationPinsListView: View {
             LocationPinsListView(isMock: true)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
-                .presentationBackground(Color.init(uiColor: .systemGray6))
         }
         .previewModifier()
 }
