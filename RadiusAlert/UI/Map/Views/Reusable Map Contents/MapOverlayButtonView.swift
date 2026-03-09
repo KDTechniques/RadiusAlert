@@ -12,12 +12,14 @@ struct MapOverlayButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     let systemImage: String
+    let fontWeight: Font.Weight?
     let tip: (any Tip)?
     let action: () -> Void
     
     // MARK: - INITIALIZER
-    init(systemImage: String, tip: (any Tip)? = nil, action: @escaping () -> Void) {
+    init(systemImage: String, fontWeight: Font.Weight? = nil, tip: (any Tip)? = nil, action: @escaping () -> Void) {
         self.systemImage = systemImage
+        self.fontWeight = fontWeight
         self.tip = tip
         self.action = action
     }
@@ -42,6 +44,7 @@ struct MapOverlayButtonView: View {
 extension MapOverlayButtonView {
     private var buttonLabel: some View {
         Image(systemName: systemImage)
+            .fontWeight(fontWeight)
             .frame(width: 44, height: 44)
             .mapControlButtonBackgroundViewModifier
             .defaultTypeSizeViewModifier

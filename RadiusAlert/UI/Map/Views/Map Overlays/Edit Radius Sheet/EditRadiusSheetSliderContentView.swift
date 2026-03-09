@@ -45,6 +45,7 @@ struct EditRadiusSheetSliderContentView: View {
 extension EditRadiusSheetSliderContentView {
     private var title: some View {
         Text(marker.title ?? MapValues.nilTitleText)
+            .fontWeight(.medium)
             .listRowBackground(Color.clear)
     }
     

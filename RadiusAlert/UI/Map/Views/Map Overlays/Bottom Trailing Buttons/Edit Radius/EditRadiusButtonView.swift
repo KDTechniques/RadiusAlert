@@ -14,7 +14,7 @@ struct EditRadiusButtonView: View {
     // MARK: - BODY
     var body: some View {
         if mapVM.isThereAnyMarkerCoordinate() {
-            MapOverlayButtonView(systemImage: "pencil") {
+            MapOverlayButtonView(systemImage: "pencil", fontWeight: .bold) {
                 mapVM.setIsPresentedEditRadiusSheet(true)
             }
             .sheet(isPresented: mapVM.editRadiusSheetBinding()) {
