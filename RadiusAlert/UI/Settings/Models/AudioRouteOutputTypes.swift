@@ -14,30 +14,25 @@ enum AudioRouteOutputTypes: String, CaseIterable {
     case allDevice = "All Devices"
     
     static func getAudioRouteOutputType(for port: AVAudioSession.Port) -> Self {
-        guard port != builtInSpeakerPort else { return .speaker }
-        return allPorts.contains(port) ? .connectedDevice : .allDevice
+        guard !builtInOutputPorts.contains(where: { $0 == port }) else { return .speaker }
+        return connectedOutputPorts.contains(port) ? .connectedDevice : .allDevice
     }
     
-    private static let builtInSpeakerPort: AVAudioSession.Port = .builtInSpeaker
+    private static let builtInOutputPorts: [AVAudioSession.Port] = [.builtInSpeaker, .builtInReceiver]
     
-    private static let allPorts: [AVAudioSession.Port] = [
+    private static let connectedOutputPorts: [AVAudioSession.Port] = [
         .airPlay,
-        .AVB,
         .bluetoothA2DP,
-        .bluetoothHFP,
         .bluetoothLE,
-        .builtInMic,
-        .builtInReceiver,
-        .carAudio,
-        .continuityMicrophone,
-        .displayPort,
-        .fireWire,
         .HDMI,
         .headphones,
-        .headsetMic,
-        .lineIn,
         .lineOut,
+        .AVB,
         .PCI,
+        .bluetoothHFP,
+        .carAudio,
+        .displayPort,
+        .fireWire,
         .thunderbolt,
         .usbAudio,
         .virtual
