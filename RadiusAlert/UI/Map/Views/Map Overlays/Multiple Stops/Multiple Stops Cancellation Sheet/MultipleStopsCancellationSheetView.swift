@@ -19,14 +19,14 @@ struct MultipleStopsCancellationSheetView: View {
     
     // MARK: - BODY
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 if let firstMarkerID: String = markers.first?.id,
                    let lastMarkerID: String = markers.last?.id {
                     List(markers) { marker in
                         let radiusText: String = mapVM.getRadiusTextString(marker.radius, title: nil, withAlertRadiusText: false)
                         
-                        MultipleStopsCancellationSheetListRowView(
+                        MarkerItemListRowView(
                             color: marker.color,
                             number: marker.number,
                             title: marker.title,
@@ -36,9 +36,7 @@ struct MultipleStopsCancellationSheetView: View {
                         .listRowSeparator(marker.id == lastMarkerID ? .hidden : .visible, edges: .bottom)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) { swipeActionButton(marker.id) }
                     }
-                    .contentMargins(.top, 10, for: .scrollContent)
-                    .contentMargins(.bottom, 80, for: .scrollContent)
-                    .listStyle(.plain)
+                    .markerItemListViewModifier
                     .animation(.default, value: markers)
                 }
             }
@@ -50,9 +48,7 @@ struct MultipleStopsCancellationSheetView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .alertViewModifier(at: .multipleStopsCancellationSheet)
-        .onDisappear {
-            mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary)
-        }
+        .onDisappear { mapVM.setRegionBoundsToUserLocationNMarkers(on: .primary) }
         .sheetCornerRadiusViewModifier
         .presentationDragIndicator(.visible)
     }

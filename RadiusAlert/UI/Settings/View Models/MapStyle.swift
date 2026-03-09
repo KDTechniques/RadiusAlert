@@ -18,7 +18,7 @@ extension SettingsViewModel {
     }
     
     func onMapStyleButtonVisibilityChange(_ boolean: Bool) {
-        userDefaultsManager.saveMapStyleButtonVisibility(hideMapStyleButton)
+        userDefaultsManager.saveMapStyleButtonVisibility(showMapStyleButton)
         MapStyleButtonTipModel.isMapStyleButtonVisible = boolean
     }
     

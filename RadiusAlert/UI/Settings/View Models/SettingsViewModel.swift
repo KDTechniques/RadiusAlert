@@ -43,7 +43,7 @@ final class SettingsViewModel {
     
     // Map settings:
     private(set) var selectedMapStyle: MapStyleTypes = .standard { didSet { onMapStyleChange(selectedMapStyle) } }
-    private(set) var hideMapStyleButton: Bool = false { didSet { onMapStyleButtonVisibilityChange(hideMapStyleButton) } }
+    private(set) var showMapStyleButton: Bool = false { didSet { onMapStyleButtonVisibilityChange(showMapStyleButton) } }
     
     // About:
     let settingsTip: SettingsTipModel = .init()
@@ -70,8 +70,8 @@ final class SettingsViewModel {
         selectedMapStyle = mapStyle
     }
     
-    func setHideShowMapStyleButton(_ boolean: Bool) {
-        hideMapStyleButton = boolean
+    func setShowMapStyleButton(_ boolean: Bool) {
+        showMapStyleButton = boolean
     }
     
     func setIsEnabledToneFade(_ value: Bool) {
@@ -143,7 +143,7 @@ final class SettingsViewModel {
         selectedColorScheme = userDefaultsManager.getDarkMode()
         selectedTone = userDefaultsManager.getTone()
         selectedMapStyle = userDefaultsManager.getMapStyle()
-        hideMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
+        showMapStyleButton = userDefaultsManager.getMapStyleButtonVisibility()
         isEnabledToneFade = userDefaultsManager.getToneFade()
         toneFadeDuration =  userDefaultsManager.getToneFadeDuration()
         spokenAlert = userDefaultsManager.getSpokenAlert()

@@ -22,14 +22,14 @@ extension MapViewModel {
         
         guard let item: RadiusAlertModel = getRadiusAlertItem(markerID: marker.id) else { return } // Ensure the valid alert item is available
         
-        let radiusText: String = getRadiusTextString(item.setRadius, title: nil, withAlertRadiusText: false) // Format the alert radius for display
+        let radiusText: String = getRadiusTextString(item.radius, title: nil, withAlertRadiusText: false) // Format the alert radius for display
         let duration: String = generateDurationText(item.firstDate) // Compute the duration since the alert's first recorded date
         
         // Calculate the user's distance to the alert's radius
         let distanceToRadius: CLLocationDistance = Utilities.getDistanceToRadius(
             userCoordinate: item.firstUserLocation,
             markerCoordinate: item.markerCoordinate,
-            radius: item.setRadius)
+            radius: item.radius)
         
         let distanceText: String = getRadiusTextString(distanceToRadius, title: nil, withAlertRadiusText: false) // Format the calculated distance
         

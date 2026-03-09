@@ -10,7 +10,7 @@ import CoreLocation
 struct RegionModel: Hashable {
     var markerID: String { markerCoordinate.markerID() }
     let markerCoordinate: CLLocationCoordinate2D
-    let radius: CLLocationDistance
+    var radius: CLLocationDistance
     var monitor: CLCircularRegion?
     var didEnterRegion: Bool = false
     let onRegionEntry: () -> Void

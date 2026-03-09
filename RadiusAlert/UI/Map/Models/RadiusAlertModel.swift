@@ -12,7 +12,7 @@ struct RadiusAlertModel: Hashable {
     let locationTitle: String?
     let firstUserLocation: CLLocationCoordinate2D
     let markerCoordinate: CLLocationCoordinate2D
-    let setRadius: CLLocationDistance
+    var radius: CLLocationDistance
     let firstDate: Date = Date.now
     
     // Implement Equatable manually

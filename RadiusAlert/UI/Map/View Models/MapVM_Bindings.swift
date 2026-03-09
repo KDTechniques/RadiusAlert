@@ -52,4 +52,12 @@ extension MapViewModel {
             }
         )
     }
+    
+    func editRadiusSheetBinding() -> Binding<Bool> {
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return isPresentedEditRadiusSheet
+            }, set: setIsPresentedEditRadiusSheet)
+    }
 }

@@ -23,7 +23,7 @@ struct MultipleStopsMapSheetView: View {
         //        let _ = Self._printChanges()
 #endif
         
-        NavigationView {
+        NavigationStack {
             Map(position: mapVM.secondaryPositionBinding(), scope: mapSpace) {
                 UserAnnotation()
                 
