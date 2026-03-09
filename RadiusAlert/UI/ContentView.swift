@@ -35,10 +35,7 @@ struct ContentView: View {
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-                .toolbar {
-                    topLeadingToolbarItem
-                    topTrailingToolbarItem
-                }
+                .toolbar { topTrailingToolbarItem }
         }
         .alertViewModifier(at: .content)
         .popupCardViewModifier(vm: mapVM)
@@ -111,19 +108,6 @@ extension ContentView {
             HStack(spacing: 20) {
                 settingsNavigationLink
                 debug
-            }
-        }
-    }
-    
-    private var topLeadingToolbarItem: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            if mapVM.isThereAnyMarkerCoordinate() { // get rid of '!'
-                Button("Edit Radius") {
-                    mapVM.setIsPresentedEditRadiusSheet(true)
-                }
-                .sheet(isPresented: mapVM.editRadiusSheetBinding()) {
-                    EditRadiusSheetContentView(markers: mapVM.markers)
-                }
             }
         }
     }
