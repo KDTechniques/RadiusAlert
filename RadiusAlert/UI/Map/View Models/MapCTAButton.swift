@@ -62,7 +62,7 @@ extension MapViewModel {
         // Restrict interaction modes to prevent map hovering after alert setup, improving performance.
         setInteractionModes([])
         
-        // encapsulated region bounds
+        // Encapsulated region bounds
         setRegionBoundsToUserLocationNMarkers(on: type)
         
         // Set distance text between user location to the marker coordinate
@@ -121,9 +121,9 @@ extension MapViewModel {
         let isBeyondMinimumDistanceCondition: Bool = {
             switch type {
             case .primary:
-                return isBeyondMinimumDistance(centerCoordinate: primaryCenterCoordinate)
+                return isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
             case .secondary:
-                return isBeyondMinimumDistance(centerCoordinate: secondaryCenterCoordinate)
+                return isBeyondMinimumDistance(coordinate: secondaryCenterCoordinate)
             }
         }()
         
@@ -137,7 +137,7 @@ extension MapViewModel {
         }()
         
         guard isBeyondMinimumDistanceCondition else {
-            alertManager.showAlert(.radiusNotBeyondMinimumDistance(viewLevel: viewLevel))
+            alertManager.showAlert(.stopNotBeyondMinimumDistance(viewLevel: viewLevel))
             return false
         }
         
@@ -194,7 +194,7 @@ extension MapViewModel {
             locationTitle: marker.title,
             firstUserLocation: currentUserLocation,
             markerCoordinate: marker.coordinate,
-            setRadius: marker.radius
+            radius: marker.radius
         )
         
         // Add this alert item so it can be displayed when the alert triggers

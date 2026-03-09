@@ -42,7 +42,7 @@ extension MapStyleListSectionView {
     
     private var mapStyleButtonVisibility: some View {
         Section {
-            Toggle("Hide Map Style Button", isOn: settingsVM.mapStyleButtonVisibilityBinding())
+            Toggle("Show Map Style Button", isOn: settingsVM.mapStyleButtonVisibilityBinding())
         }
     }
 }

@@ -36,7 +36,6 @@ struct AddPinOrAddMultipleStopsMapBottomTrailingButtonView: View {
             AddLocationPinSheetContentView()
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
-                .presentationBackground(Color.init(uiColor: .systemGray6))
         }
     }
 }

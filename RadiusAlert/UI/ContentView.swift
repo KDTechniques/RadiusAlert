@@ -19,6 +19,11 @@ struct ContentView: View {
     @State private var alertManager: AlertManager = .shared
     @State private var showSplashScreen: Bool = true
     
+    
+    
+    
+    @State private var isPresented: Bool = false
+    
     // MARK: - BODY
     var body: some View {
         NavigationStack {
@@ -30,7 +35,7 @@ struct ContentView: View {
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle(Text("Radius Alert"))
                 .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
-                .toolbar { ToolbarItem(placement: .topBarTrailing) { topTrailingNavigationButtons } }
+                .toolbar { topTrailingToolbarItem }
         }
         .alertViewModifier(at: .content)
         .popupCardViewModifier(vm: mapVM)
@@ -91,18 +96,20 @@ extension ContentView {
         .tipImageStyle(.secondary)
     }
     
-    private var topTrailingNavigationButtons: some View {
-        HStack(spacing: 20) {
-            settingsNavigationLink
-            debug
-        }
-    }
-    
     @ViewBuilder
     private var debug: some View {
 #if DEBUG
         DebugView()
 #endif
+    }
+    
+    private var topTrailingToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            HStack(spacing: 20) {
+                settingsNavigationLink
+                debug
+            }
+        }
     }
 }
 
