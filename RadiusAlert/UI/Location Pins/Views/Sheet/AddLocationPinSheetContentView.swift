@@ -46,7 +46,7 @@ extension AddLocationPinSheetContentView {
                     to: locationPinsVM.locationPinTitleMaxCharacterCount
                 )
         } footer: {
-            Text("This title appears as a button under the search bar. You may use emojis for easier identification, e.g. 💼 Work.")
+            Text("This title appears as a button under the search bar. You may use emojis for easier identification, e.g. Work 💼.")
         }
     }
     
