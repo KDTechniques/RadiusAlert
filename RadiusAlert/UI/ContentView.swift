@@ -19,11 +19,6 @@ struct ContentView: View {
     @State private var alertManager: AlertManager = .shared
     @State private var showSplashScreen: Bool = true
     
-    
-    
-    
-    @State private var isPresented: Bool = false
-    
     // MARK: - BODY
     var body: some View {
         NavigationStack {
