@@ -115,7 +115,7 @@ extension AddPinOrAddMultipleStopsMapBottomTrailingButtonView {
                 buttonAction()
             } label: {
                 buttonLabel
-                    .fontWeight(.semibold)
+                    .fontWeight(.medium)
                     .foregroundStyle(colorScheme == .dark ? .white : Color.accentColor)
                     .glassEffect(.regular)
             }

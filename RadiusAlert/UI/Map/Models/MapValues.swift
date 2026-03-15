@@ -15,6 +15,13 @@ enum MapValues {
     static let minimumDistance: CLLocationDistance = 1000
     static let regionBoundsCenterDelayDuration: Double = 2.0
     static let nilTitleText: String = "Unknown Location"
+    static let overlayMapButtonFontWeight: Font.Weight = {
+        if #available(iOS 26.0, *) {
+            return .medium
+        } else {
+            return .regular
+        }
+    }()
     
     // MARK: - Radius Related
     static let radiusStep: Double = 100
