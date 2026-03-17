@@ -72,4 +72,12 @@ extension MapViewModel {
     func isThereAnyMarkerCoordinate() -> Bool {
         return !markers.isEmpty
     }
+    
+    func updateMarkerOnLocationPinChange(_ item: LocationPinsModel) {
+        let markerID: String = item.coordinate.markerID()
+        guard var marker: MarkerModel = getMarkerObject(on: markerID) else { return }
+        
+        marker.title = item.title
+        updateMarker(at: markerID, value: marker)
+    }
 }

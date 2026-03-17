@@ -13,4 +13,12 @@ extension MapViewModel {
     func getRadiusAlertItem(markerID: String) -> RadiusAlertModel? {
         return radiusAlertItems.first(where: { $0.markerID == markerID })
     }
+    
+    func updateRadiusAlertItemOnLocationPinChange(_ item: LocationPinsModel) {
+        let markerID: String = item.coordinate.markerID()
+        guard var radiusAlertItem: RadiusAlertModel = radiusAlertItems.first(where: { $0.markerID == markerID }) else { return }
+        
+        radiusAlertItem.locationTitle = item.title
+        updateRadiusAlertItem(radiusAlertItem)
+    }
 }
