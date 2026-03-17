@@ -9,7 +9,7 @@ import CoreLocation
 
 struct RadiusAlertModel: Hashable {
     var markerID: String { markerCoordinate.markerID() }
-    let locationTitle: String?
+    var locationTitle: String?
     let firstUserLocation: CLLocationCoordinate2D
     let markerCoordinate: CLLocationCoordinate2D
     var radius: CLLocationDistance
