@@ -22,5 +22,8 @@ extension LocationPinsViewModel {
         
         try? await locationPinManager.updateLocationPins(locationPinsArray)
         try? await fetchNSetLocationPins()
+        
+        mapVM.updateMarkerOnLocationPinChange(tempItem)
+        mapVM.updateRadiusAlertItemOnLocationPinChange(tempItem)
     }
 }

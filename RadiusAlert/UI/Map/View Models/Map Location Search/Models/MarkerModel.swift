@@ -10,7 +10,7 @@ import SwiftUI
 
 struct MarkerModel: Identifiable, Hashable {
     var id: String { coordinate.markerID() }
-    let title: String?
+    var title: String?
     let coordinate: CLLocationCoordinate2D
     var radius: CLLocationDistance
     let color: Color
@@ -24,7 +24,8 @@ struct MarkerModel: Identifiable, Hashable {
     // Implement Equatable manually
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id &&
-        lhs.radius == rhs.radius
+        lhs.radius == rhs.radius &&
+        lhs.title == rhs.title
     }
     
     static var mock: [Self] {
