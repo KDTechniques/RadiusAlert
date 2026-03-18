@@ -19,12 +19,18 @@ extension MapViewModel {
     }
     
     func addMarkerCoordinate(from type: MapTypes) -> String? {
+        // Coordinate Check
+        
+        /// When getting the marker coordinate, don’t take it from the center coordinate as it can lead to incorrect values.
+        /// This means when the user taps a predefined option like a location pin or a search result, the map might not move as intended.
+        /// If it stops halfway, the intended coordinate and the center coordinate won’t match.
+        /// The only case where we should use the center coordinate is when the user manually moves the map.
         let markerCoordinate: CLLocationCoordinate2D? = {
             switch type {
             case .primary:
-                return primaryCenterCoordinate
+                return selectedSearchResult?.result.coordinate ?? primaryCenterCoordinate
             case .secondary:
-                return secondaryCenterCoordinate
+                return selectedSearchResult?.result.coordinate ?? secondaryCenterCoordinate
             }
         }()
         
