@@ -41,7 +41,7 @@ extension MapViewModel {
     /// Starts and sets a radius alert with all necessary validations and UI updates.
     /// Performs distance checks, sets marker coordinates, fetches directions, and monitors the region.
     func startAlert(from type: MapTypes) {
-        // First go through validations before proceeding.
+        // First go through validations
         guard
             locationManager.checkLocationPermission(),
             startAlert_ValidateDistance(on: type),
