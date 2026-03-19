@@ -189,7 +189,11 @@ extension MapViewModel {
         setRegionBoundsToUserLocationNMarkersTimestamp(.now)
     }
     
+    /// this is more likely to get called after selectedSearchResult is nil.
     func prepareMapPositionNRegion(on type: MapTypes, mapItem: MKMapItem, itemRadius: CLLocationDistance) async {
+        // 1) Set selected search result first, to avoid coordinate based marker issues on the map
+        setSelectedSearchResult(.init(result: mapItem))
+        
         let centerCoordinate: CLLocationCoordinate2D? = {
             switch type {
             case .primary:
@@ -201,7 +205,7 @@ extension MapViewModel {
         
         guard let centerCoordinate else { return }
         
-        // 1) Zoom out to Initial Region Bounds
+        // 2) Zoom out to Initial Region Bounds
         let boundsMeters: CLLocationDistance = MapValues.initialUserLocationBoundsMeters
         let initialRegion: MKCoordinateRegion = .init(
             center: centerCoordinate,
@@ -217,7 +221,7 @@ extension MapViewModel {
             await setSecondaryPosition(region: initialRegion, animate: true)
         }
         
-        // 2) Position Camera to New Coordinates
+        // 3) Position Camera to New Coordinates
         let newRegion: MKCoordinateRegion = .init(
             center: mapItem.placemark.coordinate,
             latitudinalMeters: boundsMeters,
@@ -238,11 +242,10 @@ extension MapViewModel {
             await setSecondaryPosition(region: newRegion, animate: true)
         }
         
-        setSelectedSearchResult(.init(result: mapItem))
-        
-        // 3) Zoom in or out to region bounds based on radius
+        // 4) Zoom in or out to region bounds based on radius
         await setRegionBoundsOnRadius(for: type)
         
+        // 5) Flag `SearchResultModel` to done setting as map has been moved by now
         setSelectedSearchResult(.init(result: mapItem, doneSetting: true))
     }
     
