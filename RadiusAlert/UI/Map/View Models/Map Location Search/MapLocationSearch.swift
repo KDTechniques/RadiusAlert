@@ -179,6 +179,8 @@ extension MapViewModel {
     private func setSelectedSearchResult(from item: MKLocalSearchCompletion) {
         Task {
             do {
+                setSelectedSearchResult(nil)
+                
                 guard let mapItem: MKMapItem = try await locationSearchManager.getMKMapItem(for: item) else {
                     setSelectedSearchResult(nil)
                     return
