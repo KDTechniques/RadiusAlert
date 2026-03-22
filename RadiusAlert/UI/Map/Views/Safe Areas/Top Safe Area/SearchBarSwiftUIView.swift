@@ -13,9 +13,18 @@ struct SearchBarSwiftUIView: View {
     @Environment(MapViewModel.self) private var mapVM
     @FocusState private var isFocused: Bool
     
+    let iOSVersion: iOSVersions = {
+        if #available(iOS 26.0, *) {
+            return .iOS26
+        } else {
+            return .iOS17
+        }
+    }()
+    
     // MARK: - BODY
     var body: some View {
         SearchBarView(
+            iOSVersion: iOSVersion,
             searchBarText: mapVM.searchTextBinding(),
             placeholder: "Search",
             context: .custom(.init(
