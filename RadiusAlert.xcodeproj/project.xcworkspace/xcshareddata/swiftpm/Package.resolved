@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/KDTechniques/search-bar-swiftui",
       "state" : {
-        "revision" : "a14a80f0728dff26f4a000edd94be38369ccac22",
-        "version" : "1.4.0"
+        "revision" : "9bf2643a4655bd87bbe1c659ed8becd0d9576a02",
+        "version" : "1.4.1"
       }
     }
   ],
