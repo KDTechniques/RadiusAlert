@@ -46,6 +46,13 @@ struct SearchBarSwiftUIView: View {
 
 // MARK: - PREVIEWS
 #Preview("SearchBarSwiftUIView") {
-    SearchBarSwiftUIView()
-        .previewModifier()
+    NavigationStack {
+        Color.white.ignoresSafeArea()
+            .overlay {
+                SearchBarSwiftUIView()
+            }
+    }
+    .searchable(text: .constant(""), placement: .navigationBarDrawer, prompt: .init("Search"))
+    .previewModifier()
+    
 }
