@@ -196,22 +196,22 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         setCurrentDistanceMode(newMode)
         
         switch newMode {
-        case .close:
+        case .close: // < 1km
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             manager.distanceFilter = 5
             stopSignificantUpdatesNStartLocationUpdates()
             
-        case .medium:
+        case .medium: // 1–3km
             manager.desiredAccuracy = kCLLocationAccuracyBest
-            manager.distanceFilter = 100
+            manager.distanceFilter = 50
             stopSignificantUpdatesNStartLocationUpdates()
             
-        case .far:
+        case .far: // 3–10km
             manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
             manager.distanceFilter = 300
             stopSignificantUpdatesNStartLocationUpdates()
             
-        case .veryFar:
+        case .veryFar: // > 10km
             manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
             manager.distanceFilter = 1000
             stopSignificantUpdatesNStartLocationUpdates()
