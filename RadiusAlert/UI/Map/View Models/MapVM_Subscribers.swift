@@ -36,6 +36,9 @@ extension MapViewModel {
                 
                 updateDistanceText()
                 autoPositionMarkersNUserLocationRegionBounds()
+                
+                // here......... /// if the distance between current user location and the marker is less than set radius, trigger the alert. So even if the region monitor fails we still show the alert without ever missing it.
+                /// this is gonna be the last bug fix we ever do. then begins the cleaning.
             }
             .store(in: &cancellables)
     }
