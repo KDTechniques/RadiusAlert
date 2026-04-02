@@ -163,15 +163,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         regions.remove(region)
     }
     
-    func stopMonitoringAllRegions() {
-        for region in regions {
-            guard let monitor = region.monitor else { return }
-            manager.stopMonitoring(for: monitor)
-        }
-        
-        regions.removeAll()
-    }
-    
     /// Dynamically adjusts location accuracy and update frequency
     /// based on distance from the marker coordinate.
     func setLocationAccuracy() {
