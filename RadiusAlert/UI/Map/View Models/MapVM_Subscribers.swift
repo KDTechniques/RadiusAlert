@@ -36,6 +36,7 @@ extension MapViewModel {
                 
                 updateDistanceText()
                 autoPositionMarkersNUserLocationRegionBounds()
+                stopAlertIfRegionMonitorFailure()
             }
             .store(in: &cancellables)
     }
