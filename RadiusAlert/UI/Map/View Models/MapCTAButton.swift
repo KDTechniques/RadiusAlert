@@ -94,6 +94,48 @@ extension MapViewModel {
         resetDistanceText()
     }
     
+    func onRegionEntry(markerID: String) {
+        guard
+            settingsVM.alertsOnlyVia_DeviceCheck(),
+            let markerItem: MarkerModel = getMarkerObject(on: markerID) else {
+            stopAlert(for: [markerID])
+            return
+        }
+        
+        alertManager.sendNotification(item: markerItem)
+        generateNSetAlertPopupCardItem(for: markerID)
+        alertManager.playHaptic()
+        
+        Task {
+            if settingsVM.spokenAlert.isOnSpokenAlert {
+                let locationTitle: String? = getRadiusAlertItem(markerID: markerID)?.locationTitle
+                await settingsVM.spokenAlertSpeakAction(with: locationTitle)
+                safelyHandleAlertToneOnRegionEntry(for: markerID)
+            } else {
+                safelyHandleAlertToneOnRegionEntry(for: markerID)
+            }
+        }
+        
+        settingsVM.handleAlertToStopAutomatically {
+            self.stopAlert(for: [markerID])
+        }
+    }
+    
+    func stopAlertIfRegionMonitorFailure() {
+        guard let userCurrentLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
+        
+        for marker in markers {
+            let distance: CLLocationDistance = Utilities.getDistance(from: userCurrentLocation, to: marker.coordinate)
+            
+            guard
+                distance < marker.radius,
+                let region: RegionModel = locationManager.regions.first(where: { $0.markerID == marker.id }) else { return }
+            
+            onRegionEntry(markerID: marker.id)
+            locationManager.stopMonitoringRegion(for: region)
+        }
+    }
+    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
@@ -219,33 +261,6 @@ extension MapViewModel {
         }
         
         return true
-    }
-    
-    private func onRegionEntry(markerID: String) {
-        guard
-            settingsVM.alertsOnlyVia_DeviceCheck(),
-            let markerItem: MarkerModel = getMarkerObject(on: markerID) else {
-            stopAlert(for: [markerID])
-            return
-        }
-        
-        alertManager.sendNotification(item: markerItem)
-        generateNSetAlertPopupCardItem(for: markerID)
-        alertManager.playHaptic()
-        
-        Task {
-            if settingsVM.spokenAlert.isOnSpokenAlert {
-                let locationTitle: String? = getRadiusAlertItem(markerID: markerID)?.locationTitle
-                await settingsVM.spokenAlertSpeakAction(with: locationTitle)
-                safelyHandleAlertToneOnRegionEntry(for: markerID)
-            } else {
-                safelyHandleAlertToneOnRegionEntry(for: markerID)
-            }
-        }
-        
-        settingsVM.handleAlertToStopAutomatically {
-            self.stopAlert(for: [markerID])
-        }
     }
     
     private func safelyHandleAlertToneOnRegionEntry(for markerID: String) {
