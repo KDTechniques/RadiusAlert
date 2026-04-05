@@ -95,7 +95,7 @@ extension MapViewModel {
             setPrimarySelectedRadius(Array(stride(from: 1000, through: 2000, by: 100)).randomElement()!)
         } completion: {  [weak self] in
             guard let self else { return }
-            radiusSliderTip.invalidate(reason: .actionPerformed)
+            invalidateRadiusSliderTip()
         }
     }
     

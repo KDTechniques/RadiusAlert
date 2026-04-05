@@ -86,4 +86,12 @@ extension MapViewModel {
         marker.title = item.title
         updateMarker(at: markerID, value: marker)
     }
+    
+    func onChangeMapMarkers() {
+        let markersCount: Int = markers.count
+        
+        RadiusSliderTipModel.markersCount = markersCount
+        SettingsTipModel.markersCount = markersCount
+        MapStyleButtonTipModel.markersCount = markersCount
+    }
 }

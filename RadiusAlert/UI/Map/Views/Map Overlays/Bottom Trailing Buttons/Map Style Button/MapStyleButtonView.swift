@@ -17,7 +17,9 @@ struct MapStyleButtonView: View {
         if settingsVM.showMapStyleButton {
             MapOverlayButtonView(systemImage: settingsVM.selectedMapStyle.mapStyleSystemImageName) {
                 mapVM.setNextMapStyle()
+                settingsVM.invalidateMapStyleButtonTip()
             }
+            .popoverTip(settingsVM.mapStyleButtonTip)
         }
     }
 }

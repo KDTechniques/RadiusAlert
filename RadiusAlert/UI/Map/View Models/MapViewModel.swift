@@ -57,13 +57,13 @@ final class MapViewModel {
     private(set) var searchResultBackgroundHeight: CGFloat = .zero
     
     // Multiple Stops Map Related
-    private(set) var markers: [MarkerModel] = []
+    private(set) var markers: [MarkerModel] = [] { didSet { onChangeMapMarkers() } }
     private(set) var secondaryPosition: MapCameraPosition = .automatic
     private(set) var secondaryCenterCoordinate: CLLocationCoordinate2D?
     private(set) var secondarySelectedRadius: CLLocationDistance = MapValues.minimumRadius
     private(set) var isSecondaryCameraDragging: Bool = false
     private(set) var isPresentedMultipleStopsMapSheet: Bool = false
-    private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false
+    private(set) var isPresentedMultipleStopsCancellationSheet: Bool = false { didSet { onChangeIsPresentedMultipleStopsCancellationSheet() } }
     
     // MARK: - SETTERS
     
