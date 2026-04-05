@@ -223,7 +223,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func getCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
+    func setCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
         guard let latitude = currentUserLocation?.latitude,
               let longitude = currentUserLocation?.longitude else { return }
         
@@ -280,7 +280,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard self.currentUserLocation.isNil(),
               let currentUserLocation else { return }
         
-        getCurrentRegionName(currentUserLocation)
+        setCurrentRegionName(currentUserLocation)
     }
     
     private func removeRegion(for markerID: String) {
