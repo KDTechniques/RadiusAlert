@@ -14,7 +14,6 @@ extension SettingsViewModel {
     
     func onMapStyleChange(_ style: MapStyleTypes) {
         userDefaultsManager.saveMapStyle(style.rawValue)
-        invalidateMapStyleButtonTip()
     }
     
     func onMapStyleButtonVisibilityChange(_ boolean: Bool) {
@@ -22,9 +21,7 @@ extension SettingsViewModel {
         MapStyleButtonTipModel.isMapStyleButtonVisible = boolean
     }
     
-    // MARK: - PRIVATE FUNCTIONS
-    
-    private func invalidateMapStyleButtonTip() {
+    func invalidateMapStyleButtonTip() {
         mapStyleButtonTip.invalidate(reason: .actionPerformed)
     }
 }

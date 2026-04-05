@@ -22,7 +22,7 @@ final class NotificationManager {
     func scheduleNotification(after seconds: TimeInterval = 0.5, item: MarkerModel) {
         // 1. Configure notification content
         let content = UNMutableNotificationContent()
-        let title: String = "Getting close to " + (item.title.isNil() ? "your stop" : "\(item.title!)") + " 📍"
+        let title: String = "Getting close to " + (item.title.isNil() ? "your stop 📍" : "\(item.title!)")
         content.title = title
         content.body = "Tap to continue."
         content.sound = .defaultRingtone

@@ -31,6 +31,9 @@ struct RadiusSliderOrDistanceTextView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .padding(.trailing, 10)
         .animation(.default, value: mapVM.showPrimaryRadiusSliderOrDistanceText())
+        .onChange(of: mapVM.showPrimaryRadiusSliderOrDistanceText()) {
+            mapVM.onRadiusSliderVisibilityChange($1 == .radiusSlider)
+        }
     }
 }
 

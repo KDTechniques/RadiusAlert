@@ -12,13 +12,11 @@ struct MapOverlayButtonView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     let systemImage: String
-    let tip: (any Tip)?
     let action: () -> Void
     
     // MARK: - INITIALIZER
-    init(systemImage: String, tip: (any Tip)? = nil, action: @escaping () -> Void) {
+    init(systemImage: String, action: @escaping () -> Void) {
         self.systemImage = systemImage
-        self.tip = tip
         self.action = action
     }
     
@@ -46,7 +44,6 @@ extension MapOverlayButtonView {
             .frame(width: 44, height: 44)
             .mapControlButtonBackgroundViewModifier
             .defaultTypeSizeViewModifier
-            .popoverTip(tip)
     }
     
     private var nonGlassButton: some View {

@@ -57,4 +57,9 @@ extension MapViewModel {
     func onMultipleStopsMapSheetDisappear() {
         setRegionBoundsToUserLocationNMarkers(on: .primary)
     }
+    
+    func onChangeIsPresentedMultipleStopsCancellationSheet() {
+        SettingsTipModel.isPresentedSheet = isPresentedMultipleStopsCancellationSheet
+        MapStyleButtonTipModel.isPresentedSheet = isPresentedMultipleStopsCancellationSheet
+    }
 }

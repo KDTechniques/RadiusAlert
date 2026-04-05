@@ -8,13 +8,10 @@
 import TipKit
 
 struct RadiusSliderTipModel: Tip {
+    // Presentation
     var title: Text { .init("Adjust Radius") }
     var message: Text? { .init("Drag the slider to change the alert radius on the map.") }
     var image: Image? { .init(systemName: "circle") }
-    
-    @Parameter(.transient) static var isSetRadius: Bool = false
-    @Parameter(.transient) static var isSliderVisible: Bool = false
-    
     var actions: [Action] { [
         .init(title: "Show me how") {
             NotificationCenter.default.post(
@@ -24,8 +21,15 @@ struct RadiusSliderTipModel: Tip {
         }
     ] }
     
+    // Conditional Parameters
+    @Parameter(.transient) static var isSetRadius: Bool = false
+    @Parameter(.transient) static var isSliderVisible: Bool = false
+    @Parameter(.transient) static var markersCount: Int = 0
+    
+    // Conditionals
     var rules: [Rule] { [
         #Rule(Self.$isSetRadius) { $0 },
-        #Rule(Self.$isSliderVisible) { $0 }
+        #Rule(Self.$isSliderVisible) { $0 },
+        #Rule(Self.$markersCount) { $0 == 0 }
     ] }
 }

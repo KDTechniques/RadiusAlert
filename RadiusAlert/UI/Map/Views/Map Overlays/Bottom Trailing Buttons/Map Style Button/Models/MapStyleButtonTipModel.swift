@@ -8,17 +8,23 @@
 import TipKit
 
 struct MapStyleButtonTipModel: Tip {
+    // Presentation
     var title: Text { .init("Choose a Map Style") }
     var message: Text? { .init("Map styles are useful if you want to view the map in 3D.") }
     
+    // Conditional Parameters
     @Parameter(.transient) static var isMapStyleButtonVisible: Bool = false
     @Parameter(.transient) static var isOnMapView: Bool = false
+    @Parameter(.transient) static var markersCount: Int = 0
+    @Parameter(.transient) static var isPresentedSheet: Bool = false
+    static let startAlertEvent: Event = .init(id: "mapStyleButtonTipStartAlertEvent")
     
-    static let startAlertEvent: Event = .init(id: "startAlertEvent")
-    
+    // Conditional
     var rules: [Rule] { [
         #Rule(Self.startAlertEvent) { $0.donations.count > 4 },
         #Rule(Self.$isMapStyleButtonVisible) { $0 },
-        #Rule(Self.$isOnMapView) { $0 }
+        #Rule(Self.$isOnMapView) { $0 },
+        #Rule(Self.$markersCount) { $0 == 1 },
+        #Rule(Self.$isPresentedSheet) { !$0 }
     ] }
 }
