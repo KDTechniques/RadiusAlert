@@ -166,46 +166,46 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     /// Dynamically adjusts location accuracy and update frequency
     /// based on distance from the marker coordinate.
     func setLocationAccuracy() {
-        guard let currentUserLocation else { return }
+        guard !regions.isEmpty,
+              let minDistance: CLLocationDistance = getMinDistance() else { return }
         
-        var distances: Set<CLLocationDistance> = []
-        for region in regions {
-            let distance: CLLocationDistance = Utilities.getDistanceToRadius(
-                userCoordinate: currentUserLocation,
-                markerCoordinate: region.markerCoordinate,
-                radius: region.radius
-            )
-            
-            distances.insert(distance)
-        }
+        let newMode = LocationDistanceModes.getMode(for: minDistance)
         
-        guard let minDistance: CLLocationDistance = distances.min() else { return }
-        let newMode: LocationDistanceModes = LocationDistanceModes.getMode(for: minDistance)
+        // TRACKING vs IDLE MODE (IMPORTANT)
+        let trackingThreshold: CLLocationDistance = 15000 // 15km
+        changeLocationUpdatesOnMinDistance(minDistance: minDistance, trackingThreshold: trackingThreshold)
         
-        // Only apply if mode actually changed
-        guard newMode != currentDistanceMode else { return }
-        setCurrentDistanceMode(newMode)
+        // Don’t fully block updates on same mode (important for highways)
+        newMode != currentDistanceMode ? setCurrentDistanceMode(newMode) : ()
         
+        // Apply settings (always, not only when mode changes)
         switch newMode {
         case .close: // < 1km
             manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             manager.distanceFilter = 5
-            stopSignificantUpdatesNStartLocationUpdates()
             
         case .medium: // 1–3km
             manager.desiredAccuracy = kCLLocationAccuracyBest
-            manager.distanceFilter = 50
-            stopSignificantUpdatesNStartLocationUpdates()
+            manager.distanceFilter = 20
             
         case .far: // 3–10km
-            manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-            manager.distanceFilter = 300
-            stopSignificantUpdatesNStartLocationUpdates()
+            manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            manager.distanceFilter = 50
             
         case .veryFar: // > 10km
-            manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
-            manager.distanceFilter = 1000
-            stopSignificantUpdatesNStartLocationUpdates()
+            manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+            manager.distanceFilter = 100
+        }
+        
+        // SPEED OVERRIDE (highway fix)
+        if let speed = manager.location?.speed, speed > 20 { // ~72 km/h
+            manager.desiredAccuracy = kCLLocationAccuracyBest
+            manager.distanceFilter = 20
+        }
+        
+        // Safety cap
+        if manager.distanceFilter > 100 {
+            manager.distanceFilter = 100
         }
     }
     
@@ -223,7 +223,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func getCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
+    func setCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
         guard let latitude = currentUserLocation?.latitude,
               let longitude = currentUserLocation?.longitude else { return }
         
@@ -250,18 +250,37 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     // MARK: - PRIVATE FUNCTIONS
     
-    /// Helper function to stop significant-change updates
-    /// and restart normal location updates.
-    private func stopSignificantUpdatesNStartLocationUpdates() {
-        manager.stopMonitoringSignificantLocationChanges()
-        manager.startUpdatingLocation()
+    private func getMinDistance() -> CLLocationDistance? {
+        guard let currentUserLocation else { return .greatestFiniteMagnitude }
+        
+        let minDistance: CLLocationDistance? = regions.compactMap { region in
+            Utilities.getDistanceToRadius(
+                userCoordinate: currentUserLocation,
+                markerCoordinate: region.markerCoordinate,
+                radius: region.radius
+            )
+        }.min()
+        
+        return minDistance
+    }
+    
+    private func changeLocationUpdatesOnMinDistance(minDistance: CLLocationDistance, trackingThreshold: CLLocationDistance) {
+        if minDistance <= trackingThreshold {
+            if manager.monitoredRegions.count > 0 || manager.location != nil {
+                manager.stopMonitoringSignificantLocationChanges()
+                manager.startUpdatingLocation()
+            }
+        } else {
+            manager.stopUpdatingLocation()
+            manager.startMonitoringSignificantLocationChanges()
+        }
     }
     
     private func updateInitialCurrentRegion(_ currentUserLocation: CLLocationCoordinate2D?) {
         guard self.currentUserLocation.isNil(),
               let currentUserLocation else { return }
         
-        getCurrentRegionName(currentUserLocation)
+        setCurrentRegionName(currentUserLocation)
     }
     
     private func removeRegion(for markerID: String) {
