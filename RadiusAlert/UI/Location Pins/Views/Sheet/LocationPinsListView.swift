@@ -81,6 +81,17 @@ extension LocationPinsListView {
             locationPinsVM.onLocationPinsListRowItemTap(item)
         }
         .foregroundStyle(.primary)
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            if #available(iOS 26.0, *) {
+                Button(role: .destructive) {
+                    locationPinsVM.onLocationPinListItemDelete(item)
+                }
+            } else {
+                Button("Delete", role: .destructive) {
+                    locationPinsVM.onLocationPinListItemDelete(item)
+                }
+            }
+        }
     }
     
     private func titleOnUpdate(_ item: LocationPinsModel) -> some View {

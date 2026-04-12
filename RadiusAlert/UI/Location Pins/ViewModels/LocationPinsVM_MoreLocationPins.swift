@@ -46,6 +46,22 @@ extension LocationPinsViewModel {
         }
     }
     
+    func onLocationPinListItemDelete(_ item: LocationPinsModel) {
+        var tempArray: [LocationPinsModel] = locationPinsArray
+        
+        tempArray.removeAll(where: { $0.id == item.id })
+        withAnimation { setLocationPinsArray(tempArray) }
+        
+        Task {
+            do {
+                try await locationPinManager.deleteLocationPin(item: item)
+                try await fetchNSetLocationPins()
+            } catch let error {
+                Utilities.log(LocationPinsVMErrorModel.failedToMoveLocationPinListItem(error).errorDescription)
+            }
+        }
+    }
+    
     func onLocationPinListDisappear() {
         setCanUpdateLocationPin(false)
     }
