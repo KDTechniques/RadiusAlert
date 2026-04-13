@@ -29,7 +29,7 @@ struct AboutConnectSocialMediaLinkView: View {
 // MARK: - PREVIEWS
 #Preview("About - Connect Social Media Link") {
     List {
-        AboutConnectSocialMediaLinkView(type: .facebook)
+        AboutConnectSocialMediaLinkView(type: .random())
     }
     .previewModifier()
 }
@@ -44,10 +44,11 @@ extension AboutConnectSocialMediaLinkView {
     private var icon: some View {
         if let icon: ImageResource = type.icon {
             Image(icon)
+                .renderingMode(type.renderingModeNForegroundColor.mode)
                 .resizable()
                 .scaledToFit()
                 .frame(height: 20)
-            
+                .foregroundStyle(type.renderingModeNForegroundColor.color)
         }
     }
 }

@@ -12,7 +12,7 @@ struct AboutConnectWithDeveloperView: View {
     @State private var showExpandedPhoto: Bool = false
     @Namespace private var photo
     let nameSpaceID: String = "photo"
-    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn]
+    let socialMediaTypes: [OpenURLTypes] = [.whatsApp, .facebook, .linkedIn, .gitHub, .appStore]
     let reasons: [String] = [
         "Show some love ❤️",
         "Report a bug 🐞",
