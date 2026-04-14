@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 /// Defines supported external and system URLs that can be opened within the app.
 /// Each case provides a corresponding display name (`rawValue`), optional icon,
@@ -22,7 +23,7 @@ import UIKit
 /// // Get an icon for display
 /// let icon = OpenURLTypes.gitHub.icon
 /// ```
-enum OpenURLTypes {
+enum OpenURLTypes: CaseIterable {
     case whatsApp, facebook, gitHub, linkedIn
     case appStore
     case settings, notifications
@@ -40,6 +41,9 @@ enum OpenURLTypes {
             
         case .gitHub:
             return "GitHub"
+            
+        case .appStore:
+            return "App Store"
             
         default:
             return ""
@@ -60,8 +64,24 @@ enum OpenURLTypes {
         case .linkedIn:
             return .linkedin
             
+        case .appStore:
+            return .appstore
+            
         default:
             return nil
+        }
+    }
+    
+    var renderingModeNForegroundColor: (mode: Image.TemplateRenderingMode, color: Color) {
+        switch self {
+        case .facebook:
+            return (.template, .blue)
+            
+        case .gitHub:
+            return (.template, .primary)
+            
+        default :
+            return (.original, .clear)
         }
     }
     

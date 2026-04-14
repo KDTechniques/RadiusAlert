@@ -24,7 +24,7 @@ extension MapViewModel {
         
         return distance > MapValues.minimumDistance
     }
-
+    
     /// Returns true if the user's distance is beyond minimum and no marker coordinate is set, to determine if map pin should be shown.
     func showPrimaryMapPin() -> Bool {
         let condition1: Bool = isBeyondMinimumDistance(coordinate: primaryCenterCoordinate)
@@ -148,5 +148,20 @@ extension MapViewModel {
     
     func getAddPinOrMultipleStopsType() -> AddPinOrAddMultipleStops {
         markers.isEmpty ? .addPin : .addMultipleStops
+    }
+    
+    func canRequestAppleReview() -> Bool {
+        let count: Int = userDefaultsManager.getStartAlertCount()
+        let condition: Bool = count % 5 == 0
+        
+        return condition
+    }
+    
+    func canRequestCustomReview() -> Bool {
+        let count: Int = userDefaultsManager.getStartAlertCount()
+        let condition1: Bool = count % 10 == 0
+        let condition2: Bool = userDefaultsManager.getDidAskForReview()
+        
+        return condition1 && !condition2
     }
 }

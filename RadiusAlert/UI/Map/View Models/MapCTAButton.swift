@@ -130,6 +130,10 @@ extension MapViewModel {
             await SettingsTipModel.startAlertEvent.donate()
             await MapStyleButtonTipModel.startAlertEvent.donate()
         }
+        
+        increaseStartAlertCount()
+        requestAppleReview()
+        requestCustomReview()
     }
     
     /// Checks whether the app has `Always Allow` location permission.

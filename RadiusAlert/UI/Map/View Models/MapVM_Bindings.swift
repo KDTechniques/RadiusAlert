@@ -60,4 +60,12 @@ extension MapViewModel {
                 return isPresentedEditRadiusSheet
             }, set: setIsPresentedEditRadiusSheet)
     }
+    
+    func customReviewSheetBinding() -> Binding<Bool> {
+        return .init(
+            get: { [weak self] in
+                guard let self else { return false }
+                return isPresentedCustomReviewSheet
+            }, set: setIsPresentedCustomReviewSheet)
+    }
 }

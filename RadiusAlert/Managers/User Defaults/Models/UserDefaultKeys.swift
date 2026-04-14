@@ -15,4 +15,6 @@ enum UserDefaultKeys: String {
     case spokenAlert
     case autoAlertStop, autoAlertStopDuration
     case audioRouteOutput
+    case startAlertCount
+    case didAskForReview
 }

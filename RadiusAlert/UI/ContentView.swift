@@ -94,7 +94,7 @@ extension ContentView {
     @ViewBuilder
     private var debug: some View {
 #if DEBUG
-        DebugView()
+//        DebugView()
 #endif
     }
     

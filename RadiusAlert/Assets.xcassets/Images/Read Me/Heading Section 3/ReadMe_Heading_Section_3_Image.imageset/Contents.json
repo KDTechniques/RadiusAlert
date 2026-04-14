@@ -1,8 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Asset 44@3x-100 2.jpg",
-      "idiom" : "universal"
+      "filename" : "ReadMe_Heading_Section_3_Image.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

@@ -48,6 +48,7 @@ struct MapView: View {
         .onDisappear { mapVM.onMapViewDisappear() }
         .sheet(isPresented: mapVM.multipleStopsMapSheetBinding()) { MultipleStopsMapSheetView() }
         .sheet(isPresented: mapVM.multipleStopsCancellationSheetBinding()) { MultipleStopsCancellationSheetView(markers: mapVM.markers) }
+        .sheet(isPresented: mapVM.customReviewSheetBinding()) { CustomReviewSheetContentView() }
     }
 }
 
