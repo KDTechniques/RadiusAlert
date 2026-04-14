@@ -43,7 +43,6 @@ extension ReadMe_HeadingSection3View {
         Image.custom.ReadMe.heading_section3.image
             .resizable()
             .scaledToFit()
-            .clipShape(.rect(cornerRadius: ReadMe_Values.cornerRadius))
             .padding(.vertical, ReadMe_Values.padding)
     }
     
