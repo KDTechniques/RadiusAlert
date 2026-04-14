@@ -26,7 +26,7 @@ extension MapViewModel {
     }
     
     func increaseStartAlertCount() {
-        guard markers.count == 1 else { return }
+        guard !isPresentedMultipleStopsMapSheet else { return }
         userDefaultsManager.saveStartAlertCount()
     }
 }
