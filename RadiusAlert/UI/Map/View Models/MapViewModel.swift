@@ -43,6 +43,7 @@ final class MapViewModel {
     @ObservationIgnored private(set) var isAuthorizedToGetMapCameraUpdate: Bool = false
     private(set) var regionBoundsToUserLocationNMarkersTimestamp: Date = .now
     private(set) var isPresentedEditRadiusSheet: Bool = false
+    private(set) var isPresentedCustomReviewSheet: Bool = false
     
     // Search and UI Related
     private(set) var searchText: String = "" { didSet { onSearchTextChange(searchText) } }
@@ -194,6 +195,10 @@ final class MapViewModel {
     
     func setIsPresentedEditRadiusSheet(_ present: Bool) {
         isPresentedEditRadiusSheet = present
+    }
+    
+    func setIsPresentedCustomReviewSheet(_ present: Bool) {
+        isPresentedCustomReviewSheet = present
     }
     
     // MARK: - PUBLIC FUNCTIONS

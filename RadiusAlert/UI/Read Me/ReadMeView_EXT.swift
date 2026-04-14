@@ -38,4 +38,9 @@ extension View {
         self
             .padding(.top, 50)
     }
+    
+    var readMeSubHeadingSectionToSectionPadding: some View {
+        self
+            .padding(.top, 20)
+    }
 }

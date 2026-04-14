@@ -121,21 +121,6 @@ extension MapViewModel {
         }
     }
     
-    func stopAlertIfRegionMonitorFailure() {
-        guard let userCurrentLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
-        
-        for marker in markers {
-            let distance: CLLocationDistance = Utilities.getDistance(from: userCurrentLocation, to: marker.coordinate)
-            
-            guard
-                distance < marker.radius,
-                let region: RegionModel = locationManager.regions.first(where: { $0.markerID == marker.id }) else { return }
-            
-            onRegionEntry(markerID: marker.id)
-            locationManager.stopMonitoringRegion(for: region)
-        }
-    }
-    
     // MARK: - PRIVATE FUNCTIONS
     
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
@@ -145,6 +130,10 @@ extension MapViewModel {
             await SettingsTipModel.startAlertEvent.donate()
             await MapStyleButtonTipModel.startAlertEvent.donate()
         }
+        
+        increaseStartAlertCount()
+        requestAppleReview()
+        requestCustomReview()
     }
     
     /// Checks whether the app has `Always Allow` location permission.
