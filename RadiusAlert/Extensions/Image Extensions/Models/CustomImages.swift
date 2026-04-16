@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+// Custom images represent categorized sections used throughout the app.
+// Instead of accessing asset images directly, they are organized here by category.
+// Each category (e.g. ReadMe, Social Media icons, etc...) must conform to the defined protocol
+// and provide an image when required.
 enum CustomImages {
     enum About: CustomImagesProtocol {
         case developer
