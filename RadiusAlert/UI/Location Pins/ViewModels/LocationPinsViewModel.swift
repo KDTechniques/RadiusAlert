@@ -130,7 +130,7 @@ final class LocationPinsViewModel {
                 await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item)
             }
         } else {
-            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : .seconds(0.5)
             
             /// present the multiple stops map sheet and set coordinate on secondary map type.
             /// then when user tap on add button, prepare the marker just like we do normally!

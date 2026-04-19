@@ -29,7 +29,7 @@ extension MapViewModel {
     func currentUserLocationSubscriber() {
         locationManager.$currentUserLocation$
             .combineLatest($distanceText$)
-            .throttle(for: .nanoseconds(500_000_000), scheduler: DispatchQueue.main, latest: true)
+            .throttle(for: .seconds(0.5), scheduler: DispatchQueue.main, latest: true)
             .compactMap { $0 }
             .sink {  [weak self] _ in
                 guard let self else { return }

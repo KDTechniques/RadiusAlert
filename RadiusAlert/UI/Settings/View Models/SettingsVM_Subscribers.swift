@@ -16,7 +16,7 @@ extension SettingsViewModel {
     func toneFadeDurationSubscriber() {
         $toneFadeDuration$
             .removeDuplicates()
-            .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(1.0), scheduler: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self else { return }
                 userDefaultsManager.saveFadeDuration($0)
@@ -28,7 +28,7 @@ extension SettingsViewModel {
     func autoAlertStopDurationSubscriber() {
         $autoAlertStopDuration$
             .removeDuplicates()
-            .debounce(for: .nanoseconds(1_000_000_000), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(1.0), scheduler: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self else { return }
                 userDefaultsManager.saveAutoAlertStopDuration($0)

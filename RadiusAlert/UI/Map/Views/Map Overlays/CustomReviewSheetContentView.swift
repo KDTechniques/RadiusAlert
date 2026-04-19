@@ -34,6 +34,7 @@ struct CustomReviewSheetContentView: View {
             .ignoresSafeArea(.all, edges: .top)
             .toolbar { dismissButton }
         }
+        .sheetCornerRadiusViewModifier
     }
 }
 

@@ -93,7 +93,7 @@ final class MapViewModel {
             primaryPosition = .region(region)
         }
         
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        try? await Task.sleep(nanoseconds: .seconds(0.5))
     }
     
     func setSecondaryPosition(region: MKCoordinateRegion, animate: Bool) async {
@@ -101,7 +101,7 @@ final class MapViewModel {
             secondaryPosition = .region(region)
         }
         
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        try? await Task.sleep(nanoseconds: .seconds(0.5))
     }
     
     func setSearchFieldFocused(_ boolean: Bool) {

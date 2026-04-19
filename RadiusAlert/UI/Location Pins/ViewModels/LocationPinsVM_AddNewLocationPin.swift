@@ -36,7 +36,7 @@ extension LocationPinsViewModel {
             await createNewLocationPin()
             setIsPresentedLocationSavingSheet(false)
             try? await fetchNSetLocationPins()
-            try? await Task.sleep(nanoseconds: 800_000_000)
+            try? await Task.sleep(nanoseconds: .seconds(0.8))
             setScrollPositionID(scrollableHorizontalLocationPinsContentID)
         }
     }
