@@ -65,10 +65,10 @@ extension LocationPinsViewModel {
             do {
                 try await onPopupCardLocationPinTap(item)
                 success()
-                await hapticManager.vibrate(type: .success)
+                await hapticManager.hapticFeedback(type: .success)
             } catch {
                 failure()
-                await hapticManager.vibrate(type: .warning)
+                await hapticManager.hapticFeedback(type: .warning)
             }
         }
     }

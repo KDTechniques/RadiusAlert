@@ -29,7 +29,7 @@ enum CustomColors {
         ///
         /// Example:
         /// ```swift
-        /// let background = CustomColors.Map.mapControlButtonBackgroundViewModifier.color
+        /// let background = CustomColors.Map.mapOverlayButtonBackgroundViewModifier.color
         /// ```
         var color: Color {
             switch self {

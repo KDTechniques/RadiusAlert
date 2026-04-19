@@ -11,7 +11,7 @@ extension View {
     /// Applies a set of modifiers for SwiftUI previews to ensure
     /// consistency in testing environments.
     ///
-    /// - Returns: A modified view with light color scheme and injected dependencies.
+    /// - Returns: A modified view with light color scheme, controlled type size, and injected dependencies.
     @ViewBuilder
     func previewModifier() ->  some View {
         @Previewable @State var settingsVM: SettingsViewModel = .init()
@@ -26,7 +26,6 @@ extension View {
             .dynamicTypeSizeViewModifier
     }
     
-    /// A global alert view modifier attached to the `ContentView`.
     /// Handles and presents all alert popups managed by `AlertManager`
     /// throughout the entire app lifecycle.
     @ViewBuilder
@@ -67,11 +66,15 @@ extension View {
     }
     
     /// Fixes the dynamic type size of the view to `.large`.
+    /// This bypasses `dynamicTypeSizeViewModifier`, even if it allows a range
+    /// between `.xSmall` and `.large`, and forces the view to remain at `.large`.
     ///
-    /// `.large` corresponds to the **default text size on iPhones**.
-    /// This ensures the text inside the view always renders at that default size,
+    /// `.large` corresponds to the default text size on iPhone.
+    /// This ensures the content always renders at a consistent size,
     /// regardless of the user’s dynamic type settings.
-    /// Useful for UI elements that require consistent sizing.
+    ///
+    /// Useful for UI elements with tight layout constraints where scaling
+    /// could break the design (e.g. buttons in limited space).
     ///
     /// Example:
     /// ```swift
@@ -83,8 +86,13 @@ extension View {
             .dynamicTypeSize(.large)
     }
     
+    /// Any button overlay placed on the map must match the defined view modifier protocols.
+    /// This means we avoid applying custom button backgrounds directly,
+    /// as they should align with the map button background styling conventions.
+    /// To keep the UI clean and consistent, this modifier is applied to all map overlay buttons,
+    /// matching the default button styles used in Apple map views.
     @ViewBuilder
-    var mapControlButtonBackgroundViewModifier: some View {
+    var mapOverlayButtonBackgroundViewModifier: some View {
         if #available(iOS 26.0, *) {
             self
                 .background(
@@ -104,7 +112,7 @@ extension View {
         self
             .background {
                 Color.clear
-                    .mapControlButtonBackgroundViewModifier
+                    .mapOverlayButtonBackgroundViewModifier
                     .shadow(color: .black.opacity(0.05), radius: 5, x: -1, y: 1)
             }
     }

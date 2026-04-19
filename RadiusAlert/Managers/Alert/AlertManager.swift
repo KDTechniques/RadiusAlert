@@ -24,7 +24,7 @@ final class AlertManager {
     private let toneManager: ToneManager = .shared
     private let hapticManager: HapticManager = .shared
     private let notificationsManager: NotificationManager = .shared
-    private let alertPopupmanager: AlertPopupManager = .shared
+    private let alertPopupManager: AlertPopupManager = .shared
     
     //  MARK: -  INITIALIZER
     private init() { }
@@ -104,14 +104,14 @@ final class AlertManager {
     
     // MARK: - Alert Popup Related
     func showAlert(_ type: AlertTypes) {
-        alertPopupmanager.showAlert(type)
+        alertPopupManager.showAlert(type)
     }
     
     func getFirstAlertItem() -> AlertModel? {
-        alertPopupmanager.alertItems.first
+        alertPopupManager.alertItems.first
     }
     
     func alertPopupBinding() -> Binding<Bool> {
-        return alertPopupmanager.alertIsPresentedBinding()
+        return alertPopupManager.alertIsPresentedBinding()
     }
 }

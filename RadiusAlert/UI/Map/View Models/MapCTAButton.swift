@@ -126,7 +126,7 @@ extension MapViewModel {
     /// Called at the end of the `startAlert` function to perform final operations after the alert has started.
     private func onAlertStartEnded() {
         Task {
-            await HapticManager.shared.vibrate(type: .rigid)
+            await HapticManager.shared.hapticFeedback(type: .rigid)
             await SettingsTipModel.startAlertEvent.donate()
             await MapStyleButtonTipModel.startAlertEvent.donate()
         }
