@@ -52,6 +52,14 @@ final class AlertManager {
         }
     }
     
+    /// Stops the currently playing alert tone and resets its volume.
+    ///
+    /// In some cases, the tone volume is reduced dynamically (e.g. when auto-stop is enabled).
+    /// If the tone is stopped without restoring the volume, the next playback may continue
+    /// at the reduced level.
+    ///
+    /// This ensures the volume is reset back to 100% after stopping,
+    /// so future playback starts at the expected level.
     func stopTone() {
         Task {
             await toneManager.stopTone()
@@ -85,7 +93,7 @@ final class AlertManager {
     
     private func resetToneVolume() {
         Task {
-            await toneManager.resetToneVolume(.zero)
+            await toneManager.resetToneVolume(fadeDuration: .zero)
         }
     }
     

@@ -33,6 +33,7 @@ actor LocalDatabaseManager {
     
     // MARK: PUBLIC FUNCTIONS
     
+    #if DEBUG
     /// Erases all data from the local database.
     /// - Throws: An error if the operation fails, such as if the database cannot be erased.
     func eraseAllData() throws {
@@ -43,6 +44,7 @@ actor LocalDatabaseManager {
             throw error
         }
     }
+    #endif
     
     /// Saves changes made to the local database context.
     /// - Throws: An error if the operation fails, such as if the context cannot be saved.

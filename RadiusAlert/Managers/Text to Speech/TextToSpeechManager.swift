@@ -67,12 +67,6 @@ actor TextToSpeechManager: NSObject {
         synthesizer.stopSpeaking(at: .immediate)
     }
     
-    func test() -> [AVSpeechSynthesisVoice] {
-        return AVSpeechSynthesisVoice
-            .speechVoices()
-            
-    }
-    
     /// Returns the display names of all available system speech voices.
     ///
     /// - Returns: An array of human-readable voice names (e.g., "Samantha", "Daniel").

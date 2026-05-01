@@ -59,7 +59,7 @@ actor ToneManager {
         player?.setVolume(volume, fadeDuration: fadeDuration)
     }
     
-    func resetToneVolume(_ fadeDuration: Double) {
+    func resetToneVolume(fadeDuration: Double) {
         player?.setVolume(1.0, fadeDuration: fadeDuration)
     }
     
