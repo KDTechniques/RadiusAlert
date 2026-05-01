@@ -94,6 +94,8 @@ extension MapViewModel {
         resetDistanceText()
     }
     
+    /// Called when a region is entered.
+    /// Handles alerts, haptics, speech, and auto-stop behavior.
     func onRegionEntry(markerID: String) {
         guard
             settingsVM.alertsOnlyVia_DeviceCheck(),
@@ -269,11 +271,13 @@ extension MapViewModel {
         )
     }
     
+    /// Removes radius alert item.
     private func stopAlert_RemoveRadiusAlertItem(for markerID: String) {
         guard let radiusAlertItem: RadiusAlertModel = getRadiusAlertItem(markerID: markerID) else { return }
         removeRadiusAlertItem(radiusAlertItem)
     }
     
+    /// Handles single vs multi-stop alert stop flow.
     private func stopAlertConfirmationHandler(_ action: (_ markerID: String) -> Void) {
         if markers.count == 1 {
             guard let markerID: String = markers.first?.id else { return }
@@ -283,6 +287,7 @@ extension MapViewModel {
         }
     }
     
+    /// Stops region monitoring.
     private func stopAlert_StopMonitoringRegion(for markerID: String) {
         guard let region: RegionModel = locationManager.regions.first(where: { $0.markerID == markerID }) else { return }
         locationManager.stopMonitoringRegion(for: region)

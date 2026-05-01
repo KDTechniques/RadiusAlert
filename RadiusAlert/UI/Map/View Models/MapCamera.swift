@@ -275,6 +275,13 @@ extension MapViewModel {
         setSelectedSearchResult(nil)
     }
     
+    /// Handles validation when the selected search result is not beyond the minimum distance.
+    ///
+    /// Determines the correct map center coordinate and alert view level based on the map type.
+    /// If the selected location is invalid or too close to the current position,
+    /// an alert is shown and the selection is cleared.
+    ///
+    /// - Parameter type: The map type (primary or secondary) used to determine context.
     private func handleIsBeyondMinimumDistanceOnSelectedSearchResult(on type: MapTypes) {
         let centerCoordinate: CLLocationCoordinate2D? = {
             switch type {

@@ -14,10 +14,17 @@ import SwiftUI
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
+    /// Returns a marker object for the given id.
     func getMarkerObject(on id: String) -> MarkerModel? {
         return markers.first(where: { $0.id == id })
     }
     
+    /// Creates and adds a new marker based on the current map state.
+    ///
+    /// Uses either the selected search result or the map center coordinate,
+    /// depending on how the user interacted with the map.
+    ///
+    /// - Important: The center coordinate is only used when the user manually moves the map.
     func addMarkerCoordinate(from type: MapTypes) -> String? {
         // Coordinate Check
         
@@ -66,6 +73,7 @@ extension MapViewModel {
         return marker.id
     }
     
+    /// Adjusts the map region to include both user location and all markers.
     func setRegionBoundsToUserLocationNMarkers(on type: MapTypes) {
         guard let userLocation: CLLocationCoordinate2D = locationManager.currentUserLocation else { return }
         
@@ -75,10 +83,12 @@ extension MapViewModel {
         positionRegionBoundsToMidCoordinate(from: coordinates, on: type, animate: true)
     }
     
+    /// Returns whether there are any active markers.
     func isThereAnyMarkerCoordinate() -> Bool {
         return !markers.isEmpty
     }
     
+    /// Updates a marker’s data when a linked location pin changes.
     func updateMarkerOnLocationPinChange(_ item: LocationPinsModel) {
         let markerID: String = item.coordinate.markerID()
         guard var marker: MarkerModel = getMarkerObject(on: markerID) else { return }
@@ -87,6 +97,7 @@ extension MapViewModel {
         updateMarker(at: markerID, value: marker)
     }
     
+    /// Updates tip system states when markers change.
     func onChangeMapMarkers() {
         let markersCount: Int = markers.count
         
