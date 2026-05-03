@@ -203,22 +203,33 @@ final class MapViewModel {
     
     // MARK: - PUBLIC FUNCTIONS
     
+    /// Returns the appropriate color for the navigation title icon.
+    /// - Note: Uses the current network connectivity state to decide the color.
+    ///   - `.primary` when the device is online.
+    ///   - A light gray (`systemGray5`) when the device is offline.
     func getNavigationTitleIconColor() -> Color {
         networkManager.connectionState == .connected
         ? .primary
         : .init(uiColor: .systemGray5)
     }
     
+    /// Call when the map view appears on screen.
+    /// Sets a flag used by `MapStyleButtonTipModel` so tips know the user is on the map view.
     func onMapViewAppear() {
         MapStyleButtonTipModel.isOnMapView = true
     }
     
+    /// Call when the map view disappears from screen.
+    /// Resets the `MapStyleButtonTipModel` flag to indicate the map view is no longer visible.
     func onMapViewDisappear() {
         MapStyleButtonTipModel.isOnMapView = false
     }
     
     // MARK: - PRIVATE FUNCTIONS
     
+    /// Performs initial setup for the map view model.
+    /// Sets up authorization and user-location subscribers, clears style-related memory,
+    /// and loads recent searches to prepare the map experience.
     private func initializeMapVM() {
         authorizationStatusSubscriber()
         clearMemoryByMapStyles()

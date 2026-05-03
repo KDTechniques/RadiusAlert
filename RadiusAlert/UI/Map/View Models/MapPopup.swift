@@ -12,6 +12,7 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
+    
     /// Generates a PopupCardModel with updated radius, duration, and distance
     /// values for the current alert and sets it for display in the UI.
     func generateNSetAlertPopupCardItem(for markerID: String) {

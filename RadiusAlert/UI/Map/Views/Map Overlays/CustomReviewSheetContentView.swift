@@ -94,7 +94,7 @@ extension CustomReviewSheetContentView {
     private var actionButton: some View {
         Button {
             mapVM.setIsPresentedCustomReviewSheet(false)
-            OpenURLTypes.appStore.openURL()
+            OpenURLTypes.appStoreReview.openURL()
             mapVM.userDefaultsManager.saveDidAskForReview()
         } label: {
             Text("Continue")
