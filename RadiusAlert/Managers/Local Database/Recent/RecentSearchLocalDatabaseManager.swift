@@ -45,7 +45,6 @@ actor RecentSearchLocalDatabaseManager {
         }
     }
     
-#if DEBUG
     @MainActor
     func deleteRecentSearch(at item: RecentSearchModel) throws {
         localDatabaseManager.deleteFromContext(item)
@@ -56,7 +55,7 @@ actor RecentSearchLocalDatabaseManager {
             throw error
         }
     }
-    
+#if DEBUG
     @MainActor
     func deleteAllRecentSearches() throws {
         let fetchedRecentSearches: [RecentSearchModel] = try fetchRecentSearches()
