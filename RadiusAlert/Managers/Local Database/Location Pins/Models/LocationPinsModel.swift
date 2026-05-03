@@ -8,11 +8,16 @@
 import CoreLocation
 import SwiftData
 
+/// Persistent local data model used to store frequently used stops
+/// as pinned locations for quick access on the map.
+///
+/// Each pin contains location data, display information, and a radius
+/// used for alert triggering or map interactions.
 @Model
 final class LocationPinsModel {
     // MARK: - PROPERTIES
     @Attribute(.unique) var id: String = UUID().uuidString
-    var order: Int
+    var order: Int /// Defines the display order of the pin.
     var title: String
     var radius: CLLocationDistance
     var coordinate: CLLocationCoordinate2D { return .init(latitude: latitude, longitude: longitude) }
@@ -38,6 +43,11 @@ final class LocationPinsModel {
     }
     
     // MARK: - FUNCTIONS
+    
+    /// Checks whether the given coordinate matches this pin’s coordinate.
+    ///
+    /// - Parameter coordinate: The coordinate to compare.
+    /// - Returns: `true` if both latitude and longitude match exactly, otherwise `false`.
     func isSameCoordinate(_ coordinate:CLLocationCoordinate2D) -> Bool {
         return latitude == coordinate.latitude && longitude == coordinate.longitude
     }

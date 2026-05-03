@@ -55,9 +55,9 @@ actor RecentSearchLocalDatabaseManager {
             throw error
         }
     }
-    
+#if DEBUG
     @MainActor
-    func deleteAllLocationPins() throws {
+    func deleteAllRecentSearches() throws {
         let fetchedRecentSearches: [RecentSearchModel] = try fetchRecentSearches()
         for item in fetchedRecentSearches {
             localDatabaseManager.deleteFromContext(item)
@@ -70,6 +70,7 @@ actor RecentSearchLocalDatabaseManager {
             throw error
         }
     }
+#endif
     
     // MARK: - PRIVATE FUNCTIONS
     

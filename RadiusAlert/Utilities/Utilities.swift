@@ -63,11 +63,19 @@ struct Utilities {
         return location1.distance(from: location2)
     }
     
+    /// Computes either the minimum or maximum pairwise distance among a set of coordinates.
+    /// - Parameters:
+    ///   - type: `.min` to find the smallest distance, `.max` to find the largest.
+    ///   - coordinates: Array of coordinates to compare. Requires at least two.
+    /// - Returns: The requested distance in meters, or 0 if insufficient data.
     static func getDistance(by type: DistanceTypes, from coordinates: [CLLocationCoordinate2D]) -> CLLocationDistance {
+        // Need at least two coordinates to compute a pairwise distance.
         guard coordinates.count >= 2 else { return 0 }
         
+        // Initialize accumulator depending on search type (min starts high, max starts at 0).
         var result: CLLocationDistance = type == .min ? .greatestFiniteMagnitude : 0
         
+        // Compare all unique pairs (i, j) with i < j to avoid duplicates and self-pairs.
         for i in 0..<coordinates.count {
             let location1 = CLLocation(
                 latitude: coordinates[i].latitude,
@@ -80,8 +88,10 @@ struct Utilities {
                     longitude: coordinates[j].longitude
                 )
                 
+                // Compute the distance between the two locations in meters.
                 let distance = location1.distance(from: location2)
                 
+                // Update the running result based on whether we're seeking min or max.
                 switch type {
                 case .max:
                     if distance > result {
@@ -96,7 +106,7 @@ struct Utilities {
             }
         }
         
-        // If min was never updated (should not happen, but safe)
+        // Safety: If `.min` never updated (e.g., unexpected path), return 0 instead of infinity.
         if result == .greatestFiniteMagnitude {
             return 0
         }
@@ -104,15 +114,18 @@ struct Utilities {
         return result
     }
     
+    /// Returns the current region code from the user's locale (e.g., "US", "LK").
     static func getCountryCode() -> String? {
         return Locale.current.region?.identifier // e.g. "US", "LK"
     }
     
+    /// Convenience helper to check if the current region code is Sri Lanka ("LK").
     static func isCountryCodeSriLanka() -> Bool {
         let countryCode = Locale.current.region?.identifier
         return countryCode == "LK"
     }
     
+    /// Reads the current system output volume from `AVAudioSession` (0.0 - 1.0).
     static func getSystemVolume() -> Float {
         let audioSession = AVAudioSession.sharedInstance()
         return audioSession.outputVolume  // Value between 0.0 and 1.0

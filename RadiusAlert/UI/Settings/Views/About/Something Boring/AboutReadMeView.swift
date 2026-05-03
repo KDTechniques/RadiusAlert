@@ -18,8 +18,6 @@ struct AboutReadMeView: View {
         }
         .sheet(isPresented: $isPresented) {
             ReadMeView($isPresented)
-                .sheetCornerRadiusViewModifier
-                .dynamicTypeSizeViewModifier
         }
     }
 }

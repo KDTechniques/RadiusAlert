@@ -23,15 +23,3 @@ struct EditRadiusButtonView: View {
         }
     }
 }
-
-// MARK: - PEREVIEWS
-#Preview("EditRadiusButtonView") {
-    EditRadiusButtonView()
-        .previewModifier()
-}
-
-#Preview("ContentView") {
-    ContentView()
-        .previewModifier()
-}
-

@@ -47,7 +47,7 @@ extension KeyboardPreLoaderView {
     private func handleOnAppear() {
         Task {
             isFocused = true
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: .seconds(0.5))
             isFocused = false
             onKeyboardLoaderFinish()
         }

@@ -60,7 +60,7 @@ extension LaunchScreen {
         Task {
             for index in 0..<modelArray.count {
                 withAnimation { modelArray[index].opacity = 1 }
-                try? await Task.sleep(nanoseconds: 20_000_000)
+                try? await Task.sleep(nanoseconds: .seconds(0.02))
             }
         }
     }

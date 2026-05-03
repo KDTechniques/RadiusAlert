@@ -20,6 +20,16 @@ extension Double {
         return Int(self)
     }
     
+    /// Rounds the current `Double` value to the specified number of decimal places
+    /// and returns it as a `String`.
+    /// - Parameter places: The number of decimal places to round to.
+    /// - Returns: A string representation of the rounded value.
+    ///
+    /// Example:
+    /// ```swift
+    /// let value: Double = 3.14159
+    /// let roundedValue = value.rounded(to: 2) // "3.14"
+    /// ```
     func rounded(to places: Int) -> String {
         return .init(format: "%.\(places)f", self)
     }

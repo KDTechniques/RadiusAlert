@@ -41,6 +41,14 @@ struct PopupCardCTAButtonView: View {
         .previewModifier()
 }
 
+#Preview("PopupCardView") {
+    ZStack {
+        MapView()
+        PopupCardView(item: .mock)
+    }
+    .previewModifier()
+}
+
 // MARK: EXTENSIONS
 fileprivate extension View {
     @ViewBuilder

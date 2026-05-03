@@ -56,6 +56,7 @@ struct MultipleStopsMapSheetView: View {
         .onAppear { mapVM.onMultipleStopsMapSheetAppear() }
         .onDisappear { mapVM.onMultipleStopsMapSheetDisappear() }
         .presentationDragIndicator(.visible)
+        .sheetCornerRadiusViewModifier
     }
 }
 

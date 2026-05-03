@@ -41,6 +41,8 @@ struct ReadMeView: View {
             }
         }
         .overlay(alignment: .topTrailing) { dismissButton }
+        .sheetCornerRadiusViewModifier
+        .dynamicTypeSizeViewModifier
     }
 }
 
@@ -49,7 +51,6 @@ struct ReadMeView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             ReadMeView(.constant(true))
-                .sheetCornerRadiusViewModifier
         }
 }
 

@@ -123,23 +123,32 @@ final class SettingsViewModel {
     }
     
     // MARK: - PRIVATE FUNCTIONS
+    /// Bootstraps the Settings VM by loading persisted values and syncing the current audio route.
     private func initializeSettingsVM() {
+        // Load all persisted settings into in-memory state (may trigger didSet side-effects).
         initializeFromUserDefaults()
+        // Query the system for the current audio route and mirror it to our state.
         setCurrentAudioRouteOutputType(getCurrentAudioRouteOutputType())
     }
     
+    /// Observes changes to `spokenAlert`, debounces rapid edits, and persists to UserDefaults.
     private func spokenAlertValuesSubscriber() {
         $spokenAlert$
+        // Debounce to avoid frequent writes while the user types/slides (1s).
             .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+        // Only proceed when the value actually changes.
             .removeDuplicates(by: { $0 == $1 })
             .sink { [weak self] in
                 guard let self else { return }
+                // Persist the latest spoken alert configuration.
                 userDefaultsManager.saveSpokenAlert($0)
             }
             .store(in: &cancellables)
     }
     
+    /// Reads all settings from UserDefaults and assigns them to the in-memory properties.
     private func initializeFromUserDefaults() {
+        // Appearance & alerts configuration loaded from persistence.
         selectedColorScheme = userDefaultsManager.getDarkMode()
         selectedTone = userDefaultsManager.getTone()
         selectedMapStyle = userDefaultsManager.getMapStyle()
@@ -152,8 +161,10 @@ final class SettingsViewModel {
         selectedAudioRouteOutputType = userDefaultsManager.getAudioRouteOutputType()
     }
     
+    /// Persists the selected color scheme whenever it changes.
     private func onColorSchemeChange() {
         guard let selectedColorScheme else { return }
         userDefaultsManager.saveDarkMode(selectedColorScheme.rawValue)
     }
 }
+

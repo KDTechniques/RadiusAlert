@@ -13,7 +13,7 @@ struct AboutAppStoreRateView: View {
         Section {
             HStack {
                 Button("Share Your Experience") {
-                    OpenURLTypes.appStore.openURL()
+                    OpenURLTypes.appStoreReview.openURL()
                 }
                 
                 Spacer()

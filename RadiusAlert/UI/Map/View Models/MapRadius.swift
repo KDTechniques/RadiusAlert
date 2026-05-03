@@ -14,23 +14,10 @@ import MapKit
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
     
-    func primarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(
-            get: {  [weak self] in
-                guard let self else { return .zero }
-                return primarySelectedRadius
-            }, set: setPrimarySelectedRadius)
-    }
-    
-    func secondarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
-        return .init(
-            get: {  [weak self] in
-                guard let self else { return .zero }
-                return secondarySelectedRadius
-            }, set: setSecondarySelectedRadius)
-    }
-    
-    /// Formats the radius value as a string, optionally including alert text and a name.
+    /// Formats the radius value into a readable string.
+    ///
+    /// Shows meters for small values and kilometers for larger values.
+    /// Optionally includes "Alert Radius" text and a location name.
     func getRadiusTextString(_ radius: CLLocationDistance, title: String?, withAlertRadiusText: Bool) -> String {
         /// Round the radius to the nearest whole number
         let radius: Double = radius.rounded()
@@ -56,6 +43,7 @@ extension MapViewModel {
         return textWithName
     }
     
+    /// Updates map bounds based on the selected radius.
     func setRegionBoundsOnRadius(for type: MapTypes) async {
         let centerCoordinate: CLLocationCoordinate2D? = {
             switch type {
@@ -85,6 +73,7 @@ extension MapViewModel {
         )
     }
     
+    /// Returns map bounds size based on radius.
     func getRegionBoundsMetersOnRadius(for radius: CLLocationDistance) ->  CLLocationDistance {
         return radius * MapValues.radiusToRegionBoundsMetersFactor
     }
@@ -99,11 +88,13 @@ extension MapViewModel {
         }
     }
     
+    /// Called when user stops sliding the radius slider.
     func onRadiusSliderSlidingEnded(on type: MapTypes) {
         invalidateRadiusSliderTip()
         Task { await setRegionBoundsOnRadius(for: type) }
     }
     
+    /// Updates tip state when radius is set.
     func setRadiusSliderTipRule_IsSetRadius(_ item: SearchResultModel?) {
         RadiusSliderTipModel.isSetRadius = (item?.doneSetting ?? false) ? true : false
     }
@@ -118,6 +109,7 @@ extension MapViewModel {
         RadiusSliderTipModel.isSliderVisible = boolean
     }
     
+    /// Updates distance text between user and marker.
     func updateDistanceText() {
         guard
             let userCoordinate: CLLocationCoordinate2D = locationManager.currentUserLocation,
@@ -137,6 +129,9 @@ extension MapViewModel {
         setDistanceText(.zero)
     }
     
+    /// Handles editing an existing marker radius.
+    ///
+    /// Validates inputs, updates marker, updates UI, and restarts monitoring.
     func OnEditingRadius(currentMarkerID: String, newRadius: CLLocationDistance) {
         // Validations before editing the radius
         guard

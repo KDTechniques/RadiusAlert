@@ -32,7 +32,7 @@ struct MapOverlayButtonView: View {
 
 // MARK: - PREVIEWS
 #Preview("MapOverlayButtonView") {
-    MapOverlayButtonView(systemImage: "", action: {})
+    MapOverlayButtonView(systemImage: "star", action: {})
         .previewModifier()
 }
 
@@ -42,7 +42,7 @@ extension MapOverlayButtonView {
         Image(systemName: systemImage)
             .fontWeight(MapValues.overlayMapButtonFontWeight)
             .frame(width: 44, height: 44)
-            .mapControlButtonBackgroundViewModifier
+            .mapOverlayButtonBackgroundViewModifier
             .defaultTypeSizeViewModifier
     }
     
