@@ -54,6 +54,7 @@ struct EditRadiusSheetContentView: View {
         .alertViewModifier(at: .editRadiusSheet)
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)
+        .sheetCornerRadiusViewModifier
     }
 }
 

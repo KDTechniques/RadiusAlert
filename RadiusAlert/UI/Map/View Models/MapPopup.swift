@@ -12,6 +12,7 @@ import SwiftUI
 
 extension MapViewModel {
     // MARK: - PUBLIC FUNCTIONS
+    
     /// Generates a PopupCardModel with updated radius, duration, and distance
     /// values for the current alert and sets it for display in the UI.
     func generateNSetAlertPopupCardItem(for markerID: String) {
@@ -47,10 +48,17 @@ extension MapViewModel {
         setPopupCardItem(popupCardItem) // Set the popup card item for display in the UI
     }
     
+    /// Clears the currently displayed popup card item.
+    ///
+    /// Removes any active popup card from the UI by setting it to `nil`.
     func clearPopupCardItem() {
         setPopupCardItem(nil)
     }
     
+    /// Reduces alert tone volume when the app’s scene phase changes.
+    ///
+    /// If an alert is active (popup card is visible), the tone volume is
+    /// lowered to a fixed level to avoid being too loud during transitions.
     func reduceAlertToneVolumeOnScenePhaseChange() {
         guard popupCardItem != nil else { return }
         
@@ -82,6 +90,11 @@ extension MapViewModel {
         return duration
     }
     
+    /// Stops other alerts that overlap with the current one.
+    ///
+    /// Finds all regions that have already triggered (didEnterRegion),
+    /// removes the current marker from the list, and stops the rest.
+    /// This helps avoid multiple alerts firing at the same time.
     private func handleOverlappingRadiusAlertItems(without markerID: String) {
         var didEnterRegionMarkerIDs: [String] = locationManager.regions.filter({ $0.didEnterRegion == true }).map({ $0.markerID })
         didEnterRegionMarkerIDs.removeAll(where: { $0 == markerID }) // Remove the did enter region marker ids without the current one.

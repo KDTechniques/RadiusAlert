@@ -44,6 +44,9 @@ struct LocationPinsListView: View {
                 UpdateLocationPinSheetContentView(item)
             }
         }
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+        .sheetCornerRadiusViewModifier
     }
 }
 
@@ -52,8 +55,6 @@ struct LocationPinsListView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             LocationPinsListView(isMock: true)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
         }
         .previewModifier()
 }

@@ -27,6 +27,7 @@ actor RecentSearchManager {
         try recentSearchDatabaseManager.addRecentSearch(newItem)
     }
     
+#if DEBUG
     @MainActor
     func deleteRecentSearch(item: RecentSearchModel) throws {
         try recentSearchDatabaseManager.deleteRecentSearch(at: item)
@@ -34,6 +35,7 @@ actor RecentSearchManager {
     
     @MainActor
     func deleteAllRecentSearches() throws {
-        try recentSearchDatabaseManager.deleteAllLocationPins()
+        try recentSearchDatabaseManager.deleteAllRecentSearches()
     }
+#endif
 }

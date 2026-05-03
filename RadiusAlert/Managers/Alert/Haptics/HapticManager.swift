@@ -94,7 +94,7 @@ actor HapticManager {
     }
     
     /// Triggers a one-time haptic feedback for the given type.
-    func vibrate(type: HapticTypes) {
+    func hapticFeedback(type: HapticTypes) {
         switch type {
         case .success:
             hapticFeedbackGeneratorWrapper.notificationOccurred(.success)

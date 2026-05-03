@@ -103,6 +103,12 @@ final class LocationPinsViewModel {
         }
     }
     
+    /// Handles changes to the saved location pins array.
+    ///
+    /// If all pins are removed, this ensures related UI states are reset,
+    /// including closing the saved locations sheet and exiting edit mode.
+    ///
+    /// Helps prevent UI inconsistencies when the pins list becomes empty.
     private func onLocationPinsArrayChange() {
         if locationPinsArray.isEmpty {
             setIsPresentedSavedLocationsSheet(false)
@@ -112,6 +118,12 @@ final class LocationPinsViewModel {
     
     // MARK: - PUBLIC FUNCTIONS
     
+    /// Fetches saved location pins and updates the app state.
+    ///
+    /// Loads all saved pins from the local database and updates the UI with animation.
+    /// If the fetch fails, the error is logged and rethrown.
+    ///
+    /// - Throws: An error if location pins cannot be fetched.
     func fetchNSetLocationPins() async throws {
         do {
             let locationPinsArray: [LocationPinsModel] = try await locationPinManager.fetchLocationPins()
@@ -122,18 +134,26 @@ final class LocationPinsViewModel {
         }
     }
     
+    /// Handles tap on a saved location pin in the horizontal scroll list.
+    ///
+    /// If there are no existing markers, the pin is directly selected on the primary map
+    /// and processed like a normal marker.
+    ///
+    /// If markers already exist, the multiple stops sheet is shown first,
+    /// and the pin is prepared on the secondary map. The user can then add it manually
+    /// like a regular marker.
+    ///
+    /// - Parameter item: The selected saved location pin.
     func onScrollableHorizontalLocationPinButtonTap(_ item: LocationPinsModel) {
-        /// when user taps on a pin, position the pin on primary map only when there's no markers, and then create a marker just way we normally do.
-        /// but if there are markers just show the multiple stops sheet and position the map there, so user can tap on add button and then we can addd the to markers array like the way we add a a normal marker.
         if mapVM.markers.isEmpty {
             Task {
                 await mapVM.prepareSelectedLocationPinCoordinate(on: .primary, item: item)
             }
         } else {
-            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : 500_000_000
+            let nanoSeconds: UInt64 = mapVM.isPresentedMultipleStopsMapSheet ? 0 : .seconds(0.5)
             
-            /// present the multiple stops map sheet and set coordinate on secondary map type.
-            /// then when user tap on add button, prepare the marker just like we do normally!
+            /// Show multiple stops sheet and prepare on secondary map.
+            /// User can then add it as a normal marker.
             mapVM.setIsPresentedMultipleStopsMapSheet(true)
             
             Task {

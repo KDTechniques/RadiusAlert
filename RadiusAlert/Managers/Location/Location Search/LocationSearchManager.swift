@@ -88,6 +88,7 @@ final class LocationSearchManager: NSObject, MKLocalSearchCompleterDelegate {
         Utilities.log(LocationSearchManagerErrorModel.failedMKLocalSearchCompleter(error).errorDescription)
     }
     
+    // MARK: - PRIVATE FUNCTIONS
     private func isNetworkFailureError(_ error: Error) -> Bool {
         // First, try to cast the error to NSError to access error codes
         let nsError = error as NSError

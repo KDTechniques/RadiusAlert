@@ -158,7 +158,7 @@ extension MapViewModel {
                 guard let self else { return }
                 for _ in 1...3 {
                     setNextMapStyle()
-                    try? await Task.sleep(nanoseconds: 100_000_000)
+                    try? await Task.sleep(nanoseconds: .seconds(0.1))
                 }
             }
         }
@@ -173,7 +173,7 @@ extension MapViewModel {
         
         // Delays then repositions the map to the initial user location on the main actor.
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            try? await Task.sleep(nanoseconds: .seconds(1.0))
             positionToInitialUserLocation(on: .primary, animate: true)
         }
     }
@@ -233,12 +233,12 @@ extension MapViewModel {
         switch type {
         case .primary:
             setPrimarySelectedRadius(itemRadius)
-            try? await Task.sleep(nanoseconds: 300_000_000)
+            try? await Task.sleep(nanoseconds: .seconds(0.3))
             await setPrimaryPosition(region: newRegion, animate: true)
             
         case .secondary:
             setSecondarySelectedRadius(itemRadius)
-            try? await Task.sleep(nanoseconds: 300_000_000)
+            try? await Task.sleep(nanoseconds: .seconds(0.3))
             await setSecondaryPosition(region: newRegion, animate: true)
         }
         
@@ -275,6 +275,13 @@ extension MapViewModel {
         setSelectedSearchResult(nil)
     }
     
+    /// Handles validation when the selected search result is not beyond the minimum distance.
+    ///
+    /// Determines the correct map center coordinate and alert view level based on the map type.
+    /// If the selected location is invalid or too close to the current position,
+    /// an alert is shown and the selection is cleared.
+    ///
+    /// - Parameter type: The map type (primary or secondary) used to determine context.
     private func handleIsBeyondMinimumDistanceOnSelectedSearchResult(on type: MapTypes) {
         let centerCoordinate: CLLocationCoordinate2D? = {
             switch type {

@@ -34,8 +34,6 @@ struct AddPinOrAddMultipleStopsMapBottomTrailingButtonView: View {
         }
         .sheet(isPresented: locationPinsVM.isPresentedLocationSavingSheetBinding()) {
             AddLocationPinSheetContentView()
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
         }
     }
 }

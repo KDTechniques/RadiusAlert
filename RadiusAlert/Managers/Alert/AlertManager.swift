@@ -24,7 +24,7 @@ final class AlertManager {
     private let toneManager: ToneManager = .shared
     private let hapticManager: HapticManager = .shared
     private let notificationsManager: NotificationManager = .shared
-    private let alertPopupmanager: AlertPopupManager = .shared
+    private let alertPopupManager: AlertPopupManager = .shared
     
     //  MARK: -  INITIALIZER
     private init() { }
@@ -52,6 +52,14 @@ final class AlertManager {
         }
     }
     
+    /// Stops the currently playing alert tone and resets its volume.
+    ///
+    /// In some cases, the tone volume is reduced dynamically (e.g. when auto-stop is enabled).
+    /// If the tone is stopped without restoring the volume, the next playback may continue
+    /// at the reduced level.
+    ///
+    /// This ensures the volume is reset back to 100% after stopping,
+    /// so future playback starts at the expected level.
     func stopTone() {
         Task {
             await toneManager.stopTone()
@@ -85,7 +93,7 @@ final class AlertManager {
     
     private func resetToneVolume() {
         Task {
-            await toneManager.resetToneVolume(.zero)
+            await toneManager.resetToneVolume(fadeDuration: .zero)
         }
     }
     
@@ -104,14 +112,14 @@ final class AlertManager {
     
     // MARK: - Alert Popup Related
     func showAlert(_ type: AlertTypes) {
-        alertPopupmanager.showAlert(type)
+        alertPopupManager.showAlert(type)
     }
     
     func getFirstAlertItem() -> AlertModel? {
-        alertPopupmanager.alertItems.first
+        alertPopupManager.alertItems.first
     }
     
     func alertPopupBinding() -> Binding<Bool> {
-        return alertPopupmanager.alertIsPresentedBinding()
+        return alertPopupManager.alertIsPresentedBinding()
     }
 }

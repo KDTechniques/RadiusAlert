@@ -25,7 +25,7 @@ import SwiftUI
 /// ```
 enum OpenURLTypes: CaseIterable {
     case whatsApp, facebook, gitHub, linkedIn
-    case appStore
+    case appStore, appStoreReview
     case settings, notifications
     
     var rawValue: String {
@@ -111,6 +111,9 @@ enum OpenURLTypes: CaseIterable {
             return .init(string: "https://www.linkedin.com/in/paramsoodi")
             
         case .appStore:
+            return .init(string: "https://apps.apple.com/app/6752566436")
+            
+        case .appStoreReview:
             return .init(string: "https://apps.apple.com/app/6752566436?action=write-review")
         }
     }

@@ -34,6 +34,7 @@ struct CustomReviewSheetContentView: View {
             .ignoresSafeArea(.all, edges: .top)
             .toolbar { dismissButton }
         }
+        .sheetCornerRadiusViewModifier
     }
 }
 
@@ -92,7 +93,8 @@ extension CustomReviewSheetContentView {
     
     private var actionButton: some View {
         Button {
-            OpenURLTypes.appStore.openURL()
+            mapVM.setIsPresentedCustomReviewSheet(false)
+            OpenURLTypes.appStoreReview.openURL()
             mapVM.userDefaultsManager.saveDidAskForReview()
         } label: {
             Text("Continue")

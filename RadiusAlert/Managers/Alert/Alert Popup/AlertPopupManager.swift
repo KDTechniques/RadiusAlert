@@ -56,9 +56,9 @@ final class AlertPopupManager {
             /// Each subsequent alert is shown only after the previous one is dismissed by the user.
             appendAlertItem(type.alert)
             
-            // If this is the only alert in the queue, vibrate and present immediately
+            // If this is the only alert in the queue, provide haptic feedback and present immediately
             guard let firstItemHaptic: HapticTypes = alertItems.first?.hapticType else { return }
-            vibrateNPresent(firstItemHaptic)
+            hapticFeedbackNPresent(firstItemHaptic)
             
             return
         }
@@ -85,12 +85,12 @@ final class AlertPopupManager {
         guard !alertItems.isEmpty,
               let nextItemHaptic: HapticTypes = alertItems.first?.hapticType else { return }
         
-        vibrateNPresent(nextItemHaptic)
+        hapticFeedbackNPresent(nextItemHaptic)
     }
     
-    private func vibrateNPresent(_ haptic: HapticTypes) {
+    private func hapticFeedbackNPresent(_ haptic: HapticTypes) {
         Task {
-            await hapticManager.vibrate(type: haptic)
+            await hapticManager.hapticFeedback(type: haptic)
             setIsPresented(true)
         }
     }

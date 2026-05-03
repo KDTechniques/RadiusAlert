@@ -27,6 +27,9 @@ struct AddLocationPinSheetContentView: View {
                 ToolbarItem(placement: .confirmationAction) { saveButton }
             }
         }
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+        .sheetCornerRadiusViewModifier
     }
 }
 

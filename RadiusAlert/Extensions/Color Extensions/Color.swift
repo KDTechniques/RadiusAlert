@@ -41,7 +41,7 @@ extension Color {
     /// Example:
     /// ```swift
     /// let background = Color.custom.SearchBar.searchBarBackground.color
-    /// let mapButton = Color.custom.Map.mapControlButtonBackgroundViewModifier.color
+    /// let mapButton = Color.custom.Map.mapOverlayButtonBackgroundViewModifier.color
     /// ```
     static let custom = CustomColors.self
 }

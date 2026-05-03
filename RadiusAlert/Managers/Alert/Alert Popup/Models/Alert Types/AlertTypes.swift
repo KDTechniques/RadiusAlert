@@ -104,4 +104,3 @@ enum AlertTypes: CaseIterable, Hashable {
         }
     }
 }
-

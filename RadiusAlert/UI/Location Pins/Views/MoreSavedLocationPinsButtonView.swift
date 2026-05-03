@@ -48,8 +48,6 @@ struct MoreSavedLocationPinsButtonView: View {
         .buttonStyle(.plain)
         .sheet(isPresented: savedPinsVM.isPresentedSavedLocationsSheetBinding()) {
             LocationPinsListView()
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
         }
     }
 }

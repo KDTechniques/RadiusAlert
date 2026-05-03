@@ -36,8 +36,6 @@ struct MapMarkersView: MapContent {
 
 // MARK: - PREVIEWS
 #Preview("MapMarkersView") {
-    Map {
-        MapMarkersView(markers: MarkerModel.mock)
-    }
-    .previewModifier()
+    Map { MapMarkersView(markers: MarkerModel.mock) }
+        .previewModifier()
 }

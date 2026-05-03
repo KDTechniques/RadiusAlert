@@ -11,6 +11,7 @@ struct RadiusSliderView: View {
     // MARK: - INJECTED PROPERTIES
     @Environment(\.colorScheme) private var colorScheme
     @Environment(MapViewModel.self) private var mapVM
+    @Environment(SettingsViewModel.self) private var settingsVM
     
     @Binding var value: Double
     let onSlidingEnded: () -> Void
@@ -29,10 +30,10 @@ struct RadiusSliderView: View {
             step: MapValues.radiusStep) { }
         minimumValueLabel: {
             Text(MapValues.minimumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
+                .radiusSliderViewModifier(colorScheme, mapStyle: settingsVM.selectedMapStyle)
         } maximumValueLabel: {
             Text(MapValues.maximumRadiusString)
-                .radiusSliderViewModifier(colorScheme)
+                .radiusSliderViewModifier(colorScheme, mapStyle: settingsVM.selectedMapStyle)
         } onEditingChanged: { $0 ? () : onSlidingEnded() }
     }
 }
@@ -47,13 +48,23 @@ struct RadiusSliderView: View {
 
 // MARK: - EXTENSIONS
 fileprivate extension View {
-    func radiusSliderViewModifier(_ colorScheme: ColorScheme) -> some View {
+    @ViewBuilder
+    func radiusSliderViewModifier(_ colorScheme: ColorScheme, mapStyle: MapStyleTypes) -> some View {
+        var colors: (foreground: Color, shadow: Color) {
+            switch mapStyle {
+            case .standard:
+                return (.init(uiColor: colorScheme == .dark ? .white : .darkGray), .getNotPrimary(colorScheme: colorScheme))
+            case .hybrid, .imagery:
+                return (.white, .black)
+            }
+        }
+        
         self
-            .foregroundStyle(Color(uiColor: colorScheme == .dark ? .white : .darkGray))
+            .foregroundStyle(colors.foreground)
             .font(.caption)
             .fontWeight(.semibold)
             .shadow(
-                color: .getNotPrimary(colorScheme: colorScheme),
+                color: colors.shadow,
                 radius: 0.3,
                 y: -0.5
             )

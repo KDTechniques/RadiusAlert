@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 // MARK: BINDINGS
 
 extension MapViewModel {
-    /// Returns a `Binding<String>` that keeps the search bar text in sync with the view model's `searchText`.
-    /// Useful for connecting the SwiftUI TextField directly to the view model.
     func searchTextBinding() -> Binding<String> {
         return .init(
             get: { [weak self] in
@@ -67,5 +66,21 @@ extension MapViewModel {
                 guard let self else { return false }
                 return isPresentedCustomReviewSheet
             }, set: setIsPresentedCustomReviewSheet)
+    }
+    
+    func primarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
+        return .init(
+            get: {  [weak self] in
+                guard let self else { return .zero }
+                return primarySelectedRadius
+            }, set: setPrimarySelectedRadius)
+    }
+    
+    func secondarySelectedRadiusBinding() -> Binding<CLLocationDistance> {
+        return .init(
+            get: {  [weak self] in
+                guard let self else { return .zero }
+                return secondarySelectedRadius
+            }, set: setSecondarySelectedRadius)
     }
 }

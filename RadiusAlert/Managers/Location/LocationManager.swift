@@ -125,6 +125,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return .region(region)
     }
     
+    /// Starts monitoring a region using Core Location.
+    ///
+    /// A temporary `RegionModel` is provided with basic properties.
+    /// A `CLCircularRegion` is then created and configured from it,
+    /// assigned back to the model, and stored for future reference.
+    ///
+    /// - Parameter region: The region model containing initial configuration.
+    /// - Returns: `true` if monitoring started successfully, otherwise `false`.
     func startMonitoringRegion(region: RegionModel) -> Bool {
         var region = region
         
@@ -140,6 +148,16 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return true
     }
     
+    /// Stops an active region and restarts monitoring with updated properties.
+    ///
+    /// Used when a monitored region needs to be modified (e.g. changing the radius).
+    /// Since Core Location regions cannot be updated directly, the existing region
+    /// must be stopped and a new one created with the updated configuration.
+    ///
+    /// - Parameters:
+    ///   - markerID: The identifier of the region to update.
+    ///   - newRadius: The updated radius for the region.
+    /// - Returns: `true` if the region was successfully restarted, otherwise `false`.
     func stopNUpdateMonitorRegion(markerID: String, newRadius: CLLocationDistance) -> Bool {
         guard let currentRegion: RegionModel = regions.first(where: { $0.markerID == markerID }) else { return false }
         
@@ -223,7 +241,15 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func setCurrentRegionName(_ currentUserLocation: CLLocationCoordinate2D?) {
+    /// Resolves and sets the current region name (country) using reverse geocoding.
+    ///
+    /// Uses the provided coordinates to fetch location details via `CLGeocoder`.
+    /// If successful, extracts the country name and updates it on the main thread.
+    /// If the country cannot be resolved or an error occurs, it logs the failure.
+    ///
+    /// - Parameter currentUserLocation: The user's current coordinates.
+    /// If `nil`, the operation is skipped.
+    func setCurrentRegionName(by currentUserLocation: CLLocationCoordinate2D?) {
         guard let latitude = currentUserLocation?.latitude,
               let longitude = currentUserLocation?.longitude else { return }
         
@@ -250,6 +276,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     // MARK: - PRIVATE FUNCTIONS
     
+    /// Returns the minimum distance between the user’s location
+    /// and all monitored regions.
+    ///
+    /// Calculates the distance from the user to each region (taking radius into account)
+    /// and returns the smallest value. If the user location is unavailable,
+    /// returns `.greatestFiniteMagnitude` as a fallback.
+    ///
+    /// - Returns: The minimum distance to the nearest region, or a large fallback value.
     private func getMinDistance() -> CLLocationDistance? {
         guard let currentUserLocation else { return .greatestFiniteMagnitude }
         
@@ -264,6 +298,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         return minDistance
     }
     
+    /// Adjusts location update strategy based on proximity to monitored regions.
+    ///
+    /// Switches between standard location updates and significant location changes
+    /// depending on the minimum distance to the nearest region.
+    ///
+    /// When the user is within the tracking threshold, precise location updates
+    /// are enabled for accuracy. Otherwise, it falls back to significant location
+    /// changes to conserve battery.
+    ///
+    /// - Parameters:
+    ///   - minDistance: The minimum distance to the nearest monitored region.
+    ///   - trackingThreshold: The distance threshold to switch tracking modes.
     private func changeLocationUpdatesOnMinDistance(minDistance: CLLocationDistance, trackingThreshold: CLLocationDistance) {
         if minDistance <= trackingThreshold {
             if manager.monitoredRegions.count > 0 || manager.location != nil {
@@ -276,11 +322,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    /// Sets the initial current region when the app launches.
+    ///
+    /// If no region has been assigned yet and a valid user location is available,
+    /// this resolves and sets the region name to kickstart location-based features.
+    ///
+    /// - Parameter currentUserLocation: The user’s current coordinates.
+    /// If `nil`, or if a region is already set, the operation is skipped.
     private func updateInitialCurrentRegion(_ currentUserLocation: CLLocationCoordinate2D?) {
         guard self.currentUserLocation.isNil(),
               let currentUserLocation else { return }
         
-        setCurrentRegionName(currentUserLocation)
+        setCurrentRegionName(by: currentUserLocation)
     }
     
     private func removeRegion(for markerID: String) {
@@ -288,6 +341,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         regions.remove(region)
     }
     
+    /// Updates the `didEnterRegion` state for a monitored region.
+    ///
+    /// Used to handle edge cases, prevent UI inconsistencies,
+    /// and improve overall user experience when a region entry is detected.
+    ///
+    /// - Parameter identifier: The identifier of the region that was entered.
     private func updateDidEnterRegion(for identifier: String) {
         guard var region: RegionModel = regions.first(where: { $0.markerID == identifier }) else { return }
         region.didEnterRegion = true
