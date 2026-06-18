@@ -94,5 +94,6 @@ extension ScrollViewContent {
         }
         .listStyle(.plain)
         .scrollIndicators(.hidden)
+        .padding(.bottom, 50)
     }
 }
